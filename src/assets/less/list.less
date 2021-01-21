@@ -1,0 +1,107 @@
+.listCtn{
+  padding: 20px 32px;
+  .filterCtn{
+    max-height: 32px;
+    display: flex;
+    justify-content: space-between;
+    overflow: hidden;
+    &.showMore{
+      max-height: 9999px;
+      min-height: 32px;
+    }
+    .leftCtn{
+      max-width: 1030px;
+      padding-right: 70px;
+      position: relative;
+      .label{
+        display: inline-block;
+        font-size: @fontMiddle;
+        line-height: 32px;
+        color: @font85;
+        margin-right: 8px;
+        margin-bottom: 16px;
+      }
+      .elCtn{
+        display: inline-block;
+        width:210px;
+        margin-right: 16px;
+        margin-bottom: 16px;
+      }
+      .showMore{
+        position: absolute;
+        right: 0;
+        top: 0;
+        line-height: 32px;
+        width: 70px;
+        text-align: left;
+        cursor: pointer;
+        font-size: @fontMiddle;
+        color: @font45;
+        &:hover{
+          color: @hoverBlue;
+        }
+      }
+    }
+    .rightCtn{
+      min-width: 200px;
+      .btn{
+        margin-left: 12px;
+      }
+    }
+  }
+  .list{
+    display: block;
+    margin: 24px 0;
+    max-width: 100%;
+    position: relative;
+    .overflow{
+      overflow: auto;
+      .tableCtn{
+        display: flex;
+        max-width: 1302px;
+      }
+    }
+    .headCtn{
+      background: #F4F4F4;
+      color: @font85;
+      font-size: @fontMiddle;
+    }
+    .bodyCtn{
+      color: @font65;
+      background: #fff;
+      font-size: @fontSmall;
+    }
+    .row{
+      display: flex;
+      height: 50px;
+      width: 100%;
+      .column{
+        display: flex;
+        align-items: center;
+        padding:0 12px;
+        flex: 1;
+        &.min120{
+          min-width: 120px;
+        }
+      }
+    }
+    .floatL{
+      position: absolute;
+      left: 0;
+      top: 0;
+      background: red;
+    }
+    .floatR{
+      position: absolute;
+      right: 0;
+      top: 0;
+      background: red;
+    }
+  }
+  .pageCtn{
+    height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+  }
+}

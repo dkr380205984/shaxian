@@ -24,4 +24,5 @@ export interface User {
   phone: string
   post: string // 岗位
   status: number // 权限
+  modules: string // 模块JSON.stringify()
 }

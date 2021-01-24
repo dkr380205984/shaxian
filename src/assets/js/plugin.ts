@@ -1,6 +1,12 @@
+import store from '../../store/index'
 interface MapTitle {
   title: string
   key: string
+}
+interface CheckCommonInfo {
+  checkWhich: string // 需要的公告数据
+  getInfoMethed?: string // commit or dispatch,api一般都是异步，用dispatch调用，status一般是同步，用commit调用,默认就是dispatch
+  getInfoApi: string // 没有公共数据的时候需要调用的函数
 }
 const plugin = {
   getDataType(data: any) {
@@ -198,6 +204,18 @@ const plugin = {
     aLink.href = url
     aLink.download = (excelName ? excelName + '-' : '') + new Date().getTime() + '.xls'
     aLink.click()
+  },
+  checkCommonInfo(info: CheckCommonInfo[]) {
+    info.forEach((item) => {
+      const checkInfo = item.checkWhich.split('/')
+      if (!store.state[checkInfo[0]][checkInfo[1]].status) {
+        if (item.getInfoMethed && item.getInfoMethed === 'commit') {
+          store.commit(checkInfo[0] + '/' + item.getInfoApi)
+        } else {
+          store.dispatch(checkInfo[0] + '/' + item.getInfoApi)
+        }
+      }
+    })
   }
 }
 
@@ -210,5 +228,6 @@ export default {
     Vue.prototype.$diffDate = plugin.diffDate
     Vue.prototype.$getDate = plugin.getDate
     Vue.prototype.$downloadExcel = plugin.downloadExcel
+    Vue.prototype.$checkCommonInfo = plugin.checkCommonInfo
   }
 }

@@ -4,8 +4,8 @@ import store from '../store/index';
 Vue.use(VueRouter)
 // 解决ele组件点击当前页路由时出错
 const originalPush = VueRouter.prototype.push
-VueRouter.prototype.push = (location: any) => {
-  return (originalPush.call(null, location) as any).catch((err: any) => err)
+VueRouter.prototype.push = function push(location: string) {
+  return (originalPush.call(this, location) as any).catch((err: any) => err)
 }
 const routes: RouteConfig[] = [
   {
@@ -14,7 +14,7 @@ const routes: RouteConfig[] = [
   },
   {
     path: '/login',
-    name: 'login',
+    name: '登录页',
     component: () => import('../views/login.vue')
   },
   {

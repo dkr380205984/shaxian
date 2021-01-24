@@ -1,0 +1,109 @@
+.popup{
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: rgba(0,0,0,0.6);
+  z-index: 999;
+  color: @font85;
+  font-size: @fontMiddle;
+  .main{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 500px;
+    background-color: #FFF;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+    border-radius: 8px;
+    .titleCtn{
+      height: 50px;
+      padding: 0 16px;
+      box-sizing: border-box;
+      display: flex;
+      justify-content: space-between;
+      border-bottom: 1px solid #E9E9E9;
+      align-items: center;
+      .text{
+        font-size: 16px;
+        font-weight: bold;
+      }
+      .close_icon{
+        cursor: pointer;
+      }
+    }
+    .contentCtn{
+      min-height: 200px;
+      max-height: 500px;
+      overflow-y: auto;
+      overflow-x: hidden;
+      box-sizing: border-box;
+      padding: 0 40px;
+      flex-direction: column;        
+      .row{
+        min-height: 32px;
+        display: flex;
+        margin: 12px 0;
+        position: relative;
+        .label{
+          width: 6em;
+          text-align: right;
+          line-height: 32px;
+          color: @font85;
+          font-size: @fontMiddle;
+          &.isMust::before{
+            content: '*';
+            color: red;
+            margin-right: 4px;
+          }
+        }
+        .info{
+          flex: 1;
+          &.colCenter{
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+          }
+          &.blue{
+            color: @blue;
+          }
+          &.text{
+            color: @font65;
+            line-height: 32px;
+            font-size: @fontMiddle;
+          }
+          &.col{
+            display: block;
+            flex-direction: column;
+            height: auto;
+          }
+        }
+      }
+    }
+    .oprCtn{
+      height: 50px;
+      border-top: 1px solid #E9E9E9;
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      .opr{
+        height: 32px;
+        padding: 0 16px;
+        box-sizing: border-box;
+        margin-right: 24px;
+        border: 1px solid #E9E9E9;
+        border-radius: 4px;
+        line-height: 30px;
+        cursor: pointer;
+        &.blue{
+          background: @blue;
+          border-color: @blue;
+          color: #FFF;
+        }
+      }
+    }
+  }
+}

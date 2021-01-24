@@ -14,7 +14,7 @@ const routes: RouteConfig[] = [
   },
   {
     path: '/login',
-    name: 'login',
+    name: '登录页',
     component: () => import('../views/login.vue')
   },
   {

@@ -1,23 +1,8 @@
 import { ActionContext } from 'vuex'
 import { User } from '@/types/common'
-
-interface StatusAndArr {
-  status: boolean
-  arr: any[]
-}
-
-interface UserInfo {
-  status: boolean
-  arr: User[]
-}
-
-// 维护公共state
-interface State {
-  user: UserInfo
-  [propName: string]: StatusAndArr
-}
+import { ApiState } from '@/types/vuex'
 // state
-const apiState: State = {
+const apiState: ApiState = {
   user: {
     status: false,
     arr: []
@@ -25,14 +10,14 @@ const apiState: State = {
 }
 // mutations
 const apiMutations = {
-  getUser(state: State, user: User[]) {
+  getUser(state: ApiState, user: User[]) {
     state.user.status = true
     state.user.arr = user
   }
 }
 // actions
 const apiActions = {
-  getUserAsync(content: ActionContext<State, any>) {
+  getUserAsync(content: ActionContext<ApiState, any>) {
     setTimeout(() => {
       content.commit('getUser', [{
         name: 'string',

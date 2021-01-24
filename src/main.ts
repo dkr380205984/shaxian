@@ -19,6 +19,7 @@ declare module 'vue/types/vue' {
     $diffDate: any
     $getDate: any
     $downloadExcel: any
+    $checkCommonInfo: any
   }
 }
 

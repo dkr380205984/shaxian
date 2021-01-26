@@ -23,8 +23,11 @@
             <el-submenu index='5'>
               <template slot="title">系统设置</template>
               <el-menu-item index="/settings/user">用户管理</el-menu-item>
-              <el-menu-item index="2-2">供货商管理</el-menu-item>
-              <el-menu-item index="2-3">客户管理</el-menu-item>
+              <el-menu-item index="/settings/yarn">纱线管理</el-menu-item>
+              <el-menu-item index="/settings/factory">加工厂管理</el-menu-item>
+              <el-menu-item index="/settings/supplier">供货商管理</el-menu-item>
+              <el-menu-item index="/settings/client">客户管理</el-menu-item>
+              <el-menu-item index="/settings/color">颜色管理</el-menu-item>
             </el-submenu>
           </el-menu>
         </div>

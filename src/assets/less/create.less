@@ -1,0 +1,45 @@
+.createCtn{
+  padding: 20px 32px;
+  position: relative;
+  .rowCtn{
+    margin: 18px 0;
+    display: flex;
+    justify-content: flex-start;
+    .colCtn{
+      flex:1;
+      margin-right: 72px;
+      box-sizing: border-box;
+      position: relative;
+      &.noMargin{
+        margin-right: 0;
+      }
+      &.flex2{
+        max-width: 579px;
+      }
+      &.flex3{
+        max-width: 362px;
+      }
+      .label{
+        display: block;
+        height: 38px;
+        line-height: 38px;
+        font-size: @fontMiddle;
+        .text{
+          color: @font85;
+        }
+        .explanation{
+          margin-left: 5px;
+          color: @font25;
+        }
+      }
+      .content{
+        display: block;
+        height:32px;
+        position: relative;
+        &.autoHeight{
+          height: auto;
+        }
+      }
+    }
+  }
+}

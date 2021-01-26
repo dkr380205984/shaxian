@@ -5,8 +5,9 @@ import store from './store';
 import plugin from '@/assets/js/plugin'
 import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
+import mycomponent from './components'
 Vue.config.productionTip = false;
-
+Vue.use(mycomponent)
 Vue.use(plugin)
 Vue.use(ElementUI)
 // 注册公共方法后需要声明

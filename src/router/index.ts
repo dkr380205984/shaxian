@@ -31,6 +31,16 @@ const routes: RouteConfig[] = [
         path: '/settings/user',
         name: '用户设置',
         component: () => import('../views/settings/user.vue')
+      },
+      {
+        path: '/product/list/:params',
+        name: '纱线列表',
+        component: () => import('../views/product/list.vue')
+      },
+      {
+        path: '/product/create',
+        name: '添加纱线',
+        component: () => import('../views/product/create.vue')
       }
     ]
   }

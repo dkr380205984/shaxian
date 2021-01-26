@@ -80,8 +80,28 @@
         align-items: center;
         padding:0 12px;
         flex: 1;
+        .elicon{
+          vertical-align: middle;
+          margin-left: 5px;
+          cursor: pointer;
+          color: @font45;
+          &:hover{
+            color: @blue;
+          }
+        }
         &.min120{
           min-width: 120px;
+        }
+        .opr{
+          padding: 0 8px;
+          border-right: 1px solid #E9E9E9;
+          cursor: pointer;
+          &:nth-last-child(1){
+            border-right: 0;
+          }
+          &:nth-child(1){
+            padding-left: 0;
+          }
         }
       }
     }
@@ -89,13 +109,13 @@
       position: absolute;
       left: 0;
       top: 0;
-      background: red;
+      background: @white;
     }
     .floatR{
       position: absolute;
       right: 0;
       top: 0;
-      background: red;
+      background: @white;
     }
   }
   .pageCtn{

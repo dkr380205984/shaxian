@@ -5,7 +5,7 @@
         <div class="leftCtn">
           <div class="companyCtn">
             <div class="logo">
-              <img src="https://i0.hdslb.com/bfs/face/member/noface.jpg@140w_140h_1c.webp" />
+              <!-- <img src="https://i0.hdslb.com/bfs/face/member/noface.jpg@140w_140h_1c.webp" /> -->
             </div>
             <div class="name"
               @click="$router.push('/homePage/homePage')">随便啥公司</div>
@@ -16,7 +16,7 @@
             background-color="#637AA7"
             text-color="#fff"
             active-text-color="#ffd04b">
-            <el-menu-item index="1">纱线管理</el-menu-item>
+            <el-menu-item index="/product/list/1">纱线管理</el-menu-item>
             <el-menu-item index="2">订单管理</el-menu-item>
             <el-menu-item index="3">库存管理</el-menu-item>
             <el-menu-item index="4">财务管理</el-menu-item>

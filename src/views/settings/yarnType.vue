@@ -1,11 +1,10 @@
 <template>
-  <div class="indexMain"
-    v-loading='loading'>
+  <div class="indexMain">
     <div class="module">
       <div class="titleCtn">
-        <span class="title hasBorder">颜色列表</span>
+        <span class="title hasBorder">纱线类型列表</span>
         <span class="addBtn btn btnMain"
-          @click="addFlag=true">添加颜色</span>
+          @click="addFlag=true">添加纱线类型</span>
       </div>
       <div class="listCtn">
         <div class="filterCtn">
@@ -13,7 +12,7 @@
             <div class="label">筛选条件：</div>
             <div class="elCtn">
               <el-input v-model="name"
-                placeholder="搜索颜色名称"></el-input>
+                placeholder="搜索纱线类型名称"></el-input>
             </div>
           </div>
           <div class="rightCtn">
@@ -23,7 +22,7 @@
         <div class="list">
           <div class="headCtn">
             <div class="row">
-              <div class="column">颜色名称</div>
+              <div class="column">纱线类型名称</div>
               <div class="column">添加人</div>
               <div class="column">添加日期</div>
               <div class="column">操作</div>
@@ -31,16 +30,16 @@
           </div>
           <div class="bodyCtn">
             <div class="row"
-              v-for="item in colorList"
+              v-for="item in yarnTypeList"
               :key="item.id">
               <div class="column">{{item.name}}</div>
-              <div class="column">{{item.create_user || '/'}}</div>
-              <div class="column">{{item.created_at ? $getDate(item.created_at) : '/'}}</div>
+              <div class="column">{{item.user_name || '/'}}</div>
+              <div class="column">{{item.created_at && $getDate(item.created_at) || '/'}}</div>
               <div class="column">
                 <span class="col_btn orange"
-                  @click="changeColor(item)">修改</span>
+                  @click="changeYarnType(item)">修改</span>
                 <span class="col_btn red"
-                  @click="deleteColor(item)">删除</span>
+                  @click="deleteYarnType(item)">删除</span>
               </div>
             </div>
           </div>
@@ -59,7 +58,7 @@
       v-show="addFlag">
       <div class="main">
         <div class="titleCtn">
-          <div class="text">{{colorInfo.id ? '修改' : '新增'}}颜色</div>
+          <div class="text">{{yarnTypeInfo.id ? '修改':'新增'}}纱线类型</div>
           <i class="el-icon-close"
             @click="addFlag=false"></i>
         </div>
@@ -67,8 +66,8 @@
           <div class="row">
             <div class="label isMust">名称：</div>
             <div class="info">
-              <el-input placeholder="请输入颜色名称"
-                v-model="colorInfo.name"></el-input>
+              <el-input placeholder="请输入纱线类型名称"
+                v-model="yarnTypeInfo.name"></el-input>
             </div>
           </div>
         </div>
@@ -76,7 +75,7 @@
           <div class="opr"
             @click="addFlag=false">取消</div>
           <div class="opr blue"
-            @click="saveColor">保存</div>
+            @click="saveYarnType">保存</div>
         </div>
       </div>
     </div>
@@ -85,19 +84,18 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { yarnColor } from '@/assets/js/api'
-import { Color } from '@/types/common'
+import { yarnType } from '@/assets/js/api'
+import { YarnType } from '@/types/common'
 export default Vue.extend({
   data(): {
-    colorInfo: Color
-    colorList: Color[]
+    yarnTypeInfo: YarnType
+    yarnTypeList: YarnType[]
     [propName: string]: any
   } {
     return {
-      loading: true,
       addFlag: false,
-      colorList: [],
-      colorInfo: {
+      yarnTypeList: [],
+      yarnTypeInfo: {
         id: null,
         name: ''
       },
@@ -112,55 +110,50 @@ export default Vue.extend({
     },
     getList(pages: number = 1) {
       this.loading = true
-      yarnColor
+      yarnType
         .list({
           page: pages,
           limit: 5
         })
         .then((res: any) => {
           if (res.data.status !== false) {
-            this.colorList = res.data.data
+            this.yarnTypeList = res.data.data
             this.total = (res.data.meta && res.data.meta.total) || 1
             this.loading = false
           }
         })
     },
-    saveColor() {
-      if (!this.colorInfo.name) {
-        this.$message.warning('请输入颜色名称')
+    saveYarnType() {
+      if (!this.yarnTypeInfo.name) {
+        this.$message.warning('请输入纱线类型名称')
         return
       }
-      yarnColor
+      yarnType
         .create({
-          id: this.colorInfo.id,
-          name: this.colorInfo.name
+          id: this.yarnTypeInfo.id || null,
+          name: this.yarnTypeInfo.name
         })
-        .then((res: any) => {
+        .then((res) => {
           if (res.data.status !== false) {
-            this.addFlag = false
-            this.$message.success(`${(this.colorInfo.id && '修改') || '添加'}成功`)
-            this.colorInfo = {
-              id: null,
-              name: ''
-            }
-            this.getList(1)
+            this.$message.success(`${(this.yarnTypeInfo.id && '修改') || '添加'}成功`)
+            this.getList()
           }
         })
     },
-    changeColor(item: Color) {
-      this.colorInfo = {
+    changeYarnType(item: YarnType) {
+      this.yarnTypeInfo = {
         id: item.id || null,
         name: item.name
       }
       this.addFlag = true
     },
-    deleteColor(item: Color) {
-      this.$confirm('此操作将永久删除该颜色, 是否继续?', '提示', {
+    deleteYarnType(item: YarnType) {
+      this.$confirm('此操作将永久删除该纱线类型, 是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        yarnColor
+        yarnType
           .delete({
             id: item.id
           })
@@ -183,5 +176,5 @@ export default Vue.extend({
 </script>
 
 <style lang="less" scoped>
-@import '~@/assets/less/settings/color.less';
+@import '~@/assets/less/settings/yarn.less';
 </style>

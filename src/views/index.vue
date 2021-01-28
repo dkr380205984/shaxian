@@ -23,7 +23,7 @@
             <el-submenu index='5'>
               <template slot="title">系统设置</template>
               <el-menu-item index="/settings/user">用户管理</el-menu-item>
-              <el-menu-item index="/settings/yarn">纱线管理</el-menu-item>
+              <el-menu-item index="/settings/yarnType">纱线类型管理</el-menu-item>
               <el-menu-item index="/settings/factory">加工厂管理</el-menu-item>
               <el-menu-item index="/settings/supplier">供货商管理</el-menu-item>
               <el-menu-item index="/settings/client">客户管理</el-menu-item>

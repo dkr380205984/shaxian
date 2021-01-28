@@ -159,11 +159,16 @@ const plugin = {
       }
     }
   },
-  getDate(date: Date): string {
+  getDate(date?: Date, connector: string = '-'): string {
+    date = date ? new Date(date) : new Date()
     const year = date.getFullYear()
     const month = date.getMonth() + 1
     const day = date.getDate()
-    return year + '-' + (month < 10 ? ('0' + month) : month) + '-' + (day < 10 ? ('0' + day) : day)
+    return [
+      year,
+      (month < 10 ? ('0' + month) : month),
+      (day < 10 ? ('0' + day) : day)
+    ].join(connector)
   },
   downloadExcel(data: any[], mapTitle: MapTitle[], excelName: string) {
     const orderElement = ''

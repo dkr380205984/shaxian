@@ -29,7 +29,8 @@ export interface User {
   modules: string // 模块JSON.stringify()
 }
 
-export interface Yarn {
+export interface YarnType {
+  id: number | null
   name: string,
   [key: string]: any
 }
@@ -60,6 +61,7 @@ export interface Client {
 }
 
 export interface Color {
+  id: number | null
   name: string,
   [key: string]: any
 }

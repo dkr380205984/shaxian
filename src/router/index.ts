@@ -42,9 +42,9 @@ const routes: RouteConfig[] = [
         name: '添加纱线',
         component: () => import('../views/product/create.vue')
       }, {
-        path: '/settings/yarn',
-        name: '纱线设置',
-        component: () => import('../views/settings/yarn.vue')
+        path: '/settings/yarnType',
+        name: '纱线类型设置',
+        component: () => import('../views/settings/yarnType.vue')
       },
       {
         path: '/settings/factory',

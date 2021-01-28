@@ -21,6 +21,8 @@ declare module 'vue/types/vue' {
     $getDate: any
     $downloadExcel: any
     $checkCommonInfo: any
+    $addItem: any
+    $deleteItem: any
   }
 }
 

@@ -221,6 +221,12 @@ const plugin = {
         }
       }
     })
+  },
+  addItem<T>(father: T[], son: T): void {
+    father.push(son)
+  },
+  deleteItem(father: any[], index: number) {
+    father.splice(index, 1)
   }
 }
 
@@ -234,5 +240,7 @@ export default {
     Vue.prototype.$getDate = plugin.getDate
     Vue.prototype.$downloadExcel = plugin.downloadExcel
     Vue.prototype.$checkCommonInfo = plugin.checkCommonInfo
+    Vue.prototype.$addItem = plugin.addItem
+    Vue.prototype.$deleteItem = plugin.deleteItem
   }
 }

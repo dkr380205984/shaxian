@@ -2,9 +2,9 @@
   <div class="indexMain">
     <div class="module">
       <div class="titleCtn">
-        <span class="title hasBorder">颜色列表</span>
+        <span class="title hasBorder">纱线列表</span>
         <span class="addBtn btn btnMain"
-          @click="addFlag=true">添加颜色</span>
+          @click="addFlag=true">添加纱线</span>
       </div>
       <div class="listCtn">
         <div class="filterCtn">
@@ -12,7 +12,7 @@
             <div class="label">筛选条件：</div>
             <div class="elCtn">
               <el-input v-model="name"
-                placeholder="搜索颜色名称"></el-input>
+                placeholder="搜索纱线名称"></el-input>
             </div>
           </div>
           <div class="rightCtn">
@@ -22,7 +22,7 @@
         <div class="list">
           <div class="headCtn">
             <div class="row">
-              <div class="column">颜色名称</div>
+              <div class="column">纱线名称</div>
               <div class="column">添加人</div>
               <div class="column">添加日期</div>
               <div class="column">操作</div>
@@ -32,14 +32,14 @@
             <div class="row"
               v-for="item in 1"
               :key="item">
-              <div class="column">颜色名称</div>
+              <div class="column">纱线名称</div>
               <div class="column">添加人</div>
               <div class="column">添加日期</div>
               <div class="column">
                 <span class="col_btn orange"
-                  @click="changeColor(item)">修改</span>
+                  @click="changeYarn(item)">修改</span>
                 <span class="col_btn red"
-                  @click="deleteColor(item)">删除</span>
+                  @click="deleteYarn(item)">删除</span>
               </div>
             </div>
           </div>
@@ -58,7 +58,7 @@
       v-show="addFlag">
       <div class="main">
         <div class="titleCtn">
-          <div class="text">新增颜色</div>
+          <div class="text">新增纱线</div>
           <i class="el-icon-close"
             @click="addFlag=false"></i>
         </div>
@@ -66,8 +66,8 @@
           <div class="row">
             <div class="label isMust">名称：</div>
             <div class="info">
-              <el-input placeholder="请输入颜色名称"
-                v-model="colorInfo.name"></el-input>
+              <el-input placeholder="请输入纱线名称"
+                v-model="yarnInfo.name"></el-input>
             </div>
           </div>
         </div>
@@ -75,7 +75,7 @@
           <div class="opr"
             @click="addFlag=false">取消</div>
           <div class="opr blue"
-            @click="saveColor">保存</div>
+            @click="saveYarn">保存</div>
         </div>
       </div>
     </div>
@@ -84,17 +84,17 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { Color } from '@/types/common'
+import { Yarn } from '@/types/common'
 export default Vue.extend({
   data(): {
-    colorInfo: Color
-    colorList: Color[]
+    yarnInfo: Yarn
+    yarnList: Yarn[]
     [propName: string]: any
   } {
     return {
       addFlag: false,
-      colorList: [],
-      colorInfo: {
+      yarnList: [],
+      yarnInfo: {
         name: '',
         username: '',
         phone: '',
@@ -108,16 +108,18 @@ export default Vue.extend({
     }
   },
   methods: {
-    init() {},
-    saveColor() {
-      console.log(this.colorInfo)
+    init() {
+      this.$message.success('初始化页面成功')
     },
-    changeColor(item: Color) {
+    saveYarn() {
+      console.log(this.userInfo)
+    },
+    changeYarn(item: Yarn) {
       console.log(item)
       this.$message.success('修改成功')
       this.init()
     },
-    deleteColor(item: Color) {
+    deleteYarn(item: Yarn) {
       console.log(item)
       this.$message.success('删除成功')
       this.init()
@@ -130,5 +132,5 @@ export default Vue.extend({
 </script>
 
 <style lang="less" scoped>
-@import '~@/assets/less/settings/color.less';
+@import '~@/assets/less/settings/yarn.less';
 </style>

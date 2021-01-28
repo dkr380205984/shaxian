@@ -41,6 +41,30 @@ const routes: RouteConfig[] = [
         path: '/product/create',
         name: '添加纱线',
         component: () => import('../views/product/create.vue')
+      }, {
+        path: '/settings/yarn',
+        name: '纱线设置',
+        component: () => import('../views/settings/yarn.vue')
+      },
+      {
+        path: '/settings/factory',
+        name: '加工厂设置',
+        component: () => import('../views/settings/factory.vue')
+      },
+      {
+        path: '/settings/supplier',
+        name: '供货商设置',
+        component: () => import('../views/settings/supplier.vue')
+      },
+      {
+        path: '/settings/client',
+        name: '客户设置',
+        component: () => import('../views/settings/client.vue')
+      },
+      {
+        path: '/settings/color',
+        name: '颜色设置',
+        component: () => import('../views/settings/color.vue')
       }
     ]
   }

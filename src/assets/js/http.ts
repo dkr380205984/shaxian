@@ -24,8 +24,11 @@ axios.interceptors.response.use(
   (res) => {
     if (res.data.code === 200) {
       // do nothing
+    } else if (res.data.code === 401) {
+      Message.Message.error(res.data.msg)
+      router.push('/login')
     } else {
-      Message.Message.error('服务器出错')
+      Message.Message.error(res.data.msg)
     }
     return res
   },

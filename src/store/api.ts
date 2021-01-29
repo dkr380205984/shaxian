@@ -1,9 +1,14 @@
 import { ActionContext } from 'vuex'
-import { User } from '@/types/common'
+import { User, YarnType } from '@/types/common'
 import { ApiState } from '@/types/vuex'
+import { yarnType } from '@/assets/js/api'
 // state
 const apiState: ApiState = {
   user: {
+    status: false,
+    arr: []
+  },
+  yarnType: {
     status: false,
     arr: []
   }
@@ -13,6 +18,10 @@ const apiMutations = {
   getUser(state: ApiState, user: User[]) {
     state.user.status = true
     state.user.arr = user
+  },
+  getYarnType(state: ApiState, yarnTypeSelf: YarnType[]) {
+    state.yarnType.status = true
+    state.yarnType.arr = yarnTypeSelf
   }
 }
 // actions
@@ -27,6 +36,13 @@ const apiActions = {
         status: 1 // 权限
       }])
     }, 3000)
+  },
+  getYarnTypeAsync(content: ActionContext<ApiState, any>) {
+    yarnType.list().then((res) => {
+      if (res.data.status) {
+        content.commit('getYarnType', res.data.data)
+      }
+    })
   }
 }
 export default {

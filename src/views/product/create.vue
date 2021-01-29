@@ -15,7 +15,12 @@
             <div class="content">
               <div class="elCtn">
                 <el-select v-model="input_form.type"
-                  placeholder="请选择纱线类型"></el-select>
+                  placeholder="请选择纱线类型">
+                  <el-option v-for="item in typeArr"
+                    :key="item.id"
+                    :label="item.name"
+                    :value="item.id"></el-option>
+                </el-select>
               </div>
             </div>
           </div>
@@ -219,6 +224,7 @@
 import Vue from 'vue'
 import { Product, ProductDetail } from '@/types/product'
 import { product } from '@/assets/js/api'
+import { YarnType } from '@/types/common'
 export default Vue.extend({
   data(): {
     submit_form: Product[]
@@ -248,8 +254,12 @@ export default Vue.extend({
         ]
       },
       submit_form: [],
-      name_flag: 'normal',
-      value: ''
+      name_flag: 'normal'
+    }
+  },
+  computed: {
+    typeArr(): YarnType[] {
+      return this.$store.state.api.yarnType.arr
     }
   },
   methods: {
@@ -339,6 +349,15 @@ export default Vue.extend({
         this.$message.success('添加成功')
       })
     }
+  },
+  mounted() {
+    this.$checkCommonInfo([
+      {
+        checkWhich: 'api/yarnType',
+        getInfoMethed: 'dispatch',
+        getInfoApi: 'getYarnTypeAsync'
+      }
+    ])
   }
 })
 </script>

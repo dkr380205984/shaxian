@@ -1,4 +1,4 @@
-import { User } from '@/types/common'
+import { User, YarnType } from '@/types/common'
 interface StatusAndArr {
   status: boolean
   arr: any[]
@@ -9,9 +9,15 @@ interface UserInfo {
   arr: User[]
 }
 
+interface YarnTypeInfo {
+  status: boolean
+  arr: YarnType[]
+}
+
 // 维护api公共state
 export interface ApiState {
   user: UserInfo
+  yarnType: YarnTypeInfo
   [propName: string]: StatusAndArr
 }
 
@@ -20,9 +26,3 @@ export interface ApiState {
 export interface SelfState {
   api: ApiState
 }
-// 在.vue文件里用以下代码会报错，state指定为unknown类型，恶心坏了
-// computed: {
-//   ...mapState({
-//     userList: (state: SelfState) => state.api.user
-//   })
-// },

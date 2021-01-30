@@ -24,9 +24,15 @@ const yarnColor = {
 }
 
 // 产品
-import { Product } from '@/types/product'
+import { Product, ProductDetail } from '@/types/product'
 const product = {
-  create: (params: Product[]) => http.post(`${baseUrl}/yarn/save`, params, 'application/json')
+  create: (params: { data: Product[] }) => http.post(`${baseUrl}/yarn/save`, params, 'application/json'),
+  list: (params: ListParam) => http.get(`${baseUrl}/yarn/lists`, params),
+  delete: (params: DeleteParam) => http.post(`${baseUrl}/yarn/delete`, params, 'application/json'),
+  detail: (params: DetailParam) => http.get(`${baseUrl}/yarn/detail`, params),
+  editPro: (params: { id: string, name: string, yarn_type: number }) => http.post(`${baseUrl}/yarn/edit`, params, 'application/json'),
+  editProChild: (params: ProductDetail) => http.post(`${baseUrl}/yarn/child/edit`, params, 'application/json'),
+  deleteChild: (params: DeleteParam) => http.post(`${baseUrl}/yarn/child/delete`, params, 'application/json')
 }
 export {
   login,

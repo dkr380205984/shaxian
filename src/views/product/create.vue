@@ -148,7 +148,7 @@
               <span class="text">纱线名称预览:</span>
               <span class="blue"
                 style="cursor:pointer;margin-left:12px"
-                @click="renderData">点击加载名称</span>
+                @click="renderData">{{submit_form.length===0?'点击加载名称':'重新加载'}}</span>
             </div>
             <div class="content autoHeight">
               <div class="tableCtn">
@@ -173,14 +173,29 @@
                   <div class="trow"
                     v-for="(item,index) in submit_form"
                     :key="index">
-                    <div class="tcolumn">{{item.name}}({{item.type}})</div>
+                    <div class="tcolumn">
+                      <el-input class="el"
+                        v-model="item.name"
+                        placeholder="名称">
+                      </el-input>
+                    </div>
                     <div class="tcolumn noPad"
                       style="flex:5">
                       <div class="trow"
                         v-for="(itemChild,indexChild) in item.child_data"
                         :key="indexChild">
-                        <div class="tcolumn">{{itemChild.color}}</div>
-                        <div class="tcolumn">{{itemChild.attribute}}</div>
+                        <div class="tcolumn">
+                          <el-input class="el"
+                            v-model="itemChild.color"
+                            placeholder="颜色">
+                          </el-input>
+                        </div>
+                        <div class="tcolumn">
+                          <el-input class="el"
+                            v-model="itemChild.attribute"
+                            placeholder="属性">
+                          </el-input>
+                        </div>
                         <div class="tcolumn">
                           <el-input class="el"
                             v-model="itemChild.price"
@@ -193,9 +208,15 @@
                             v-model="itemChild.desc"
                             placeholder="备注"></el-input>
                         </div>
-                        <div class="tcolumn">
+                        <div class="tcolumn flexRow">
                           <span class="opr red"
+                            style="margin-right:12px"
                             @click="deleteOnce(item.child_data,indexChild,index)">删除</span>
+                          <span class="opr blue"
+                            @click="$addItem(item.child_data,{color: '',
+                              attribute: '',
+                              price: '',
+                              desc: ''})">添加</span>
                         </div>
                       </div>
                     </div>
@@ -203,6 +224,15 @@
                 </div>
               </div>
             </div>
+          </div>
+        </div>
+        <div class="rowCtn">
+          <div class="colCtn flex3">
+            <div class="btn btnMain"
+              @click="$addItem(submit_form, { yarn_type: input_form.type, name: '', child_data: [{color: '',
+            attribute: '',
+            price: '',
+            desc: ''}] })">添加纱线</div>
           </div>
         </div>
       </div>
@@ -264,12 +294,47 @@ export default Vue.extend({
   },
   methods: {
     renderData() {
+      let msg = ''
+      this.input_form.attributeArr.forEach((item: { name: string }) => {
+        if (!item.name) {
+          msg = '请选择纱线属性'
+        }
+      })
+      if (this.name_flag === 'normal') {
+        msg = this.input_form.normal_name ? '' : '请输入纱线名称'
+      } else {
+        msg = this.input_form.complex_name ? '' : '请输入纱线名称'
+      }
+      if (msg) {
+        this.$message.error(msg)
+        return
+      }
+      if (this.submit_form.length > 0) {
+        this.$confirm('是否要重新加载，这可能会导致已经填写的数据丢失?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        })
+          .then(() => {
+            this.render()
+          })
+          .catch(() => {
+            this.$message({
+              type: 'info',
+              message: '已取消'
+            })
+          })
+      } else {
+        this.render()
+      }
+    },
+    render() {
       this.submit_form = []
       const proDetail: ProductDetail[] = []
       this.input_form.colorArr.forEach((itemColor: { name: string }) => {
         this.input_form.attributeArr.forEach((itemAtr: { name: string }) => {
           proDetail.push({
-            color: itemColor.name,
+            color: itemColor.name || '白胚',
             attribute: itemAtr.name,
             price: '',
             desc: ''
@@ -299,7 +364,7 @@ export default Vue.extend({
             i += Number(this.input_form.gs_tiems) || 1
           ) {
             if (Number(i) !== 1) {
-              gsArr.push(i + this.input_form.zs_unit)
+              gsArr.push(i)
             }
           }
         }
@@ -335,6 +400,7 @@ export default Vue.extend({
           ]
         }
       }
+      this.$forceUpdate()
     },
     deleteOnce(father: ProductDetail[], indexChild: number, indexFather: number) {
       if (father.length > 1) {
@@ -343,10 +409,41 @@ export default Vue.extend({
         this.submit_form.splice(indexFather, 1)
       }
     },
+    checkForm(): string {
+      let msg = ''
+      this.submit_form.forEach((item) => {
+        if (!item.name) {
+          msg = '请输入沙县名称'
+        }
+        item.child_data.forEach((itemChild) => {
+          if (!itemChild.price) {
+            msg = '请输入单价信息，可以填0'
+          }
+          if (!itemChild.color) {
+            msg = '请输入纱线颜色，可填白胚'
+          }
+          if (!itemChild.attribute) {
+            msg = '请输入纱线属性'
+          }
+        })
+      })
+      if (!this.input_form.type) {
+        msg = '请选择纱线类型'
+      }
+      if (this.submit_form.length === 0) {
+        msg = '请点击加载名称生成表格'
+      }
+      return msg
+    },
     savePro() {
-      product.create(this.submit_form).then((res) => {
-        console.log(res)
-        this.$message.success('添加成功')
+      if (this.checkForm()) {
+        this.$message.error(this.checkForm())
+        return
+      }
+      product.create({ data: this.submit_form }).then((res) => {
+        if (res.data.status) {
+          this.$message.success('添加成功')
+        }
       })
     }
   },

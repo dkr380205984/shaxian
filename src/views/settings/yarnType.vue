@@ -1,10 +1,11 @@
 <template>
-  <div class="indexMain">
+  <div class="indexMain"
+    v-loading='loading'>
     <div class="module">
       <div class="titleCtn">
         <span class="title hasBorder">纱线类型列表</span>
         <span class="addBtn btn btnMain"
-          @click="addFlag=true">添加纱线类型</span>
+          @click="changeYarnType()">添加纱线类型</span>
       </div>
       <div class="listCtn">
         <div class="filterCtn">
@@ -12,11 +13,13 @@
             <div class="label">筛选条件：</div>
             <div class="elCtn">
               <el-input v-model="name"
+                @change="getList(1)"
                 placeholder="搜索纱线类型名称"></el-input>
             </div>
           </div>
           <div class="rightCtn">
-            <div class="btn btnGray fr">重置</div>
+            <div class="btn btnGray fr"
+              @click="resetFilter">重置</div>
           </div>
         </div>
         <div class="list">
@@ -47,6 +50,7 @@
         <div class="pageCtn">
           <el-pagination background
             :current-page.sync="page"
+            @current-change='getList'
             :page-size="10"
             layout="prev, pager, next"
             :total="total">
@@ -93,6 +97,7 @@ export default Vue.extend({
     [propName: string]: any
   } {
     return {
+      loading: true,
       addFlag: false,
       yarnTypeList: [],
       yarnTypeInfo: {
@@ -108,22 +113,30 @@ export default Vue.extend({
     init() {
       this.getList()
     },
+    resetFilter() {
+      this.name = ''
+      this.getList()
+    },
     getList(pages: number = 1) {
       this.loading = true
       yarnType
         .list({
+          name: this.name || null,
           page: pages,
-          limit: 5
+          limit: 10
         })
         .then((res: any) => {
           if (res.data.status !== false) {
-            this.yarnTypeList = res.data.data
-            this.total = (res.data.meta && res.data.meta.total) || 1
+            this.yarnTypeList = res.data.data.items
+            this.total = res.data.data.total
             this.loading = false
+            // 更新页码
+            pages !== this.page && (this.page = pages)
           }
         })
     },
     saveYarnType() {
+      if (this.$submitLock()) return
       if (!this.yarnTypeInfo.name) {
         this.$message.warning('请输入纱线类型名称')
         return
@@ -137,15 +150,16 @@ export default Vue.extend({
           if (res.data.status !== false) {
             this.$message.success(`${(this.yarnTypeInfo.id && '修改') || '添加'}成功`)
             this.getList()
+            this.addFlag = false
           }
         })
     },
     changeYarnType(item: YarnType) {
-      this.yarnTypeInfo = {
-        id: item.id || null,
-        name: item.name
-      }
       this.addFlag = true
+      this.yarnTypeInfo = {
+        id: (item && item.id) || null,
+        name: (item && item.name) || ''
+      }
     },
     deleteYarnType(item: YarnType) {
       this.$confirm('此操作将永久删除该纱线类型, 是否继续?', '提示', {
@@ -163,7 +177,7 @@ export default Vue.extend({
                 type: 'success',
                 message: '删除成功!'
               })
-              this.getList(1)
+              this.getList()
             }
           })
       })

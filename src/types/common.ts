@@ -8,25 +8,15 @@ export interface Customer {
   contactNumber: string
 }
 
-export interface Supplier {
-  code?: string
-  name: string
-  abbreviation: string
-  principal: string
-  telephone: string
-  address: string
-  contacts: string
-  contact_tel: string
-  status?: boolean
-}
-
 export interface User {
+  id: number | null
   name: string
-  username: string
+  user_name: string
   phone: string
-  post: string // 岗位
-  status: number // 权限
-  modules: string // 模块JSON.stringify()
+  station: string // 岗位
+  is_admin: 1 | 2 // 权限
+  module_info: string  // 模块JSON.stringify()
+  status?: boolean
 }
 
 export interface YarnType {
@@ -35,29 +25,18 @@ export interface YarnType {
   [key: string]: any
 }
 
-export interface Factory {
-  code?: string
+export interface PartyB {
+  id: number | null
   name: string
   abbreviation: string
-  type: string | []
-  principal: string
-  telephone: string
+  client_type?: string
+  user_name: string
+  phone: string
   address: string
-  contacts: string
-  contact_tel: string
+  contact: string
+  contact_phone: string
   status?: boolean
-}
-
-export interface Client {
-  code?: string
-  name: string
-  abbreviation: string
-  principal: string
-  telephone: string
-  address: string
-  contacts: string
-  contact_tel: string
-  status?: boolean
+  type?: 1 | 2 | 3
 }
 
 export interface Color {

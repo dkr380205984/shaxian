@@ -1,4 +1,5 @@
 import store from '../../store/index'
+import Message from 'element-ui'
 interface MapTitle {
   title: string
   key: string
@@ -229,6 +230,20 @@ const plugin = {
     father.splice(index, 1)
   }
 }
+const submitLock = () => {
+  let lock = true
+  return function (messageStr = '请勿频繁点击') { // 采用闭包保存lock状态
+    if (!lock) {
+      let str = messageStr
+      Message.Message.warning(str)
+      return true
+    }
+    lock = false
+    setTimeout(() => {
+      lock = true
+    }, 1000)
+  }
+}
 
 export default {
   install: (Vue: any) => {
@@ -242,5 +257,6 @@ export default {
     Vue.prototype.$checkCommonInfo = plugin.checkCommonInfo
     Vue.prototype.$addItem = plugin.addItem
     Vue.prototype.$deleteItem = plugin.deleteItem
+    Vue.prototype.$submitLock = submitLock()
   }
 }

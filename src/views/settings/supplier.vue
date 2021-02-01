@@ -1,10 +1,11 @@
 <template>
-  <div class="indexMain">
+  <div class="indexMain"
+    v-loading='loading'>
     <div class="module">
       <div class="titleCtn">
         <span class="title hasBorder">供货商列表</span>
         <span class="addBtn btn btnMain"
-          @click="addFlag=true">添加供货商</span>
+          @click="changeSupplier()">添加供货商</span>
       </div>
       <div class="listCtn">
         <div class="filterCtn">
@@ -12,10 +13,12 @@
             <div class="label">筛选条件：</div>
             <div class="elCtn">
               <el-input v-model="name"
+                @change="getList(1)"
                 placeholder="搜索供货商名称"></el-input>
             </div>
             <div class="elCtn">
               <el-select v-model="status"
+                @change="getList(1)"
                 placeholder="筛选供货商状态">
                 <el-option v-for="item in statusArr"
                   :key="item.id"
@@ -47,22 +50,22 @@
           </div>
           <div class="bodyCtn">
             <div class="row"
-              v-for="item in 2"
-              :key="item">
-              <div class="column">{{item}}</div>
-              <div class="column">供货商名称</div>
-              <div class="column">供货商简称</div>
-              <div class="column">主要负责人</div>
-              <div class="column">联系电话</div>
-              <div class="column">地址</div>
-              <div class="column">联系人</div>
-              <div class="column">联系人电话</div>
-              <div class="column">当前状态</div>
+              v-for="item in supplierList"
+              :key="item.id">
+              <div class="column">{{item.id}}</div>
+              <div class="column">{{item.name}}</div>
+              <div class="column">{{item.abbreviation}}</div>
+              <div class="column">{{item.user_name}}</div>
+              <div class="column">{{item.phone || '/'}}</div>
+              <div class="column">{{item.address || '/'}}</div>
+              <div class="column">{{item.contact || '/'}}</div>
+              <div class="column">{{item.contact_phone || '/'}}</div>
+              <div :class="`column ${item.status && 'green' || 'red'}`">{{item.status && '合作中' || '禁用中'}}</div>
               <div class="column">
                 <span class="col_btn orange"
                   @click="changeSupplier(item)">修改</span>
                 <span class="col_btn green"
-                  v-if="item===1"
+                  v-if="!item.status"
                   @click="disableSupplier(item)">启用</span>
                 <span class="col_btn red"
                   v-else
@@ -74,6 +77,7 @@
         <div class="pageCtn">
           <el-pagination background
             :current-page.sync="page"
+            @current-change='getList'
             :page-size="10"
             layout="prev, pager, next"
             :total="total">
@@ -85,7 +89,7 @@
       v-show="addFlag">
       <div class="main">
         <div class="titleCtn">
-          <div class="text">新增供货商</div>
+          <div class="text">{{supplierInfo.id && '修改' || '添加'}}供货商</div>
           <i class="el-icon-close"
             @click="addFlag=false"></i>
         </div>
@@ -98,7 +102,7 @@
             </div>
           </div>
           <div class="row">
-            <div class="label isMust">供货商简称：</div>
+            <div class="label">供货商简称：</div>
             <div class="info">
               <el-input placeholder="请输入供货商简称"
                 v-model="supplierInfo.abbreviation"></el-input>
@@ -108,14 +112,14 @@
             <div class="label isMust">主要负责人：</div>
             <div class="info">
               <el-input placeholder="请输入主要负责人"
-                v-model="supplierInfo.principal"></el-input>
+                v-model="supplierInfo.user_name"></el-input>
             </div>
           </div>
           <div class="row">
             <div class="label">供货商电话：</div>
             <div class="info">
               <el-input placeholder="请输入供货商电话"
-                v-model="supplierInfo.telephone"></el-input>
+                v-model="supplierInfo.phone"></el-input>
             </div>
           </div>
           <div class="row">
@@ -129,14 +133,14 @@
             <div class="label">联系人：</div>
             <div class="info">
               <el-input placeholder="请输入联系人"
-                v-model="supplierInfo.contacts"></el-input>
+                v-model="supplierInfo.contact"></el-input>
             </div>
           </div>
           <div class="row">
             <div class="label">联系人电话：</div>
             <div class="info">
               <el-input placeholder="请输入联系人电话"
-                v-model="supplierInfo.contacts_tel"></el-input>
+                v-model="supplierInfo.contact_phone"></el-input>
             </div>
           </div>
         </div>
@@ -153,29 +157,29 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { Supplier } from '@/types/common'
+import { partyB } from '@/assets/js/api'
+import { PartyB } from '@/types/common'
 export default Vue.extend({
   data(): {
-    supplierInfo: Supplier
-    supplierList: Supplier[]
+    supplierInfo: PartyB
+    supplierList: PartyB[]
     [propName: string]: any
   } {
     return {
       addFlag: false,
       supplierList: [],
       supplierInfo: {
-        code: '',
+        id: null,
         name: '',
         abbreviation: '',
-        principal: '',
-        telephone: '',
+        user_name: '',
+        phone: '',
         address: '',
-        contacts: '',
-        contact_tel: '',
-        status: false
+        contact: '',
+        contact_phone: ''
       },
       page: 1,
-      total: 100,
+      total: 1,
       name: '',
       status: '',
       statusArr: []
@@ -183,26 +187,95 @@ export default Vue.extend({
   },
   methods: {
     init() {
-      // this.$message.success('初始化页面成功')
+      this.getList()
+    },
+    getList(pages: number = 1) {
+      this.loading = true
+      partyB
+        .list({
+          type: 2,
+          limit: 10,
+          page: pages,
+          name: this.name || null
+        })
+        .then((res: any) => {
+          if (res.data.staus !== false) {
+            this.supplierList = res.data.data.items
+            this.total = res.data.data.total
+            this.loading = false
+            // 更新页码
+            pages !== this.page && (this.page = pages)
+          }
+        })
     },
     resetFilter() {
       this.name = ''
       this.status = ''
-      this.type = ''
-      this.$message.success('重置成功')
+      this.getList()
     },
     saveSupplier() {
-      console.log(this.userInfo)
+      if (this.$submitLock()) return
+      if (!this.supplierInfo.name) {
+        this.$message.warning('请输入客户名称')
+        return
+      }
+      if (!this.supplierInfo.user_name) {
+        this.$message.warning('请输入主要负责人')
+        return
+      }
+      partyB
+        .create({
+          id: this.supplierInfo.id || null,
+          name: this.supplierInfo.name,
+          abbreviation: this.supplierInfo.abbreviation,
+          user_name: this.supplierInfo.user_name,
+          phone: this.supplierInfo.phone,
+          contact: this.supplierInfo.contact,
+          contact_phone: this.supplierInfo.contact_phone,
+          address: this.supplierInfo.address,
+          type: 2 // 1客户2供应商3加工厂
+        })
+        .then((res) => {
+          if (res.data.status !== false) {
+            this.$message.success(`${(this.supplierInfo.id && '修改') || '添加'}成功`)
+            this.getList()
+            this.addFlag = false
+          }
+        })
     },
-    changeSupplier(item: Supplier) {
-      console.log(item)
-      this.$message.success('修改成功')
-      this.init()
+    changeSupplier(item: PartyB) {
+      this.addFlag = true
+      this.clientInfo = {
+        id: (item && item.id) || null,
+        name: (item && item.name) || '',
+        abbreviation: (item && item.abbreviation) || '',
+        user_name: (item && item.user_name) || '',
+        phone: (item && item.phone) || '',
+        contact: (item && item.contact) || '',
+        contact_phone: (item && item.contact_phone) || '',
+        address: (item && item.address) || ''
+      }
     },
-    disableSupplier(item: Supplier) {
-      console.log(item)
-      this.$message.success(`${item.status ? '启用' : '禁用'}成功`)
-      this.init()
+    disableSupplier(item: PartyB) {
+      this.$confirm('此操作将禁用该供应商, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        partyB
+          .check({
+            id: item.id
+          })
+          .then((res) => {
+            if (res.data.status !== false) {
+              this.$message({
+                type: 'success',
+                message: `${(item.status && '禁用') || '启用'}成功!`
+              })
+              this.getList()
+            }
+          })
+      })
     }
   },
   mounted() {

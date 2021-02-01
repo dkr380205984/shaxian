@@ -9,7 +9,7 @@ export interface PartyBCreateParams {
   address: string
   contact: string
   contact_phone: string
-  type: 1 | 2 | 3 //1客户2供应商3加工厂
+  type: 1 | 2 | 3 // 1客户2供应商3加工厂
   [key: string]: any
 }
 export interface PartyBListParams {

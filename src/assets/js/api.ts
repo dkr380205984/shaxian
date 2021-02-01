@@ -1,5 +1,5 @@
 import http from './http'
-// import { ListParam, DetailParam, DeleteParam } from '@/types/axiosParam'
+import { ListParam, DetailParam, DeleteParam } from '@/types/axiosParam'
 const baseUrl = '/api'
 
 // 登录

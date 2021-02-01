@@ -231,11 +231,10 @@ const plugin = {
   }
 }
 const submitLock = () => {
-  let lock = true
-  return function (messageStr = '请勿频繁点击') { // 采用闭包保存lock状态
+  let lock: boolean = true
+  return function lockFun(messageStr: string = '请勿频繁点击') { // 采用闭包保存lock状态
     if (!lock) {
-      let str = messageStr
-      Message.Message.warning(str)
+      Message.Message.warning(messageStr)
       return true
     }
     lock = false

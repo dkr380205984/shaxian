@@ -13,7 +13,7 @@
             <div class="label">筛选条件：</div>
             <div class="elCtn">
               <el-input v-model="name"
-                @change="getList(1)"
+                @change="changeRouter(1)"
                 placeholder="搜索纱线类型名称"></el-input>
             </div>
           </div>
@@ -50,7 +50,7 @@
         <div class="pageCtn">
           <el-pagination background
             :current-page.sync="page"
-            @current-change='getList'
+            @current-change='changeRouter'
             :page-size="10"
             layout="prev, pager, next"
             :total="total">
@@ -110,12 +110,16 @@ export default Vue.extend({
     }
   },
   methods: {
+    changeRouter(pages: number = 1) {
+      this.$router.replace(`/settings/yarnType?pages=${pages}&name=${this.name || ''}`)
+    },
     init() {
-      this.getList()
+      this.name = this.$route.query.name || ''
+      this.getList(Number(this.$route.query.pages) || 1)
     },
     resetFilter() {
       this.name = ''
-      this.getList()
+      this.changeRouter()
     },
     getList(pages: number = 1) {
       this.loading = true
@@ -131,12 +135,16 @@ export default Vue.extend({
             this.total = res.data.data.total
             this.loading = false
             // 更新页码
-            pages !== this.page && (this.page = pages)
+            if (pages !== this.page) {
+              this.page = pages
+            }
           }
         })
     },
     saveYarnType() {
-      if (this.$submitLock()) return
+      if (this.$submitLock()) {
+        return
+      }
       if (!this.yarnTypeInfo.name) {
         this.$message.warning('请输入纱线类型名称')
         return
@@ -149,8 +157,8 @@ export default Vue.extend({
         .then((res) => {
           if (res.data.status !== false) {
             this.$message.success(`${(this.yarnTypeInfo.id && '修改') || '添加'}成功`)
-            this.getList()
             this.addFlag = false
+            this.changeRouter()
           }
         })
     },
@@ -177,7 +185,7 @@ export default Vue.extend({
                 type: 'success',
                 message: '删除成功!'
               })
-              this.getList()
+              this.changeRouter()
             }
           })
       })
@@ -185,6 +193,11 @@ export default Vue.extend({
   },
   mounted() {
     this.init()
+  },
+  watch: {
+    $route(newVal) {
+      this.init()
+    }
   }
 })
 </script>

@@ -14,7 +14,7 @@
             <div class="elCtn">
               <el-input v-model="name"
                 placeholder="搜索颜色名称"
-                @change="getList(1)"></el-input>
+                @change="changeRouter(1)"></el-input>
             </div>
           </div>
           <div class="rightCtn">
@@ -51,7 +51,7 @@
           <el-pagination background
             :current-page.sync="page"
             :page-size="10"
-            @current-change="getList"
+            @current-change="changeRouter"
             layout="prev, pager, next"
             :total="total">
           </el-pagination>
@@ -110,12 +110,16 @@ export default Vue.extend({
     }
   },
   methods: {
+    changeRouter(pages: number = 1) {
+      this.$router.replace(`/settings/color?pages=${pages}&name=${this.name || ''}`)
+    },
     init() {
-      this.getList()
+      this.name = this.$route.query.name || ''
+      this.getList(Number(this.$route.query.pages) || 1)
     },
     resetFilter() {
       this.name = ''
-      this.getList()
+      this.changeRouter()
     },
     getList(pages: number = 1) {
       this.loading = true
@@ -131,12 +135,16 @@ export default Vue.extend({
             this.total = res.data.data.total
             this.loading = false
             // 更新页码
-            pages !== this.page && (this.page = pages)
+            if (pages !== this.page) {
+              this.page = pages
+            }
           }
         })
     },
     saveColor() {
-      if (this.$submitLock()) return
+      if (this.$submitLock()) {
+        return
+      }
       if (!this.colorInfo.name) {
         this.$message.warning('请输入颜色名称')
         return
@@ -150,8 +158,7 @@ export default Vue.extend({
           if (res.data.status !== false) {
             this.addFlag = false
             this.$message.success(`${(this.colorInfo.id && '修改') || '添加'}成功`)
-            this.addFlag = false
-            this.getList(1)
+            this.changeRouter(1)
           }
         })
     },
@@ -178,7 +185,7 @@ export default Vue.extend({
                 type: 'success',
                 message: '删除成功!'
               })
-              this.getList()
+              this.changeRouter()
             }
           })
       })
@@ -186,6 +193,11 @@ export default Vue.extend({
   },
   mounted() {
     this.init()
+  },
+  watch: {
+    $route(newVal) {
+      this.init()
+    }
   }
 })
 </script>

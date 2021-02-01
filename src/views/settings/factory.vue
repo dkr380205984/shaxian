@@ -13,12 +13,12 @@
             <div class="label">筛选条件：</div>
             <div class="elCtn">
               <el-input v-model="name"
-                @change="getList(1)"
+                @change="changeRouter(1)"
                 placeholder="搜索加工厂名称"></el-input>
             </div>
             <div class="elCtn">
               <el-select v-model="type"
-                @change="getList(1)"
+                @change="changeRouter(1)"
                 placeholder="筛选加工厂类型">
                 <el-option v-for="item in typeArr"
                   :key="item.id"
@@ -29,7 +29,7 @@
             </div>
             <div class="elCtn">
               <el-select v-model="status"
-                @change="getList(1)"
+                @change="changeRouter(1)"
                 placeholder="筛选加工厂状态">
                 <el-option v-for="item in statusArr"
                   :key="item.id"
@@ -244,8 +244,16 @@ export default Vue.extend({
     }
   },
   methods: {
+    changeRouter(pages: number = 1) {
+      this.$router.replace(
+        `/settings/factory?pages=${pages}&name=${this.name || ''}&status=${this.status || 1}&type=${this.type || ''}`
+      )
+    },
     init() {
-      this.getList()
+      this.name = this.$route.query.name || ''
+      this.status = Number(this.$route.query.status) || 1
+      this.type = this.$route.query.type || ''
+      this.getList(Number(this.$route.query.pages) || 1)
     },
     getList(pages: number = 1) {
       this.loading = true
@@ -264,7 +272,9 @@ export default Vue.extend({
             this.total = res.data.data.total
             this.loading = false
             // 更新页码
-            pages !== this.page && (this.page = pages)
+            if (pages !== this.page) {
+              this.page = pages
+            }
           }
         })
     },
@@ -272,10 +282,12 @@ export default Vue.extend({
       this.name = ''
       this.status = 1
       this.type = ''
-      this.getList()
+      this.changeRouter()
     },
     saveFactory() {
-      if (this.$submitLock()) return
+      if (this.$submitLock()) {
+        return
+      }
       if (!this.factoryInfo.name) {
         this.$message.warning('请输入加工厂名称')
         return
@@ -308,8 +320,8 @@ export default Vue.extend({
         .then((res) => {
           if (res.data.status !== false) {
             this.$message.success(`${(this.factoryInfo.id && '修改') || '添加'}成功`)
-            this.getList()
             this.addFlag = false
+            this.changeRouter()
           }
         })
     },
@@ -343,7 +355,7 @@ export default Vue.extend({
                 type: 'success',
                 message: `${(item.status && '禁用') || '启用'}成功!`
               })
-              this.getList()
+              this.changeRouter()
             }
           })
       })
@@ -351,6 +363,11 @@ export default Vue.extend({
   },
   mounted() {
     this.init()
+  },
+  watch: {
+    $route(newVal) {
+      this.init()
+    }
   },
   filters: {
     filterType(item: number | string) {

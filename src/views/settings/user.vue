@@ -12,12 +12,12 @@
             <div class="label">筛选条件：</div>
             <div class="elCtn">
               <el-input v-model="name"
-                @change="getList(1)"
+                @change="changeRouter(1)"
                 placeholder="搜索用户名称"></el-input>
             </div>
             <div class="elCtn">
               <el-input v-model="phone"
-                @change="getList(1)"
+                @change="changeRouter(1)"
                 placeholder="搜索用户手机号"></el-input>
             </div>
           </div>
@@ -64,7 +64,7 @@
         <div class="pageCtn">
           <el-pagination background
             :current-page.sync="page"
-            @current-change='getList'
+            @current-change='changeRouter'
             :page-size="10"
             layout="prev, pager, next"
             :total="total">
@@ -223,8 +223,13 @@ export default Vue.extend({
     }
   },
   methods: {
+    changeRouter(pages: number = 1) {
+      this.$router.replace(`/settings/user?pages=${pages}&name=${this.name || ''}&phone=${this.phone || ''}`)
+    },
     init() {
-      this.getList()
+      this.name = this.$route.query.name || ''
+      this.phone = this.$route.query.phone || ''
+      this.getList(Number(this.$route.query.pages) || 1)
     },
     getList(pages: number = 1) {
       user
@@ -240,17 +245,21 @@ export default Vue.extend({
             this.total = res.data.data.total
             this.loading = false
             // 更新页码
-            pages !== this.page && (this.page = pages)
+            if (pages !== this.page) {
+              this.page = pages
+            }
           }
         })
     },
     resetFilter() {
       this.name = ''
       this.phone = ''
-      this.getList()
+      this.changeRouter()
     },
     saveUser() {
-      if (this.$submitLock()) return
+      if (this.$submitLock()) {
+        return
+      }
       if (!this.userInfo.name) {
         this.$message.warning('请输入用户姓名')
         return
@@ -281,7 +290,7 @@ export default Vue.extend({
           if (res.data.status !== false) {
             this.$message.success(`${(this.userInfo.id && '修改') || '添加'}成功`)
             this.addFlag = false
-            this.getList()
+            this.changeRouter()
           }
         })
     },
@@ -296,12 +305,8 @@ export default Vue.extend({
         is_admin: (item && item.is_admin) || 2,
         module_info: (item && item.module_info && JSON.parse(item.module_info)) || []
       }
-      if (item && item.module_info && JSON.parse(item.module_info)) {
-        /**
-         *  eslint-disable-next-line
-         */
-        this.$refs.moduleTree.setCheckedKeys(JSON.parse(item.module_info))
-      }
+      const moduleTree = this.$refs.moduleTree as any
+      moduleTree.setCheckedKeys(this.userInfo.module_info)
     },
     disableUser(item: User) {
       this.$confirm('此操作将禁用该账号, 是否继续?', '提示', {
@@ -319,21 +324,22 @@ export default Vue.extend({
                 type: 'success',
                 message: `${(item.status && '禁用') || '启用'}成功!`
               })
-              this.getList()
+              this.changeRouter()
             }
           })
       })
     },
     getModule() {
-      /**
-       *  eslint-disable-next-line
-       */
-      console.log(this.$refs.moduleTree.getCheckedKeys())
-      this.userInfo.module_info = JSON.stringify(this.$refs.moduleTree.getCheckedKeys())
+      this.userInfo.module_info = JSON.stringify((this.$refs.moduleTree as any).getCheckedKeys())
     }
   },
   mounted() {
-    this.getList()
+    this.init()
+  },
+  watch: {
+    $route(newVal) {
+      this.init()
+    }
   }
 })
 </script>

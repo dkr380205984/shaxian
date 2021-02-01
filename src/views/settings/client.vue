@@ -13,12 +13,12 @@
             <div class="label">筛选条件：</div>
             <div class="elCtn">
               <el-input v-model="name"
-                @change="getList(1)"
+                @change="changeRouter(1)"
                 placeholder="搜索客户名称"></el-input>
             </div>
             <div class="elCtn">
               <el-select v-model="status"
-                @change="getList(1)"
+                @change="changeRouter(1)"
                 placeholder="筛选客户状态">
                 <el-option v-for="item in statusArr"
                   :key="item.id"
@@ -77,7 +77,7 @@
         <div class="pageCtn">
           <el-pagination background
             :current-page.sync="page"
-            @current-change="getList"
+            @current-change="changeRouter"
             :page-size="10"
             layout="prev, pager, next"
             :total="total">
@@ -182,13 +182,27 @@ export default Vue.extend({
       page: 1,
       total: 1,
       name: '',
-      status: '',
-      statusArr: []
+      status: 1,
+      statusArr: [
+        {
+          id: 0,
+          name: '禁用中'
+        },
+        {
+          id: 1,
+          name: '合作中'
+        }
+      ]
     }
   },
   methods: {
+    changeRouter(pages: number = 1) {
+      this.$router.replace(`/settings/client?pages=${pages}&name=${this.name || ''}&status=${this.status || ''}`)
+    },
     init() {
-      this.getList()
+      this.name = this.$route.query.name || ''
+      this.status = Number(this.$route.query.status) || 1
+      this.getList(Number(this.$route.query.pages) || 1)
     },
     getList(pages: number = 1) {
       this.loading = true
@@ -205,17 +219,21 @@ export default Vue.extend({
             this.total = res.data.data.total
             this.loading = false
             // 更新页码
-            pages !== this.page && (this.page = pages)
+            if (pages !== this.page) {
+              this.page = pages
+            }
           }
         })
     },
     resetFilter() {
       this.name = ''
-      this.status = ''
-      this.getList()
+      this.status = 1
+      this.changeRouter()
     },
     saveClient() {
-      if (this.$submitLock()) return
+      if (this.$submitLock()) {
+        return
+      }
       if (!this.clientInfo.name) {
         this.$message.warning('请输入客户名称')
         return
@@ -243,8 +261,8 @@ export default Vue.extend({
         .then((res) => {
           if (res.data.status !== false) {
             this.$message.success(`${(this.clientInfo.id && '修改') || '添加'}成功`)
-            this.getList()
             this.addFlag = false
+            this.changeRouter()
           }
         })
     },
@@ -277,7 +295,7 @@ export default Vue.extend({
                 type: 'success',
                 message: `${(item.status && '禁用') || '启用'}成功!`
               })
-              this.getList()
+              this.changeRouter()
             }
           })
       })
@@ -285,6 +303,11 @@ export default Vue.extend({
   },
   mounted() {
     this.init()
+  },
+  watch: {
+    $route(newVal) {
+      this.init()
+    }
   }
 })
 </script>

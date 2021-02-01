@@ -232,9 +232,9 @@ const plugin = {
 }
 const submitLock = () => {
   let lock = true
-  return function (messageStr = '请勿频繁点击') { // 采用闭包保存lock状态
+  return (messageStr = '请勿频繁点击') => { // 采用闭包保存lock状态
     if (!lock) {
-      let str = messageStr
+      const str = messageStr
       Message.Message.warning(str)
       return true
     }

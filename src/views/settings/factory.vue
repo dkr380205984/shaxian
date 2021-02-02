@@ -363,6 +363,13 @@ export default Vue.extend({
   },
   mounted() {
     this.init()
+    this.$checkCommonInfo([
+      {
+        checkWhich: 'api/client',
+        getInfoMethed: 'dispatch',
+        getInfoApi: 'getPartyBAsync'
+      }
+    ])
   },
   watch: {
     $route(newVal) {

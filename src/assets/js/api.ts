@@ -54,6 +54,16 @@ const product = {
   editProChild: (params: ProductDetail) => http.post(`${baseUrl}/yarn/child/edit`, params, 'application/json'),
   deleteChild: (params: DeleteParam) => http.post(`${baseUrl}/yarn/child/delete`, params, 'application/json')
 }
+
+// 订单
+import { Order } from '@/types/order'
+const order = {
+  create: (params: Order) => http.post(`${baseUrl}/order/save`, params, 'application/json'),
+  list: (params: ListParam) => http.get(`${baseUrl}/order/lists`, params),
+  detail: (params: DetailParam) => http.get(`${baseUrl}/order/detail`, params),
+  delete: (params: DeleteParam) => http.post(`${baseUrl}/order/delete`, params, 'application/json'),
+  deleteChild: (params: DeleteParam) => http.post(`${baseUrl}/order/child/delete`, params, 'application/json')
+}
 export {
   login,
   authInfo,
@@ -62,5 +72,6 @@ export {
   yarnColor,
   product,
   partyB,
-  user
+  user,
+  order
 }

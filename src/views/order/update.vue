@@ -1,0 +1,459 @@
+<template>
+  <div id="orderCreate"
+    class="indexMain">
+    <div class="module">
+      <div class="titleCtn">
+        <span class="title">修改订单</span>
+      </div>
+      <div class="createCtn">
+        <div class="rowCtn">
+          <div class="colCtn flex3">
+            <div class="label">
+              <span class="text">客户单号</span>
+              <span class="explanation">(必填)</span>
+            </div>
+            <div class="content">
+              <div class="elCtn">
+                <el-input placeholder="请输入客户单号"
+                  v-model="order_info.order_code"></el-input>
+              </div>
+            </div>
+          </div>
+          <div class="colCtn flex3">
+            <div class="label">
+              <span class="text">下单客户</span>
+              <span class="explanation">(必选)</span>
+            </div>
+            <div class="content">
+              <div class="elCtn">
+                <el-select placeholder="请选择下单客户"
+                  v-model="order_info.client_id">
+                  <el-option v-for="item in clientArr"
+                    :key="item.id"
+                    :value="item.id"
+                    :label="item.name"></el-option>
+                </el-select>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="rowCtn">
+          <div class="colCtn flex3">
+            <div class="label">
+              <span class="text">下单日期</span>
+              <span class="explanation">(必选，默认今日)</span>
+            </div>
+            <div class="content">
+              <div class="elCtn">
+                <el-date-picker v-model="order_info.order_time"
+                  type="date"
+                  value-format="yyyy-MM-dd"
+                  placeholder="选择下单日期">
+                </el-date-picker>
+              </div>
+            </div>
+          </div>
+          <div class="colCtn flex3">
+            <div class="label">
+              <span class="text">交货日期</span>
+              <span class="explanation">(必选)</span>
+            </div>
+            <div class="content">
+              <div class="elCtn">
+                <el-date-picker style="width:100%"
+                  value-format="yyyy-MM-dd"
+                  v-model="order_info.delivery_time"
+                  type="date"
+                  placeholder="选择交货日期">
+                </el-date-picker>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="rowCtn">
+          <div class="colCtn">
+            <div class="label">
+              <span class="text">下单信息</span>
+              <span class="explanation">(均为必填项)</span>
+            </div>
+            <div class="content autoHeight">
+              <div class="tableCtn">
+                <div class="thead">
+                  <div class="trow">
+                    <div class="tcolumn">纱线名称</div>
+                    <div class="tcolumn noPad"
+                      style="flex:5.5">
+                      <div class="trow">
+                        <div class="tcolumn">纱线颜色</div>
+                        <div class="tcolumn">纱线属性</div>
+                        <div class="tcolumn">下单价格</div>
+                        <div class="tcolumn">下单数量</div>
+                        <div class="tcolumn">数量属性</div>
+                        <div class="tcolumn"
+                          style="flex:0.5">颜色操作</div>
+                      </div>
+                    </div>
+                    <div class="tcolumn"
+                      style="flex:0.5">纱线操作</div>
+                  </div>
+                </div>
+                <div class="tbody">
+                  <div class="noData"
+                    v-if="order_info.product_info.length===0">请添加至少一种纱线</div>
+                  <div class="trow"
+                    v-for="(itemPro,indexPro) in order_info.product_info"
+                    :key="indexPro">
+                    <div class="tcolumn">
+                      <div class="el">
+                        <span v-if="itemPro.product_name">{{itemPro.product_name}}</span>
+                        <el-select v-if="!itemPro.product_name"
+                          v-model="itemPro.product_id"
+                          filterable
+                          remote
+                          reserve-keyword
+                          placeholder="请输入关键词"
+                          :remote-method="searchPro"
+                          :loading="select_loading">
+                          <el-option v-for="item in product_arr"
+                            :key="item.id"
+                            :label="item.name"
+                            :value="item.id">
+                          </el-option>
+                        </el-select>
+                      </div>
+                    </div>
+                    <div class="tcolumn noPad"
+                      style="flex:5.5">
+                      <div class="trow"
+                        v-for="(itemChild,indexChild) in itemPro.child_data"
+                        :key="indexChild">
+                        <div class="tcolumn">
+                          <el-input class="el"
+                            v-model="itemChild.color"
+                            placeholder="下单颜色"></el-input>
+                        </div>
+                        <div class="tcolumn">
+                          <div class="el">
+                            <el-select v-model="itemChild.attribute"
+                              placeholder="请选择纱线属性">
+                              <el-option label="筒纱"
+                                value="筒纱"></el-option>
+                              <el-option label="绞纱"
+                                value="绞纱"></el-option>
+                            </el-select>
+                          </div>
+                        </div>
+                        <div class="tcolumn">
+                          <el-input class="el"
+                            v-model="itemChild.price"
+                            placeholder="下单价格"
+                            @input="cmpTotal">
+                            <template slot="append">元</template>
+                          </el-input>
+                        </div>
+                        <div class="tcolumn">
+                          <el-input class="el"
+                            v-model="itemChild.weight"
+                            placeholder="数量"
+                            @input="cmpTotal">
+                            <template slot="append">kg</template>
+                          </el-input>
+                        </div>
+                        <div class="tcolumn">
+                          <div class="el">
+                            <el-select v-model="itemChild.number_attribute"
+                              placeholder="请选择数量属性"
+                              filterable>
+                              <el-option label="足斤纱"
+                                value="足斤纱"></el-option>
+                              <el-option label="98纱"
+                                value="98纱"></el-option>
+                              <el-option label="97纱"
+                                value="97纱"></el-option>
+                              <el-option label="96纱"
+                                value="96纱"></el-option>
+                              <el-option label="95纱"
+                                value="95纱"></el-option>
+                            </el-select>
+                          </div>
+                        </div>
+                        <div class="tcolumn flexRow"
+                          style="flex:0.5">
+                          <span class="opr red"
+                            style="margin-right:12px"
+                            @click="deleteOnce(itemPro.child_data,indexChild,indexPro,itemChild.id)">删除</span>
+                          <span class="opr blue"
+                            @click="$addItem(itemPro.child_data,{
+                              number_attribute: '',
+                              weight: '',
+                              price: '',
+                              attribute: '',
+                              color: ''})">
+                            添加
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="tcolumn"
+                      style="flex:0.5">
+                      <span class="opr red"
+                        style="margin-right:12px"
+                        @click="itemPro.product_name?$message.warning('该纱线不能直接删除，请逐个删除纱线颜色'):$deleteItem(order_info.product_info,indexPro)">删除纱线</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="rowCtn">
+          <div class="colCtn flex3">
+            <div class="btn btnMain"
+              @click="$addItem(order_info.product_info,{
+            product_id: '',
+            child_data: [
+              {
+                number_attribute: '',
+                weight: '',
+                price: '',
+                attribute: '',
+                color: ''
+              }
+            ]
+          })">添加纱线</div>
+          </div>
+        </div>
+        <div class="rowCtn">
+          <div class="colCtn flex3">
+            <div class="label">
+              <span class="text">下单总数</span>
+              <span class="explanation">(自动计算)</span>
+            </div>
+            <div class="content">
+              <div class="elCtn">
+                <el-input placeholder="完善数据后计算得到"
+                  disabled
+                  v-model="order_info.total_weight"></el-input>
+              </div>
+            </div>
+          </div>
+          <div class="colCtn flex3">
+            <div class="label">
+              <span class="text">下单总价</span>
+              <span class="explanation">(自动计算)</span>
+            </div>
+            <div class="content">
+              <div class="elCtn">
+                <el-input placeholder="完善数据后计算得到"
+                  disabled
+                  v-model="order_info.total_price"></el-input>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="rowCtn">
+          <div class="colCtn">
+            <div class="label">
+              <span class="text">备注信息</span>
+            </div>
+            <div class="content autoHeight"
+              style="position:relative;z-index:1">
+              <div ref='editor'></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="bottomFixBar">
+      <div class="main">
+        <div class="btnCtn">
+          <div class="btn btnGray"
+            @click="$router.go(-1)">返回</div>
+          <div class="btn btnOrange"
+            @click="saveOrder">修改</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script lang="ts">
+import E from 'wangeditor'
+import Vue from 'vue'
+import { product, order } from '@/assets/js/api'
+import { Order } from '@/types/order'
+export default Vue.extend({
+  data(): {
+    editor: any
+    order_info: Order
+    [propName: string]: any
+  } {
+    return {
+      select_loading: false,
+      order_info: {
+        order_code: '',
+        order_time: this.$getDate(new Date()),
+        delivery_time: '',
+        client_id: '',
+        total_price: 0,
+        total_weight: 0,
+        desc: '',
+        product_info: [
+          {
+            product_id: '',
+            child_data: [
+              {
+                number_attribute: '',
+                weight: '',
+                price: '',
+                attribute: '',
+                color: ''
+              }
+            ]
+          }
+        ]
+      },
+      product_arr: [],
+      editor: ''
+    }
+  },
+  computed: {
+    clientArr() {
+      return this.$store.state.api.client.arr
+    }
+  },
+  methods: {
+    cmpTotal() {
+      this.order_info.total_price = this.order_info.product_info.reduce((total, current) => {
+        return (
+          total +
+          current.child_data.reduce((totalChild, currentChild) => {
+            return totalChild + Number(currentChild.weight) * Number(currentChild.price)
+          }, 0)
+        )
+      }, 0)
+      this.order_info.total_weight = this.order_info.product_info.reduce((total, current) => {
+        return (
+          total +
+          current.child_data.reduce((totalChild, currentChild) => {
+            return totalChild + Number(currentChild.weight)
+          }, 0)
+        )
+      }, 0)
+    },
+    deleteOnce(father: any[], indexChild: number, indexFather: number, id: number) {
+      if (id) {
+        this.$confirm('是否删除该纱线颜色?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        })
+          .then(() => {
+            order.deleteChild({ id }).then((res) => {
+              if (res.data.status) {
+                this.$message({
+                  type: 'success',
+                  message: '删除成功!'
+                })
+                if (father.length > 1) {
+                  father.splice(indexChild, 1)
+                } else {
+                  this.order_info.product_info.splice(indexFather, 1)
+                }
+              }
+            })
+          })
+          .catch(() => {
+            this.$message({
+              type: 'info',
+              message: '已取消删除'
+            })
+          })
+      } else {
+        if (father.length > 1) {
+          father.splice(indexChild, 1)
+        } else {
+          this.order_info.product_info.splice(indexFather, 1)
+        }
+      }
+    },
+    searchPro(query: string) {
+      if (query !== '') {
+        product
+          .list({
+            limit: 2,
+            page: 1,
+            name: query
+          })
+          .then((res) => {
+            this.product_arr = res.data.data.items
+          })
+      } else {
+        this.product_arr = []
+      }
+    },
+    saveOrder() {
+      console.log(this.order_info)
+      order.create(this.order_info).then((res) => {
+        if (res.data.status) {
+          this.$message.success('修改成功')
+        }
+      })
+    }
+  },
+  mounted() {
+    this.editor = new E(this.$refs.editor as HTMLElement)
+    this.editor.config.menus = [
+      'head', // 标题
+      'bold', // 粗体
+      'fontSize', // 字号
+      'fontName', // 字体
+      'italic', // 斜体
+      'underline', // 下划线
+      'strikeThrough', // 删除线
+      'foreColor', // 文字颜色
+      'backColor', // 背景颜色
+      'link', // 插入链接
+      'list', // 列表
+      'justify', // 对齐方式
+      'quote', // 引用
+      'emoticon', // 表情
+      // 'image', // 插入图片
+      // 'table', // 表格
+      // 'video', // 插入视频
+      // 'code', // 插入代码
+      'undo', // 撤销
+      'redo', // 重复
+      'fullscreen' // 全屏
+    ]
+    this.editor.config.onchange = (html: HTMLElement) => {
+      this.order_info.desc = html // 绑定当前逐渐地值
+    }
+    this.editor.create()
+    this.$checkCommonInfo([
+      {
+        checkWhich: 'api/client',
+        getInfoMethed: 'dispatch',
+        getInfoApi: 'getPartyBAsync'
+      }
+    ])
+    order
+      .detail({
+        id: this.$route.params.id
+      })
+      .then((res) => {
+        this.order_info = res.data.data
+        this.editor.txt.html(this.order_info.desc)
+        this.order_info.product_info = this.$mergeData(this.order_info.product_info, {
+          mainRule: 'product_name',
+          childrenName: 'child_data',
+          otherRule: [{ name: 'product_id' }]
+        })
+      })
+  }
+})
+</script>
+
+<style lang="less" scoped>
+@import '~@/assets/less/order/create.less';
+</style>

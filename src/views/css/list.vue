@@ -199,19 +199,27 @@
           </div>
           <div class="coverTable">
             <div class="floatL">
-              <div class="row">
-                <div class="column min120">左遮罩</div>
+              <div class="headCtn">
+                <div class="row">
+                  <div class="column min120">左遮罩</div>
+                </div>
               </div>
-              <div class="row">
-                <div class="column min120">客户编码</div>
+              <div class="bodyCtn">
+                <div class="row">
+                  <div class="column min120">客户编码</div>
+                </div>
               </div>
             </div>
             <div class="floatR">
-              <div class="row">
-                <div class="column min120">右遮罩</div>
+              <div class="headCtn">
+                <div class="row">
+                  <div class="column min120">右遮罩</div>
+                </div>
               </div>
-              <div class="row">
-                <div class="column min120">客户编码</div>
+              <div class="bodyCtn">
+                <div class="row">
+                  <div class="column min120">客户编码</div>
+                </div>
               </div>
             </div>
           </div>

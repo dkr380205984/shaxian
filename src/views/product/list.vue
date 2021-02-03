@@ -91,7 +91,8 @@
               <div class="column">{{item.store||0}}</div>
               <div class="column">{{item.user_name}}</div>
               <div class="column">
-                <div class="opr blue">详情</div>
+                <div class="opr blue"
+                  @click="$router.push('/product/detail/'+item.id)">详情</div>
                 <div class="opr orange"
                   @click="$router.push('/product/update/' + item.id)">修改</div>
                 <div class="opr red"

@@ -44,7 +44,7 @@ const apiMutations = {
     state.yarnColor.arr = yarnColorSelf
   },
   getPartyB(state: ApiState, partyBSelf: PartyB[]) {
-    state.PartyB.status = true
+    state.client.status = true
     state.factory.status = true
     state.supplier.status = true
     state.client.arr = partyBSelf.filter((itemF: PartyB) => itemF.type === 1)

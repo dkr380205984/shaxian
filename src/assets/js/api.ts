@@ -64,6 +64,13 @@ const order = {
   delete: (params: DeleteParam) => http.post(`${baseUrl}/order/delete`, params, 'application/json'),
   deleteChild: (params: DeleteParam) => http.post(`${baseUrl}/order/child/delete`, params, 'application/json')
 }
+// 仓库
+const store = {
+  create: (params: any) => http.post(`${baseUrl}/store/save`, params, 'application/json'),
+  detail: (params: any) => http.get(`${baseUrl}/store/detail`, params),
+  delete: (params: any) => http.post(`${baseUrl}/store/delete`, params, 'application/json'),
+  list: (params?: any) => http.get(`${baseUrl}/user/lists`, params)
+}
 export {
   login,
   authInfo,
@@ -73,5 +80,6 @@ export {
   product,
   partyB,
   user,
-  order
+  order,
+  store
 }

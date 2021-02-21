@@ -44,3 +44,13 @@ export interface Color {
   name: string,
   [key: string]: any
 }
+export interface Store {
+  id: number | null
+  name: string
+  type: 1 | 2, // 1本厂仓库2染厂仓库
+  admins: string[] | ''
+  LV2_info: Array<{ name: string }>
+  desc: string
+  checked?: boolean
+  total_weight?: number
+}

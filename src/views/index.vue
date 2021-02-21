@@ -18,7 +18,7 @@
             active-text-color="#ffd04b">
             <el-menu-item index="/product/list/page=1&&page_size=10&&name=&&color=&&attribute=&&yarn_type=">纱线管理</el-menu-item>
             <el-menu-item index="/order/list/1">订单管理</el-menu-item>
-            <el-menu-item index="3">库存管理</el-menu-item>
+            <el-menu-item index="/store/list">库存管理</el-menu-item>
             <el-menu-item index="4">财务管理</el-menu-item>
             <el-submenu index='5'>
               <template slot="title">系统设置</template>

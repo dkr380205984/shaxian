@@ -86,6 +86,14 @@ const routes: RouteConfig[] = [
         path: '/settings/color',
         name: '颜色设置',
         component: () => import('../views/settings/color.vue')
+      }, {
+        path: '/store/list',
+        name: '仓库列表',
+        component: () => import('../views/store/list.vue')
+      }, {
+        path: '/store/detail/:storeId',
+        name: '仓库详情',
+        component: () => import('../views/store/detail.vue')
       }
     ]
   }

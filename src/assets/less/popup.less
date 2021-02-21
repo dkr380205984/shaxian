@@ -62,6 +62,7 @@
         }
         .info{
           flex: 1;
+          position: relative;
           &.colCenter{
             display: flex;
             align-items: center;
@@ -79,6 +80,13 @@
             display: block;
             flex-direction: column;
             height: auto;
+          }
+          .info_btn{
+            position: absolute;
+            top: 50%;
+            right: -4px;
+            transform: translate(100%,-50%);
+            cursor: pointer;
           }
         }
       }

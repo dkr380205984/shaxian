@@ -1,0 +1,34 @@
+.detailCtn{
+  width: 100%;
+  padding: 0 43px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  font-size: @fontBig;
+  .title{
+    margin: 16px 0;
+    .isTag{
+      padding: 0 4px;
+      border-bottom: 4px solid @green;
+      border-radius: 2px;
+    }
+  }
+  .rowCtn{
+    margin: 8px 0;
+    display: flex;
+    .itemCtn{
+      display: flex;
+      align-items: center;
+      width: calc(100% / 3);
+      min-height: 32px;
+      &.onLine{
+        width: 100%;
+      }
+      .label{
+        width: 6em;
+        text-align: justify;
+        text-align-last: justify;
+      }
+    }
+  }
+}

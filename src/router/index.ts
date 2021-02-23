@@ -59,6 +59,10 @@ const routes: RouteConfig[] = [
         name: '修改订单',
         component: () => import('../views/order/update.vue')
       }, {
+        path: '/order/detail/:id',
+        name: '订单详情',
+        component: () => import('../views/order/detail.vue')
+      }, {
         path: '/order/list/:params',
         name: '订单列表',
         component: () => import('../views/order/list.vue')

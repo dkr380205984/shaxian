@@ -232,7 +232,8 @@ export default Vue.extend({
           id: 30,
           name: '30条'
         }
-      ]
+      ],
+      adminArr: []
     }
   },
   methods: {

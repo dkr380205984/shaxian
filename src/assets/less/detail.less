@@ -1,33 +1,157 @@
 .detailCtn{
-  width: 100%;
-  padding: 0 43px;
-  box-sizing: border-box;
-  display: flex;
-  flex-direction: column;
-  font-size: @fontBig;
-  .title{
-    margin: 16px 0;
-    .isTag{
-      padding: 0 4px;
-      border-bottom: 4px solid @green;
-      border-radius: 2px;
-    }
-  }
+  padding: 20px 0;
+  position: relative;
   .rowCtn{
-    margin: 8px 0;
+    padding: 0 32px;
+    margin: 18px 0;
     display: flex;
-    .itemCtn{
+    justify-content: flex-start;
+    .colCtn{
+      flex:1;
+      margin-right: 72px;
+      box-sizing: border-box;
+      position: relative;
       display: flex;
-      align-items: center;
-      width: calc(100% / 3);
-      min-height: 32px;
-      &.onLine{
-        width: 100%;
+      &.flex2{
+        max-width: 579px;
+      }
+      &.flex3{
+        max-width: 362px;
+      }
+      &.flex4{
+        max-width: 253.5px;
       }
       .label{
-        width: 6em;
-        text-align: justify;
-        text-align-last: justify;
+        display: inline-block;
+        height: 38px;
+        line-height: 38px;
+        font-size: @fontMiddle;
+        width: 5em;
+        white-space: nowrap;
+      }
+      .text{
+        display: inline-block;
+        min-height: 38px;
+        line-height: 38px;
+        font-size: @fontMiddle;
+        &.blue{
+          color: @blue;
+        }
+        &.orange{
+          color:@orange;
+        }
+      }
+      .lineCtn{
+        font-size: @fontMiddle;
+        line-height: 38px;
+      }
+      .imgCtn{
+        display: inline-block;
+        img{
+          height: 116px;
+          vertical-align: text-top;
+          margin-right: 16px;
+        }
+      }
+      .rectCtn{
+        display: flex;
+        .rect{
+          width: 266px;
+          border:1px solid #E8E8E8;
+          box-shadow:0px 3px 8px rgba(0,0,0,0.09);
+          margin-right: 32px;
+          position: relative;
+          .tab{
+            position: absolute;
+            right: 24px;
+            top: 0px;
+            line-height: 24px;
+            .circle{
+              width: 5px;
+              height: 5px;
+              display: inline-block;
+              border-radius: 50%;
+              background: @font25;
+              margin-left: 6px;
+              cursor: pointer;
+              &.active{
+                background: @blue;
+              }
+            }
+          }
+          .main{
+            padding: 24px;
+            display: flex;
+            height: 138px;
+            width: 100%;
+            box-sizing: border-box;
+            .icon{
+              width: 18px;
+              height: 18px;
+              padding:4px;
+              border-radius: 50%;
+              margin-right: 16px;
+              &.gray{
+                background: #999999;
+              }
+              &.yellow{
+                 background: @orange;
+              }
+              &.blue{
+                background: @blue;
+              }
+              &.green{
+                background: @green;
+              }
+              img{
+                width: 18px;
+                height: 18px;
+              }
+            }
+            .content{
+              flex: 1;
+              display: flex;
+              flex-direction: column;
+              justify-content: flex-start;
+              overflow: hidden;
+              .text{
+                margin-bottom: 16px;
+                min-height: 20px;
+                line-height: 20px;
+                color: @font45;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+                &.title{
+                  font-size: @fontBig;
+                  color: @font85;
+                  line-height: 24px;
+                }
+              }
+            }
+          }
+          .menu{
+            height: 40px;
+            line-height: 40px;
+            display: flex;
+            background: #F7F9FA;
+            justify-content: space-around;
+            align-items: center;
+            .opration{
+              color: @blue;
+              border-right: 1px solid #E8E8E8;
+              font-size: @fontMiddle;
+              height: 16px;
+              line-height: 16px;
+              text-align: center;
+              flex: 1;
+              cursor: pointer;
+              &:nth-last-child(1){
+                border-right: 0;
+              }
+            }
+          }
+        }
       }
     }
   }

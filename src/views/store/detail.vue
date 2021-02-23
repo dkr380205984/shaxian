@@ -4,93 +4,94 @@
     v-loading='loading'>
     <div class="module">
       <div class="titleCtn">
-        <span class="title hasBorder">仓库详情</span>
+        <span class="title">基本信息</span>
       </div>
       <div class="detailCtn">
-        <div class="title">
-          <span class="isTag">基本信息</span>
-        </div>
         <div class="rowCtn">
-          <div class="itemCtn">
+          <div class="colCtn">
             <span class="label">仓库名称：</span>
             <span class="text green">信合纱线厂</span>
           </div>
         </div>
         <div class="rowCtn">
-          <div class="itemCtn">
+          <div class="colCtn">
             <span class="label">仓库类型：</span>
             <span class="text">本厂仓库</span>
           </div>
-          <div class="itemCtn">
+          <div class="colCtn">
             <span class="label">仓库管理员：</span>
             <span class="text">张三，李四</span>
           </div>
-          <div class="itemCtn">
+          <div class="colCtn">
             <span class="label">二级仓库名：</span>
             <span class="text">A区、B区、C区、D区</span>
           </div>
         </div>
         <div class="rowCtn">
-          <div class="itemCtn">
+          <div class="colCtn flex3">
             <span class="label">创建人：</span>
             <span class="text">test_ye</span>
           </div>
-          <div class="itemCtn">
-            <span class="label">创建时间：</span>
+          <div class="colCtn">
+            <span class="label flex3">创建时间：</span>
             <span class="text">{{$getDate()}}</span>
           </div>
         </div>
         <div class="rowCtn">
-          <div class="itemCtn onLine">
+          <div class="colCtn">
             <span class="label">仓库类型：</span>
             <span class="text">本厂仓库</span>
           </div>
         </div>
-        <div class="title">
-          <span class="isTag">库存信息</span>
-        </div>
-        <div class="tableCtn">
-          <div class="tfilter">
-            <div class="leftCtn">
-              <div class="label">筛选条件：</div>
-              <div class="elCtn">
-                <el-select v-model="storeListFilter.LV2_name"
-                  @change="getStoreInfoList"
-                  placeholder="请选择二级仓库名称进行筛选">
-                  <el-option v-for="item in []"
-                    :key="item.id"
-                    :label="item.name"
-                    :value="item.id">
-                  </el-option>
-                </el-select>
-              </div>
-              <div class="elCtn">
-                <el-input v-model="storeListFilter.name"
-                  @change="getStoreInfoList"
-                  placeholder="请输入纱线名称进行筛选"></el-input>
-              </div>
-              <div class="elCtn">
-                <el-input v-model="storeListFilter.color"
-                  @change="getStoreInfoList"
-                  placeholder="请输入纱线颜色进行筛选"></el-input>
-              </div>
-              <div class="elCtn">
-                <el-select v-model="storeListFilter.LV2_name"
-                  @change="getStoreInfoList"
-                  placeholder="请选择是否过滤库存为0的纱线">
-                  <el-option v-for="item in []"
-                    :key="item.id"
-                    :label="item.name"
-                    :value="item.id">
-                  </el-option>
-                </el-select>
-              </div>
+      </div>
+    </div>
+    <div class="module">
+      <div class="titleCtn">
+        <span class="title">库存信息</span>
+      </div>
+      <div class="listCtn">
+        <div class="filterCtn">
+          <div class="leftCtn">
+            <div class="label">筛选条件：</div>
+            <div class="elCtn">
+              <el-select v-model="storeListFilter.LV2_name"
+                @change="getStoreInfoList"
+                placeholder="请选择二级仓库名称">
+                <el-option v-for="item in []"
+                  :key="item.id"
+                  :label="item.name"
+                  :value="item.id">
+                </el-option>
+              </el-select>
             </div>
-            <div class="rightCtn">
-              <div class="btn btnGray fr"
-                @click="resetFilter">重置</div>
+            <div class="elCtn">
+              <el-input v-model="storeListFilter.name"
+                @change="getStoreInfoList"
+                placeholder="请输入纱线名称"></el-input>
+            </div>
+            <div class="elCtn">
+              <el-input v-model="storeListFilter.color"
+                @change="getStoreInfoList"
+                placeholder="请输入纱线颜色"></el-input>
+            </div>
+            <div class="elCtn">
+              <el-select v-model="storeListFilter.LV2_name"
+                @change="getStoreInfoList"
+                placeholder="请选择是否过滤库存为0的纱线">
+                <el-option v-for="item in []"
+                  :key="item.id"
+                  :label="item.name"
+                  :value="item.id">
+                </el-option>
+              </el-select>
             </div>
           </div>
+          <div class="rightCtn">
+            <div class="btn btnGray fr"
+              @click="resetFilter">重置</div>
+          </div>
+        </div>
+        <div class="tableCtn">
           <div class="thead">
             <div class="trow">
               <div class="tcolumn">二级名称</div>
@@ -262,106 +263,104 @@
               v-if="storeEditInfo.length > 0">
               <div class="editBtn btnGray"
                 @click="deleteItem({data:storeEditInfo,type:'cancel'})">取消</div>
-              <div class="editBtn btnBlue"
+              <div class="editBtn btnBluePurple"
                 @click="addItem({data:storeEditInfo,type:'add'})">添加下一组</div>
               <div class="editBtn btnGreen"
                 @click="saveStoreEditInfo">提交</div>
             </div>
             <div class="editBtnCtn"
               v-else>
-              <div class="editBtn btnBlue"
-                @click="addItem({data:storeEditInfo,type:'add'})">添加库存</div>
+              <div class="editBtn btnBluePurple"
+                @click="addItem({data:storeEditInfo,type:'add'})">添加新库存</div>
             </div>
           </div>
-          <!-- <div class="tpage">
-            <el-pagination background
-              current-page.sync="1"
-              @current-change="changeRouter"
-              :page-size="10"
-              layout="prev, pager, next"
-              :total="30">
-            </el-pagination>
-          </div> -->
         </div>
-        <div class="title">
-          <span class="isTag">出入库日志</span>
+      </div>
+    </div>
+    <div class="module">
+      <div class="titleCtn">
+        <span class="title">出入库日志</span>
+      </div>
+      <div class="listCtn">
+        <div class="filterCtn"
+          :class="{'showMore':true}">
+          <div class="leftCtn">
+            <div class="label">筛选条件：</div>
+            <!-- <div class="showMore"
+              @click="showMore=!showMore">{{!showMore?'展示更多':'收起筛选'}}</div> -->
+            <div class="elCtn">
+              <el-select v-model="storeLogListFilter.LV2_name"
+                @change="getStoreLogList"
+                placeholder="请选择二级仓库名称">
+                <el-option v-for="item in []"
+                  :key="item.id"
+                  :label="item.name"
+                  :value="item.id">
+                </el-option>
+              </el-select>
+            </div>
+            <div class="elCtn">
+              <el-input v-model="storeLogListFilter.name"
+                @change="getStoreLogList"
+                placeholder="输入纱线名称"></el-input>
+            </div>
+            <div class="elCtn">
+              <el-input v-model="storeLogListFilter.color"
+                @change="getStoreLogList"
+                placeholder="输入纱线颜色"></el-input>
+            </div>
+            <div class="elCtn">
+              <el-select v-model="storeLogListFilter.attr"
+                @change="getStoreLogList"
+                placeholder="选择纱线属性">
+                <el-option v-for="item in []"
+                  :key="item.id"
+                  :label="item.name"
+                  :value="item.id">
+                </el-option>
+              </el-select>
+            </div>
+            <div class="elCtn">
+              <el-select v-model="storeLogListFilter.type"
+                @change="getStoreLogList"
+                placeholder="选择出库类型">
+                <el-option v-for="item in []"
+                  :key="item.id"
+                  :label="item.name"
+                  :value="item.id">
+                </el-option>
+              </el-select>
+            </div>
+            <div class="elCtn">
+              <el-input v-model="storeLogListFilter.code"
+                @change="getStoreLogList"
+                placeholder="输入关联单号"></el-input>
+            </div>
+            <div class="elCtn">
+              <el-select v-model="storeLogListFilter.limit"
+                @change="getStoreLogList"
+                placeholder="每页展示条数">
+                <el-option v-for="item in []"
+                  :key="item.id"
+                  :label="item.name"
+                  :value="item.id">
+                </el-option>
+              </el-select>
+            </div>
+            <div class="elCtn">
+              <el-date-picker v-model="storeLogListFilter.date"
+                type="date"
+                value-format="yyyy-MM-dd"
+                placeholder="请选择操作时间筛选">
+              </el-date-picker>
+            </div>
+          </div>
+          <div class="rightCtn">
+            <div class="btn btnGray fr"
+              @click="resetFilter">重置</div>
+          </div>
         </div>
         <div class="tableCtn noBorder">
-          <div class="tfilter showMore">
-            <div class="leftCtn">
-              <div class="label">筛选条件：</div>
-              <div class="elCtn">
-                <el-select v-model="storeLogListFilter.LV2_name"
-                  @change="getStoreLogList"
-                  placeholder="请选择二级仓库名称进行筛选">
-                  <el-option v-for="item in []"
-                    :key="item.id"
-                    :label="item.name"
-                    :value="item.id">
-                  </el-option>
-                </el-select>
-              </div>
-              <div class="elCtn">
-                <el-input v-model="storeLogListFilter.name"
-                  @change="getStoreLogList"
-                  placeholder="请输入纱线名称进行筛选"></el-input>
-              </div>
-              <div class="elCtn">
-                <el-input v-model="storeLogListFilter.color"
-                  @change="getStoreLogList"
-                  placeholder="请输入纱线颜色进行筛选"></el-input>
-              </div>
-              <div class="elCtn">
-                <el-select v-model="storeLogListFilter.attr"
-                  @change="getStoreLogList"
-                  placeholder="请选择纱线属性进行筛选">
-                  <el-option v-for="item in []"
-                    :key="item.id"
-                    :label="item.name"
-                    :value="item.id">
-                  </el-option>
-                </el-select>
-              </div>
-              <div class="elCtn">
-                <el-select v-model="storeLogListFilter.type"
-                  @change="getStoreLogList"
-                  placeholder="请选择出库类型进行筛选">
-                  <el-option v-for="item in []"
-                    :key="item.id"
-                    :label="item.name"
-                    :value="item.id">
-                  </el-option>
-                </el-select>
-              </div>
-              <div class="elCtn">
-                <el-input v-model="storeLogListFilter.code"
-                  @change="getStoreLogList"
-                  placeholder="请输入关联单号进行筛选"></el-input>
-              </div>
-              <div class="elCtn">
-                <el-select v-model="storeLogListFilter.limit"
-                  @change="getStoreLogList"
-                  placeholder="每页展示条数">
-                  <el-option v-for="item in []"
-                    :key="item.id"
-                    :label="item.name"
-                    :value="item.id">
-                  </el-option>
-                </el-select>
-              </div>
-              <div class="elCtn">
-                <el-date-picker v-model="storeLogListFilter.date"
-                  type="date"
-                  value-format="yyyy-MM-dd"
-                  placeholder="请选择操作时间筛选">
-                </el-date-picker>
-              </div>
-            </div>
-            <div class="rightCtn">
-              <div class="btn btnGray fr"
-                @click="resetFilter">重置</div>
-            </div>
-          </div>
           <div class="thead">
             <div class="trow">
               <div class="tcolumn">仓库</div>
@@ -416,6 +415,15 @@
             </el-pagination>
           </div>
         </div>
+        <!-- <div class="pageCtn">
+          <el-pagination background
+            current-page.sync="1"
+            @current-change="getStoreLogList"
+            :page-size="storeLogListFilter.limit || 10"
+            layout="prev, pager, next"
+            :total="30">
+          </el-pagination>
+        </div> -->
       </div>
     </div>
     <div class="bottomFixBar">
@@ -559,9 +567,12 @@ export default Vue.extend({
       //     }
       //   })
     },
-    resetFilter(type: 1 | 2 /**1是库存信息2是日志 */) {
+    // 1是库存信息2是日志
+    resetFilter(type: 1 | 2) {
       if (type === 1) {
+        console.log('can not empty')
       } else if (type === 2) {
+        console.log('can not empty')
       } else {
         this.$message.warning('未知重置错误')
       }

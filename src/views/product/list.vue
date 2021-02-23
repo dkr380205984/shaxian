@@ -183,6 +183,7 @@ export default Vue.extend({
                 })
               }
             })
+          this.getList()
         })
         .catch(() => {
           this.$message({

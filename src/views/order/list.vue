@@ -139,7 +139,8 @@
               label="操作"
               width="140">
               <template slot-scope="scope">
-                <span class="blue opr">详情</span>
+                <span class="blue opr"
+                  @click="$router.push('/order/detail/'+scope.row.id)">详情</span>
                 <span class="orange opr"
                   @click="$router.push('/order/update/'+scope.row.id)">修改</span>
                 <span class="red opr"

@@ -258,13 +258,19 @@
                 </div>
               </div>
             </div>
-            <div class="editBtnCtn">
+            <div class="editBtnCtn"
+              v-if="storeEditInfo.length > 0">
               <div class="editBtn btnGray"
                 @click="deleteItem({data:storeEditInfo,type:'cancel'})">取消</div>
               <div class="editBtn btnBlue"
                 @click="addItem({data:storeEditInfo,type:'add'})">添加下一组</div>
               <div class="editBtn btnGreen"
                 @click="saveStoreEditInfo">提交</div>
+            </div>
+            <div class="editBtnCtn"
+              v-else>
+              <div class="editBtn btnBlue"
+                @click="addItem({data:storeEditInfo,type:'add'})">添加库存</div>
             </div>
           </div>
           <!-- <div class="tpage">
@@ -560,7 +566,11 @@ export default Vue.extend({
         this.$message.warning('未知重置错误')
       }
     },
-    addItem({ data, type }: { data: Object[]; type: 'add' | 'copy' }) {
+    addItem({ data, item, type = 'add' }: { data: Object[]; type: 'add' | 'copy'; item: Object }) {
+      if (type === 'copy') {
+        data.push(this.$clone(item))
+        return
+      }
       data.push({
         LV2_name: '',
         type: '',

@@ -54,55 +54,74 @@
       </div>
       <div style="padding:20px 32px">
         <div class="btnCtn clearfix">
-          <div class="btn btnBlue">订购白胚</div>
-          <div class="btn btnBlue">订购色纱</div>
-          <div class="btn btnGray">库存调取</div>
-          <div class="btn btnGray">纱线加工</div>
+          <div class="btn"
+            :class="{'btnBlue':checkList.length>0,'btnGray':checkList.length===0}">订购白胚</div>
+          <div class="btn"
+            :class="{'btnBlue':checkList.length>0,'btnGray':checkList.length===0}">订购色纱</div>
+          <div class="btn"
+            :class="{'btnBlue':checkList.length===1,'btnGray':checkList.length!==1}">库存调取</div>
+          <div class="btn"
+            :class="{'btnBlue':checkList.length>0,'btnGray':checkList.length===0}">纱线加工</div>
         </div>
         <div class="tableCtn">
           <div class="thead">
             <div class="trow">
-              <div class="tcolumn"
-                style="flex:0.3">
-                <el-checkbox v-model="checkAll"></el-checkbox>
+              <div class="tcolumn">
+                <el-checkbox v-model="checkAll"
+                  :indeterminate="indeterminate"
+                  @change="checkAllPro">纱线名称</el-checkbox>
               </div>
-              <div class="tcolumn">纱线名称</div>
-              <div class="tcolumn">纱线颜色</div>
-              <div class="tcolumn">纱线属性</div>
-              <div class="tcolumn">下单价格(元)</div>
-              <div class="tcolumn">下单数量(kg)</div>
-              <div class="tcolumn">数量属性</div>
-              <div class="tcolumn">调取数量</div>
-              <div class="tcolumn">订购数量</div>
-              <div class="tcolumn">加工数量</div>
+              <div class="tcolumn noPad"
+                style="flex:8">
+                <div class="trow">
+                  <div class="tcolumn">纱线颜色</div>
+                  <div class="tcolumn">纱线属性</div>
+                  <div class="tcolumn">下单价格(元)</div>
+                  <div class="tcolumn">下单数量(kg)</div>
+                  <div class="tcolumn">数量属性</div>
+                  <div class="tcolumn">调取数量</div>
+                  <div class="tcolumn">订购数量</div>
+                  <div class="tcolumn">加工数量</div>
+                </div>
+              </div>
             </div>
           </div>
           <div class="tbody">
             <div class="trow"
               v-for="(item) in order_info.product_info"
               :key="item.id">
-              <div class="tcolumn"
-                style="flex:0.3">
-                <el-checkbox v-model="item.check"></el-checkbox>
+              <div class="tcolumn">
+                <el-checkbox v-model="item.check"
+                  :indeterminate="item.indeterminate"
+                  @change="checkAllSize($event,item)">{{item.product_name}}</el-checkbox>
               </div>
-              <div class="tcolumn">{{item.product_name}}</div>
-              <div class="tcolumn">{{item.color}}</div>
-              <div class="tcolumn">{{item.attribute}}</div>
-              <div class="tcolumn">{{item.price}}</div>
-              <div class="tcolumn blue">{{item.weight}}</div>
-              <div class="tcolumn">{{item.number_attribute}}</div>
-              <div class="tcolumn blue">0</div>
-              <div class="tcolumn blue">0</div>
-              <div class="tcolumn blue">
-                <div class="once">
-                  <span class="green"
-                    style="margin-right:5px">染色</span>
-                  <span class="blue">100</span>
-                </div>
-                <div class="once">
-                  <span class="green"
-                    style="margin-right:5px">倒纱</span>
-                  <span class="blue">100</span>
+              <div class="tcolumn noPad"
+                style="flex:8">
+                <div class="trow"
+                  v-for="itemChild in item.child_data"
+                  :key="itemChild.id">
+                  <div class="tcolumn">
+                    <el-checkbox v-model="itemChild.check"
+                      @change="checkSize($event,item)">{{itemChild.color}}</el-checkbox>
+                  </div>
+                  <div class="tcolumn">{{itemChild.attribute}}</div>
+                  <div class="tcolumn">{{itemChild.price}}</div>
+                  <div class="tcolumn blue">{{itemChild.weight}}</div>
+                  <div class="tcolumn">{{itemChild.number_attribute}}</div>
+                  <div class="tcolumn blue">0</div>
+                  <div class="tcolumn blue">0</div>
+                  <div class="tcolumn blue">
+                    <div class="once">
+                      <span class="green"
+                        style="margin-right:5px">染色</span>
+                      <span class="blue">100</span>
+                    </div>
+                    <div class="once">
+                      <span class="green"
+                        style="margin-right:5px">倒纱</span>
+                      <span class="blue">100</span>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -125,6 +144,21 @@
         <span class="title">加工信息</span>
       </div>
     </div>
+    <div class="popup">
+      <div class="main">
+        <div class="titleCtn">
+          <span class="text">订购白胚</span>
+          <i class="close_icon el-icon-close"></i>
+        </div>
+        <div class="contentCtn">
+
+        </div>
+        <div class="oprCtn">
+          <div class="opr">取消</div>
+          <div class="opr blue">确定</div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -139,6 +173,7 @@ export default Vue.extend({
   } {
     return {
       checkAll: false,
+      indeterminate: false,
       order_info: {
         order_code: '',
         order_time: '',
@@ -151,11 +186,56 @@ export default Vue.extend({
       }
     }
   },
-  // computed: {
-  //   checkList(): Order[] {
-  //     return this.order_info.filter((item: Order) => item.check)
-  //   }
-  // },
+  computed: {
+    checkList(): any {
+      const returnData: any = []
+      this.order_info.product_info.forEach((item: any) => {
+        if (item.child_data.filter((itemChild: any) => itemChild.check).length > 0) {
+          returnData.push({
+            product_name: item.product_name,
+            product_id: item.product_id,
+            child_data: item.child_data.filter((itemChild: any) => itemChild.check)
+          })
+        }
+      })
+      return returnData
+    }
+  },
+  methods: {
+    checkAllPro(ev: boolean) {
+      this.indeterminate = false
+      this.order_info.product_info.forEach((item: any) => {
+        item.check = ev
+        item.indeterminate = false
+        item.child_data.forEach((itemChild: any) => {
+          itemChild.check = ev
+        })
+      })
+    },
+    checkAllSize(ev: boolean, self: any) {
+      self.indeterminate = false
+      self.child_data.forEach((itemChild: any) => {
+        itemChild.check = ev
+      })
+      this.indeterminate =
+        this.order_info.product_info.some((item: any) => item.check) &&
+        this.order_info.product_info.filter((item: any) => item.check).length < this.order_info.product_info.length
+      this.checkAll =
+        this.order_info.product_info.filter((item: any) => item.check).length === this.order_info.product_info.length
+    },
+    checkSize(ev: boolean, father: any) {
+      father.indeterminate =
+        father.child_data.some((item: any) => item.check) &&
+        father.child_data.filter((item: any) => item.check).length < father.child_data.length
+      father.check = father.child_data.filter((item: any) => item.check).length === father.child_data.length
+      this.indeterminate =
+        this.order_info.product_info.some((item: any) => item.check) &&
+        this.order_info.product_info.filter((item: any) => item.check).length < this.order_info.product_info.length
+      this.checkAll =
+        this.order_info.product_info.filter((item: any) => item.check).length === this.order_info.product_info.length
+      this.$forceUpdate()
+    }
+  },
   mounted() {
     order
       .detail({
@@ -164,6 +244,11 @@ export default Vue.extend({
       .then((res) => {
         console.log(res)
         this.order_info = res.data.data
+        this.order_info.product_info = this.$mergeData(this.order_info.product_info, {
+          mainRule: 'product_name',
+          childrenName: 'child_data',
+          otherRule: [{ name: 'product_id' }]
+        })
       })
   }
 })

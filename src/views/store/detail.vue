@@ -562,7 +562,7 @@ export default Vue.extend({
         this.$message.warning('未知重置错误')
       }
     },
-    addItem({ data, type }: { data: Object[]; type: 'add' | 'copy' }) {
+    addItem({ data, type }: { data: object[]; type: 'add' | 'copy' }) {
       data.push({
         LV2_name: '',
         type: '',
@@ -589,13 +589,13 @@ export default Vue.extend({
       } else if (type === 'deleteIndex') {
         data.splice(index, 1)
       }
-    },
-    saveStoreEditInfo() {},
-    getStoreLogList(pages: number = 1) {},
-    querySearchColor(queryString: string, cb: () => void) {},
-    querySearchColorCode(queryString: string, cb: () => void) {},
-    querySearchVatCode(queryString: string, cb: () => void) {},
-    querySearchRemark(queryString: string, cb: () => void) {}
+    }
+    // saveStoreEditInfo() {},
+    // getStoreLogList(pages: number = 1) {},
+    // querySearchColor(queryString: string, cb: () => void) {},
+    // querySearchColorCode(queryString: string, cb: () => void) {},
+    // querySearchVatCode(queryString: string, cb: () => void) {},
+    // querySearchRemark(queryString: string, cb: () => void) {}
   },
   mounted() {
     this.init()

@@ -49,8 +49,8 @@
       <div class="titleCtn">
         <span class="title">库存信息</span>
       </div>
-      <div class="tableCtn">
-        <div class="tfilter">
+      <div class="listCtn">
+        <div class="filterCtn">
           <div class="leftCtn">
             <div class="label">筛选条件：</div>
             <div class="elCtn">
@@ -91,180 +91,188 @@
               @click="resetFilter">重置</div>
           </div>
         </div>
-        <div class="thead">
-          <div class="trow">
-            <div class="tcolumn">二级名称</div>
-            <div class="tcolumn">纱线名称</div>
-            <div class="tcolumn">纱线颜色</div>
-            <div class="tcolumn">属性</div>
-            <div class="tcolumn noPad flex5">
-              <div class="trow">
-                <div class="tcolumn">纱线色号</div>
-                <div class="tcolumn">批/缸号</div>
-                <div class="tcolumn">实际库存(KG)</div>
-                <div class="tcolumn">可用库存(KG)</div>
-                <div class="tcolumn">操作</div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="tbody">
-          <div class="trow"
-            v-for="item in storeList"
-            :key="item.id">
-            <div class="tcolumn">{{item.LV2_name || '-'}}</div>
-            <div class="tcolumn">{{item.material_name}}</div>
-            <div class="tcolumn">{{item.material_color}}</div>
-            <div class="tcolumn">{{item.material_attr}}</div>
-            <div class="tcolumn noPad flex5">
-              <div class="trow"
-                v-for="(itemStore,indexStore) in item.store_info"
-                :key="indexStore">
-                <div class="tcolumn">{{itemStore.color_code || '-'}}</div>
-                <div class="tcolumn">{{itemStore.vat_code || '-'}}</div>
-                <div class="tcolumn">{{itemStore.reality_weight || '-'}}</div>
-                <div class="tcolumn blue">{{itemStore.useable_weight || '-'}}</div>
-                <div class="tcolumn flexRow">
-                  <span class="opr blue">入库</span>
-                  <span class="opr orange">出库</span>
-                  <span class="opr green">日志</span>
+        <div class="tableCtn">
+          <div class="thead">
+            <div class="trow">
+              <div class="tcolumn">二级名称</div>
+              <div class="tcolumn">纱线名称</div>
+              <div class="tcolumn">纱线颜色</div>
+              <div class="tcolumn">属性</div>
+              <div class="tcolumn noPad flex5">
+                <div class="trow">
+                  <div class="tcolumn">纱线色号</div>
+                  <div class="tcolumn">批/缸号</div>
+                  <div class="tcolumn">实际库存(KG)</div>
+                  <div class="tcolumn">可用库存(KG)</div>
+                  <div class="tcolumn">操作</div>
                 </div>
               </div>
             </div>
           </div>
-          <div class="trow bgGray noBorder">
-            <div class="tcolumn">合计</div>
-            <div class="tcolumn"></div>
-            <div class="tcolumn"></div>
-            <div class="tcolumn"></div>
-            <div class="tcolumn noPad flex5">
-              <div class="trow">
-                <div class="tcolumn"></div>
-                <div class="tcolumn"></div>
-                <div class="tcolumn">15124</div>
-                <div class="tcolumn blue">15730</div>
-                <div class="tcolumn"></div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="editCtn">
-          <div class="editContainer"
-            v-for="(itemStore,indexStore) in storeEditInfo"
-            :key="indexStore">
-            <span class="el-icon-circle-close"
-              @click="deleteItem({data:storeEditInfo,index:indexStore})"></span>
-            <div class="eRow">
-              <div class="eColumn">
-                <span class="label isMust">二级仓库</span>
-                <div class="from">
-                  <el-select v-model="itemStore.LV2_name"
-                    placeholder="请选择二级仓库"
-                    clearable>
-                    <el-option v-for="item in typeArr"
-                      :key="item.id"
-                      :label="item.name"
-                      :value="item.id">
-                    </el-option>
-                  </el-select>
-                </div>
-              </div>
-              <div class="eColumn">
-                <span class="label isMust">出入库类型</span>
-                <div class="from">
-                  <el-select v-model="itemStore.type"
-                    placeholder="请选择出入库类型">
-                    <el-option v-for="item in typeArr"
-                      :key="item.id"
-                      :label="item.name"
-                      :value="item.id">
-                    </el-option>
-                  </el-select>
-                </div>
-              </div>
-            </div>
-            <div class="eRow">
-              <div class="eColumn">
-                <span class="label isMust">纱线名称</span>
-                <div class="from">
-                  <el-select v-model="itemStore.name"
-                    placeholder="请选择出入库纱线">
-                    <el-option v-for="item in []"
-                      :key="item.id"
-                      :label="item.name"
-                      :value="item.id">
-                    </el-option>
-                  </el-select>
-                </div>
-              </div>
-              <div class="eColumn">
-                <span class="label isMust">纱线颜色</span>
-                <div class="from">
-                  <el-autocomplete v-model="itemStore.color"
-                    :fetch-suggestions="querySearchColor"
-                    placeholder="请输入纱线颜色"></el-autocomplete>
-                </div>
-              </div>
-              <div class="eColumn">
-                <span class="label isMust">纱线属性</span>
-                <div class="from">
-                  <el-select v-model="itemStore.attr"
-                    clearable
-                    placeholder="请选择纱线属性">
-                    <el-option v-for="item in materialAttrArr"
-                      :key="item.id"
-                      :label="item.name"
-                      :value="item.id">
-                    </el-option>
-                  </el-select>
-                </div>
-              </div>
-            </div>
-            <div class="eRow">
-              <div class="eColumn">
-                <div class="eRow innerEl">
-                  <div class="eColumn flexMode">
-                    <span class="label">色号</span>
-                    <div class="from">
-                      <el-autocomplete v-model="itemStore.color_code"
-                        :fetch-suggestions="querySearchColorCode"
-                        placeholder="请输入纱线色号"></el-autocomplete>
-                    </div>
-                  </div>
-                  <div class="eColumn flexMode">
-                    <span class="label">批/缸号</span>
-                    <div class="from">
-                      <el-autocomplete v-model="itemStore.vat_code"
-                        :fetch-suggestions="querySearchVatCode"
-                        placeholder="请输入纱线批/缸号"></el-autocomplete>
-                    </div>
+          <div class="tbody">
+            <div class="trow"
+              v-for="item in storeList"
+              :key="item.id">
+              <div class="tcolumn">{{item.LV2_name || '-'}}</div>
+              <div class="tcolumn">{{item.material_name}}</div>
+              <div class="tcolumn">{{item.material_color}}</div>
+              <div class="tcolumn">{{item.material_attr}}</div>
+              <div class="tcolumn noPad flex5">
+                <div class="trow"
+                  v-for="(itemStore,indexStore) in item.store_info"
+                  :key="indexStore">
+                  <div class="tcolumn">{{itemStore.color_code || '-'}}</div>
+                  <div class="tcolumn">{{itemStore.vat_code || '-'}}</div>
+                  <div class="tcolumn">{{itemStore.reality_weight || '-'}}</div>
+                  <div class="tcolumn blue">{{itemStore.useable_weight || '-'}}</div>
+                  <div class="tcolumn flexRow">
+                    <span class="opr blue">入库</span>
+                    <span class="opr orange">出库</span>
+                    <span class="opr green">日志</span>
                   </div>
                 </div>
               </div>
-              <div class="eColumn">
-                <span class="label isMust">出入库数量</span>
-                <div class="from">
-                  <el-input v-model="itemStore.weight"
-                    placeholder="请输入出入库数量"></el-input>
-                </div>
-              </div>
-              <div class="eColumn">
-                <span class="label isMust">出入库说明</span>
-                <div class="from">
-                  <el-autocomplete v-model="itemStore.remark"
-                    :fetch-suggestions="querySearchRemark"
-                    placeholder="请输入出入库说明"></el-autocomplete>
+            </div>
+            <div class="trow bgGray noBorder">
+              <div class="tcolumn">合计</div>
+              <div class="tcolumn"></div>
+              <div class="tcolumn"></div>
+              <div class="tcolumn"></div>
+              <div class="tcolumn noPad flex5">
+                <div class="trow">
+                  <div class="tcolumn"></div>
+                  <div class="tcolumn"></div>
+                  <div class="tcolumn">15124</div>
+                  <div class="tcolumn blue">15730</div>
+                  <div class="tcolumn"></div>
                 </div>
               </div>
             </div>
           </div>
-          <div class="editBtnCtn">
-            <div class="editBtn btnGray"
-              @click="deleteItem({data:storeEditInfo,type:'cancel'})">取消</div>
-            <div class="editBtn btnBlue"
-              @click="addItem({data:storeEditInfo,type:'add'})">添加下一组</div>
-            <div class="editBtn btnGreen"
-              @click="saveStoreEditInfo">提交</div>
+          <div class="editCtn">
+            <div class="editContainer"
+              v-for="(itemStore,indexStore) in storeEditInfo"
+              :key="indexStore">
+              <span class="el-icon-circle-close"
+                @click="deleteItem({data:storeEditInfo,index:indexStore})"></span>
+              <div class="eRow">
+                <div class="eColumn">
+                  <span class="label isMust">二级仓库</span>
+                  <div class="from">
+                    <el-select v-model="itemStore.LV2_name"
+                      placeholder="请选择二级仓库"
+                      clearable>
+                      <el-option v-for="item in typeArr"
+                        :key="item.id"
+                        :label="item.name"
+                        :value="item.id">
+                      </el-option>
+                    </el-select>
+                  </div>
+                </div>
+                <div class="eColumn">
+                  <span class="label isMust">出入库类型</span>
+                  <div class="from">
+                    <el-select v-model="itemStore.type"
+                      placeholder="请选择出入库类型">
+                      <el-option v-for="item in typeArr"
+                        :key="item.id"
+                        :label="item.name"
+                        :value="item.id">
+                      </el-option>
+                    </el-select>
+                  </div>
+                </div>
+              </div>
+              <div class="eRow">
+                <div class="eColumn">
+                  <span class="label isMust">纱线名称</span>
+                  <div class="from">
+                    <el-select v-model="itemStore.name"
+                      placeholder="请选择出入库纱线">
+                      <el-option v-for="item in []"
+                        :key="item.id"
+                        :label="item.name"
+                        :value="item.id">
+                      </el-option>
+                    </el-select>
+                  </div>
+                </div>
+                <div class="eColumn">
+                  <span class="label isMust">纱线颜色</span>
+                  <div class="from">
+                    <el-autocomplete v-model="itemStore.color"
+                      :fetch-suggestions="querySearchColor"
+                      placeholder="请输入纱线颜色"></el-autocomplete>
+                  </div>
+                </div>
+                <div class="eColumn">
+                  <span class="label isMust">纱线属性</span>
+                  <div class="from">
+                    <el-select v-model="itemStore.attr"
+                      clearable
+                      placeholder="请选择纱线属性">
+                      <el-option v-for="item in materialAttrArr"
+                        :key="item.id"
+                        :label="item.name"
+                        :value="item.id">
+                      </el-option>
+                    </el-select>
+                  </div>
+                </div>
+              </div>
+              <div class="eRow">
+                <div class="eColumn">
+                  <div class="eRow innerEl">
+                    <div class="eColumn flexMode">
+                      <span class="label">色号</span>
+                      <div class="from">
+                        <el-autocomplete v-model="itemStore.color_code"
+                          :fetch-suggestions="querySearchColorCode"
+                          placeholder="请输入纱线色号"></el-autocomplete>
+                      </div>
+                    </div>
+                    <div class="eColumn flexMode">
+                      <span class="label">批/缸号</span>
+                      <div class="from">
+                        <el-autocomplete v-model="itemStore.vat_code"
+                          :fetch-suggestions="querySearchVatCode"
+                          placeholder="请输入纱线批/缸号"></el-autocomplete>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="eColumn">
+                  <span class="label isMust">出入库数量</span>
+                  <div class="from">
+                    <el-input v-model="itemStore.weight"
+                      placeholder="请输入出入库数量"></el-input>
+                  </div>
+                </div>
+                <div class="eColumn">
+                  <span class="label isMust">出入库说明</span>
+                  <div class="from">
+                    <el-autocomplete v-model="itemStore.remark"
+                      :fetch-suggestions="querySearchRemark"
+                      placeholder="请输入出入库说明"></el-autocomplete>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="editBtnCtn"
+              v-if="storeEditInfo.length > 0">
+              <div class="editBtn btnGray"
+                @click="deleteItem({data:storeEditInfo,type:'cancel'})">取消</div>
+              <div class="editBtn btnBluePurple"
+                @click="addItem({data:storeEditInfo,type:'add'})">添加下一组</div>
+              <div class="editBtn btnGreen"
+                @click="saveStoreEditInfo">提交</div>
+            </div>
+            <div class="editBtnCtn"
+              v-else>
+              <div class="editBtn btnBluePurple"
+                @click="addItem({data:storeEditInfo,type:'add'})">添加新库存</div>
+            </div>
           </div>
         </div>
       </div>
@@ -275,11 +283,11 @@
       </div>
       <div class="listCtn">
         <div class="filterCtn"
-          :class="{'showMore':showMore}">
+          :class="{'showMore':true}">
           <div class="leftCtn">
             <div class="label">筛选条件：</div>
-            <div class="showMore"
-              @click="showMore=!showMore">{{!showMore?'展示更多':'收起筛选'}}</div>
+            <!-- <div class="showMore"
+              @click="showMore=!showMore">{{!showMore?'展示更多':'收起筛选'}}</div> -->
             <div class="elCtn">
               <el-select v-model="storeLogListFilter.LV2_name"
                 @change="getStoreLogList"
@@ -352,7 +360,7 @@
               @click="resetFilter">重置</div>
           </div>
         </div>
-        <div class="tableCtn">
+        <div class="tableCtn noBorder">
           <div class="thead">
             <div class="trow">
               <div class="tcolumn">仓库</div>
@@ -387,20 +395,27 @@
               <div class="tcolumn">操作人</div>
             </div>
           </div>
-        </div>
-        <div class="tpage">
-          <div class="leftInfo">
-            <div class="item">
-              <span class="label">合计入库：</span>
-              <span class="blue">15130KG</span>
+          <div class="tpage">
+            <div class="leftInfo">
+              <div class="item">
+                <span class="label">合计入库：</span>
+                <span class="blue">15130KG</span>
+              </div>
+              <div class="item">
+                <span class="label">合计出库：</span>
+                <span class="orange">15130KG</span>
+              </div>
             </div>
-            <div class="item">
-              <span class="label">合计出库：</span>
-              <span class="orange">15130KG</span>
-            </div>
+            <el-pagination background
+              current-page.sync="1"
+              @current-change="getStoreLogList"
+              :page-size="storeLogListFilter.limit || 10"
+              layout="prev, pager, next"
+              :total="30">
+            </el-pagination>
           </div>
         </div>
-        <div class="pageCtn">
+        <!-- <div class="pageCtn">
           <el-pagination background
             current-page.sync="1"
             @current-change="getStoreLogList"
@@ -408,7 +423,7 @@
             layout="prev, pager, next"
             :total="30">
           </el-pagination>
-        </div>
+        </div> -->
       </div>
     </div>
     <div class="bottomFixBar">
@@ -562,7 +577,11 @@ export default Vue.extend({
         this.$message.warning('未知重置错误')
       }
     },
-    addItem({ data, type }: { data: object[]; type: 'add' | 'copy' }) {
+    addItem({ data, item, type = 'add' }: { data: Object[]; type: 'add' | 'copy'; item: Object }) {
+      if (type === 'copy') {
+        data.push(this.$clone(item))
+        return
+      }
       data.push({
         LV2_name: '',
         type: '',

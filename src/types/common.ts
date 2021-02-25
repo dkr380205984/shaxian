@@ -47,10 +47,20 @@ export interface Color {
 export interface Store {
   id: number | null
   name: string
-  type: 1 | 2, // 1本厂仓库2染厂仓库
-  admins: string[] | ''
-  LV2_info: Array<{ name: string }>
+  type: 1 | 2 // 1本厂仓库2染厂仓库
+  admins: Array<string | number>
+  LV2_info: Array<{ name: string, id: number | null }>
   desc: string
   checked?: boolean
   total_weight?: number
+}
+export interface StoreDetail {
+  id: number
+  name: string
+  type: 1 | 2
+  manager_data: Array<{ name: string, user_id: number | string }>
+  second_data: Array<{ id: number, store_id?: number, name: string }>
+  create_time: Date | null,
+  user_name: string
+  desc: string | null
 }

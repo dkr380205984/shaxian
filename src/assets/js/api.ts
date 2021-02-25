@@ -47,7 +47,7 @@ const user = {
 import { Product, ProductDetail } from '@/types/product'
 const product = {
   create: (params: { data: Product[] }) => http.post(`${baseUrl}/yarn/save`, params, 'application/json'),
-  list: (params: ListParam) => http.get(`${baseUrl}/yarn/lists`, params),
+  list: (params?: ListParam) => http.get(`${baseUrl}/yarn/lists`, params),
   delete: (params: DeleteParam) => http.post(`${baseUrl}/yarn/delete`, params, 'application/json'),
   detail: (params: DetailParam) => http.get(`${baseUrl}/yarn/detail`, params),
   editPro: (params: { id: string, name: string, yarn_type: number }) => http.post(`${baseUrl}/yarn/edit`, params, 'application/json'),
@@ -64,12 +64,20 @@ const order = {
   delete: (params: DeleteParam) => http.post(`${baseUrl}/order/delete`, params, 'application/json'),
   deleteChild: (params: DeleteParam) => http.post(`${baseUrl}/order/child/delete`, params, 'application/json')
 }
+import { StoreCreateParams, StoreDetailParams, StoreListParams, StoreDetailYarnListParams } from '@/types/store'
 // 仓库
 const store = {
-  create: (params: any) => http.post(`${baseUrl}/store/save`, params, 'application/json'),
-  detail: (params: any) => http.get(`${baseUrl}/store/detail`, params),
-  delete: (params: any) => http.post(`${baseUrl}/store/delete`, params, 'application/json'),
-  list: (params?: any) => http.get(`${baseUrl}/user/lists`, params)
+  create: (params: StoreCreateParams) => http.post(`${baseUrl}/store/save`, params, 'application/json'),
+  detail: (params: StoreDetailParams) => http.get(`${baseUrl}/store/detail`, params),
+  delete: (params: StoreDetailParams) => http.post(`${baseUrl}/store/delete`, params, 'application/json'),
+  list: (params?: StoreListParams) => http.get(`${baseUrl}/store/lists`, params),
+  detailYarnList: (params: StoreDetailYarnListParams) => http.get(`${baseUrl}/store/total/lists`, params)
+}
+// 出入库
+const stock = {
+  create: (params: any) => http.post(`${baseUrl}/store/total/save`, params, 'application/json'),
+  delete: (params: any) => http.post(`${baseUrl}/store/log/delete`, params, 'application/json'),
+  list: (params?: any) => http.get(`${baseUrl}/store/log/lists`, params)
 }
 export {
   login,
@@ -81,5 +89,6 @@ export {
   partyB,
   user,
   order,
-  store
+  store,
+  stock
 }

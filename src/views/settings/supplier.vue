@@ -166,6 +166,7 @@ export default Vue.extend({
     [propName: string]: any
   } {
     return {
+      loading: true,
       addFlag: false,
       supplierList: [],
       supplierInfo: {

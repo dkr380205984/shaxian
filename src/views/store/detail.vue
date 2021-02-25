@@ -577,7 +577,7 @@ export default Vue.extend({
         this.$message.warning('未知重置错误')
       }
     },
-    addItem({ data, item, type = 'add' }: { data: Object[]; type: 'add' | 'copy'; item: Object }) {
+    addItem({ data, item, type = 'add' }: { data: object[]; type: 'add' | 'copy'; item: object }) {
       if (type === 'copy') {
         data.push(this.$clone(item))
         return

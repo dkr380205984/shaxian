@@ -64,12 +64,22 @@ const order = {
   delete: (params: DeleteParam) => http.post(`${baseUrl}/order/delete`, params, 'application/json'),
   deleteChild: (params: DeleteParam) => http.post(`${baseUrl}/order/child/delete`, params, 'application/json')
 }
+
 // 仓库
 const store = {
   create: (params: any) => http.post(`${baseUrl}/store/save`, params, 'application/json'),
   detail: (params: any) => http.get(`${baseUrl}/store/detail`, params),
   delete: (params: any) => http.post(`${baseUrl}/store/delete`, params, 'application/json'),
   list: (params?: any) => http.get(`${baseUrl}/user/lists`, params)
+}
+
+// 采购
+import { OrderYarn } from '@/types/orderYarn'
+const yarnOrder = {
+  create: (params: { data: OrderYarn[] }) => http.post(`${baseUrl}/order/purchase/save`, params, 'application/json'),
+  list: (params: ListParam) => http.get(`${baseUrl}/order/purchase/lists`, params),
+  delete: (params: DeleteParam) => http.post(`${baseUrl}/order/purchase/delete`, params, 'application/json'),
+  update: (params: OrderYarn) => http.post(`${baseUrl}/order/purchase/edit`, params, 'application/json')
 }
 export {
   login,
@@ -81,5 +91,6 @@ export {
   partyB,
   user,
   order,
-  store
+  store,
+  yarnOrder
 }

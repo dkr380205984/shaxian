@@ -1,0 +1,109 @@
+@import '../common.less';
+@import '../detail.less';
+@import '../table.less';
+@import '../popup.less';
+@import '../edit.less';
+@import '../list.less';
+#yarnOrderDetail{
+  .orderNum{
+    width: 16px;
+    height: 16px;
+    line-height: 16px;
+    border: 1px solid;
+    border-radius: 50%;
+    color: @green;
+    text-align: center;
+  }
+  .btnCtn{
+    margin-bottom:18px;
+    .btn{
+      float:right;
+      margin-left: 12px;
+    }
+  }
+  .editContainer{
+    margin-bottom: 24px;
+  }
+  .btns{
+    margin: 12px 0;
+  }
+  .popup{
+    .main{
+       width: 966px;
+       .contentCtn{
+         min-height: 400px;
+         max-height: 660px;
+       }
+       .sort{
+         position: absolute;
+         right:0;
+         top: 0;
+         line-height: 24px;
+         color: #fff;
+         background: @orange;
+         min-width: 24px;
+         text-align: center;
+       }
+       .eRowCtn{
+         position: relative;
+       }
+       .stepCtn{
+         display: flex;
+         justify-content: space-around;
+         margin: 20px 0;
+         .step{
+            width: 100px;
+            display: flex;
+            align-items: center;
+            flex-direction: column;
+            position: relative;
+            &:nth-child(2){
+              &::after{
+                content:'';
+                position: absolute;
+                width: 200px;
+                height: 1px;
+                background: @border;
+                left: 100px;
+                top: 20px;
+              }
+              &::before{
+                content:'';
+                position: absolute;
+                width: 200px;
+                height: 1px;
+                background: @border;
+                right: 100px;
+                top: 20px;
+              }
+            }
+         }
+         .index{
+           width: 40px;
+           height: 40px;
+           text-align: center;
+           line-height: 40px;
+           border:1px solid;
+           border-radius: 50%;
+           color: @font25;
+           margin: 0;
+         }
+         .text{
+           text-align: center;
+           margin-top: 12px;
+           font-size: @fontBig;
+           color: @font65;
+         }
+       }
+    }
+  }
+  .listCtn{
+    .tableCtn{
+      margin: 0;
+    }
+    .row{
+      min-height: 50px;
+      height: auto;
+    }
+  }
+}

@@ -1,6 +1,6 @@
 <template>
   <div class="indexMain"
-    id="orderDeatil">
+    id="yarnOrderDetail">
     <div class="module">
       <div class="titleCtn">
         <span class="title">基本信息</span>
@@ -63,9 +63,6 @@
           <div class="btn"
             :class="{'btnMain':checkList.length===1,'btnGray':checkList.length!==1}"
             @click="openStore">库存调取</div>
-          <div class="btn"
-            :class="{'btnMain':checkList.length>0,'btnGray':checkList.length===0}"
-            @click="openProcess">纱线加工</div>
         </div>
         <div class="tableCtn">
           <div class="thead">
@@ -76,7 +73,7 @@
                   @change="checkAllPro">纱线名称</el-checkbox>
               </div>
               <div class="tcolumn noPad"
-                style="flex:8">
+                style="flex:7">
                 <div class="trow">
                   <div class="tcolumn">纱线颜色</div>
                   <div class="tcolumn">纱线属性</div>
@@ -85,7 +82,6 @@
                   <div class="tcolumn">数量属性</div>
                   <div class="tcolumn">调取数量</div>
                   <div class="tcolumn">订购数量</div>
-                  <div class="tcolumn">加工数量</div>
                 </div>
               </div>
             </div>
@@ -100,7 +96,7 @@
                   @change="checkAllSize($event,item)">{{item.product_name}}</el-checkbox>
               </div>
               <div class="tcolumn noPad"
-                style="flex:8">
+                style="flex:7">
                 <div class="trow"
                   v-for="itemChild in item.child_data"
                   :key="itemChild.id">
@@ -114,18 +110,6 @@
                   <div class="tcolumn">{{itemChild.number_attribute}}</div>
                   <div class="tcolumn blue">0</div>
                   <div class="tcolumn blue">0</div>
-                  <div class="tcolumn blue">
-                    <div class="once">
-                      <span class="green"
-                        style="margin-right:5px">染色</span>
-                      <span class="blue">100</span>
-                    </div>
-                    <div class="once">
-                      <span class="green"
-                        style="margin-right:5px">倒纱</span>
-                      <span class="blue">100</span>
-                    </div>
-                  </div>
                 </div>
               </div>
             </div>
@@ -186,7 +170,7 @@
                         <div class="column min120">{{itemChild.color}}</div>
                         <div class="column min120">{{itemChild.price}}</div>
                         <div class="column min120">{{itemChild.weight}}</div>
-                        <div class="column min120">实际订购数量</div>
+                        <div class="column min120">{{itemChild.reality_weight}}</div>
                         <div class="column min120">{{itemChild.desc||'无'}}</div>
                         <div class="column min120">创建人</div>
                         <div class="column min120">审核状态</div>
@@ -232,17 +216,18 @@
                   v-for="item in order_yarn_list"
                   :key="item.id">
                   <div class="column min120"
-                    :style="{'height':50*item.child_data.length + 'px'}">操作</div>
+                    :style="{'height':50*item.child_data.length + 'px'}">
+                    <span class="blue opr">打印</span>
+                    <span class="orange opr"
+                      @click="getUpdateInfo(item)">修改</span>
+                    <span class="red opr"
+                      @click="deleteOrder(item.id)">删除</span>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
-    </div>
-    <div class="module">
-      <div class="titleCtn">
-        <span class="title">加工信息</span>
       </div>
     </div>
     <div class="popup"
@@ -413,6 +398,204 @@
         </div>
       </div>
     </div>
+    <div class="popup"
+      v-show="flags.order_update_flag">
+      <div class="main">
+        <div class="titleCtn">
+          <span class="text">修改订购信息</span>
+          <i class="close_icon el-icon-close"
+            @click="flags.order_update_flag = false"></i>
+        </div>
+        <div class="contentCtn">
+          <div class="editCtn">
+            <div class="editContainer">
+              <i class="el-icon-circle-close"></i>
+              <div class="eRow">
+                <div class="eColumn">
+                  <div class="label isMust">供货商名称</div>
+                  <div class="from">
+                    <el-select placeholder="请选择供货商"
+                      v-model="update_order_info.client_id">
+                      <el-option v-for="item in client_arr"
+                        :key="item.id"
+                        :label="item.name"
+                        :value="item.id"></el-option>
+                    </el-select>
+                  </div>
+                </div>
+              </div>
+              <div class="eRowCtn"
+                v-for="(itemChild,indexChild) in update_order_info.child_data"
+                :key="indexChild">
+                <div class="sort">{{indexChild+1}}</div>
+                <div class="eRow">
+                  <div class="eColumn">
+                    <div class="label isMust">纱线名称</div>
+                    <div class="from">
+                      <el-select placeholder="请选择纱线"
+                        v-model="itemChild.order_info_id">
+                        <el-option v-for="item in select_yarn_arr"
+                          :key="item.id"
+                          :value="item.id"
+                          :label="item.product_name + '/' + item.color + '/' + item.attribute"></el-option>
+                      </el-select>
+                    </div>
+                  </div>
+                  <div class="eColumn">
+                    <div class="label isMust">订购颜色</div>
+                    <div class="from">
+                      <el-input placeholder="颜色"
+                        v-model="itemChild.color"
+                        style="margin-right:12px"></el-input>
+                    </div>
+                  </div>
+                  <div class="eColumn">
+                    <div class="label isMust">订购属性</div>
+                    <div class="from">
+                      <el-select placeholder="属性"
+                        v-model="itemChild.attribute"></el-select>
+                    </div>
+                  </div>
+                  <div class="opr blue"
+                    v-if="indexChild===0"
+                    @click="$addItem(update_order_info.child_data,{
+                      order_id: $route.params.id,
+                      order_number: '',
+                      order_info_id: '',
+                      weight: '',
+                      color: '',
+                      attribute: '',
+                      price: ''
+                    })">添加</div>
+                  <div class="opr red"
+                    v-if="indexChild>0"
+                    @click="$deleteItem(update_order_info.child_data,indexChild)">删除</div>
+                </div>
+                <div class="eRow">
+                  <div class="eColumn">
+                    <div class="label isMust">订购数量</div>
+                    <div class="from">
+                      <el-input placeholder="请输入订购数量"
+                        v-model="itemChild.weight">
+                        <template slot="append">kg</template>
+                      </el-input>
+                    </div>
+                  </div>
+                  <div class="eColumn">
+                    <div class="label isMust">订购单价</div>
+                    <div class="from">
+                      <el-input placeholder="请输入订购数量"
+                        v-model="itemChild.price">
+                        <template slot="append">元</template>
+                      </el-input>
+                    </div>
+                  </div>
+                  <div class="eColumn">
+                    <div class="label isMust">实际订购数量</div>
+                    <div class="from">
+                      <el-input placeholder="实际订购数量"
+                        v-model="itemChild.reality_weight">
+                        <template slot="append">kg</template>
+                      </el-input>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="eRow">
+                <div class="eColumn">
+                  <div class="label isMust">下单日期</div>
+                  <div class="from">
+                    <el-date-picker v-model="update_order_info.order_time"
+                      type="date"
+                      value-format="yyyy-MM-dd"
+                      placeholder="选择下单日期">
+                    </el-date-picker>
+                  </div>
+                </div>
+                <div class="eColumn">
+                  <div class="label isMust">交货日期</div>
+                  <div class="from">
+                    <el-date-picker v-model="update_order_info.delivery_time"
+                      type="date"
+                      value-format="yyyy-MM-dd"
+                      placeholder="选择交货日期">
+                    </el-date-picker>
+                  </div>
+                </div>
+                <div class="eColumn">
+                  <div class="label">备注信息</div>
+                  <div class="from">
+                    <el-input v-model="update_order_info.desc"
+                      placeholder="请输入备注"></el-input>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="oprCtn">
+          <div class="opr"
+            @click="flags.order_update_flag = false">取消</div>
+          <div class="opr orange"
+            @click="updateOrder">修改</div>
+        </div>
+      </div>
+    </div>
+    <div class="popup"
+      v-show="flags.store_flag">
+      <div class="main">
+        <div class="titleCtn">
+          <span class="text">库存调取</span>
+          <i class="close_icon el-icon-close"
+            @click="flags.store_flag = false"></i>
+        </div>
+        <div class="contentCtn">
+          <div class="stepCtn">
+            <div class="step">
+              <div class="index">1</div>
+              <div class="text">选择仓库</div>
+            </div>
+            <div class="step">
+              <div class="index">2</div>
+              <div class="text">调取数量</div>
+            </div>
+            <div class="step">
+              <div class="index">3</div>
+              <div class="text">确认调取</div>
+            </div>
+          </div>
+          <div class="listCtn">
+            <div class="filterCtn"
+              :class="{'showMore':showMore}">
+              <div class="leftCtn"
+                style="padding-right:0">
+                <div class="elCtn">
+                  <el-input v-model="value"
+                    placeholder="输入订单号"></el-input>
+                </div>
+                <div class="elCtn">
+                  <el-input v-model="value"
+                    placeholder="输入纱线名称"></el-input>
+                </div>
+                <div class="elCtn">
+                  <el-select v-model="value"
+                    placeholder="选择下单公司"></el-select>
+                </div>
+              </div>
+              <div class="rightCtn"
+                style="min-width:100px">
+                <div class="btn btnGray fr">重置</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="oprCtn">
+          <div class="opr"
+            @click="flags.order_update_flag = false">取消</div>
+          <div class="opr blue">下一步</div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -424,6 +607,7 @@ import { order, yarnOrder } from '@/assets/js/api'
 export default Vue.extend({
   data(): {
     order_info: Order
+    update_order_info: OrderYarn
     order_yarn_info: OrderYarn[]
     order_yarn_list: OrderYarn[]
     [propName: string]: any
@@ -444,7 +628,7 @@ export default Vue.extend({
       flags: {
         order_flag: false,
         store_flag: false,
-        process_flag: false
+        order_update_flag: false
       },
       select_yarn_arr: [],
       order_yarn_info: [
@@ -457,7 +641,17 @@ export default Vue.extend({
           child_data: []
         }
       ],
-      order_yarn_list: []
+      order_yarn_list: [],
+      update_order_info: {
+        code: '',
+        order_id: '',
+        client_name: '',
+        client_id: '',
+        child_data: [],
+        order_time: '',
+        delivery_time: '',
+        desc: ''
+      }
     }
   },
   computed: {
@@ -480,6 +674,24 @@ export default Vue.extend({
     }
   },
   methods: {
+    init() {
+      Promise.all([
+        order.detail({
+          id: this.$route.params.id
+        }),
+        yarnOrder.list({
+          order_id: this.$route.params.id
+        })
+      ]).then((res) => {
+        this.order_info = res[0].data.data
+        this.order_info.product_info = this.$mergeData(this.order_info.product_info, {
+          mainRule: 'product_name',
+          childrenName: 'child_data',
+          otherRule: [{ name: 'product_id' }]
+        })
+        this.order_yarn_list = res[1].data.data
+      })
+    },
     checkAllPro(ev: boolean) {
       this.indeterminate = false
       this.order_info.product_info.forEach((item: any) => {
@@ -598,9 +810,6 @@ export default Vue.extend({
     openStore() {
       console.log(this.order_info)
     },
-    openProcess() {
-      console.log(this.order_info)
-    },
     saveOrder() {
       yarnOrder.create({ data: this.order_yarn_info }).then((res) => {
         if (res.data.status) {
@@ -609,6 +818,31 @@ export default Vue.extend({
           this.flags.order_flag = false
         }
       })
+    },
+    deleteOrder(id: number) {
+      this.$confirm('是否要删除该订购记录?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      })
+        .then(() => {
+          yarnOrder
+            .delete({
+              id
+            })
+            .then((res) => {
+              if (res.data.status) {
+                this.$message.success('删除成功')
+                this.init()
+              }
+            })
+        })
+        .catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          })
+        })
     },
     resetOrder() {
       this.order_yarn_info = [
@@ -621,6 +855,25 @@ export default Vue.extend({
           child_data: []
         }
       ]
+    },
+    getUpdateInfo(info: OrderYarn) {
+      this.update_order_info = info
+      this.flags.order_update_flag = true
+      this.order_info.product_info.forEach((item: any) => {
+        item.child_data.forEach((itemChild: any) => {
+          itemChild.product_name = item.product_name
+          this.select_yarn_arr.push(itemChild)
+        })
+      })
+    },
+    updateOrder() {
+      yarnOrder.update(this.update_order_info).then((res) => {
+        if (res.data.status) {
+          this.$message.success('修改成功')
+          this.flags.order_update_flag = false
+          this.init()
+        }
+      })
     }
   },
   mounted() {
@@ -631,25 +884,10 @@ export default Vue.extend({
         getInfoApi: 'getPartyBAsync'
       }
     ])
-    Promise.all([
-      order.detail({
-        id: this.$route.params.id
-      }),
-      yarnOrder.list({
-        order_id: this.$route.params.id
-      })
-    ]).then((res) => {
-      this.order_info = res[0].data.data
-      this.order_info.product_info = this.$mergeData(this.order_info.product_info, {
-        mainRule: 'product_name',
-        childrenName: 'child_data',
-        otherRule: [{ name: 'product_id' }]
-      })
-      this.order_yarn_list = res[1].data.data
-    })
+    this.init()
   }
 })
 </script>
 <style lang="less" scoped>
-@import '~@/assets/less/order/detail.less';
+@import '~@/assets/less/yarnOrder/detail.less';
 </style>

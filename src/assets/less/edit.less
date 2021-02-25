@@ -3,7 +3,7 @@
 .editCtn{
   .editContainer{
     position: relative;
-    padding: 24px 98px 24px 24px;
+    padding: 24px 64px 24px 24px;
     box-sizing: border-box;
     margin-bottom: 16px;
     background-color: @containerBg;
@@ -24,9 +24,15 @@
       user-select: none;
       cursor: pointer;
     }
+    .eRowCtn{
+      background:#f0f0f0;
+      padding: 24px 64px 24px 24px;
+      margin-bottom: 12px;
+    }
     .eRow{
       display: flex;
       margin-bottom: 20px;
+      position: relative;
       &:last-child{
         margin-bottom: 0;
       }
@@ -36,10 +42,13 @@
         }
       }
       .eColumn{
-        width: calc((100% - 160px) / 3);
+        &.flex2{
+          width: calc((100% - 80px) / 3*2 + 40px);
+        }
+        width: calc((100% - 80px) / 3);
         display: flex;
         flex-direction: column;
-        margin-left: 80px;
+        margin-left: 40px;
         &:first-child{
           margin-left: 0;
         }
@@ -57,12 +66,29 @@
           }
           &.isMust::after{
             content: '（必填）';
-            color: @font85;
+            color: @font25;
+          }
+          .explanation{
+            color: @font25;
+            margin-left: 5px;
           }
         }
         .from{
           min-height: 36px;
+          &.flex{
+            display: flex;
+            flex-direction: row;
+          }
         }
+      }
+      .opr{
+        position: absolute;
+        right:-3em;
+        width: 2em;
+        top: 0;
+        margin-top: 34px;
+        line-height: 32px;
+        cursor: pointer;
       }
     }
   }

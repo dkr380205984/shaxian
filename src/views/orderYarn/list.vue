@@ -3,9 +3,7 @@
     class="indexMain">
     <div class="module">
       <div class="titleCtn">
-        <span class="title hasBorder">订单列表</span>
-        <span class="addBtn btn btnMain"
-          @click="$router.push('/order/create')">添加订单</span>
+        <span class="title hasBorder">订购调取列表</span>
       </div>
       <div class="listCtn">
         <div class="filterCtn"
@@ -139,11 +137,7 @@
               width="140">
               <template slot-scope="scope">
                 <span class="blue opr"
-                  @click="$router.push('/order/detail/'+scope.row.id)">详情</span>
-                <span class="orange opr"
-                  @click="$router.push('/order/update/'+scope.row.id)">修改</span>
-                <span class="red opr"
-                  @click="deleteOrder(scope.row.id)">删除</span>
+                  @click="$router.push('/orderYarn/detail/'+scope.row.id)">订购调取</span>
               </template>
             </el-table-column>
           </el-table>

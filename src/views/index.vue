@@ -17,7 +17,12 @@
             text-color="#fff"
             active-text-color="#ffd04b">
             <el-menu-item index="/product/list/page=1&&page_size=10&&name=&&color=&&attribute=&&yarn_type=">纱线管理</el-menu-item>
-            <el-menu-item index="/order/list/1">订单管理</el-menu-item>
+            <el-submenu index='2'>
+              <template slot="title">订单管理</template>
+              <el-menu-item index="/order/list/1">订单列表</el-menu-item>
+              <el-menu-item index="/orderYarn/list/1">订购调取</el-menu-item>
+              <el-menu-item index="/processYarn/list/1">加工管理</el-menu-item>
+            </el-submenu>
             <el-menu-item index="/store/list">库存管理</el-menu-item>
             <el-menu-item index="4">财务管理</el-menu-item>
             <el-submenu index='5'>
@@ -64,7 +69,6 @@ export default Vue.extend({
   },
   methods: {
     goRouter(url: string) {
-      console.log(url)
       this.$router.push(url)
     }
   }

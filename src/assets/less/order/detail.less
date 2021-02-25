@@ -2,6 +2,8 @@
 @import '../detail.less';
 @import '../table.less';
 @import '../popup.less';
+@import '../edit.less';
+@import '../list.less';
 #orderDeatil{
   .orderNum{
     width: 16px;
@@ -19,13 +21,41 @@
       margin-left: 12px;
     }
   }
+  .editContainer{
+    margin-bottom: 24px;
+  }
+  .btns{
+    margin: 12px 0;
+  }
   .popup{
     .main{
-       width: 1000px;
+       width: 966px;
        .contentCtn{
          min-height: 400px;
          max-height: 660px;
        }
+       .sort{
+         position: absolute;
+         right:0;
+         top: 0;
+         line-height: 24px;
+         color: #fff;
+         background: @orange;
+         min-width: 24px;
+         text-align: center;
+       }
+       .eRowCtn{
+         position: relative;
+       }
+    }
+  }
+  .listCtn{
+    .tableCtn{
+      margin: 0;
+    }
+    .row{
+      min-height: 50px;
+      height: auto;
     }
   }
 }

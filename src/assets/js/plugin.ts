@@ -243,6 +243,43 @@ const submitLock = () => {
     }, 1000)
   }
 }
+const unique = (arr: any[], key: string) => {
+  if (key) {
+    const newArr: any[] = []
+    arr.forEach((itemF: { [key: string]: number | string }) => {
+      if (!newArr.find((itemFI: { [key: string]: number | string }) => itemFI[key] === itemF[key])) {
+        newArr.push(itemF)
+      }
+    })
+    return newArr
+  } else {
+    return [...new Set(arr)]
+  }
+}
+/**
+ * @param {string} el 到达其视图的id
+ * @returns {void|boolean}
+ */
+const goElView = (el: string) => {
+  if (!el) {
+    throw new TypeError('请传入element的"id"')
+  }
+  const ele = document.getElementById(el)
+  if (ele) {
+    ele.scrollIntoView(true)
+  } else {
+    return false
+  }
+}
+// 123456转123，456
+const formatNum = (num: number): string => {
+  if (num === null || num === undefined) {
+    return 'NaN'
+  }
+  const str: string = num.toString()
+  const reg: RegExp = str.indexOf('.') > -1 ? /(\d)(?=(\d{3})+\.)/g : /(\d)(?=(?:\d{3})+$)/g
+  return str.replace(reg, '$1,')
+}
 
 export default {
   install: (Vue: any) => {
@@ -257,5 +294,8 @@ export default {
     Vue.prototype.$addItem = plugin.addItem
     Vue.prototype.$deleteItem = plugin.deleteItem
     Vue.prototype.$submitLock = submitLock()
+    Vue.prototype.$goElView = goElView
+    Vue.prototype.$formatNum = formatNum
+    Vue.prototype.$unique = unique
   }
 }

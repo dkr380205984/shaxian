@@ -1,4 +1,5 @@
 export interface YarnInfo {
+  id?: number | string
   order_info_id: number | string // 订单里的纱线id
   order_number?: number | string // 下单数量
   weight: number | string // 订购数量

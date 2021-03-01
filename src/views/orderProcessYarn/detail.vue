@@ -63,6 +63,12 @@
           <div class="btn"
             :class="{'btnMain':checkList.length===1,'btnGray':checkList.length!==1}"
             @click="openStore">库存调取</div>
+          <div class="btn"
+            :class="{'btnMain':checkList.length>0,'btnGray':checkList.length===0}">染色加工</div>
+          <div class="btn"
+            :class="{'btnMain':checkList.length>0,'btnGray':checkList.length===0}">倒筒加工</div>
+          <div class="btn"
+            :class="{'btnMain':checkList.length>0,'btnGray':checkList.length===0}">膨纱加工</div>
         </div>
         <div class="tableCtn">
           <div class="thead">
@@ -120,6 +126,105 @@
     <div class="module">
       <div class="titleCtn">
         <span class="title">库存调取信息</span>
+      </div>
+      <div class="listCtn">
+        <div class="list">
+          <div class="overflow">
+            <div class="tableCtn">
+              <div class="table">
+                <div class="headCtn">
+                  <div class="row">
+                    <div class="column min120">单号</div>
+                    <div class="column min120">仓库名称</div>
+                    <div class="column min120">调取纱线</div>
+                    <div class="column min120">调取颜色/属性</div>
+                    <div class="column"
+                      style="flex:10;flex-direction:column">
+                      <div class="row">
+                        <div class="column min120">订单纱线</div>
+                        <div class="column min120">下单颜色/属性</div>
+                        <div class="column min120">调取数量</div>
+                        <div class="column min120">实际调取数量</div>
+                      </div>
+                    </div>
+                    <div class="column min120">操作日期</div>
+                    <div class="column min120">备注信息</div>
+                    <div class="column min120">操作</div>
+                  </div>
+                </div>
+                <div class="bodyCtn">
+                  <div class="row"
+                    v-for="item in store_yarn_list"
+                    :key="item.id">
+                    <div class="column min120">{{item.code}}</div>
+                    <div class="column min120">{{item.store_name}}</div>
+                    <div class="column min120">{{item.name}}</div>
+                    <div class="column min120">{{item.color}}/{{item.attribute}}</div>
+                    <div class="column"
+                      style="flex:10;flex-direction:column">
+                      <div class="row"
+                        v-for="itemChild in item.child_data"
+                        :key="itemChild.order_info_id">
+                        <div class="column min120">{{itemChild.name}}</div>
+                        <div class="column min120">{{itemChild.color}}/{{itemChild.attribute}}</div>
+                        <div class="column min120 blue">{{itemChild.weight}}</div>
+                        <div class="column min120 blue">{{itemChild.reality_weight}}</div>
+                      </div>
+                    </div>
+                    <div class="column min120">操作日期</div>
+                    <div class="column min120">备注信息</div>
+                    <div class="column min120">操作</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="coverTable">
+            <div class="floatL">
+              <div class="headCtn">
+                <div class="row">
+                  <div class="column min120">单号</div>
+                  <div class="column min120">仓库名称</div>
+                  <div class="column min120">调取纱线</div>
+                  <div class="column min120">调取颜色/属性</div>
+                </div>
+              </div>
+              <div class="bodyCtn">
+                <div class="row"
+                  v-for="item in store_yarn_list"
+                  :key="item.id">
+                  <div class="column min120"
+                    :style="{'height':50*item.child_data.length + 'px'}">{{item.code}}</div>
+                  <div class="column min120"
+                    :style="{'height':50*item.child_data.length + 'px'}">{{item.store_name}}</div>
+                  <div class="column min120"
+                    :style="{'height':50*item.child_data.length + 'px'}">{{item.name}}</div>
+                  <div class="column min120"
+                    :style="{'height':50*item.child_data.length + 'px'}">{{item.color}}/{{item.attribute}}</div>
+                </div>
+              </div>
+            </div>
+            <div class="floatR">
+              <div class="headCtn">
+                <div class="row">
+                  <div class="column min120">操作</div>
+                </div>
+              </div>
+              <div class="bodyCtn">
+                <div class="row"
+                  v-for="item in store_yarn_list"
+                  :key="item.id">
+                  <div class="column min120"
+                    :style="{'height':50*item.child_data.length + 'px'}">
+                    <span class="blue opr">打印</span>
+                    <span class="red opr"
+                      @click="deleteStore(item.id)">删除</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
     <div class="module">
@@ -547,39 +652,38 @@
         <div class="titleCtn">
           <span class="text">库存调取</span>
           <i class="close_icon el-icon-close"
-            @click="flags.store_flag = false"></i>
+            @click="resetStore"></i>
         </div>
         <div class="contentCtn">
           <div class="stepCtn">
-            <div class="step">
+            <div class="step"
+              :class="{'active':store_step===1,'confirm':store_step>1}">
               <div class="index">1</div>
               <div class="text">选择仓库</div>
             </div>
-            <div class="step">
+            <div class="step"
+              :class="{'active':store_step===2,'confirm':store_step>2}">
               <div class="index">2</div>
-              <div class="text">调取数量</div>
-            </div>
-            <div class="step">
-              <div class="index">3</div>
-              <div class="text">确认调取</div>
+              <div class="text">调取信息</div>
             </div>
           </div>
-          <div class="listCtn">
-            <div class="filterCtn"
-              :class="{'showMore':showMore}">
+          <div class="listCtn"
+            v-if="store_step===1">
+            <div class="filterCtn">
               <div class="leftCtn"
                 style="padding-right:0">
+                <div class="label">筛选条件：</div>
                 <div class="elCtn">
-                  <el-input v-model="value"
-                    placeholder="输入订单号"></el-input>
+                  <el-input v-model="store_filter.name"
+                    placeholder="搜索纱线名称"></el-input>
                 </div>
                 <div class="elCtn">
-                  <el-input v-model="value"
-                    placeholder="输入纱线名称"></el-input>
+                  <el-input v-model="store_filter.color"
+                    placeholder="搜索颜色"></el-input>
                 </div>
                 <div class="elCtn">
-                  <el-select v-model="value"
-                    placeholder="选择下单公司"></el-select>
+                  <el-select v-model="store_filter.store_id"
+                    placeholder="筛选仓库"></el-select>
                 </div>
               </div>
               <div class="rightCtn"
@@ -587,12 +691,183 @@
                 <div class="btn btnGray fr">重置</div>
               </div>
             </div>
+            <div class="tableCtn"
+              style="margin:12px 0">
+              <div class="thead">
+                <div class="trow">
+                  <div class="tcolumn">纱线名称</div>
+                  <div class="tcolumn noPad"
+                    style="flex:8">
+                    <div class="trow">
+                      <div class="tcolumn">纱线颜色</div>
+                      <div class="tcolumn">纱线属性</div>
+                      <div class="tcolumn">色号</div>
+                      <div class="tcolumn">批/缸号</div>
+                      <div class="tcolumn">仓库名称</div>
+                      <div class="tcolumn">实际库存</div>
+                      <div class="tcolumn">可用库存</div>
+                      <div class="tcolumn">操作</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="tbody">
+                <div class="trow"
+                  v-for="item in store_list"
+                  :key="item.name">
+                  <div class="tcolumn">{{item.name}}</div>
+                  <div class="tcolumn noPad"
+                    style="flex:8">
+                    <div class="trow"
+                      v-for="itemChild in item.child_data"
+                      :key="itemChild.id">
+                      <div class="tcolumn">{{itemChild.color}}</div>
+                      <div class="tcolumn">{{itemChild.attribute}}</div>
+                      <div class="tcolumn">{{itemChild.color_code}}</div>
+                      <div class="tcolumn">{{itemChild.vat_code}}</div>
+                      <div class="tcolumn">{{itemChild.store_name}}</div>
+                      <div class="tcolumn">{{itemChild.total_weight}}</div>
+                      <div class="tcolumn">{{itemChild.use_weight}}</div>
+                      <div class="tcolumn">
+                        <span class="opr blue"
+                          @click="getStoreInfo(itemChild,item.name)">调取</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="ctn"
+            v-if="store_step===2">
+            <div class="listCtn smallHeight">
+              <div class="list">
+                <div class="headCtn">
+                  <div class="row">
+                    <div class="column">纱线名称</div>
+                    <div class="column">纱线颜色</div>
+                    <div class="column">属性</div>
+                    <div class="column">色号</div>
+                    <div class="column">批/缸号</div>
+                    <div class="column">仓库名称</div>
+                    <div class="column">实际库存</div>
+                    <div class="column">可用库存</div>
+                  </div>
+                </div>
+                <div class="bodyCtn">
+                  <div class="row">
+                    <div class="column">{{store_info.product_name}}</div>
+                    <div class="column">{{store_info.color}}</div>
+                    <div class="column">{{store_info.attribute}}</div>
+                    <div class="column">{{store_info.color_code}}</div>
+                    <div class="column">{{store_info.vat_code}}</div>
+                    <div class="column">{{store_info.store_name}}</div>
+                    <div class="column">{{store_info.reality_weight}}</div>
+                    <div class="column">{{store_info.use_weight}}</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="tableCtn"
+              style="margin:12px 0">
+              <div class="thead">
+                <div class="trow">
+                  <div class="tcolumn">纱线名称</div>
+                  <div class="tcolumn noPad"
+                    style="flex:4">
+                    <div class="trow">
+                      <div class="tcolumn">下单颜色</div>
+                      <div class="tcolumn">下单属性</div>
+                      <div class="tcolumn">下单数量</div>
+                      <div class="tcolumn">库存调取数量</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="tbody">
+                <div class="trow">
+                  <div class="tcolumn">{{checkList[0].product_name}}</div>
+                  <div class="tcolumn noPad"
+                    style="flex:4">
+                    <div class="trow"
+                      v-for="(item,index) in store_info.child_data"
+                      :key="index">
+                      <div class="tcolumn">{{item.color}}</div>
+                      <div class="tcolumn">{{item.attribute}}</div>
+                      <div class="tcolumn">{{item.order_weight}}</div>
+                      <div class="tcolumn">
+                        <el-input class="el"
+                          v-model="item.weight"
+                          placeholder="请输入调取数量"
+                          @input="getTotalStore"></el-input>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="total_info">
+              <div>
+                <span class="label">合计调取：</span>
+                <span class="text blue">{{store_info.total_weight}}kg</span>
+              </div>
+              <div>
+                <el-input style="width:720px"
+                  v-model="store_info.desc"
+                  placeholder="请输入备注信息"></el-input>
+              </div>
+            </div>
           </div>
         </div>
         <div class="oprCtn">
           <div class="opr"
-            @click="flags.order_update_flag = false">取消</div>
-          <div class="opr blue">下一步</div>
+            @click="resetStore">取消</div>
+          <div class="opr orange"
+            v-if="store_step===2"
+            @click="store_step= 1">上一步</div>
+          <div class="opr blue"
+            v-if="store_step===2"
+            @click="saveStore">确认调取</div>
+        </div>
+      </div>
+    </div>
+    <div class="popup"
+      v-show="flags.process_flag">
+      <div class="main">
+        <div class="titleCtn">
+          <span class="text">{{flags.process_flag}}加工</span>
+          <i class="close_icon el-icon-close"
+            @click="resetProcess"></i>
+        </div>
+        <div class="contentCtn">
+          <div class="editCtn">
+            <div class="editContainer">
+              <i class="el-icon-circle-close"></i>
+              <div class="eRow">
+                <div class="eColumn">
+                  <div class="label isMust">加工单位名称</div>
+                  <div class="from">
+                    <el-select placeholder="请选择加工单位">
+                      <el-option v-for="item in supplier_arr_a"
+                        :key="item.id"
+                        :label="item.name"
+                        :value="item.id"></el-option>
+                    </el-select>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="btns">
+              <div class="btn btnMain">新增加工单位</div>
+              <div class="btn btnMain"
+                style="margin-left:12px">复制上一组</div>
+            </div>
+          </div>
+        </div>
+        <div class="oprCtn">
+          <div class="opr"
+            @click="resetProcess">取消</div>
+          <div class="opr blue">确认加工</div>
         </div>
       </div>
     </div>
@@ -602,12 +877,14 @@
 <script lang="ts">
 import Vue from 'vue'
 import { Order } from '@/types/order'
-import { OrderYarn, YarnInfo } from '@/types/orderYarn'
-import { order, yarnOrder } from '@/assets/js/api'
+import { OrderStoreInfo } from '@/types/store'
+import { OrderYarn, YarnInfo } from '@/types/orderProcessYarn'
+import { order, yarnOrder, store } from '@/assets/js/api'
 export default Vue.extend({
   data(): {
     order_info: Order
     update_order_info: OrderYarn
+    store_info: OrderStoreInfo
     order_yarn_info: OrderYarn[]
     order_yarn_list: OrderYarn[]
     [propName: string]: any
@@ -628,6 +905,7 @@ export default Vue.extend({
       flags: {
         order_flag: false,
         store_flag: false,
+        process_flag: false,
         order_update_flag: false
       },
       select_yarn_arr: [],
@@ -651,12 +929,44 @@ export default Vue.extend({
         order_time: '',
         delivery_time: '',
         desc: ''
-      }
+      },
+      store_filter: {
+        name: '',
+        color: '',
+        store_id: ''
+      },
+      store_list: [],
+      store_step: 1,
+      store_info: {
+        order_id: '',
+        store_total_id: '',
+        total_weight: '',
+        desc: '',
+        product_name: '',
+        color: '',
+        attribute: '',
+        color_code: '',
+        vat_code: '',
+        store_name: '',
+        use_weight: '',
+        reality_weight: '',
+        child_data: []
+      },
+      store_yarn_list: []
     }
   },
   computed: {
     client_arr() {
       return this.$store.state.api.client.arr
+    },
+    supplier_arr_a() {
+      return this.$store.state.api.supplier.arr
+    },
+    supplier_arr_b() {
+      return this.$store.state.api.supplier.arr
+    },
+    supplier_arr_c() {
+      return this.$store.state.api.supplier.arr
     },
     checkList(): any {
       const returnData: any = []
@@ -681,6 +991,9 @@ export default Vue.extend({
         }),
         yarnOrder.list({
           order_id: this.$route.params.id
+        }),
+        store.orderList({
+          order_id: this.$route.params.id
         })
       ]).then((res) => {
         this.order_info = res[0].data.data
@@ -690,6 +1003,7 @@ export default Vue.extend({
           otherRule: [{ name: 'product_id' }]
         })
         this.order_yarn_list = res[1].data.data
+        this.store_yarn_list = res[2].data.data
       })
     },
     checkAllPro(ev: boolean) {
@@ -808,7 +1122,82 @@ export default Vue.extend({
       this.flags.order_flag = true
     },
     openStore() {
-      console.log(this.order_info)
+      console.log(this.checkList)
+      if (this.checkList.length === 1) {
+        this.store_filter.name = this.$clone(this.checkList[0].product_name)
+        this.getStoreList()
+        this.flags.store_flag = true
+      } else {
+        if (this.checkList.length === 0) {
+          this.$message.error('请选择一种纱线进行调取')
+        } else {
+          this.$message.error('只能同时选择一种纱线进行库存调取操作')
+        }
+      }
+    },
+    getStoreList() {
+      store
+        .detailYarnList({
+          store_id: this.store_filter.store_id,
+          second_store_id: '',
+          name: this.store_filter.name,
+          color: this.store_filter.color,
+          weight: 0
+        })
+        .then((res) => {
+          this.store_list = this.$mergeData(res.data.data, {
+            mainRule: ['name'],
+            childrenName: 'child_data'
+          })
+        })
+    },
+    getStoreInfo(info: any, name: string) {
+      this.store_info = this.$clone(info)
+      this.store_info.product_name = name
+      this.store_info.reality_weight = this.store_info.total_weight
+      this.store_info.total_weight = 0
+      this.store_info.child_data = this.checkList[0].child_data.map((item: YarnInfo) => {
+        return {
+          order_info_id: item.id,
+          color: item.color,
+          attribute: item.attribute,
+          weight: '',
+          order_weight: item.weight
+        }
+      })
+      this.store_step = 2
+    },
+    resetStore() {
+      this.store_step = 1
+      this.flags.store_flag = false
+    },
+    // 计算总调取数量
+    getTotalStore() {
+      this.store_info.total_weight = this.store_info.child_data.reduce((total: number, current: any) => {
+        return total + (Number(current.weight) || 0)
+      }, 0)
+    },
+    saveStore() {
+      console.log(this.store_info, this.checkList)
+      const formData = {
+        order_id: this.$route.params.id,
+        store_total_id: this.store_info.id,
+        total_weight: this.store_info.total_weight,
+        desc: this.store_info.desc,
+        child_data: this.store_info.child_data.map((item) => {
+          return {
+            order_info_id: item.order_info_id,
+            weight: item.weight
+          }
+        })
+      }
+      console.log(formData)
+      store.orderSave(formData).then((res) => {
+        if (res.data.status) {
+          this.$message.success('调取成功')
+          this.resetStore()
+        }
+      })
     },
     saveOrder() {
       yarnOrder.create({ data: this.order_yarn_info }).then((res) => {
@@ -874,6 +1263,34 @@ export default Vue.extend({
           this.init()
         }
       })
+    },
+    deleteStore(id: number) {
+      this.$confirm('是否要删除该调取记录?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      })
+        .then(() => {
+          store
+            .orderDelete({
+              id
+            })
+            .then((res) => {
+              if (res.data.status) {
+                this.$message.success('删除成功')
+                this.init()
+              }
+            })
+        })
+        .catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          })
+        })
+    },
+    resetProcess() {
+      this.flags.process_flag = false
     }
   },
   mounted() {
@@ -889,5 +1306,5 @@ export default Vue.extend({
 })
 </script>
 <style lang="less" scoped>
-@import '~@/assets/less/yarnOrder/detail.less';
+@import '~@/assets/less/orderProcessYarn/detail.less';
 </style>

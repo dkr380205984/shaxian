@@ -419,7 +419,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import { Order } from '@/types/order'
-import { OrderYarn, YarnInfo } from '@/types/orderYarn'
+import { OrderYarn, YarnInfo } from '@/types/orderProcessYarn'
 import { order, yarnOrder } from '@/assets/js/api'
 export default Vue.extend({
   data(): {

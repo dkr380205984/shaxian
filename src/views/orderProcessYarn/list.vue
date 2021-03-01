@@ -137,7 +137,7 @@
               width="140">
               <template slot-scope="scope">
                 <span class="blue opr"
-                  @click="$router.push('/orderYarn/detail/'+scope.row.id)">订购调取</span>
+                  @click="$router.push('/orderProcessYarn/detail/'+scope.row.id)">订购调取</span>
               </template>
             </el-table-column>
           </el-table>

@@ -67,13 +67,13 @@ const routes: RouteConfig[] = [
         name: '订单列表',
         component: () => import('../views/order/list.vue')
       }, {
-        path: '/orderYarn/list/:params',
+        path: '/orderProcessYarn/list/:params',
         name: '订购调取列表',
-        component: () => import('../views/orderYarn/list.vue')
+        component: () => import('../views/orderProcessYarn/list.vue')
       }, {
-        path: '/orderYarn/detail/:id',
+        path: '/orderProcessYarn/detail/:id',
         name: '纱线订购调取',
-        component: () => import('../views/orderYarn/detail.vue')
+        component: () => import('../views/orderProcessYarn/detail.vue')
       }, {
         path: '/settings/yarnType',
         name: '纱线类型设置',

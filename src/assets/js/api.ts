@@ -64,14 +64,17 @@ const order = {
   delete: (params: DeleteParam) => http.post(`${baseUrl}/order/delete`, params, 'application/json'),
   deleteChild: (params: DeleteParam) => http.post(`${baseUrl}/order/child/delete`, params, 'application/json')
 }
-import { StoreCreateParams, StoreDetailParams, StoreListParams, StoreDetailYarnListParams } from '@/types/store'
-// 仓库
+import { StoreCreateParams, StoreDetailParams, StoreListParams, StoreDetailYarnListParams, OrderStoreInfo } from '@/types/store'
+// 仓库管理 包含调取
 const store = {
   create: (params: StoreCreateParams) => http.post(`${baseUrl}/store/save`, params, 'application/json'),
   detail: (params: StoreDetailParams) => http.get(`${baseUrl}/store/detail`, params),
   delete: (params: StoreDetailParams) => http.post(`${baseUrl}/store/delete`, params, 'application/json'),
   list: (params?: StoreListParams) => http.get(`${baseUrl}/store/lists`, params),
-  detailYarnList: (params: StoreDetailYarnListParams) => http.get(`${baseUrl}/store/total/lists`, params)
+  detailYarnList: (params: StoreDetailYarnListParams) => http.get(`${baseUrl}/store/total/lists`, params),
+  orderSave: (params: OrderStoreInfo) => http.post(`${baseUrl}/order/transfer/save`, params, 'application/json'),
+  orderList: (params?: { order_id: string }) => http.get(`${baseUrl}/order/transfer/lists`, params),
+  orderDelete: (params: DeleteParam) => http.post(`${baseUrl}/order/transfer/delete`, params, 'application/json')
 }
 // 出入库
 const stock = {
@@ -81,7 +84,7 @@ const stock = {
 }
 
 // 采购
-import { OrderYarn } from '@/types/orderYarn'
+import { OrderYarn } from '@/types/orderProcessYarn'
 const yarnOrder = {
   create: (params: { data: OrderYarn[] }) => http.post(`${baseUrl}/order/purchase/save`, params, 'application/json'),
   list: (params: ListParam) => http.get(`${baseUrl}/order/purchase/lists`, params),

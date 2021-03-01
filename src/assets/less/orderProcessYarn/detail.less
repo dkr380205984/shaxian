@@ -50,7 +50,7 @@
        .stepCtn{
          display: flex;
          justify-content: space-around;
-         margin: 20px 0;
+         margin: 20px 0 12px 0;
          .step{
             width: 100px;
             display: flex;
@@ -58,23 +58,30 @@
             flex-direction: column;
             position: relative;
             &:nth-child(2){
-              &::after{
-                content:'';
-                position: absolute;
-                width: 200px;
-                height: 1px;
-                background: @border;
-                left: 100px;
-                top: 20px;
-              }
               &::before{
                 content:'';
                 position: absolute;
-                width: 200px;
+                width: 345px;
                 height: 1px;
                 background: @border;
                 right: 100px;
                 top: 20px;
+              }
+            }
+            &.confirm{
+              .index{
+                color: @green;
+              }
+              .text{
+                color: @green;
+              }
+            }
+            &.active{
+              .index{
+                color: @blue;
+              }
+              .text{
+                color: @blue;
               }
             }
          }
@@ -95,6 +102,9 @@
            color: @font65;
          }
        }
+       .editCtn{
+         margin: 15px 0;
+       }
     }
   }
   .listCtn{
@@ -105,5 +115,25 @@
       min-height: 50px;
       height: auto;
     }
+    .elCtn{
+      width: 160px;
+    }
+    &.smallHeight{
+      padding: 0;
+      .list{
+        margin: 0;
+      }
+      .row{
+        min-height: 32px;
+        margin: 6px 0;
+      }
+    }
+  }
+  .total_info{
+    display: flex;
+    justify-content: space-between;
+    font-size: 16px;
+    height: 32px;
+    align-items: center;
   }
 }

@@ -22,3 +22,16 @@ export interface StoreDetailYarnListParams {
   color: string | null,
   weight: 0 | null
 }
+
+// 订单调取库存
+export interface OrderStoreInfo {
+  order_id: string | number
+  store_total_id: string | number
+  total_weight: string | number
+  desc: string
+  child_data: Array<{
+    order_info_id: string | number
+    weight: string | number
+  }>,
+  [propName: string]: any
+}

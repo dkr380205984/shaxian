@@ -18,5 +18,6 @@ export interface Product {
 
 export interface OrderPro {
   product_id: string | number
+  product_name?: string
   child_data: ProductDetail[]
 }

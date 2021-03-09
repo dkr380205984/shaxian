@@ -1,0 +1,58 @@
+@import '../common.less';
+@import '../detail.less';
+@import '../table.less';
+@import '../list.less';
+@import '../popup.less';
+@import '../create.less';
+#inAndOutDetail{
+  .popup{
+    .main{
+       width: 966px;
+       .contentCtn{
+         min-height: 300px;
+         max-height: 560px;
+       }
+       .sort{
+         position: absolute;
+         right:0;
+         top: 0;
+         line-height: 24px;
+         color: #fff;
+         background: @orange;
+         min-width: 24px;
+         text-align: center;
+       }
+       .eRowCtn{
+         position: relative;
+       }
+    }
+  }
+  .createCtn{
+    padding:0;
+    .colCtn{
+      margin-right: 40px;
+    }
+  }
+  .listCtn{
+    .tableCtn{
+      margin: 0;
+    }
+    .row{
+      min-height: 50px;
+      height: auto;
+    }
+    .elCtn{
+      width: 160px;
+    }
+    &.smallHeight{
+      padding: 0;
+      .list{
+        margin: 0;
+      }
+      .row{
+        min-height: 32px;
+        margin: 6px 0;
+      }
+    }
+  }
+}

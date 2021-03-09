@@ -833,14 +833,14 @@ export default Vue.extend({
         this.$message.warning('检测到存在未填写的出入库说明')
         return
       }
-      stock.create({ data }).then((res) => {
-        if (res.data.status !== false) {
-          this.$message.success('添加成功')
-          this.storeEditInfo = []
-          this.getStoreInfoList()
-          this.getStoreLogList()
-        }
-      })
+      // stock.create({ data }).then((res) => {
+      //   if (res.data.status !== false) {
+      //     this.$message.success('添加成功')
+      //     this.storeEditInfo = []
+      //     this.getStoreInfoList()
+      //     this.getStoreLogList()
+      //   }
+      // })
     },
     // 获取出入库日志
     getStoreLogList(pages: number = 1) {

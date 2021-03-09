@@ -85,6 +85,37 @@
       }
     }
   }
+  .switchCtn{
+    display: flex;
+    margin-bottom: 24px;
+    height: 56px;
+    align-items: center;
+    .switch{
+      background: #fff;
+      flex: 1;
+      margin-right: 12px;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      color: @font65;
+      &:hover{
+        background: @main;
+        color: #fff;
+      }
+      &.active{
+        background: @main;
+        color: #fff;
+      }
+      .text{
+        font-size: @fontBig;
+      }
+      &:nth-last-child(1){
+        margin-right: 0;
+      }
+    }
+  }
 }
 
 // 按钮

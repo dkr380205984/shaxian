@@ -39,6 +39,15 @@
         &.autoHeight{
           height: auto;
         }
+        &.flexRow{
+          display: flex;
+          .elCtn{
+            margin-right: 12px;
+            &:nth-last-child(1){
+              margin-right: 0;
+            }
+          }
+        }
       }
       .editBtn{
         position: absolute;

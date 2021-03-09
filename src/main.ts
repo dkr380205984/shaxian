@@ -11,6 +11,7 @@ Vue.use(mycomponent)
 Vue.use(plugin)
 Vue.use(ElementUI)
 // 注册公共方法后需要声明
+type regNormal = 'isNum' | 'isEmail' | 'isPhone' | 'isNull'
 declare module 'vue/types/vue' {
   interface Vue {
     $getHash: any,
@@ -23,6 +24,10 @@ declare module 'vue/types/vue' {
     $checkCommonInfo: any
     $addItem: any
     $deleteItem: any
+    $formCheck(
+      data: any,
+      checkArr: Array<{ key: string, errMsg?: string, regExp?: RegExp, regNormal?: regNormal }>
+    ): boolean
   }
 }
 

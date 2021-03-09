@@ -1,7 +1,8 @@
 import { ActionContext } from 'vuex'
 import { User, YarnType, Color, PartyB } from '@/types/common'
+import { StoreCreateParams } from '@/types/store'
 import { ApiState } from '@/types/vuex'
-import { partyB, yarnType, yarnColor } from '@/assets/js/api'
+import { partyB, yarnType, yarnColor, store } from '@/assets/js/api'
 // state
 const apiState: ApiState = {
   user: {
@@ -27,6 +28,10 @@ const apiState: ApiState = {
   supplier: {
     status: false,
     arr: []
+  },
+  storeHouse: {
+    status: false,
+    arr: []
   }
 }
 // mutations
@@ -50,6 +55,10 @@ const apiMutations = {
     state.client.arr = partyBSelf.filter((itemF: PartyB) => itemF.type === 1)
     state.factory.arr = partyBSelf.filter((itemF: PartyB) => itemF.type === 2)
     state.supplier.arr = partyBSelf.filter((itemF: PartyB) => itemF.type === 3)
+  },
+  getStore(state: ApiState, storeHouse: StoreCreateParams[]) {
+    state.storeHouse.status = true
+    state.storeHouse.arr = storeHouse
   }
 }
 // actions
@@ -83,6 +92,13 @@ const apiActions = {
     partyB.list().then((res) => {
       if (res.data.status !== false) {
         content.commit('getPartyB', res.data.data)
+      }
+    })
+  },
+  getStoreAsync(content: ActionContext<ApiState, any>) {
+    store.list().then((res) => {
+      if (res.data.status !== false) {
+        content.commit('getStore', res.data.data)
       }
     })
   }

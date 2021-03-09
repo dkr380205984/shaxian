@@ -9,6 +9,8 @@ interface CheckCommonInfo {
   getInfoMethed?: string // commit or dispatch,api一般都是异步，用dispatch调用，status一般是同步，用commit调用,默认就是dispatch
   getInfoApi: string // 没有公共数据的时候需要调用的函数
 }
+
+type regNormal = 'isNum' | 'isEmail' | 'isPhone' | 'isNull'
 const plugin = {
   getDataType(data: any) {
     if (data === null) {
@@ -228,6 +230,42 @@ const plugin = {
   },
   deleteItem(father: any[], index: number) {
     father.splice(index, 1)
+  },
+  // 表单验证，这里只验证对象，不验证数组，通常数组只要检测到某一次formCheck返回false即可停止验证
+  // 第一个参数接收一个待验证对象 第二个参数接收一个待验证字段数组，如有特殊正则验证可以自定义new RegExp,通常我们只验证是否为空
+  // regNormal:isNum | isEmail | isNull | isPhone
+  formCheck(
+    data: any,
+    checkArr: Array<{ key: string, errMsg?: string, regExp?: RegExp, regNormal?: regNormal }>
+  ): boolean {
+    let msg = ''
+    return checkArr.some((item) => {
+      // 默认不需要正则验证，只验证是否为空
+      if (!item.regExp) {
+        if (!item.regNormal || item.regNormal === 'isNull') {
+          if (!data[item.key]) {
+            msg = item.errMsg || '数据不得为空'
+          }
+        } else {
+          if (item.regNormal === 'isNum') {
+            msg = /^[0-9]+$/.test(data[item.key]) ? item.errMsg || '请输入数字' : msg
+          } else if (item.regNormal === 'isEmail') {
+            msg = /^([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+@([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+\.[a-zA-Z]{2,3}$/
+              .test(data[item.key]) ? item.errMsg || '请输入邮箱' : msg
+          } else if (item.regNormal === 'isPhone') {
+            msg = /^1[3456789]d{9}$/.test(data[item.key]) ? item.errMsg || '请输入正确的手机号' : msg
+          }
+        }
+      } else {
+        if (item.regExp.test(data[item.key])) {
+          msg = item.errMsg || '验证失败'
+        }
+      }
+      if (msg) {
+        Message.Message.error(msg)
+      }
+      return msg
+    })
   }
 }
 const submitLock = () => {
@@ -297,5 +335,6 @@ export default {
     Vue.prototype.$goElView = goElView
     Vue.prototype.$formatNum = formatNum
     Vue.prototype.$unique = unique
+    Vue.prototype.$formCheck = plugin.formCheck
   }
 }

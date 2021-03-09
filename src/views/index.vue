@@ -21,6 +21,7 @@
               <template slot="title">订单管理</template>
               <el-menu-item index="/order/list/1">订单列表</el-menu-item>
               <el-menu-item index="/orderProcessYarn/list/1">订购加工</el-menu-item>
+              <el-menu-item index="/inAndOut/list/1">出入库管理</el-menu-item>
             </el-submenu>
             <el-menu-item index="/store/list">库存管理</el-menu-item>
             <el-menu-item index="4">财务管理</el-menu-item>

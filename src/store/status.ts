@@ -11,9 +11,8 @@ const statusState: State = {
 }
 
 const statusMutations = {
+  // 这个路由逻辑有问题，有时间修复
   getBreadUrl(state: State, breadUrl: BreadUrl) {
-    console.log(breadUrl)
-    console.log(state.breadUrl)
     // 判断要去的路由是不是等于上一个页面的路由，如果是上一个路由就去掉最后一个，模拟返回操作
     if (state.breadUrl.length > 1 && breadUrl.name === state.breadUrl[state.breadUrl.length - 2].name) {
       state.breadUrl.pop()

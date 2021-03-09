@@ -75,6 +75,14 @@ const routes: RouteConfig[] = [
         name: '纱线订购调取',
         component: () => import('../views/orderProcessYarn/detail.vue')
       }, {
+        path: '/inAndOut/list/:params',
+        name: '纱线出入库',
+        component: () => import('../views/inAndOut/list.vue')
+      }, {
+        path: '/inAndOut/detail/:id',
+        name: '纱线出入库详情',
+        component: () => import('../views/inAndOut/detail.vue')
+      }, {
         path: '/settings/yarnType',
         name: '纱线类型设置',
         component: () => import('../views/settings/yarnType.vue')

@@ -208,17 +208,17 @@
           <div class="colCtn flex3">
             <div class="btn btnMain"
               @click="$addItem(order_info.product_info,{
-            product_id: '',
-            child_data: [
-              {
-                number_attribute: '',
-                weight: '',
-                price: '',
-                attribute: '',
-                color: ''
-              }
-            ]
-          })">添加纱线</div>
+                product_id: '',
+                child_data: [
+                  {
+                    number_attribute: '',
+                    weight: '',
+                    price: '',
+                    attribute: '',
+                    color: ''
+                  }
+                ]
+              })">添加纱线</div>
           </div>
         </div>
         <div class="rowCtn">

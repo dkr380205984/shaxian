@@ -35,3 +35,36 @@ export interface OrderStoreInfo {
   }>,
   [propName: string]: any
 }
+
+// 入库
+export interface StoreCreate {
+  id?: string | number
+  code?: string
+  order_id?: string
+  related_id?: string | number
+  action_type: number
+  select_id?: number[] | string
+  desc: string
+  complete_time: string
+  client_id?: number | string
+  client_name?: string
+  store_id?: number | string
+  store_name?: string
+  second_store_id?: number | string
+  second_store_name?: string
+  child_data: StoreCreateChild[]
+}
+
+export interface StoreCreateChild {
+  name: string
+  move_second_store_id?: number | string // 移库时需要:移入仓库id
+  move_store_id?: number | string
+  action_weight: string | number
+  color: string
+  attribute: string
+  color_code: string
+  vat_code: string
+  item: string // 件数
+  related_info_id?: string
+  desc?: string
+}

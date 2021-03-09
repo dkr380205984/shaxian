@@ -77,10 +77,11 @@ const store = {
   orderDelete: (params: DeleteParam) => http.post(`${baseUrl}/order/transfer/delete`, params, 'application/json')
 }
 // 出入库
+import { StoreCreate } from '@/types/store'
 const stock = {
-  create: (params: any) => http.post(`${baseUrl}/store/total/save`, params, 'application/json'),
   delete: (params: any) => http.post(`${baseUrl}/store/log/delete`, params, 'application/json'),
-  list: (params?: any) => http.get(`${baseUrl}/store/log/lists`, params)
+  list: (params?: any) => http.get(`${baseUrl}/store/log/lists`, params),
+  create: (params: { data: StoreCreate[] }) => http.post(`${baseUrl}/store/total/save`, params, 'application/json')
 }
 
 // 采购
@@ -90,6 +91,14 @@ const yarnOrder = {
   list: (params: ListParam) => http.get(`${baseUrl}/order/purchase/lists`, params),
   delete: (params: DeleteParam) => http.post(`${baseUrl}/order/purchase/delete`, params, 'application/json'),
   update: (params: OrderYarn) => http.post(`${baseUrl}/order/purchase/edit`, params, 'application/json')
+}
+
+// 加工
+import { ProcessYarn } from '@/types/orderProcessYarn'
+const yarnProcess = {
+  create: (params: { data: ProcessYarn[] }) => http.post(`${baseUrl}/order/process/save`, params, 'application/json'),
+  list: (params: ListParam) => http.get(`${baseUrl}/order/process/lists`, params),
+  delete: (params: DeleteParam) => http.post(`${baseUrl}/order/process/delete`, params, 'application/json')
 }
 export {
   login,
@@ -103,5 +112,6 @@ export {
   order,
   store,
   stock,
-  yarnOrder
+  yarnOrder,
+  yarnProcess
 }

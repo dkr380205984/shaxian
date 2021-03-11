@@ -18,6 +18,7 @@
             </div>
             <div class="elCtn">
               <el-select v-model="status"
+                clearable
                 @change="changeRouter(1)"
                 placeholder="筛选客户状态">
                 <el-option v-for="item in statusArr"
@@ -182,14 +183,14 @@ export default Vue.extend({
       page: 1,
       total: 1,
       name: '',
-      status: 1,
+      status: '1',
       statusArr: [
         {
-          id: 0,
+          id: '0',
           name: '禁用中'
         },
         {
-          id: 1,
+          id: '1',
           name: '合作中'
         }
       ]
@@ -201,7 +202,7 @@ export default Vue.extend({
     },
     init() {
       this.name = this.$route.query.name || ''
-      this.status = Number(this.$route.query.status) || 1
+      this.status = this.$route.query.status || ''
       this.getList(Number(this.$route.query.pages) || 1)
     },
     getList(pages: number = 1) {
@@ -211,7 +212,8 @@ export default Vue.extend({
           type: 1,
           limit: 10,
           page: pages,
-          name: this.name || null
+          name: this.name || null,
+          status: this.status || null
         })
         .then((res: any) => {
           if (res.data.staus !== false) {
@@ -227,7 +229,7 @@ export default Vue.extend({
     },
     resetFilter() {
       this.name = ''
-      this.status = 1
+      this.status = '1'
       this.changeRouter()
     },
     saveClient() {
@@ -262,7 +264,7 @@ export default Vue.extend({
           if (res.data.status !== false) {
             this.$message.success(`${(this.clientInfo.id && '修改') || '添加'}成功`)
             this.addFlag = false
-            this.changeRouter()
+            this.init()
           }
         })
     },
@@ -295,7 +297,7 @@ export default Vue.extend({
                 type: 'success',
                 message: `${(item.status && '禁用') || '启用'}成功!`
               })
-              this.changeRouter()
+              this.init()
             }
           })
       })

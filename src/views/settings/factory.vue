@@ -18,6 +18,7 @@
             </div>
             <div class="elCtn">
               <el-select v-model="type"
+                clearable
                 @change="changeRouter(1)"
                 placeholder="筛选加工厂类型">
                 <el-option v-for="item in typeArr"
@@ -29,6 +30,7 @@
             </div>
             <div class="elCtn">
               <el-select v-model="status"
+                clearable
                 @change="changeRouter(1)"
                 placeholder="筛选加工厂状态">
                 <el-option v-for="item in statusArr"
@@ -230,14 +232,14 @@ export default Vue.extend({
           name: '膨纱单位'
         }
       ],
-      status: 1,
+      status: '1',
       statusArr: [
         {
-          id: 0,
+          id: '0',
           name: '禁用中'
         },
         {
-          id: 1,
+          id: '1',
           name: '合作中'
         }
       ]
@@ -246,12 +248,12 @@ export default Vue.extend({
   methods: {
     changeRouter(pages: number = 1) {
       this.$router.replace(
-        `/settings/factory?pages=${pages}&name=${this.name || ''}&status=${this.status || 1}&type=${this.type || ''}`
+        `/settings/factory?pages=${pages}&name=${this.name || ''}&status=${this.status || ''}&type=${this.type || ''}`
       )
     },
     init() {
       this.name = this.$route.query.name || ''
-      this.status = Number(this.$route.query.status) || 1
+      this.status = this.$route.query.status || ''
       this.type = this.$route.query.type || ''
       this.getList(Number(this.$route.query.pages) || 1)
     },
@@ -280,7 +282,7 @@ export default Vue.extend({
     },
     resetFilter() {
       this.name = ''
-      this.status = 1
+      this.status = '1'
       this.type = ''
       this.changeRouter()
     },
@@ -292,18 +294,18 @@ export default Vue.extend({
         this.$message.warning('请输入加工厂名称')
         return
       }
-      if (!this.factoryInfo.abbreviation) {
-        this.$message.warning('请输入加工厂简称')
-        return
-      }
+      // if (!this.factoryInfo.abbreviation) {
+      //   this.$message.warning('请输入加工厂简称')
+      //   return
+      // }
       if (!this.factoryInfo.client_type) {
         this.$message.warning('请选择加工厂类型')
         return
       }
-      if (!this.factoryInfo.user_name) {
-        this.$message.warning('请输入主要负责人')
-        return
-      }
+      // if (!this.factoryInfo.user_name) {
+      //   this.$message.warning('请输入主要负责人')
+      //   return
+      // }
       partyB
         .create({
           id: this.factoryInfo.id || null,
@@ -321,7 +323,7 @@ export default Vue.extend({
           if (res.data.status !== false) {
             this.$message.success(`${(this.factoryInfo.id && '修改') || '添加'}成功`)
             this.addFlag = false
-            this.changeRouter()
+            this.init()
           }
         })
     },
@@ -355,7 +357,7 @@ export default Vue.extend({
                 type: 'success',
                 message: `${(item.status && '禁用') || '启用'}成功!`
               })
-              this.changeRouter()
+              this.init()
             }
           })
       })

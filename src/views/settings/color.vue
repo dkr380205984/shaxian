@@ -156,9 +156,16 @@ export default Vue.extend({
         })
         .then((res: any) => {
           if (res.data.status !== false) {
-            this.addFlag = false
+            if (this.colorInfo.id) {
+              this.addFlag = false
+            } else {
+              this.colorInfo = {
+                id: null,
+                name: ''
+              }
+            }
             this.$message.success(`${(this.colorInfo.id && '修改') || '添加'}成功`)
-            this.changeRouter(1)
+            this.init()
           }
         })
     },
@@ -185,7 +192,7 @@ export default Vue.extend({
                 type: 'success',
                 message: '删除成功!'
               })
-              this.changeRouter()
+              this.init()
             }
           })
       })

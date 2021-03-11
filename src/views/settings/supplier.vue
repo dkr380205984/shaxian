@@ -18,6 +18,7 @@
             </div>
             <div class="elCtn">
               <el-select v-model="status"
+                clearable
                 @change="changeRouter(1)"
                 placeholder="筛选供货商状态">
                 <el-option v-for="item in statusArr"
@@ -182,20 +183,20 @@ export default Vue.extend({
       page: 1,
       total: 1,
       name: '',
-      status: 1,
+      status: '1',
       statusArr: [
-        { id: 0, name: '禁用中' },
-        { id: 1, name: '合作中' }
+        { id: '0', name: '禁用中' },
+        { id: '1', name: '合作中' }
       ]
     }
   },
   methods: {
     changeRouter(pages: number = 1) {
-      this.$router.replace(`/settings/supplier?pages=${pages}&name=${this.name || ''}&status=${this.status || 1}`)
+      this.$router.replace(`/settings/supplier?pages=${pages}&name=${this.name || ''}&status=${this.status || ''}`)
     },
     init() {
       this.name = this.$route.query.name || ''
-      this.status = this.$route.query.status || 1
+      this.status = this.$route.query.status || ''
       this.getList(Number(this.$route.query.pages) || 1)
     },
     getList(pages: number = 1) {
@@ -205,7 +206,8 @@ export default Vue.extend({
           type: 2,
           limit: 10,
           page: pages,
-          name: this.name || null
+          name: this.name || null,
+          status: this.status || ''
         })
         .then((res: any) => {
           if (res.data.staus !== false) {

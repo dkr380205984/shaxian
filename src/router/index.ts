@@ -116,6 +116,17 @@ const routes: RouteConfig[] = [
         component: () => import('../views/store/detail.vue')
       }
     ]
+  }, {
+    path: '/document',
+    name: '单据',
+    component: () => import('@/views/documents/index.vue'),
+    children: [
+      {
+        path: 'GDFE',
+        name: '出口货物报关单',
+        component: () => import('@/views/documents/GDFE.vue')
+      }
+    ]
   }
 ]
 

@@ -413,10 +413,10 @@ export default Vue.extend({
       let msg = ''
       this.submit_form.forEach((item) => {
         if (!item.name) {
-          msg = '请输入沙县名称'
+          msg = '请输入纱线名称'
         }
         item.child_data.forEach((itemChild) => {
-          if (!itemChild.price) {
+          if (!itemChild.price && !Number(itemChild.price)) {
             msg = '请输入单价信息，可以填0'
           }
           if (!itemChild.color) {

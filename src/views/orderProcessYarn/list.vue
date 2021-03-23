@@ -1,9 +1,10 @@
 <template>
   <div id="orderList"
-    class="indexMain">
+    class="indexMain"
+    v-loading="loading">
     <div class="module">
       <div class="titleCtn">
-        <span class="title hasBorder">订购调取列表</span>
+        <span class="title hasBorder">订购加工列表</span>
       </div>
       <div class="listCtn">
         <div class="filterCtn"
@@ -13,20 +14,36 @@
             <div class="showMore"
               @click="showMore=!showMore">{{!showMore?'展示更多':'收起筛选'}}</div>
             <div class="elCtn">
-              <el-input v-model="value"
-                placeholder="输入订单号"></el-input>
+              <el-input v-model="order_code"
+                placeholder="输入订单号"
+                @change="changeRouter(1)"></el-input>
             </div>
             <div class="elCtn">
-              <el-input v-model="value"
-                placeholder="输入纱线名称"></el-input>
+              <el-input v-model="product_name"
+                placeholder="输入纱线名称"
+                @change="changeRouter(1)"></el-input>
             </div>
             <div class="elCtn">
-              <el-select v-model="value"
-                placeholder="选择下单公司"></el-select>
+              <el-select v-model="client_id"
+                placeholder="选择下单公司"
+                clearable
+                @change="changeRouter(1)">
+                <el-option v-for="item in client_list"
+                  :key="item.id"
+                  :value="item.id"
+                  :label="item.name"></el-option>
+              </el-select>
             </div>
             <div class="elCtn">
-              <el-select v-model="value"
-                placeholder="选择下单人员"></el-select>
+              <el-select v-model="user_id"
+                placeholder="选择下单人员"
+                clearable
+                @change="changeRouter(1)">
+                <el-option v-for="item in user_list"
+                  :key="item.id"
+                  :value="item.id"
+                  :label="item.name"></el-option>
+              </el-select>
             </div>
             <div class="elCtn middle"
               style="width:350px;">
@@ -34,7 +51,8 @@
                 type="daterange"
                 range-separator="至"
                 start-placeholder="开始日期"
-                end-placeholder="结束日期">
+                end-placeholder="结束日期"
+                @change="changeRouter(1)">
               </el-date-picker>
             </div>
             <div class="elCtn middle">
@@ -51,7 +69,8 @@
             </div>
           </div>
           <div class="rightCtn">
-            <div class="btn btnGray fr">重置</div>
+            <div class="btn btnGray fr"
+              @click="reset">重置</div>
           </div>
         </div>
         <div class="list">
@@ -137,7 +156,7 @@
               width="140">
               <template slot-scope="scope">
                 <span class="blue opr"
-                  @click="$router.push('/orderProcessYarn/detail/'+scope.row.id)">订购调取</span>
+                  @click="$router.push('/orderProcessYarn/detail/'+scope.row.id)">订购加工</span>
               </template>
             </el-table-column>
           </el-table>
@@ -159,8 +178,15 @@
 import Vue from 'vue'
 import { order } from '@/assets/js/api'
 export default Vue.extend({
-  data() {
+  data(): {
+    [propName: string]: any
+  } {
     return {
+      order_code: '',
+      product_name: '',
+      client_id: '',
+      user_id: '',
+      loading: true,
       page: 1,
       total: 100,
       page_size: 10,
@@ -170,7 +196,61 @@ export default Vue.extend({
       value: ''
     }
   },
+  watch: {
+    page(newVal) {
+      this.changeRouter(newVal)
+    },
+    $route() {
+      // 点击返回的时候更新下筛选条件
+      this.getFilters()
+      this.getList()
+    }
+  },
+  computed: {
+    client_list() {
+      return this.$store.state.api.client.arr
+    },
+    user_list() {
+      return this.$store.state.api.user.arr
+    }
+  },
   methods: {
+    changeRouter(page: string) {
+      const pages = page || 1
+      this.$router.push(
+        '/order/list/page=' +
+          pages +
+          '&&order_code=' +
+          this.order_code +
+          '&&product_name=' +
+          this.product_name +
+          '&&client_id=' +
+          this.client_id +
+          '&&user_id=' +
+          this.user_id +
+          '&&page_size=' +
+          this.page_size +
+          '&&date=' +
+          this.date
+      )
+    },
+    reset() {
+      this.$router.push('/order/list/page=1&&order_code=&&product_name=&&client_id=&&user_id=&&page_size=10&&date=')
+    },
+    getFilters() {
+      const params = this.$getHash(this.$route.params.params)
+      this.page = Number(params.page)
+      this.page_size = Number(params.page_size)
+      this.user_id = params.user_id ? Number(params.user_id) : ''
+      this.client_id = params.client_id ? Number(params.client_id) : ''
+      this.product_name = params.product_name
+      this.order_code = params.order_code
+      if (params.date !== 'null' && params.date !== '') {
+        this.date = params.date.split(',')
+      } else {
+        this.date = []
+      }
+    },
     changeIndex(father: any, type: string) {
       if (!father.index) {
         father.index = 0
@@ -194,42 +274,39 @@ export default Vue.extend({
       tableMetheds.doLayout()
     },
     getList() {
+      this.loading = true
       order
         .list({
+          order_code: this.order_code,
+          product_name: this.product_name,
+          client_id: this.client_id,
+          user_id: this.user_id,
+          start_time: this.date && this.date.length > 0 ? this.date[0] : '',
+          end_time: this.date && this.date.length > 0 ? this.date[1] : '',
           limit: this.page_size,
           page: this.page
         })
         .then((res) => {
           this.list = res.data.data.items
           this.total = res.data.data.total
-        })
-    },
-    deleteOrder(id: number) {
-      this.$confirm('是否删除该订单?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      })
-        .then(() => {
-          order.delete({ id }).then((res) => {
-            if (res.data.status) {
-              this.$message({
-                type: 'success',
-                message: '删除成功!'
-              })
-              this.getList()
-            }
-          })
-        })
-        .catch(() => {
-          this.$message({
-            type: 'info',
-            message: '已取消删除'
-          })
+          this.loading = false
         })
     }
   },
-  mounted() {
+  created() {
+    this.$checkCommonInfo([
+      {
+        checkWhich: 'api/client',
+        getInfoMethed: 'dispatch',
+        getInfoApi: 'getPartyBAsync'
+      },
+      {
+        checkWhich: 'api/user',
+        getInfoMethed: 'dispatch',
+        getInfoApi: 'getUserAsync'
+      }
+    ])
+    this.getFilters()
     this.getList()
   }
 })

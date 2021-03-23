@@ -13,6 +13,8 @@ export interface Product {
   id?: number | string
   name: string
   yarn_type: string
+  yarn_type_name?: string
+  user_name?: string
   child_data: ProductDetail[]
 }
 

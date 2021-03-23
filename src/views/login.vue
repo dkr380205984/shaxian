@@ -115,7 +115,7 @@ export default Vue.extend({
     }
   },
   created() {
-    window.addEventListener('keydown', this.keyDownEnter)
+    // window.addEventListener('keydown', this.keyDownEnter)
   }
 })
 </script>

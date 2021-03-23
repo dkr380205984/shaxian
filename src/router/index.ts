@@ -7,6 +7,11 @@ const originalPush = VueRouter.prototype.push
 VueRouter.prototype.push = function push(location: string) {
   return (originalPush.call(this, location) as any).catch((err: any) => err)
 }
+
+// 非常重要！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！
+// 情保证所有页面name不同！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！
+// 面包屑组件是根据名称来判断的！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！
+// 不能根据路由一致判断，因为列表页筛选条件会改变url，只能根据名称判断是否跳转到新页面！！！！！！
 const routes: RouteConfig[] = [
   {
     path: '/',
@@ -50,6 +55,26 @@ const routes: RouteConfig[] = [
         path: '/product/detail/:id',
         name: '纱线详情',
         component: () => import('../views/product/detail.vue')
+      }, {
+        path: '/material/list/:params',
+        name: '毛条列表',
+        component: () => import('../views/material/list.vue')
+      }, {
+        path: '/material/craftList/:params',
+        name: '工艺单列表',
+        component: () => import('../views/material/craftList.vue')
+      }, {
+        path: '/material/craftCreate',
+        name: '添加工艺单',
+        component: () => import('../views/material/craftCreate.vue')
+      }, {
+        path: '/material/craftUpdate/:id',
+        name: '修改工艺单',
+        component: () => import('../views/material/craftUpdate.vue')
+      }, {
+        path: '/material/craftDetail/:id',
+        name: '工艺单详情',
+        component: () => import('../views/material/craftDetail.vue')
       }, {
         path: '/order/create',
         name: '添加订单',
@@ -107,14 +132,43 @@ const routes: RouteConfig[] = [
         name: '颜色设置',
         component: () => import('../views/settings/color.vue')
       }, {
-        path: '/store/list',
-        name: '仓库列表',
+        path: '/settings/material',
+        name: '毛条设置',
+        component: () => import('../views/settings/material.vue')
+      }, {
+        path: '/store/list/:params',
+        name: '纱线仓库列表',
         component: () => import('../views/store/list.vue')
       }, {
-        path: '/store/detail/:storeId',
-        name: '仓库详情',
+        path: '/store/materialList/:params',
+        name: '毛条仓库列表',
+        component: () => import('../views/store/materialList.vue')
+      }, {
+        path: '/store/detail/:id',
+        name: '纱线仓库详情',
         component: () => import('../views/store/detail.vue')
+      }, {
+        path: '/store/materialDeatail/:id',
+        name: '毛条仓库详情',
+        component: () => import('../views/store/materialDeatail.vue')
+      }, {
+        path: '/directOrder/materialList/:params',
+        name: '毛条采购列表',
+        component: () => import('../views/directOrder/materialList.vue')
+      }, {
+        path: '/directOrder/materialDetail/:id',
+        name: '毛条采购详情',
+        component: () => import('../views/directOrder/materialDetail.vue')
+      }, {
+        path: '/directOrder/yarnList/:params',
+        name: '纱线采购列表',
+        component: () => import('../views/directOrder/yarnList.vue')
+      }, {
+        path: '/directOrder/yarnDetail/:id',
+        name: '纱线采购详情',
+        component: () => import('../views/directOrder/yarnDetail.vue')
       }
+
     ]
   }
 ]

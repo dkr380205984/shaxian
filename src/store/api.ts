@@ -1,8 +1,8 @@
 import { ActionContext } from 'vuex'
-import { User, YarnType, Color, PartyB } from '@/types/common'
+import { User, YarnType, Color, PartyB, MaterialType } from '@/types/common'
 import { StoreCreateParams } from '@/types/store'
 import { ApiState } from '@/types/vuex'
-import { partyB, yarnType, yarnColor, store } from '@/assets/js/api'
+import { partyB, yarnType, yarnColor, store, material, user } from '@/assets/js/api'
 // state
 const apiState: ApiState = {
   user: {
@@ -32,13 +32,17 @@ const apiState: ApiState = {
   storeHouse: {
     status: false,
     arr: []
+  },
+  materialType: {
+    status: false,
+    arr: []
   }
 }
 // mutations
 const apiMutations = {
-  getUser(state: ApiState, user: User[]) {
+  getUser(state: ApiState, userSelf: User[]) {
     state.user.status = true
-    state.user.arr = user
+    state.user.arr = userSelf
   },
   getYarnType(state: ApiState, yarnTypeSelf: YarnType[]) {
     state.yarnType.status = true
@@ -59,20 +63,20 @@ const apiMutations = {
   getStore(state: ApiState, storeHouse: StoreCreateParams[]) {
     state.storeHouse.status = true
     state.storeHouse.arr = storeHouse
+  },
+  getMaterialType(state: ApiState, materialType: MaterialType[]) {
+    state.materialType.status = true
+    state.materialType.arr = materialType
   }
 }
 // actions
 const apiActions = {
   getUserAsync(content: ActionContext<ApiState, any>) {
-    setTimeout(() => {
-      content.commit('getUser', [{
-        name: 'string',
-        username: 'string',
-        phone: 'string',
-        post: 'string', // 岗位
-        status: 1 // 权限
-      }])
-    }, 3000)
+    user.list().then((res) => {
+      if (res.data.status) {
+        content.commit('getUser', res.data.data)
+      }
+    })
   },
   getYarnTypeAsync(content: ActionContext<ApiState, any>) {
     yarnType.list().then((res) => {
@@ -99,6 +103,13 @@ const apiActions = {
     store.list().then((res) => {
       if (res.data.status !== false) {
         content.commit('getStore', res.data.data)
+      }
+    })
+  },
+  getMaterialTypeAsync(content: ActionContext<ApiState, any>) {
+    material.typeList().then((res) => {
+      if (res.data.status !== false) {
+        content.commit('getMaterialType', res.data.data)
       }
     })
   }

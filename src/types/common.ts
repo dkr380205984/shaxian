@@ -48,6 +48,7 @@ export interface Store {
   id: number | null
   name: string
   type: 1 | 2 // 1本厂仓库2染厂仓库
+  store_type: 1 | 2 // 1沙县仓库2毛条仓库
   admins: Array<string | number>
   LV2_info: Array<{ name: string, id: number | null }>
   desc: string
@@ -63,4 +64,20 @@ export interface StoreDetail {
   create_time: Date | null,
   user_name: string
   desc: string | null
+}
+
+export interface MaterialType {
+  id?: number | string
+  name: string
+}
+
+// 扣款信息
+export interface DeductInfo {
+  code?: string
+  deduct_type: 1 | 2 | 3 | 4 | 5
+  pid: string | number
+  total_price: string | number
+  deduct_content: string
+  deduct_file: string
+  desc: string
 }

@@ -1,6 +1,7 @@
 <template>
   <div id="productCreate"
-    class="indexMain">
+    class="indexMain"
+    v-loading="loading">
     <div class="module">
       <div class="titleCtn">
         <span class="title">修改纱线</span>
@@ -142,6 +143,7 @@ export default Vue.extend({
     [propName: string]: any
   } {
     return {
+      loading: true,
       input_form: {
         type: '',
         normal_name: ''
@@ -173,6 +175,7 @@ export default Vue.extend({
       }
     },
     savePro() {
+      this.loading = true
       product
         .editPro({
           id: this.$route.params.id,
@@ -184,12 +187,14 @@ export default Vue.extend({
             this.$message.success('修改成功')
             this.edit_name_flag = false
             this.edit_type_flag = false
+            this.loading = false
           }
         })
     },
     editChild(detail: ProductDetail) {
       if (detail.edit) {
         if (detail.color && detail.attribute) {
+          this.loading = true
           product
             .editProChild({
               id: detail.id,
@@ -205,6 +210,7 @@ export default Vue.extend({
               }
               detail.id = res.data.data
               detail.edit = false
+              this.loading = false
               this.$forceUpdate()
             })
         } else {
@@ -241,11 +247,11 @@ export default Vue.extend({
         id: this.$route.params.id
       })
       .then((res) => {
-        console.log(res)
         const data = res.data.data
         this.input_form.type = data.yarn_type
         this.input_form.normal_name = data.name
         this.submit_form = data.child_data
+        this.loading = false
       })
   }
 })

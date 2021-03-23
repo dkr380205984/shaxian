@@ -170,6 +170,17 @@ const routes: RouteConfig[] = [
       }
 
     ]
+    // }, {
+    //   path: '/document',
+    //   name: '单据',
+    //   component: () => import('@/views/documents/index.vue'),
+    //   children: [
+    //     {
+    //       path: 'GDFE',
+    //       name: '出口货物报关单',
+    //       component: () => import('@/views/documents/GDFE.vue')
+    //     }
+    //   ]
   }
 ]
 

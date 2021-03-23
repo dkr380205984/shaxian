@@ -190,7 +190,7 @@ export default Vue.extend({
       },
       page: 1,
       total: 1,
-      checkedAll: true,
+      checkedAll: false,
       name: '',
       type: '',
       typeArr: [

@@ -16,7 +16,7 @@ export interface PartyBListParams {
   page?: number
   limit?: number
   name?: string | null
-  status?: number | null
+  status?: 1 | 0 | null // 1合作中0禁用中null全部展示
   client_type?: string | null
   type?: 1 | 2 | 3
 }
@@ -66,6 +66,7 @@ export interface UserListParams {
   limit?: number
   name?: string | null
   phone?: number | null
+  is_check?: 1 | 0 // 1过滤0不过滤
 }
 export interface UserDetailParams {
   id: number | null

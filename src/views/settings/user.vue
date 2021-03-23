@@ -237,7 +237,8 @@ export default Vue.extend({
           limit: 10,
           page: pages,
           name: this.name || null,
-          phone: this.phone || null
+          phone: this.phone || null,
+          is_check: 0
         })
         .then((res: any) => {
           if (res.data.staus !== false) {
@@ -290,7 +291,7 @@ export default Vue.extend({
           if (res.data.status !== false) {
             this.$message.success(`${(this.userInfo.id && '修改') || '添加'}成功`)
             this.addFlag = false
-            this.changeRouter()
+            this.init()
           }
         })
     },
@@ -324,7 +325,7 @@ export default Vue.extend({
                 type: 'success',
                 message: `${(item.status && '禁用') || '启用'}成功!`
               })
-              this.changeRouter()
+              this.init()
             }
           })
       })

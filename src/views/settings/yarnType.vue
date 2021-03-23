@@ -37,7 +37,7 @@
               :key="item.id">
               <div class="column">{{item.name}}</div>
               <div class="column">{{item.user_name || '/'}}</div>
-              <div class="column">{{item.created_at && $getDate(item.created_at) || '/'}}</div>
+              <div class="column">{{item.create_time && $getDate(item.create_time) || '/'}}</div>
               <div class="column">
                 <span class="col_btn orange"
                   @click="changeYarnType(item)">修改</span>
@@ -158,7 +158,7 @@ export default Vue.extend({
           if (res.data.status !== false) {
             this.$message.success(`${(this.yarnTypeInfo.id && '修改') || '添加'}成功`)
             this.addFlag = false
-            this.changeRouter()
+            this.init()
           }
         })
     },
@@ -185,7 +185,7 @@ export default Vue.extend({
                 type: 'success',
                 message: '删除成功!'
               })
-              this.changeRouter()
+              this.init()
             }
           })
       })

@@ -1,0 +1,42 @@
+@border:1px solid #CCC;
+// @fontSize: 18px;
+.document_input_container{
+  // border: @border;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  padding: 4px 8px;
+  box-sizing: border-box;
+  // font-size: @fontSize;
+  min-height: calc(42px + 1em);
+  &.rowModle{
+    flex-direction: row;
+    align-items: center;
+    min-height: 40px;
+    .document_input_label{
+      margin-bottom: 0;
+    }
+    .document_input_self{
+      margin-left: 16px;      
+      line-height: 32px;
+    }
+  }
+  .document_input_label{
+    height: 1em;
+    line-height: 1em;
+    margin-bottom: 4px;
+  }
+  .document_input_self{
+    flex: 1;
+    outline: none;
+    border: none;
+    min-height: 32px;
+    padding: 0;
+    resize: none;
+    word-break: break-all;
+    overflow: hidden;
+    font-size: inherit;
+    // font-size: @fontSize;
+  }
+}

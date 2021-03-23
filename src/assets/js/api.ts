@@ -72,6 +72,7 @@ const store = {
   delete: (params: StoreDetailParams) => http.post(`${baseUrl}/store/delete`, params, 'application/json'),
   list: (params?: StoreListParams) => http.get(`${baseUrl}/store/lists`, params),
   detailYarnList: (params: StoreDetailYarnListParams) => http.get(`${baseUrl}/store/total/lists`, params),
+  detailMateiralList: (params: StoreDetailYarnListParams) => http.get(`${baseUrl}/material/store/total/lists`, params),
   orderSave: (params: OrderStoreInfo) => http.post(`${baseUrl}/order/transfer/save`, params, 'application/json'),
   orderList: (params?: { order_id: string }) => http.get(`${baseUrl}/order/transfer/lists`, params),
   orderDelete: (params: DeleteParam) => http.post(`${baseUrl}/order/transfer/delete`, params, 'application/json')
@@ -81,7 +82,9 @@ import { StoreCreate } from '@/types/store'
 const stock = {
   delete: (params: any) => http.post(`${baseUrl}/store/log/delete`, params, 'application/json'),
   list: (params?: any) => http.get(`${baseUrl}/store/log/lists`, params),
-  create: (params: { data: StoreCreate[] }) => http.post(`${baseUrl}/store/total/save`, params, 'application/json')
+  materialList: (params?: any) => http.get(`${baseUrl}/material/store/log/lists`, params),
+  create: (params: { data: StoreCreate[] }) => http.post(`${baseUrl}/store/total/save`, params, 'application/json'),
+  materialCreate: (params: { data: StoreCreate[] }) => http.post(`${baseUrl}/material/store/total/save`, params, 'application/json')
 }
 
 // 采购
@@ -90,7 +93,8 @@ const yarnOrder = {
   create: (params: { data: OrderYarn[] }) => http.post(`${baseUrl}/order/purchase/save`, params, 'application/json'),
   list: (params: ListParam) => http.get(`${baseUrl}/order/purchase/lists`, params),
   delete: (params: DeleteParam) => http.post(`${baseUrl}/order/purchase/delete`, params, 'application/json'),
-  update: (params: OrderYarn) => http.post(`${baseUrl}/order/purchase/edit`, params, 'application/json')
+  update: (params: OrderYarn) => http.post(`${baseUrl}/order/purchase/edit`, params, 'application/json'),
+  detail: (params: DetailParam) => http.get(`${baseUrl}/order/purchase/detail`, params)
 }
 
 // 加工
@@ -99,6 +103,39 @@ const yarnProcess = {
   create: (params: { data: ProcessYarn[] }) => http.post(`${baseUrl}/order/process/save`, params, 'application/json'),
   list: (params: ListParam) => http.get(`${baseUrl}/order/process/lists`, params),
   delete: (params: DeleteParam) => http.post(`${baseUrl}/order/process/delete`, params, 'application/json')
+}
+
+// 毛条
+import { MaterialType } from '@/types/common'
+import { MaterialInfo, OrderMaterialInfo } from '@/types/material'
+const material = {
+  typeCreate: (params: MaterialType) => http.post(`${baseUrl}/material/type/save`, params, 'application/json'),
+  typeList: (params?: ListParam) => http.get(`${baseUrl}/material/type/lists`, params),
+  typeDelete: (params: DeleteParam) => http.post(`${baseUrl}/material/type/delete`, params, 'application/json'),
+  create: (params: MaterialInfo) => http.post(`${baseUrl}/material/save`, params, 'application/json'),
+  list: (params: ListParam) => http.get(`${baseUrl}/material/lists`, params),
+  delete: (params: DeleteParam) => http.post(`${baseUrl}/material/delete`, params, 'application/json'),
+  orderCreate: (params: { data: OrderMaterialInfo[] }) => http.post(`${baseUrl}/material/purchase/save`, params, 'application/json'),
+  orderList: (params: ListParam) => http.get(`${baseUrl}/material/purchase/lists`, params),
+  orderDetail: (params: DetailParam) => http.get(`${baseUrl}/material/purchase/detail`, params),
+  orderDelete: (params: DeleteParam) => http.post(`${baseUrl}/material/purchase/delete`, params, 'application/json')
+}
+
+// 毛条工艺单
+import { CraftInfo } from '@/types/material'
+const craft = {
+  create: (params: CraftInfo) => http.post(`${baseUrl}/material/craft/save`, params, 'application/json'),
+  list: (params: ListParam) => http.get(`${baseUrl}/material/craft/lists`, params),
+  detail: (params: DetailParam) => http.get(`${baseUrl}/material/craft/detail`, params),
+  delete: (params: DeleteParam) => http.post(`${baseUrl}/material/craft/delete`, params, 'application/json')
+}
+
+// 扣款
+import { DeductInfo } from '@/types/common'
+const deduct = {
+  create: (params: DeductInfo) => http.post(`${baseUrl}/financial/deduct/save`, params, 'application/json'),
+  list: (params: ListParam) => http.get(`${baseUrl}/financial/deduct/lists`, params),
+  delete: (params: DeleteParam) => http.post(`${baseUrl}/financial/deduct/delete`, params, 'application/json')
 }
 export {
   login,
@@ -113,5 +150,8 @@ export {
   store,
   stock,
   yarnOrder,
-  yarnProcess
+  yarnProcess,
+  material,
+  craft,
+  deduct
 }

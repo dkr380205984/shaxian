@@ -1,0 +1,62 @@
+@import '../common.less';
+@import '../create.less';
+@import '../bottomBar.less';
+#craftCreate{
+  .titleLine{
+    color: @font65;
+    margin: 22px 0;
+    font-size: 18px;
+    font-weight: bold;
+  }
+  .rowCtn{
+    &.blockCtn{
+      display: block;
+    }
+    .inputLine{
+      display: flex;
+      align-items: center;
+      .text{
+        font-size: @fontMiddle;
+        color: @font65;
+      }
+      .elCtn{
+        margin: 0 8px;
+        width: 200px;
+      }
+    }
+  }
+  .overflow{
+    flex-wrap: wrap;
+    .colCtn{
+      margin-bottom: 12px;
+    }
+    .flex2{
+      min-width: 579px;
+    }
+    .elCtn{
+      display: flex;
+      .el1{
+        width: 320px;
+        margin-right: 15px;
+      }
+      .el2{
+        width: 115px;
+        &:nth-last-child(1){
+          margin-left: 12px;
+        }
+      }
+    }
+    .explanation{
+      display: flex;
+      justify-content: space-between;
+      margin-top: 8px;
+      .text{
+        color: @font45;
+        font-size: @fontSmall;
+      }
+    }
+    .editBtn{
+      top: 0;
+    }
+  }
+}

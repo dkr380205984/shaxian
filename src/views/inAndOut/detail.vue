@@ -1702,6 +1702,16 @@ export default Vue.extend({
   },
   methods: {
     init() {
+      // 初始化弹窗信息
+      this.flags = {
+        in_flag: false,
+        out_flag: false,
+        order_in_flag: false,
+        store_out_flag: false,
+        order_out_flag: false,
+        order_store_in_flag: false,
+        process_out_flag: false
+      }
       this.loading = true
       Promise.all([
         order.detail({

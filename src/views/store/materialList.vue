@@ -4,7 +4,7 @@
     v-loading='loading'>
     <div class="module">
       <div class="titleCtn">
-        <span class="title hasBorder">纱线仓库列表</span>
+        <span class="title hasBorder">毛条仓库列表</span>
         <span class="addBtn btn btnMain"
           @click="changeStore()">新增仓库</span>
       </div>
@@ -68,7 +68,7 @@
                 <span class="opr orange"
                   @click="changeStore(item)">修改</span>
                 <span class="opr blue"
-                  @click="$router.push(`/store/detail/${item.id}`)">详情</span>
+                  @click="$router.push(`/store/materialDeatail/${item.id}`)">详情</span>
                 <span class="opr red"
                   @click="deleteStore(item)">删除</span>
               </div>
@@ -167,7 +167,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { store, user } from '@/assets/js/api'
+import { store } from '@/assets/js/api'
 import { Store } from '@/types/common'
 export default Vue.extend({
   data(): {
@@ -180,10 +180,10 @@ export default Vue.extend({
       addFlag: false,
       storeList: [],
       storeInfo: {
-        store_type: 1,
         id: null,
         name: '',
         type: 1,
+        store_type: 2,
         admins: [],
         LV2_info: [{ name: '', id: null }],
         desc: ''
@@ -240,16 +240,23 @@ export default Vue.extend({
     changeRouter(page: number) {
       const pages = page || 1
       this.$router.push(
-        '/store/list/page=' + pages + '&&type=' + this.type + '&&name=' + this.name + '&&page_size=' + this.page_size
+        '/store/materialList/page=' +
+          pages +
+          '&&type=' +
+          this.type +
+          '&&name=' +
+          this.name +
+          '&&page_size=' +
+          this.page_size
       )
     },
     getList() {
       this.loading = true
       store
         .list({
-          store_type: 1,
           limit: this.limit,
           page: this.page,
+          store_type: 2,
           name: this.name || null,
           type: this.type || null
         })
@@ -279,7 +286,7 @@ export default Vue.extend({
       this.type = Number(params.type) || ''
     },
     reset() {
-      this.$router.push('/store/list/page=&&type=&&name=&&page_size=')
+      this.$router.push('/store/materialList/page=&&type=&&name=&&page_size=')
     },
     saveStore() {
       if (this.$submitLock()) {
@@ -300,7 +307,7 @@ export default Vue.extend({
       }
       store
         .create({
-          store_type: 1,
+          store_type: 2,
           id: this.storeInfo.id || null,
           name: this.storeInfo.name,
           type: this.storeInfo.type,
@@ -319,7 +326,7 @@ export default Vue.extend({
     changeStore(item: Store) {
       this.addFlag = true
       this.storeInfo = {
-        store_type: 1,
+        store_type: 2,
         id: (item && item.id) || null,
         name: (item && item.name) || '',
         type: (item && item.type) || 1,

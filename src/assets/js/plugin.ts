@@ -248,12 +248,13 @@ const plugin = {
           }
         } else {
           if (item.regNormal === 'isNum') {
-            msg = /^[0-9]+$/.test(data[item.key]) ? item.errMsg || '请输入数字' : msg
+            console.log(data[item.key])
+            msg = /^[0-9]+$/.test(data[item.key]) ? msg : (item.errMsg || '请输入数字')
           } else if (item.regNormal === 'isEmail') {
             msg = /^([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+@([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+\.[a-zA-Z]{2,3}$/
-              .test(data[item.key]) ? item.errMsg || '请输入邮箱' : msg
+              .test(data[item.key]) ? msg : (item.errMsg || '请输入正确邮箱')
           } else if (item.regNormal === 'isPhone') {
-            msg = /^1[3456789]d{9}$/.test(data[item.key]) ? item.errMsg || '请输入正确的手机号' : msg
+            msg = /^1[3456789]d{9}$/.test(data[item.key]) ? msg : (item.errMsg || '请输入正确手机号')
           }
         }
       } else {

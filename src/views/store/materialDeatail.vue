@@ -78,26 +78,6 @@
             <div class="elCtn">
               <el-checkbox v-model="storeListFilter.isFilterZero"
                 @change="getStoreInfoList">过滤库存为0的纱线</el-checkbox>
-              <!-- <el-select v-model="storeListFilter.isFilterZero"
-                @change="getStoreInfoList"
-                placeholder="请选择是否过滤库存为0的纱线">
-                <el-option v-for="item in [
-                    {
-                      id:1,
-                      value:false,
-                      label:'否'
-                    },
-                    {
-                      id:2,
-                      value:true,
-                      label:'是'
-                    }
-                  ]"
-                  :key="item.id"
-                  :label="item.label"
-                  :value="item.value">
-                </el-option>
-              </el-select> -->
             </div>
           </div>
           <div class="rightCtn">
@@ -111,13 +91,9 @@
           <div class="thead">
             <div class="trow">
               <div class="tcolumn">二级仓库名称</div>
-              <div class="tcolumn">纱线名称</div>
-              <div class="tcolumn">纱线颜色</div>
-              <div class="tcolumn">属性</div>
+              <div class="tcolumn">毛条名称</div>
               <div class="tcolumn noPad flex5">
                 <div class="trow">
-                  <div class="tcolumn">纱线色号</div>
-                  <div class="tcolumn">批/缸号</div>
                   <div class="tcolumn">实际库存(KG)</div>
                   <div class="tcolumn">可用库存(KG)</div>
                   <div class="tcolumn">操作</div>
@@ -131,14 +107,10 @@
               :key="item.id">
               <div class="tcolumn">{{item.second_store_name || '-'}}</div>
               <div class="tcolumn">{{item.name}}</div>
-              <div class="tcolumn">{{item.color}}</div>
-              <div class="tcolumn">{{item.attribute}}</div>
               <div class="tcolumn noPad flex5">
                 <div class="trow"
                   v-for="(itemStore,indexStore) in item.store_info"
                   :key="indexStore">
-                  <div class="tcolumn">{{itemStore.color_code || '-'}}</div>
-                  <div class="tcolumn">{{itemStore.vat_code || '-'}}</div>
                   <div class="tcolumn">{{itemStore.reality_weight && $formatNum(itemStore.reality_weight) || '-'}}</div>
                   <div class="tcolumn blue">{{itemStore.useable_weight && $formatNum(itemStore.useable_weight) || '-'}}</div>
                   <div class="tcolumn flexRow">
@@ -155,12 +127,8 @@
             <div class="trow bgGray noBorder">
               <div class="tcolumn">合计</div>
               <div class="tcolumn"></div>
-              <div class="tcolumn"></div>
-              <div class="tcolumn"></div>
               <div class="tcolumn noPad flex5">
                 <div class="trow">
-                  <div class="tcolumn"></div>
-                  <div class="tcolumn"></div>
                   <div class="tcolumn">{{$formatNum(storeListCom.reality_weight)}}</div>
                   <div class="tcolumn blue">{{$formatNum(storeListCom.useable_weight)}}</div>
                   <div class="tcolumn"></div>
@@ -202,7 +170,7 @@
                 </div>
               </div>
               <div class="eColumn">
-                <span class="label">出入库单位</span>
+                <span class="label isMust">出入库单位</span>
                 <div class="from">
                   <el-select v-model="storeEditInfo.client_id"
                     placeholder="请选择出入库单位"
@@ -224,57 +192,13 @@
                 @click="storeEditInfo.child_data.length===1?$message.error('至少有一种纱线'):$deleteItem(storeEditInfo.child_data,indexStore)"></span>
               <div class="eRow">
                 <div class="eColumn">
-                  <span class="label isMust">纱线名称</span>
+                  <span class="label isMust">毛条名称</span>
                   <div class="from">
                     <el-cascader v-model="itemStore.name"
                       filterable
                       :props="{value:'label'}"
-                      placeholder="请选择纱线"
-                      :options="commonInit.yarnList"></el-cascader>
-                  </div>
-                </div>
-                <div class="eColumn">
-                  <span class="label isMust">纱线颜色</span>
-                  <div class="from">
-                    <el-autocomplete v-model="itemStore.color"
-                      :fetch-suggestions="querySearchColor"
-                      placeholder="请输入纱线颜色"></el-autocomplete>
-                  </div>
-                </div>
-                <div class="eColumn">
-                  <span class="label isMust">纱线属性</span>
-                  <div class="from">
-                    <el-select v-model="itemStore.attribute"
-                      clearable
-                      placeholder="请选择纱线属性">
-                      <el-option v-for="item in commonInit.materialAttrArr"
-                        :key="item.id"
-                        :label="item.name"
-                        :value="item.name">
-                      </el-option>
-                    </el-select>
-                  </div>
-                </div>
-              </div>
-              <div class="eRow">
-                <div class="eColumn">
-                  <div class="eRow innerEl">
-                    <div class="eColumn flexMode">
-                      <span class="label">色号</span>
-                      <div class="from">
-                        <el-autocomplete v-model="itemStore.color_code"
-                          :fetch-suggestions="querySearchColorCode"
-                          placeholder="请输入纱线色号"></el-autocomplete>
-                      </div>
-                    </div>
-                    <div class="eColumn flexMode">
-                      <span class="label">批/缸号</span>
-                      <div class="from">
-                        <el-autocomplete v-model="itemStore.vat_code"
-                          :fetch-suggestions="querySearchVatCode"
-                          placeholder="请输入纱线批/缸号"></el-autocomplete>
-                      </div>
-                    </div>
+                      placeholder="请选择毛条"
+                      :options="mat_type_list"></el-cascader>
                   </div>
                 </div>
                 <div class="eColumn">
@@ -325,12 +249,8 @@
             <div class="editBtn btnBluePurple"
               @click="$addItem(storeEditInfo.child_data,{
                 name:'',
-                color:'',
-                attribute:'',
                 item:'',
                 action_weight:'',
-                color_code:'',
-                vat_code:'',
                 desc:''
               })">继续添加</div>
             <div class="editBtn btnGreen"
@@ -341,12 +261,8 @@
             <div class="editBtn btnBluePurple"
               @click="$addItem(storeEditInfo.child_data,{
                 name:'',
-                color:'',
-                attribute:'',
                 item:'',
                 action_weight:'',
-                color_code:'',
-                vat_code:'',
                 desc:''
               })">添加新库存</div>
           </div>
@@ -471,9 +387,7 @@
                     <div class="column"
                       style="flex:10;flex-direction:column">
                       <div class="row">
-                        <div class="column min120">纱线名称</div>
-                        <div class="column min120">订购颜色</div>
-                        <div class="column min120">订购属性</div>
+                        <div class="column min120">毛条名称</div>
                         <div class="column min120">入库数量</div>
                         <div class="column min120">审核状态</div>
                         <div class="column min120">结算状态</div>
@@ -498,8 +412,6 @@
                         v-for="(itemChild,indexChild) in item.child_data"
                         :key="indexChild">
                         <div class="column min120">{{itemChild.name}}</div>
-                        <div class="column min120">{{itemChild.color}}</div>
-                        <div class="column min120">{{itemChild.attribute}}</div>
                         <div class="column min120 blue">{{itemChild.action_weight}}</div>
                         <div class="column min120">审核状态</div>
                         <div class="column min120">结算状态</div>
@@ -653,29 +565,16 @@ export default Vue.extend({
       }
     }
   },
+
   methods: {
     init() {
       Promise.all([
         store.detail({
           id: Number(this.$route.params.id)
-        }),
-        product.list(),
-        yarnColor.list()
+        })
       ]).then((res) => {
         this.loading.page = false
         this.storeDetail = res[0].data.data
-        // *** 初始化公共数据 ***
-        // 初始化纱线列表
-        this.commonInit.yarnList = this.$mergeData(res[1].data.data.items, {
-          mainRule: 'yarn_type/value',
-          otherRule: [{ name: 'yarn_type_name/label' }],
-          childrenName: 'children',
-          childrenRule: {
-            otherRule: [{ name: 'name/label' }, { name: 'id/value' }]
-          }
-        })
-        // 初始化纱线颜色
-        this.commonInit.yarnColorList = res[2].data.data.map((itemM: any) => ({ value: itemM.name, id: itemM.id }))
       })
       this.getStoreInfoList()
       this.getStoreLogList()
@@ -683,7 +582,7 @@ export default Vue.extend({
     getStoreInfoList() {
       this.loading.info = true
       store
-        .detailYarnList({
+        .detailMateiralList({
           store_id: this.$route.params.id,
           second_store_id: this.storeListFilter.LV2_name || null,
           name: this.storeListFilter.name || null,
@@ -843,15 +742,7 @@ export default Vue.extend({
           return this.$formCheck(item, [
             {
               key: 'name',
-              errMsg: '请选择纱线名称'
-            },
-            {
-              key: 'color',
-              errMsg: '请填写纱线颜色'
-            },
-            {
-              key: 'attribute',
-              errMsg: '请选择纱线属性'
+              errMsg: '请选择毛条名称'
             },
             {
               key: 'action_weight',
@@ -866,10 +757,8 @@ export default Vue.extend({
       this.loading.page = true
       this.storeEditInfo.child_data.forEach((item) => {
         item.name = item.name[1]
-        item.color_code = item.color_code || 'NOT_SET'
-        item.vat_code = item.vat_code || 'NOT_SET'
       })
-      stock.create({ data: [this.storeEditInfo] }).then((res) => {
+      stock.materialCreate({ data: [this.storeEditInfo] }).then((res) => {
         if (res.data.status !== false) {
           this.$message.success('添加成功')
           this.resetData()
@@ -883,7 +772,7 @@ export default Vue.extend({
     getStoreLogList(pages: number = 1) {
       this.loading.log = true
       stock
-        .list({
+        .materialList({
           store_id: this.$route.params.id,
           page: pages,
           limit: this.storeLogListFilter.limit || 5,
@@ -927,6 +816,11 @@ export default Vue.extend({
         checkWhich: 'api/client',
         getInfoMethed: 'dispatch',
         getInfoApi: 'getPartyBAsync'
+      },
+      {
+        checkWhich: 'api/materialType',
+        getInfoMethed: 'dispatch',
+        getInfoApi: 'getMaterialTypeAsync'
       }
     ])
     this.init()
@@ -975,6 +869,20 @@ export default Vue.extend({
           }
         })
       }
+    },
+    mat_type_list() {
+      return this.$store.state.api.materialType.arr.map((item: any) => {
+        return {
+          value: item.id,
+          label: item.name,
+          children: item.child_data.map((itemChild: any) => {
+            return {
+              value: itemChild.id,
+              label: itemChild.name
+            }
+          })
+        }
+      })
     },
     client_list() {
       return this.$store.state.api.client.arr

@@ -1,6 +1,7 @@
 <template>
   <div class="indexMain"
-    id="yarnOrderDetail">
+    id="yarnOrderDetail"
+    v-loading="loading">
     <div class="module">
       <div class="titleCtn">
         <span class="title">基本信息</span>
@@ -126,7 +127,8 @@
         </div>
       </div>
     </div>
-    <div class="module">
+    <div class="module"
+      v-if="store_yarn_list.length>0">
       <div class="titleCtn">
         <span class="title">库存调取信息</span>
       </div>
@@ -230,7 +232,8 @@
         </div>
       </div>
     </div>
-    <div class="module">
+    <div class="module"
+      v-if="order_yarn_list.length>0">
       <div class="titleCtn">
         <span class="title">订购信息</span>
       </div>
@@ -326,6 +329,8 @@
                   <div class="column min120"
                     :style="{'height':50*item.child_data.length + 'px'}">
                     <span class="blue opr">打印</span>
+                    <span class="green opr"
+                      @click="openDeduct(item.id,item.code,item.child_data,1)">扣款</span>
                     <span class="orange opr"
                       @click="getUpdateInfo(item)">修改</span>
                     <span class="red opr"
@@ -338,7 +343,8 @@
         </div>
       </div>
     </div>
-    <div class="module">
+    <div class="module"
+      v-if="process_yarn_list.length>0">
       <div class="titleCtn">
         <span class="title">加工信息</span>
       </div>
@@ -466,7 +472,7 @@
       v-show="flags.order_flag">
       <div class="main">
         <div class="titleCtn">
-          <span class="text">订购白胚</span>
+          <span class="text">订购纱线</span>
           <i class="close_icon el-icon-close"
             @click="flags.order_flag = false"></i>
         </div>
@@ -475,7 +481,8 @@
             <div class="editContainer"
               v-for="(item,index) in order_yarn_info"
               :key="index">
-              <i class="el-icon-circle-close"></i>
+              <i class="el-icon-circle-close"
+                @click="order_yarn_info.length>1?$deleteItem(order_yarn_info,index):$message.error('至少有一个采购单')"></i>
               <div class="eRow">
                 <div class="eColumn">
                   <div class="label isMust">供货商名称</div>
@@ -490,9 +497,10 @@
                   </div>
                 </div>
                 <div class="eColumn">
-                  <div class="label isMust">统一属性</div>
+                  <div class="label">快捷填写属性</div>
                   <div class="from">
-                    <el-select placeholder="选择统一订购属性"
+                    <el-select @change="commonInput($event,item,'attribute')"
+                      placeholder="选择统一订购属性"
                       v-model="item.common_attr">
                       <el-option label="筒纱"
                         value="筒纱"></el-option>
@@ -502,10 +510,11 @@
                   </div>
                 </div>
                 <div class="eColumn">
-                  <div class="label isMust">统一单价</div>
+                  <div class="label">快捷填写单价</div>
                   <div class="from">
-                    <el-input v-model="item.common_price"
-                      placeholder="快捷填写统一单价">
+                    <el-input @change="commonInput($event,item,'price')"
+                      v-model="item.common_price"
+                      placeholder="填写后会统一订购单价">
                       <template slot="append">元</template>
                     </el-input>
                   </div>
@@ -616,9 +625,25 @@
               </div>
             </div>
             <div class="btns">
-              <div class="btn btnMain">新增采购单</div>
               <div class="btn btnMain"
-                style="margin-left:12px">复制上一组</div>
+                @click="$addItem(order_yarn_info,{
+                  order_id: $route.params.id,
+                  client_id: '',
+                  order_time: '',
+                  delivery_time: '',
+                  desc: '',
+                  child_data: [{
+                    order_number: '',
+                    order_info_id: '',
+                    weight: '',
+                    color: '',
+                    attribute: '',
+                    price: ''
+                  }]
+              })">新增采购单</div>
+              <div class="btn btnMain"
+                style="margin-left:12px"
+                @click="$addItem(order_yarn_info,$clone(order_yarn_info[order_yarn_info.length-1]))">复制上一组</div>
             </div>
           </div>
         </div>
@@ -641,7 +666,6 @@
         <div class="contentCtn">
           <div class="editCtn">
             <div class="editContainer">
-              <i class="el-icon-circle-close"></i>
               <div class="eRow">
                 <div class="eColumn">
                   <div class="label isMust">供货商名称</div>
@@ -807,20 +831,29 @@
                 <div class="label">筛选条件：</div>
                 <div class="elCtn">
                   <el-input v-model="store_filter.name"
-                    placeholder="搜索纱线名称"></el-input>
+                    placeholder="搜索纱线名称"
+                    @change="getStoreList"></el-input>
                 </div>
                 <div class="elCtn">
                   <el-input v-model="store_filter.color"
+                    @change="getStoreList"
                     placeholder="搜索颜色"></el-input>
                 </div>
                 <div class="elCtn">
                   <el-select v-model="store_filter.store_id"
-                    placeholder="筛选仓库"></el-select>
+                    @change="getStoreList"
+                    placeholder="筛选仓库">
+                    <el-option v-for="item in store_house"
+                      :key="item.id"
+                      :value="item.id"
+                      :label="item.name"></el-option>
+                  </el-select>
                 </div>
               </div>
               <div class="rightCtn"
                 style="min-width:100px">
-                <div class="btn btnGray fr">重置</div>
+                <div class="btn btnGray fr"
+                  @click="resetStoreFilter">重置</div>
               </div>
             </div>
             <div class="tableCtn"
@@ -912,6 +945,7 @@
                       <div class="tcolumn">下单属性</div>
                       <div class="tcolumn">下单数量</div>
                       <div class="tcolumn">库存调取数量</div>
+                      <div class="tcolumn">操作</div>
                     </div>
                   </div>
                 </div>
@@ -931,7 +965,13 @@
                         <el-input class="el"
                           v-model="item.weight"
                           placeholder="请输入调取数量"
-                          @input="getTotalStore"></el-input>
+                          @input="getTotalStore">
+                          <template slot="append">kg</template>
+                        </el-input>
+                      </div>
+                      <div class="tcolumn">
+                        <div class="opr red"
+                          @click="deleteItem(index)">删除</div>
                       </div>
                     </div>
                   </div>
@@ -976,7 +1016,8 @@
             <div class="editContainer"
               v-for="(item,index) in process_yarn_info"
               :key="index">
-              <i class="el-icon-circle-close"></i>
+              <i class="el-icon-circle-close"
+                @click="process_yarn_info.length>1?$deleteItem(process_yarn_info,index):$message.error('至少有一个加工单')"></i>
               <div class="eRow">
                 <div class="eColumn">
                   <div class="label isMust">加工单位名称</div>
@@ -1146,9 +1187,31 @@
               </div>
             </div>
             <div class="btns">
-              <div class="btn btnMain">新增加工单位</div>
               <div class="btn btnMain"
-                style="margin-left:12px">复制上一组</div>
+                @click="$addItem(process_yarn_info,{
+                  order_id: $route.params.id,
+                  client_id: '',
+                  type: process_yarn_info[0].type,
+                  price: '',
+                  desc: '',
+                  order_time: $getDate(new Date()),
+                  delivery_time: '',
+                  child_data: [
+                    {
+                      name: '',
+                      before_attribute: '',
+                      after_attribute: '',
+                      before_color: '白胚',
+                      after_color: '',
+                      color: '',
+                      attribute: '',
+                      weight: ''
+                    }
+                  ]
+              })">新增加工单</div>
+              <div class="btn btnMain"
+                style="margin-left:12px"
+                @click="$addItem(process_yarn_info,$clone(process_yarn_info[process_yarn_info.length-1]))">复制上一组</div>
             </div>
           </div>
         </div>
@@ -1160,6 +1223,10 @@
         </div>
       </div>
     </div>
+    <!-- 订购扣款 -->
+    <deduct :show.sync="deduct_show"
+      :data="deduct_info"></deduct>
+    <deduct-detail :show.sync="deduct_detail_show"></deduct-detail>
   </div>
 </template>
 
@@ -1170,6 +1237,7 @@ import { OrderStoreInfo } from '@/types/store'
 import { OrderYarn, YarnInfo, ProcessYarn } from '@/types/orderProcessYarn'
 import { order, yarnOrder, store, yarnProcess } from '@/assets/js/api'
 import { PartyB } from '@/types/common'
+
 export default Vue.extend({
   data(): {
     order_info: Order
@@ -1181,6 +1249,7 @@ export default Vue.extend({
     [propName: string]: any
   } {
     return {
+      loading: true,
       checkAll: false,
       indeterminate: false,
       order_info: {
@@ -1246,7 +1315,15 @@ export default Vue.extend({
       store_yarn_list: [],
       process_yarn_info: [],
       process_yarn_list: [],
-      process_select_yarn: []
+      process_select_yarn: [],
+      deduct_show: false,
+      deduct_info: {
+        yarn: [],
+        pid: 1,
+        pcode: '',
+        type: 1
+      },
+      deduct_detail_show: true
     }
   },
   computed: {
@@ -1261,6 +1338,9 @@ export default Vue.extend({
     },
     supplier_arr_c() {
       return this.$store.state.api.supplier.arr.filter((item: PartyB) => item.client_type === '膨纱单位')
+    },
+    store_house() {
+      return this.$store.state.api.storeHouse.arr
     },
     checkList(): any {
       const returnData: any = []
@@ -1279,6 +1359,7 @@ export default Vue.extend({
   },
   methods: {
     init() {
+      this.loading = true
       Promise.all([
         order.detail({
           id: this.$route.params.id
@@ -1302,7 +1383,13 @@ export default Vue.extend({
         this.order_yarn_list = res[1].data.data
         this.store_yarn_list = res[2].data.data
         this.process_yarn_list = res[3].data.data
-        console.log(res[3])
+        this.loading = false
+      })
+    },
+    // 快捷填写信息
+    commonInput(ev: string, obj: any, key: string) {
+      obj.child_data.forEach((item: any) => {
+        item[key] = ev
       })
     },
     checkAllPro(ev: boolean) {
@@ -1421,7 +1508,6 @@ export default Vue.extend({
       this.flags.order_flag = true
     },
     openStore() {
-      console.log(this.checkList)
       if (this.checkList.length === 1) {
         this.store_filter.name = this.$clone(this.checkList[0].product_name)
         this.getStoreList()
@@ -1470,6 +1556,14 @@ export default Vue.extend({
       this.store_step = 1
       this.flags.store_flag = false
     },
+    resetStoreFilter() {
+      this.store_filter = {
+        name: '',
+        color: '',
+        store_id: ''
+      }
+      this.getStoreList()
+    },
     // 计算总调取数量
     getTotalStore() {
       this.store_info.total_weight = this.store_info.child_data.reduce((total: number, current: any) => {
@@ -1477,7 +1571,20 @@ export default Vue.extend({
       }, 0)
     },
     saveStore() {
-      console.log(this.store_info, this.checkList)
+      if (
+        this.store_info.child_data.some((item) => {
+          return this.$formCheck(item, [
+            {
+              key: 'weight',
+              regNormal: 'isNum',
+              errMsg: '请输入库存调取数量'
+            }
+          ])
+        })
+      ) {
+        return
+      }
+      this.loading = true
       const formData = {
         order_id: this.$route.params.id,
         store_total_id: this.store_info.id,
@@ -1490,20 +1597,67 @@ export default Vue.extend({
           }
         })
       }
-      console.log(formData)
       store.orderSave(formData).then((res) => {
         if (res.data.status) {
           this.$message.success('调取成功')
           this.resetStore()
+          this.loading = false
+          this.init()
         }
       })
     },
     saveOrder() {
+      if (
+        this.order_yarn_info.some((item) => {
+          if (
+            this.$formCheck(item, [
+              {
+                key: 'client_id',
+                errMsg: '请选择供货商'
+              },
+              {
+                key: 'delivery_time',
+                errMsg: '请选择交货日期'
+              }
+            ])
+          ) {
+            return true
+          }
+          return item.child_data.some((itemChild) => {
+            return this.$formCheck(itemChild, [
+              {
+                key: 'order_info_id',
+                errMsg: '请选择下单纱线'
+              },
+              {
+                key: 'weight',
+                errMsg: '请输入订购数量'
+              },
+              {
+                key: 'price',
+                errMsg: '请输入订购单价'
+              },
+              {
+                key: 'color',
+                errMsg: '请输入订购颜色'
+              },
+              {
+                key: 'attribute',
+                errMsg: '请选择订购属性'
+              }
+            ])
+          })
+        })
+      ) {
+        return
+      }
+      this.loading = true
       yarnOrder.create({ data: this.order_yarn_info }).then((res) => {
         if (res.data.status) {
           this.$message.success('订购成功')
           this.resetOrder()
           this.flags.order_flag = false
+          this.init()
         }
       })
     },
@@ -1555,10 +1709,54 @@ export default Vue.extend({
       })
     },
     updateOrder() {
+      this.$formCheck(this.update_order_info, [
+        {
+          key: 'client_id',
+          errMsg: '请选择供货商'
+        },
+        {
+          key: 'delivery_time',
+          errMsg: '请选择交货日期'
+        }
+      ])
+      if (
+        this.update_order_info.child_data.some((itemChild) => {
+          return this.$formCheck(itemChild, [
+            {
+              key: 'order_info_id',
+              errMsg: '请选择下单纱线'
+            },
+            {
+              key: 'weight',
+              errMsg: '请输入订购数量'
+            },
+            {
+              key: 'price',
+              errMsg: '请输入订购单价'
+            },
+            {
+              key: 'color',
+              errMsg: '请输入订购颜色'
+            },
+            {
+              key: 'attribute',
+              errMsg: '请选择订购属性'
+            },
+            {
+              key: 'reality_weight',
+              errMsg: '请输入实际订购数量'
+            }
+          ])
+        })
+      ) {
+        return
+      }
+      this.loading = true
       yarnOrder.update(this.update_order_info).then((res) => {
         if (res.data.status) {
           this.$message.success('修改成功')
           this.flags.order_update_flag = false
+          this.loading = false
           this.init()
         }
       })
@@ -1628,6 +1826,36 @@ export default Vue.extend({
             }, 0)
           }
         })
+        let childData: any[] = []
+        if (process === '倒筒') {
+          childData = this.process_select_yarn.map((item: any) => {
+            return {
+              name: item.name,
+              before_attribute: '',
+              after_attribute: '',
+              before_color: '白胚',
+              after_color: '',
+              color: '',
+              attribute: '',
+              weight: item.weight
+            }
+          })
+        } else {
+          this.checkList.forEach((item: any) => {
+            item.child_data.forEach((itemChild: any) => {
+              childData.push({
+                name: item.product_name,
+                before_attribute: '',
+                after_attribute: '',
+                before_color: '白胚',
+                after_color: process === '染色' ? itemChild.color : '',
+                color: process === '膨纱' ? itemChild.color : '',
+                attribute: process === '膨纱' ? itemChild.attribute : '',
+                weight: itemChild.weight
+              })
+            })
+          })
+        }
         this.process_yarn_info = [
           {
             order_id: this.$route.params.id,
@@ -1637,18 +1865,7 @@ export default Vue.extend({
             desc: '',
             order_time: this.$getDate(new Date()),
             delivery_time: '',
-            child_data: this.process_select_yarn.map((item: any) => {
-              return {
-                name: item.name,
-                before_attribute: '',
-                after_attribute: '',
-                before_color: '白胚',
-                after_color: '',
-                color: '',
-                attribute: '',
-                weight: item.weight
-              }
-            })
+            child_data: childData
           }
         ]
       }
@@ -1658,12 +1875,32 @@ export default Vue.extend({
       this.process_yarn_info = []
     },
     saveProcess() {
+      if (
+        this.process_yarn_info.some((item) => {
+          return this.$formCheck(item, [
+            {
+              key: 'client_id',
+              errMsg: '请选择加工单位'
+            },
+            {
+              key: 'price',
+              errMsg: '请输入加工单价'
+            },
+            {
+              key: 'delivery_time',
+              errMsg: '请选择交货日期'
+            }
+          ])
+        })
+      ) {
+        return
+      }
+      this.loading = true
       this.process_yarn_info.forEach((item) => {
         item.child_data.forEach((itemChild) => {
           itemChild.price = item.price
         })
       })
-      console.log(this.process_yarn_info)
       yarnProcess
         .create({
           data: this.process_yarn_info
@@ -1672,6 +1909,8 @@ export default Vue.extend({
           if (res.data.status) {
             this.$message.success('添加成功')
             this.resetProcess()
+            this.loading = false
+            this.init()
           }
         })
     },
@@ -1682,6 +1921,7 @@ export default Vue.extend({
         type: 'warning'
       })
         .then(() => {
+          this.loading = true
           yarnProcess
             .delete({
               id
@@ -1699,6 +1939,30 @@ export default Vue.extend({
             message: '已取消删除'
           })
         })
+    },
+    // 删除调取纱线
+    deleteItem(index: string) {
+      if (this.store_info.child_data.length > 1) {
+        this.$deleteItem(this.store_info.child_data, index)
+        this.$forceUpdate()
+      } else {
+        this.$message.error('至少调用一个纱线')
+      }
+    },
+    // 打开扣款窗口
+    openDeduct(pid: number, pcode: string, yarnArr: any[], type: number) {
+      this.deduct_info = {
+        yarn: yarnArr.map((item) => {
+          return {
+            value: item.order_info_id,
+            label: item.name + '/' + item.color + '/' + item.attribute
+          }
+        }),
+        pid,
+        pcode,
+        type
+      }
+      this.deduct_show = true
     }
   },
   mounted() {
@@ -1707,6 +1971,11 @@ export default Vue.extend({
         checkWhich: 'api/client',
         getInfoMethed: 'dispatch',
         getInfoApi: 'getPartyBAsync'
+      },
+      {
+        checkWhich: 'api/storeHouse',
+        getInfoMethed: 'dispatch',
+        getInfoApi: 'getStoreAsync'
       }
     ])
     this.init()

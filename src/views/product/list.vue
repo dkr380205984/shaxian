@@ -1,6 +1,7 @@
 <template>
   <div id="productList"
-    class="indexMain">
+    class="indexMain"
+    v-loading="loading">
     <div class="module">
       <div class="titleCtn">
         <span class="title">纱线列表</span>
@@ -17,7 +18,8 @@
             <div class="elCtn">
               <el-select v-model="yarn_type"
                 @change="changeRouter(1)"
-                placeholder="选择纱线类型">
+                placeholder="选择纱线类型"
+                clearable>
                 <el-option v-for="item in typeArr"
                   :key="item.id"
                   :label="item.name"
@@ -35,9 +37,15 @@
                 @change="changeRouter(1)"></el-input>
             </div>
             <div class="elCtn">
-              <el-input v-model="attribute"
-                placeholder="输入纱线属性"
-                @change="changeRouter(1)"></el-input>
+              <el-select v-model="attribute"
+                placeholder="选择纱线属性"
+                clearable
+                @change="changeRouter(1)">
+                <el-option label="绞纱"
+                  value="绞纱"></el-option>
+                <el-option label="筒纱"
+                  value="筒纱"></el-option>
+              </el-select>
             </div>
             <div class="elCtn">
               <el-select v-model="page_size"
@@ -67,7 +75,7 @@
               <div class="column">参考价格(元)
                 <el-tooltip class="item"
                   effect="dark"
-                  content="Top Center 提示文字"
+                  content="纱线最低价/最高价的参考区间"
                   placement="top">
                   <i class="el-icon-question elicon"></i>
                 </el-tooltip>
@@ -92,7 +100,7 @@
               <div class="column">{{item.user_name}}</div>
               <div class="column">
                 <div class="opr blue"
-                  @click="$router.push('/product/detail/'+item.id)">详情</div>
+                  @click="$router.push('/product/detail/' + item.id)">详情</div>
                 <div class="opr orange"
                   @click="$router.push('/product/update/' + item.id)">修改</div>
                 <div class="opr red"
@@ -124,6 +132,7 @@ export default Vue.extend({
     [propName: string]: any
   } {
     return {
+      loadign: true,
       page: 1,
       total: 1,
       page_size: 10,
@@ -216,11 +225,12 @@ export default Vue.extend({
       this.page = Number(params.page)
       this.page_size = Number(params.page_size)
       this.name = params.name
-      this.color = params.name
+      this.color = params.color
       this.attribute = params.attribute
       this.yarn_type = params.yarn_type ? Number(params.yarn_type) : ''
     },
     getList() {
+      this.loading = true
       product
         .list({
           limit: this.page_size,
@@ -234,6 +244,7 @@ export default Vue.extend({
           if (res.data.status) {
             this.list = res.data.data.items
             this.total = res.data.data.total
+            this.loading = false
           }
         })
     }
@@ -253,5 +264,5 @@ export default Vue.extend({
 </script>
 
 <style lang="less" scoped>
-@import '~@/assets/less/css/list.less';
+@import '~@/assets/less/product/list.less';
 </style>

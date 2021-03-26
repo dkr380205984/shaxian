@@ -1535,7 +1535,7 @@ export default Vue.extend({
   },
   computed: {
     client_arr() {
-      return this.$store.state.api.factory.arr
+      return this.$store.state.api.factory.arr.filter((item: PartyB) => (item.status as number) === 1)
     },
     supplier_arr_a() {
       return this.$store.state.api.supplier.arr.filter((item: PartyB) => item.client_type === '倒筒单位')

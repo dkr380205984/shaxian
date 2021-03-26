@@ -259,8 +259,9 @@ export default Vue.extend({
         })
     },
     changeSupplier(item: PartyB) {
+      console.log(item)
       this.addFlag = true
-      this.clientInfo = {
+      this.supplierInfo = {
         id: (item && item.id) || null,
         name: (item && item.name) || '',
         abbreviation: (item && item.abbreviation) || '',

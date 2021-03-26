@@ -35,7 +35,7 @@ export interface PartyB {
   address: string
   contact: string
   contact_phone: string
-  status?: boolean
+  status?: boolean | number
   type?: 1 | 2 | 3
 }
 

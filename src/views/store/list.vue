@@ -141,7 +141,7 @@
                 @click="$addItem(storeInfo.LV2_info,{ name: '', id: null })">添加</span>
               <span class="info_btn red"
                 v-else
-                @click="$deleteItem(storeInfo.LV2_info,indexLV2)">删除</span>
+                @click="itemLV2.id?deleteSecondStore(itemLV2.id,storeInfo.LV2_info,indexLV2):$deleteItem(storeInfo.LV2_info,indexLV2)">删除</span>
             </div>
           </div>
           <div class="row">
@@ -328,6 +328,28 @@ export default Vue.extend({
         desc: (item && item.desc) || ''
       }
     },
+    deleteSecondStore(id: number, father: any[], index: number) {
+      this.$confirm('此操作将删除该二级仓库, 是否继续?（注：已有库存日志将无法删除）', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        store
+          .deleteSecond({
+            id
+          })
+          .then((res: any) => {
+            if (res.data.status !== false) {
+              this.$message({
+                type: 'success',
+                message: `删除成功!`
+              })
+              this.$deleteItem(father, index)
+              this.getList()
+            }
+          })
+      })
+    },
     deleteStore(item: Store) {
       this.$confirm('此操作将删除该仓库, 是否继续?（注：已有库存日志将无法删除）', '提示', {
         confirmButtonText: '确定',
@@ -344,7 +366,7 @@ export default Vue.extend({
                 type: 'success',
                 message: `删除成功!`
               })
-              this.init()
+              this.getList()
             }
           })
       })

@@ -73,6 +73,7 @@ const store = {
   create: (params: StoreCreateParams) => http.post(`${baseUrl}/store/save`, params, 'application/json'),
   detail: (params: StoreDetailParams) => http.get(`${baseUrl}/store/detail`, params),
   delete: (params: StoreDetailParams) => http.post(`${baseUrl}/store/delete`, params, 'application/json'),
+  deleteSecond: (params: StoreDetailParams) => http.post(`${baseUrl}/store/second/delete`, params, 'application/json'),
   list: (params?: StoreListParams) => http.get(`${baseUrl}/store/lists`, params),
   detailYarnList: (params: StoreDetailYarnListParams) => http.get(`${baseUrl}/store/total/lists`, params),
   detailMateiralList: (params: StoreDetailYarnListParams) => http.get(`${baseUrl}/material/store/total/lists`, params),

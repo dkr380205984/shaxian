@@ -7,6 +7,15 @@
         <span class="title">基本信息</span>
       </div>
       <div class="detailCtn">
+        <div class="checkCtn">
+          <el-tooltip class="item"
+            effect="dark"
+            content="点击查看审核日志"
+            placement="bottom">
+            <img @click="checkReason"
+              :src="order_yarn_info.is_check|checkFilter" />
+          </el-tooltip>
+        </div>
         <div class="rowCtn">
           <div class="colCtn">
             <span class="label">采购单号：</span>
@@ -118,15 +127,12 @@
                     <div class="column min120">入库单号</div>
                     <div class="column min120">入库仓库</div>
                     <div class="column"
-                      style="flex:10;flex-direction:column">
+                      style="flex:4;flex-direction:column">
                       <div class="row">
                         <div class="column min120">纱线名称</div>
                         <div class="column min120">订购颜色</div>
                         <div class="column min120">订购属性</div>
                         <div class="column min120">入库数量</div>
-                        <div class="column min120">审核状态</div>
-                        <div class="column min120">结算状态</div>
-                        <div class="column min120">扣款信息</div>
                       </div>
                     </div>
                     <div class="column min120">备注信息</div>
@@ -142,7 +148,7 @@
                     <div class="column min120">{{item.code}}</div>
                     <div class="column min120">{{item.store_name}}/{{item.second_store_name}}</div>
                     <div class="column"
-                      style="flex:10;flex-direction:column">
+                      style="flex:4;flex-direction:column">
                       <div class="row"
                         v-for="(itemChild,indexChild) in item.child_data"
                         :key="indexChild">
@@ -150,9 +156,6 @@
                         <div class="column min120">{{itemChild.color}}</div>
                         <div class="column min120">{{itemChild.attribute}}</div>
                         <div class="column min120 blue">{{itemChild.action_weight}}</div>
-                        <div class="column min120">审核状态</div>
-                        <div class="column min120">结算状态</div>
-                        <div class="column min120">扣款信息</div>
                       </div>
                     </div>
                     <div class="column min120">{{item.desc||'无'}}</div>
@@ -270,6 +273,8 @@
           <div class="btn btnGray"
             @click="$router.go(-1)">返回</div>
           <div class="btn btnBlue">打印</div>
+          <div class="btn btnGreen"
+            @click="openCheck">审核</div>
           <div class="btn btnRed"
             @click="openDeduct">扣款</div>
         </div>
@@ -400,6 +405,29 @@
     </div>
     <deduct :show.sync="deduct_show"
       :data="deduct_info"></deduct>
+    <check :show.sync="check_flag"
+      :pid="$route.params.id"
+      @afterCheck="init"
+      :checkType="1"
+      :checkList="[{
+        value:'费用问题',
+        label:'费用问题'
+      },{
+        value:'质量问题',
+        label:'质量问题'
+      },{
+        value:'产品问题',
+        label:'产品问题'
+      },{
+        value:'交期问题',
+        label:'交期问题'
+      },{
+        value:'数量问题',
+        label:'数量问题'
+      }]"></check>
+    <check-detail :show.sync="check_detail_flag"
+      :checkType="1"
+      :pid="$route.params.id"></check-detail>
   </div>
 </template>
 
@@ -415,6 +443,8 @@ export default Vue.extend({
   } {
     return {
       loading: true,
+      check_flag: false,
+      check_detail_flag: false,
       deduct_show: false,
       deduct_info: {
         yarn: [],
@@ -424,6 +454,7 @@ export default Vue.extend({
       },
       order_yarn_info: {
         code: '',
+        is_check: '',
         client_id: '',
         total_price: '',
         child_data: [
@@ -492,6 +523,13 @@ export default Vue.extend({
         })
         this.loading = false
       })
+    },
+    checkReason() {
+      if (!this.order_yarn_info.is_check) {
+        this.$message.warning('暂无审核信息')
+        return
+      }
+      this.check_detail_flag = true
     },
     resetOrderIn() {
       this.order_in_flag = false
@@ -600,6 +638,9 @@ export default Vue.extend({
         type: 1
       }
       this.deduct_show = true
+    },
+    openCheck() {
+      this.check_flag = true
     }
   },
   mounted() {

@@ -116,13 +116,11 @@
                     <div class="column min120">入库单号</div>
                     <div class="column min120">入库仓库</div>
                     <div class="column"
-                      style="flex:10;flex-direction:column">
+                      style="flex:2;flex-direction:column">
                       <div class="row">
                         <div class="column min120">毛条名称</div>
                         <div class="column min120">入库数量</div>
-                        <div class="column min120">审核状态</div>
-                        <div class="column min120">结算状态</div>
-                        <div class="column min120">扣款信息</div>
+                        <div class="column min120">入库件数</div>
                       </div>
                     </div>
                     <div class="column min120">备注信息</div>
@@ -138,15 +136,13 @@
                     <div class="column min120">{{item.code}}</div>
                     <div class="column min120">{{item.store_name}}/{{item.second_store_name}}</div>
                     <div class="column"
-                      style="flex:10;flex-direction:column">
+                      style="flex:2;flex-direction:column">
                       <div class="row"
                         v-for="(itemChild,indexChild) in item.child_data"
                         :key="indexChild">
                         <div class="column min120">{{itemChild.name}}</div>
-                        <div class="column min120 blue">{{itemChild.action_weight}}</div>
-                        <div class="column min120">审核状态</div>
-                        <div class="column min120">结算状态</div>
-                        <div class="column min120">扣款信息</div>
+                        <div class="column min120 blue">{{itemChild.action_weight}}kg</div>
+                        <div class="column min120">{{itemChild.item}}件</div>
                       </div>
                     </div>
                     <div class="column min120">{{item.desc||'无'}}</div>

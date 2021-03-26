@@ -10,7 +10,7 @@
         <div class="rowCtn">
           <div class="colCtn">
             <span class="label">订单号：</span>
-            <span class="text green">暂时没有，自己编的</span>
+            <span class="text green">{{order_info.code}}</span>
           </div>
           <div class="colCtn">
             <span class="label">客户单号：</span>
@@ -254,15 +254,16 @@
                         <div class="column min120">订购属性</div>
                         <div class="column min120">订购数量</div>
                         <div class="column min120">实际订购数量</div>
-                        <div class="column min120">备注信息</div>
-                        <div class="column min120">创建人</div>
-                        <div class="column min120">审核状态</div>
-                        <div class="column min120">结算状态</div>
-                        <div class="column min120">扣款信息</div>
+                        <div class="column min120">单价</div>
                       </div>
                     </div>
+                    <div class="column min120">采购总价</div>
+                    <div class="column min120">创建人</div>
+                    <div class="column min120">额外费用</div>
+                    <div class="column min120">扣款信息</div>
                     <div class="column min120">下单日期</div>
                     <div class="column min120">交货日期</div>
+                    <div class="column min120">备注信息</div>
                     <div class="column min120">操作</div>
                   </div>
                 </div>
@@ -279,18 +280,26 @@
                         :key="indexChild">
                         <div class="column min120">{{itemChild.name}}</div>
                         <div class="column min120">{{itemChild.color}}</div>
-                        <div class="column min120">{{itemChild.price}}</div>
-                        <div class="column min120 blue">{{itemChild.weight}}</div>
+                        <div class="column min120">{{itemChild.attribute}}</div>
+                        <div class="column min120">{{itemChild.weight}}</div>
                         <div class="column min120 blue">{{itemChild.reality_weight}}</div>
-                        <div class="column min120">{{itemChild.desc||'无'}}</div>
-                        <div class="column min120">创建人</div>
-                        <div class="column min120">审核状态</div>
-                        <div class="column min120">结算状态</div>
-                        <div class="column min120">扣款信息</div>
+                        <div class="column min120">{{itemChild.price}}元</div>
                       </div>
                     </div>
+                    <div class="column min120 green">{{item.total_price || 0}}元</div>
+                    <div class="column min120">{{item.user_name}}</div>
+                    <div class="column min120"
+                      :style="{'cursor':item.additional_fee?'pointer':'auto'}"
+                      :class="{'blue':item.additional_fee,'gray':!item.additional_fee}"
+                      @click="lookExtraFee(item.additional_fee)">{{item.additional_fee?'查看费用':'无额外费用'}}</div>
+                    <div class="column min120"
+                      :style="{'cursor':item.is_deduct===1?'pointer':'auto'}"
+                      :class="{'blue':item.is_deduct===1,'gray':item.is_deduct === 0}"
+                      @click="lookDeduct(item.id,1)">{{item.is_deduct===1?'查看费用':'无扣款'}}</div>
                     <div class="column min120">{{item.order_time}}</div>
                     <div class="column min120">{{item.delivery_time}}</div>
+                    <div class="column min120"
+                      :class="{'blue':item.desc,'gray':!item.desc}">{{item.desc||'无'}}</div>
                     <div class="column min120">操作</div>
                   </div>
                 </div>
@@ -358,19 +367,19 @@
                     <div class="column min120">单号</div>
                     <div class="column min120">加工单位</div>
                     <div class="column"
-                      style="flex:8;flex-direction:column">
+                      style="flex:5;flex-direction:column">
                       <div class="row">
                         <div class="column min120">纱线名称</div>
                         <div class="column min120">加工详情</div>
                         <div class="column min120">计划加工数量</div>
                         <div class="column min120">实际加工数量</div>
-                        <div class="column min120">创建人</div>
-                        <div class="column min120">审核状态</div>
-                        <div class="column min120">结算状态</div>
-                        <div class="column min120">扣款信息</div>
+                        <div class="column min120">加工单价</div>
                       </div>
                     </div>
+                    <div class="column min120">合计金额</div>
                     <div class="column min120">创建人</div>
+                    <div class="column min120">额外费用</div>
+                    <div class="column min120">扣款信息</div>
                     <div class="column min120">备注信息</div>
                     <div class="column min120">下单日期</div>
                     <div class="column min120">交货日期</div>
@@ -386,7 +395,7 @@
                       <span class="blue">({{item.type}})</span>
                     </div>
                     <div class="column"
-                      style="flex:8;flex-direction:column">
+                      style="flex:5;flex-direction:column">
                       <div class="row"
                         v-for="(itemChild,indexChild) in item.child_data"
                         :key="indexChild">
@@ -408,15 +417,21 @@
                             {{itemChild.attribute}}
                           </span>
                         </div>
-                        <div class="column min120 blue">{{itemChild.weight}}</div>
-                        <div class="column min120 blue">没给</div>
-                        <div class="column min120">创建人</div>
-                        <div class="column min120">审核状态</div>
-                        <div class="column min120">结算状态</div>
-                        <div class="column min120">扣款信息</div>
+                        <div class="column min120">{{itemChild.weight}}</div>
+                        <div class="column min120 blue">{{itemChild.reality_weight}}</div>
+                        <div class="column min120">{{itemChild.price}}元</div>
                       </div>
                     </div>
-                    <div class="column min120">没给</div>
+                    <div class="column min120 green">{{item.total_price||0}}元</div>
+                    <div class="column min120">{{item.user_name}}</div>
+                    <div class="column min120"
+                      :style="{'cursor':item.additional_fee?'pointer':'auto'}"
+                      :class="{'blue':item.additional_fee,'gray':!item.additional_fee}"
+                      @click="lookExtraFee(item.additional_fee)">{{item.additional_fee?'查看费用':'无额外费用'}}</div>
+                    <div class="column min120"
+                      :style="{'cursor':item.is_deduct===1?'pointer':'auto'}"
+                      :class="{'blue':item.is_deduct===1,'gray':item.is_deduct === 0}"
+                      @click="lookDeduct(item.id,2)">{{item.is_deduct===1?'查看费用':'无扣款'}}</div>
                     <div class="column min120">{{item.desc}}</div>
                     <div class="column min120">{{item.order_time}}</div>
                     <div class="column min120">{{item.delivery_time}}</div>
@@ -458,6 +473,8 @@
                   <div class="column min120"
                     :style="{'height':50*item.child_data.length + 'px'}">
                     <span class="blue opr">打印</span>
+                    <span class="green opr"
+                      @click="openDeduct(item.id,item.code,item.child_data,2)">扣款</span>
                     <span class="red opr"
                       @click="deleteProcess(item.id)">删除</span>
                   </div>
@@ -515,7 +532,7 @@
                     <el-input @change="commonInput($event,item,'price')"
                       v-model="item.common_price"
                       placeholder="填写后会统一订购单价">
-                      <template slot="append">元</template>
+                      <template slot="append">元/kg</template>
                     </el-input>
                   </div>
                 </div>
@@ -588,7 +605,7 @@
                     <div class="from">
                       <el-input placeholder="请输入订购数量"
                         v-model="itemChild.price">
-                        <template slot="append">元</template>
+                        <template slot="append">元/kg</template>
                       </el-input>
                     </div>
                   </div>
@@ -623,6 +640,58 @@
                   </div>
                 </div>
               </div>
+              <div class="eRow"
+                v-for="(itemFee,indexFee) in item.additional_fee"
+                :key="'fee' + indexFee">
+                <div class="eColumn">
+                  <div class="label"
+                    v-if="indexFee===0">
+                    <span class="text">额外费用名称</span>
+                  </div>
+                  <div class="content">
+                    <div class="elCtn">
+                      <el-input v-model="itemFee.name"
+                        placeholder="请选择额外费用名称">
+                      </el-input>
+                    </div>
+                  </div>
+                </div>
+                <div class="eColumn">
+                  <div class="label"
+                    v-if="indexFee===0">
+                    <span class="text">额外费用金额</span>
+                  </div>
+                  <div class="content">
+                    <div class="elCtn">
+                      <el-input v-model="itemFee.price"
+                        placeholder="请输入额外费用金额">
+                        <template slot="append">元</template>
+                      </el-input>
+                    </div>
+                  </div>
+                </div>
+                <div class="eColumn">
+                  <div class="label"
+                    v-if="indexFee===0">
+                    <span class="text">额外费用备注</span>
+                  </div>
+                  <div class="elCtn">
+                    <el-input v-model="itemFee.desc"
+                      placeholder="请输入额外费用备注"></el-input>
+                  </div>
+                  <div class="opr blue"
+                    v-if="indexFee===0"
+                    @click="$addItem(item.additional_fee,{
+                        name: '',
+                        price: '',
+                        desc:''
+                      })">添加</div>
+                  <div v-if="indexFee>0"
+                    style="margin-top:0"
+                    class="opr red"
+                    @click="$deleteItem(item.additional_fee,indexFee)">删除</div>
+                </div>
+              </div>
             </div>
             <div class="btns">
               <div class="btn btnMain"
@@ -632,6 +701,11 @@
                   order_time: '',
                   delivery_time: '',
                   desc: '',
+                  additional_fee:[{
+                    name: '',
+                    price: '',
+                    desc:''
+                  }],
                   child_data: [{
                     order_number: '',
                     order_info_id: '',
@@ -789,6 +863,56 @@
                     <el-input v-model="update_order_info.desc"
                       placeholder="请输入备注"></el-input>
                   </div>
+                </div>
+              </div>
+              <div class="eRow"
+                v-for="(itemFee,indexFee) in update_order_info.additional_fee"
+                :key="'fee' + indexFee">
+                <div class="eColumn">
+                  <div class="label"
+                    v-if="indexFee===0">
+                    <span class="text">额外费用名称</span>
+                  </div>
+                  <div class="content">
+                    <div class="elCtn">
+                      <el-input v-model="itemFee.name"
+                        placeholder="请选择额外费用名称">
+                      </el-input>
+                    </div>
+                  </div>
+                </div>
+                <div class="eColumn">
+                  <div class="label"
+                    v-if="indexFee===0">
+                    <span class="text">额外费用金额</span>
+                  </div>
+                  <div class="content">
+                    <div class="elCtn">
+                      <el-input v-model="itemFee.price"
+                        placeholder="请输入额外费用金额"></el-input>
+                    </div>
+                  </div>
+                </div>
+                <div class="eColumn">
+                  <div class="label"
+                    v-if="indexFee===0">
+                    <span class="text">额外费用备注</span>
+                  </div>
+                  <div class="elCtn">
+                    <el-input v-model="itemFee.desc"
+                      placeholder="请输入额外费用备注"></el-input>
+                  </div>
+                  <div class="opr blue"
+                    v-if="indexFee===0"
+                    @click="$addItem(update_order_info.additional_fee,{
+                        name: '',
+                        price: '',
+                        desc:''
+                      })">添加</div>
+                  <div v-if="indexFee>0"
+                    class="opr red"
+                    style="margin-top:0"
+                    @click="$deleteItem(update_order_info.additional_fee,indexFee)">删除</div>
                 </div>
               </div>
             </div>
@@ -1081,14 +1205,16 @@
                   <div class="from flex">
                     <el-select v-model="itemChild.before_attribute"
                       placeholder="加工前属性"
-                      style="margin-right:12px">
+                      style="margin-right:12px"
+                      @change="getAnother($event,itemChild,'before')">
                       <el-option label="筒纱"
                         value="筒纱"></el-option>
                       <el-option label="绞纱"
                         value="绞纱"></el-option>
                     </el-select>
                     <el-select v-model="itemChild.after_attribute"
-                      placeholder="加工后属性">
+                      placeholder="加工后属性"
+                      @change="getAnother($event,itemChild,'after')">
                       <el-option label="筒纱"
                         value="筒纱"></el-option>
                       <el-option label="绞纱"
@@ -1185,6 +1311,56 @@
                   </div>
                 </div>
               </div>
+              <div class="eRow"
+                v-for="(itemFee,indexFee) in item.additional_fee"
+                :key="'fee' + indexFee">
+                <div class="eColumn">
+                  <div class="label"
+                    v-if="indexFee===0">
+                    <span class="text">额外费用名称</span>
+                  </div>
+                  <div class="content">
+                    <div class="elCtn">
+                      <el-input v-model="itemFee.name"
+                        placeholder="请选择额外费用名称">
+                      </el-input>
+                    </div>
+                  </div>
+                </div>
+                <div class="eColumn">
+                  <div class="label"
+                    v-if="indexFee===0">
+                    <span class="text">额外费用金额</span>
+                  </div>
+                  <div class="content">
+                    <div class="elCtn">
+                      <el-input v-model="itemFee.price"
+                        placeholder="请输入额外费用金额"></el-input>
+                    </div>
+                  </div>
+                </div>
+                <div class="eColumn">
+                  <div class="label"
+                    v-if="indexFee===0">
+                    <span class="text">额外费用备注</span>
+                  </div>
+                  <div class="elCtn">
+                    <el-input v-model="itemFee.desc"
+                      placeholder="请输入额外费用备注"></el-input>
+                  </div>
+                  <div class="opr blue"
+                    v-if="indexFee===0"
+                    @click="$addItem(item.additional_fee,{
+                        name: '',
+                        price: '',
+                        desc:''
+                      })">添加</div>
+                  <div v-if="indexFee>0"
+                    style="margin-top:0"
+                    class="opr red"
+                    @click="$deleteItem(item.additional_fee,indexFee)">删除</div>
+                </div>
+              </div>
             </div>
             <div class="btns">
               <div class="btn btnMain"
@@ -1223,10 +1399,27 @@
         </div>
       </div>
     </div>
-    <!-- 订购扣款 -->
+    <div class="bottomFixBar">
+      <div class="main">
+        <div class="btnCtn">
+          <div class="btn btnGray"
+            @click="$router.go(-1)">返回</div>
+          <div class="btn btnBlue"
+            @click="$router.push('/inAndOut/detail/' + $route.params.id)">出入库</div>
+        </div>
+      </div>
+    </div>
+    <!-- 扣款操作 -->
     <deduct :show.sync="deduct_show"
       :data="deduct_info"></deduct>
-    <deduct-detail :show.sync="deduct_detail_show"></deduct-detail>
+    <!-- 查看扣款详情 -->
+    <deduct-detail :show.sync="deduct_detail_show"
+      :pid="deduct_id"
+      :deductType="deduct_type"></deduct-detail>
+    <!-- 额外费用详情 -->
+    <extra-fee :show.sync="extra_fee_show"
+      :feeArr="feeArr"></extra-fee>
+
   </div>
 </template>
 
@@ -1252,7 +1445,9 @@ export default Vue.extend({
       loading: true,
       checkAll: false,
       indeterminate: false,
+      extra_fee_show: false,
       order_info: {
+        additional_fee: '',
         order_code: '',
         order_time: '',
         delivery_time: '',
@@ -1323,12 +1518,24 @@ export default Vue.extend({
         pcode: '',
         type: 1
       },
-      deduct_detail_show: true
+      feeArr: [],
+      deduct_detail: {
+        code: '',
+        deduct_type: 1,
+        pid: '',
+        total_price: '',
+        deduct_content: '',
+        deduct_file: '',
+        desc: ''
+      },
+      deduct_id: '',
+      deduct_type: 1,
+      deduct_detail_show: false
     }
   },
   computed: {
     client_arr() {
-      return this.$store.state.api.client.arr
+      return this.$store.state.api.factory.arr
     },
     supplier_arr_a() {
       return this.$store.state.api.supplier.arr.filter((item: PartyB) => item.client_type === '倒筒单位')
@@ -1391,6 +1598,15 @@ export default Vue.extend({
       obj.child_data.forEach((item: any) => {
         item[key] = ev
       })
+    },
+    // 倒筒快捷切换
+    getAnother(ev: string, item: any, type: string) {
+      if (type === 'before') {
+        item.after_attribute = ev === '筒纱' ? '绞纱' : '筒纱'
+      }
+      if (type === 'after') {
+        item.before_attribute = ev === '筒纱' ? '绞纱' : '筒纱'
+      }
     },
     checkAllPro(ev: boolean) {
       this.indeterminate = false
@@ -1479,6 +1695,13 @@ export default Vue.extend({
             desc: '',
             common_price: '',
             common_attr: '',
+            additional_fee: [
+              {
+                name: '',
+                price: '',
+                desc: ''
+              }
+            ],
             child_data: yarnInfo
           }
         ]
@@ -1492,6 +1715,13 @@ export default Vue.extend({
             desc: '',
             common_price: '',
             common_attr: '',
+            additional_fee: [
+              {
+                name: '',
+                price: '',
+                desc: ''
+              }
+            ],
             child_data: [
               {
                 order_number: '',
@@ -1651,8 +1881,22 @@ export default Vue.extend({
       ) {
         return
       }
+      this.order_yarn_info.forEach((item) => {
+        item.total_price =
+          item.child_data.reduce((total, current: any) => {
+            return total + current.weight * current.price
+          }, 0) +
+          (item.additional_fee as any[]).reduce((total, current) => {
+            return total + Number(current.price)
+          }, 0)
+        // 额外费用未填写的情况下提交空字符串
+        item.additional_fee =
+          (item.additional_fee as any[]).filter((itemChild) => itemChild.name && itemChild.price).length > 0
+            ? JSON.stringify(item.additional_fee)
+            : ''
+      })
       this.loading = true
-      yarnOrder.create({ data: this.order_yarn_info }).then((res) => {
+      yarnOrder.create({ data: this.order_yarn_info, order_id: this.$route.params.id }).then((res) => {
         if (res.data.status) {
           this.$message.success('订购成功')
           this.resetOrder()
@@ -1700,6 +1944,15 @@ export default Vue.extend({
     },
     getUpdateInfo(info: OrderYarn) {
       this.update_order_info = info
+      this.update_order_info.additional_fee = info.additional_fee
+        ? JSON.parse(info.additional_fee as string)
+        : [
+            {
+              name: '',
+              price: '',
+              desc: ''
+            }
+          ]
       this.flags.order_update_flag = true
       this.order_info.product_info.forEach((item: any) => {
         item.child_data.forEach((itemChild: any) => {
@@ -1751,6 +2004,20 @@ export default Vue.extend({
       ) {
         return
       }
+
+      this.update_order_info.total_price =
+        this.update_order_info.child_data.reduce((total, current: any) => {
+          return total + current.weight * current.price
+        }, 0) +
+        (this.update_order_info.additional_fee as any[]).reduce((total, current) => {
+          return total + Number(current.price)
+        }, 0)
+      // 额外费用未填写的情况下提交空字符串
+      this.update_order_info.additional_fee =
+        (this.update_order_info.additional_fee as any[]).filter((itemChild) => itemChild.name && itemChild.price)
+          .length > 0
+          ? JSON.stringify(this.update_order_info.additional_fee)
+          : ''
       this.loading = true
       yarnOrder.update(this.update_order_info).then((res) => {
         if (res.data.status) {
@@ -1798,6 +2065,13 @@ export default Vue.extend({
             desc: '',
             order_time: this.$getDate(new Date()),
             delivery_time: '',
+            additional_fee: [
+              {
+                name: '',
+                price: '',
+                desc: ''
+              }
+            ],
             child_data: [
               {
                 name: '',
@@ -1865,6 +2139,13 @@ export default Vue.extend({
             desc: '',
             order_time: this.$getDate(new Date()),
             delivery_time: '',
+            additional_fee: [
+              {
+                name: '',
+                price: '',
+                desc: ''
+              }
+            ],
             child_data: childData
           }
         ]
@@ -1900,9 +2181,21 @@ export default Vue.extend({
         item.child_data.forEach((itemChild) => {
           itemChild.price = item.price
         })
+        item.total_price =
+          item.child_data.reduce((total, current: any) => {
+            return total + current.weight * current.price
+          }, 0) +
+          (item.additional_fee as any[]).reduce((total, current) => {
+            return total + Number(current.price)
+          }, 0)
+        item.additional_fee =
+          (item.additional_fee as any[]).filter((itemChild) => itemChild.name && itemChild.price).length > 0
+            ? JSON.stringify(item.additional_fee)
+            : ''
       })
       yarnProcess
         .create({
+          order_id: this.$route.params.id,
           data: this.process_yarn_info
         })
         .then((res) => {
@@ -1955,7 +2248,7 @@ export default Vue.extend({
         yarn: yarnArr.map((item) => {
           return {
             value: item.order_info_id,
-            label: item.name + '/' + item.color + '/' + item.attribute
+            label: type === 1 ? item.name + '/' + item.color + '/' + item.attribute : item.name
           }
         }),
         pid,
@@ -1963,12 +2256,25 @@ export default Vue.extend({
         type
       }
       this.deduct_show = true
+    },
+    lookDeduct(id: number, type: number) {
+      this.deduct_id = id
+      this.deduct_type = type
+      this.deduct_detail_show = true
+    },
+    // 查看额外费用
+    lookExtraFee(info: string) {
+      if (!info) {
+        return
+      }
+      this.extra_fee_show = true
+      this.feeArr = JSON.parse(info)
     }
   },
   mounted() {
     this.$checkCommonInfo([
       {
-        checkWhich: 'api/client',
+        checkWhich: 'api/factory',
         getInfoMethed: 'dispatch',
         getInfoApi: 'getPartyBAsync'
       },

@@ -3,7 +3,10 @@ import { ListParam, DetailParam, DeleteParam } from '@/types/axiosParam'
 const baseUrl = '/api'
 
 // 登录
-const login = (params: { user_name: string, password: string }) => http.post(`${baseUrl}/auth/login`, params, 'application/json')
+const login = (params:
+  {
+    user_name: string | null, password: string | null
+  }) => http.post(`${baseUrl}/auth/login`, params, 'application/json')
 // token
 const getToken = () => http.get(`${baseUrl}/upload/token`)
 // 用户信息
@@ -90,7 +93,7 @@ const stock = {
 // 采购
 import { OrderYarn } from '@/types/orderProcessYarn'
 const yarnOrder = {
-  create: (params: { data: OrderYarn[] }) => http.post(`${baseUrl}/order/purchase/save`, params, 'application/json'),
+  create: (params: { data: OrderYarn[], order_id?: string }) => http.post(`${baseUrl}/order/purchase/save`, params, 'application/json'),
   list: (params: ListParam) => http.get(`${baseUrl}/order/purchase/lists`, params),
   delete: (params: DeleteParam) => http.post(`${baseUrl}/order/purchase/delete`, params, 'application/json'),
   update: (params: OrderYarn) => http.post(`${baseUrl}/order/purchase/edit`, params, 'application/json'),
@@ -100,7 +103,7 @@ const yarnOrder = {
 // 加工
 import { ProcessYarn } from '@/types/orderProcessYarn'
 const yarnProcess = {
-  create: (params: { data: ProcessYarn[] }) => http.post(`${baseUrl}/order/process/save`, params, 'application/json'),
+  create: (params: { data: ProcessYarn[], order_id: string }) => http.post(`${baseUrl}/order/process/save`, params, 'application/json'),
   list: (params: ListParam) => http.get(`${baseUrl}/order/process/lists`, params),
   delete: (params: DeleteParam) => http.post(`${baseUrl}/order/process/delete`, params, 'application/json')
 }
@@ -137,6 +140,14 @@ const deduct = {
   list: (params: ListParam) => http.get(`${baseUrl}/financial/deduct/lists`, params),
   delete: (params: DeleteParam) => http.post(`${baseUrl}/financial/deduct/delete`, params, 'application/json')
 }
+
+// 审核
+import { CheckInfo } from '@/types/common'
+const check = {
+  create: (params: CheckInfo) => http.post(`${baseUrl}/financial/check`, params, 'application/json'),
+  list: (params: ListParam) => http.get(`${baseUrl}/financial/check/logs`, params),
+  confirm: (params: { pid: string | number, complete_type: 1 | 2 | 3 | 4 | 5 | 6 | 7 }) => http.post(`${baseUrl}/financial/complete`, params, 'application/json')
+}
 export {
   login,
   authInfo,
@@ -153,5 +164,6 @@ export {
   yarnProcess,
   material,
   craft,
-  deduct
+  deduct,
+  check
 }

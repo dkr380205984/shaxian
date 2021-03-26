@@ -558,7 +558,7 @@ export default Vue.extend({
         if (res.data.status) {
           this.$message.success('添加成功')
           this.$router.push(
-            '/material/craftList/page=1&&code=&&name=&&client_id=&&user_id=&&status=&&page_size=10&&date='
+            '/material/craftList?page=1&&code=&&name=&&client_id=&&user_id=&&status=&&page_size=10&&date='
           )
         }
       })

@@ -78,26 +78,6 @@
             <div class="elCtn">
               <el-checkbox v-model="storeListFilter.isFilterZero"
                 @change="getStoreInfoList">过滤库存为0的纱线</el-checkbox>
-              <!-- <el-select v-model="storeListFilter.isFilterZero"
-                @change="getStoreInfoList"
-                placeholder="请选择是否过滤库存为0的纱线">
-                <el-option v-for="item in [
-                    {
-                      id:1,
-                      value:false,
-                      label:'否'
-                    },
-                    {
-                      id:2,
-                      value:true,
-                      label:'是'
-                    }
-                  ]"
-                  :key="item.id"
-                  :label="item.label"
-                  :value="item.value">
-                </el-option>
-              </el-select> -->
             </div>
           </div>
           <div class="rightCtn">
@@ -228,7 +208,6 @@
                   <div class="from">
                     <el-cascader v-model="itemStore.name"
                       filterable
-                      :props="{value:'label'}"
                       placeholder="请选择纱线"
                       :options="commonInit.yarnList"></el-cascader>
                   </div>
@@ -423,6 +402,10 @@
                 placeholder="每页展示条数（默认‘5’）">
                 <el-option v-for="item in [
                   {
+                    id:5,
+                    name:'5条'
+                  },
+                  {
                     id:10,
                     name:'10条'
                   },
@@ -447,10 +430,12 @@
             </div>
             <div class="elCtn">
               <el-date-picker v-model="storeLogListFilter.time"
-                @change="getStoreLogList(1)"
-                type="date"
+                type="daterange"
                 value-format="yyyy-MM-dd"
-                placeholder="请选择操作时间筛选">
+                range-separator="至"
+                start-placeholder="开始日期"
+                end-placeholder="结束日期"
+                @change="getStoreLogList(1)">
               </el-date-picker>
             </div>
           </div>
@@ -459,82 +444,84 @@
               @click="resetFilter(2)">重置</div>
           </div>
         </div>
-        <div class="list"
-          v-loading='!loading.page && loading.log'>
-          <div class="overflow">
-            <div class="tableCtn">
-              <div class="table">
-                <div class="headCtn">
-                  <div class="row">
-                    <div class="column min120">入库单号</div>
-                    <div class="column min120">入库仓库</div>
-                    <div class="column"
-                      style="flex:10;flex-direction:column">
-                      <div class="row">
-                        <div class="column min120">纱线名称</div>
-                        <div class="column min120">订购颜色</div>
-                        <div class="column min120">订购属性</div>
-                        <div class="column min120">入库数量</div>
-                        <div class="column min120">审核状态</div>
-                        <div class="column min120">结算状态</div>
-                        <div class="column min120">扣款信息</div>
-                      </div>
-                    </div>
-                    <div class="column min120">备注信息</div>
-                    <div class="column min120">入库日期</div>
-                    <div class="column min120">操作人</div>
-                    <div class="column min120">操作</div>
+        <div style="padding:20px 0">
+          <div class="tableCtn"
+            v-loading='!loading.page && loading.log'>
+            <div class="thead">
+              <div class="trow">
+                <div class="tcolumn">单号</div>
+                <div class="tcolumn">类型</div>
+                <div class="tcolumn"
+                  style="flex:2">库存变动</div>
+                <div class="tcolumn noPad"
+                  style="flex:5">
+                  <div class="trow">
+                    <div class="tcolumn">名称</div>
+                    <div class="tcolumn">颜色/属性</div>
+                    <div class="tcolumn">色号</div>
+                    <div class="tcolumn">批/缸号</div>
+                    <div class="tcolumn">数量</div>
                   </div>
                 </div>
-                <div class="bodyCtn">
-                  <div class="row"
-                    v-for="item in storeLogInfo.list"
-                    :key="item.id">
-                    <div class="column min120">{{item.code}}</div>
-                    <div class="column min120">{{item.store_name}}/{{item.second_store_name}}</div>
-                    <div class="column"
-                      style="flex:10;flex-direction:column">
-                      <div class="row"
-                        v-for="(itemChild,indexChild) in item.child_data"
-                        :key="indexChild">
-                        <div class="column min120">{{itemChild.name}}</div>
-                        <div class="column min120">{{itemChild.color}}</div>
-                        <div class="column min120">{{itemChild.attribute}}</div>
-                        <div class="column min120 blue">{{itemChild.action_weight}}</div>
-                        <div class="column min120">审核状态</div>
-                        <div class="column min120">结算状态</div>
-                        <div class="column min120">扣款信息</div>
-                      </div>
-                    </div>
-                    <div class="column min120">{{item.desc||'无'}}</div>
-                    <div class="column min120">{{item.complete_time}}</div>
-                    <div class="column min120">{{item.user_name}}</div>
-                    <div class="column min120">操作</div>
+                <div class="tcolumn">日期</div>
+              </div>
+            </div>
+            <div class="tbody">
+              <div class="trow"
+                v-for="item in  storeLogInfo.list"
+                :key="item.id">
+                <div class="tcolumn">{{item.code}}</div>
+                <div class="tcolumn"
+                  :class="{'blue':item.action_type===1||item.action_type===3||item.action_type===5,'green':item.action_type===2||item.action_type===4||item.action_type===6||item.action_type===7}">{{item.action_type|stockTypeFilter}}</div>
+                <div class="tcolumn"
+                  style="flex:2">
+                  <span v-if="item.action_type===1||item.action_type===3||item.action_type===5">
+                    <span class="green">{{item.client_name ||'无来源'}}</span>
+                    <i class="el-icon-s-unfold orange"
+                      style="margin:0 5px;font-size:16px"></i>
+                    <span class="blue">{{item.second_store_name}}</span>
+                  </span>
+                  <span v-if="item.action_type===2||item.action_type===4||item.action_type===6||item.action_type===7">
+                    <span class="blue">{{item.second_store_name}}</span>
+                    <i class="el-icon-s-unfold orange"
+                      style="margin:0 5px;font-size:16px"></i>
+                    <span class="green">{{item.client_name}}</span>
+                  </span>
+                </div>
+                <div class="tcolumn noPad"
+                  style="flex:5">
+                  <div class="trow"
+                    v-for="(itemChilid,indexChild) in item.child_data"
+                    :key="indexChild">
+                    <div class="tcolumn">{{itemChilid.name}}</div>
+                    <div class="tcolumn">{{itemChilid.color}}/{{itemChilid.attribute}}</div>
+                    <div class="tcolumn">{{itemChilid.color_code}}</div>
+                    <div class="tcolumn">{{itemChilid.vat_code}}</div>
+                    <div class="tcolumn"
+                      :class="{'blue':item.action_type===1||item.action_type===3||item.action_type===5,'green':item.action_type===2||item.action_type===4||item.action_type===6||item.action_type===7}">{{itemChilid.action_weight}}</div>
                   </div>
                 </div>
+                <div class="tcolumn">{{item.complete_time}}</div>
+              </div>
+              <div class="trow bgGray noBorder">
+                <div class="tcolumn"
+                  style="display:block;line-height:46px">合计出库：<span class="green">{{$formatNum(storeLogInfo.total_pop)}}</span>kg</div>
+                <div class="tcolumn"></div>
+                <div class="tcolumn"
+                  style="display:block;line-height:46px">合计入库：<span class="blue">{{$formatNum(storeLogInfo.total_push)}}</span>kg</div>
+                <div class="tcolumn"></div>
               </div>
             </div>
           </div>
-          <div class="coverTable">
-            <div class="floatL">
-              <div class="headCtn">
-                <div class="row">
-                  <div class="column min120">入库单号</div>
-                  <div class="column min120">二级仓库</div>
-                </div>
-              </div>
-              <div class="bodyCtn">
-                <div class="row"
-                  v-for="item in storeLogInfo.list"
-                  :key="item.id">
-                  <div class="column min120 blue"
-                    :style="{'height':50*item.child_data.length + 'px'}">{{item.code}}</div>
-                  <div class="column min120"
-                    :style="{'height':50*item.child_data.length + 'px'}">{{item.second_store_name}}</div>
-                </div>
-              </div>
-            </div>
-          </div>
+        </div>
+        <div class="pageCtn">
+          <el-pagination background
+            @current-change="getStoreLogList"
+            :current-page.sync="storeLogListFilter.pages"
+            :page-size="storeLogListFilter.limit"
+            layout="prev, pager, next"
+            :total="storeLogListFilter.total">
+          </el-pagination>
         </div>
       </div>
     </div>
@@ -552,7 +539,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import { StoreDetail } from '@/types/common'
-import { store, stock, product, yarnColor } from '@/assets/js/api'
+import { store, stock, product, yarnColor, yarnType } from '@/assets/js/api'
 import { StoreCreate } from '@/types/store'
 export default Vue.extend({
   data(): {
@@ -620,7 +607,7 @@ export default Vue.extend({
         attr: '',
         type: '',
         code: '',
-        limit: '',
+        limit: 5,
         pages: 1,
         total: 1,
         time: ''
@@ -637,6 +624,26 @@ export default Vue.extend({
           {
             id: 2,
             name: '出库'
+          },
+          {
+            id: 3,
+            name: '订购入库'
+          },
+          {
+            id: 4,
+            name: '调取出库'
+          },
+          {
+            id: 5,
+            name: '加工入库'
+          },
+          {
+            id: 6,
+            name: '加工出库'
+          },
+          {
+            id: 7,
+            name: '订购出库'
           }
         ],
         materialAttrArr: [
@@ -659,21 +666,26 @@ export default Vue.extend({
         store.detail({
           id: Number(this.$route.params.id)
         }),
-        product.list(),
+        yarnType.list(),
         yarnColor.list()
       ]).then((res) => {
         this.loading.page = false
         this.storeDetail = res[0].data.data
         // *** 初始化公共数据 ***
         // 初始化纱线列表
-        this.commonInit.yarnList = this.$mergeData(res[1].data.data.items, {
-          mainRule: 'yarn_type/value',
-          otherRule: [{ name: 'yarn_type_name/label' }],
-          childrenName: 'children',
-          childrenRule: {
-            otherRule: [{ name: 'name/label' }, { name: 'id/value' }]
+        this.commonInit.yarnList = res[1].data.data.map((item: any) => {
+          return {
+            value: item.name,
+            label: item.name,
+            children: item.yarns.map((itemChild: any) => {
+              return {
+                value: itemChild.name,
+                label: itemChild.name
+              }
+            })
           }
         })
+
         // 初始化纱线颜色
         this.commonInit.yarnColorList = res[2].data.data.map((itemM: any) => ({ value: itemM.name, id: itemM.id }))
       })
@@ -682,6 +694,7 @@ export default Vue.extend({
     },
     getStoreInfoList() {
       this.loading.info = true
+      console.log(this.storeListFiter)
       store
         .detailYarnList({
           store_id: this.$route.params.id,
@@ -715,7 +728,7 @@ export default Vue.extend({
           attr: '',
           type: '',
           code: '',
-          limit: '',
+          limit: 5,
           pages: 1,
           total: 1,
           time: ''
@@ -888,12 +901,18 @@ export default Vue.extend({
           page: pages,
           limit: this.storeLogListFilter.limit || 5,
           store_second_id: this.storeLogListFilter.LV2_name || null,
-          name: this.storeLogListFilter.LV2_name || null,
+          name: this.storeLogListFilter.name || null,
           color: this.storeLogListFilter.color || null,
           attribute: this.storeLogListFilter.attr || null,
           action_type: this.storeLogListFilter.type || null,
-          start_time: this.storeLogListFilter.time || null,
-          end_time: this.storeLogListFilter.time || null
+          start_time:
+            this.storeLogListFilter.time && this.storeLogListFilter.time.length > 0
+              ? this.storeLogListFilter.time[0]
+              : '',
+          end_time:
+            this.storeLogListFilter.time && this.storeLogListFilter.time.length > 0
+              ? this.storeLogListFilter.time[1]
+              : ''
         })
         .then((res) => {
           console.log(res)

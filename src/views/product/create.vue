@@ -230,9 +230,9 @@
           <div class="colCtn flex3">
             <div class="btn btnMain"
               @click="$addItem(submit_form, { yarn_type: input_form.type, name: '', child_data: [{color: '',
-            attribute: '',
-            price: '',
-            desc: ''}] })">添加纱线</div>
+                attribute: '',
+                price: '',
+                desc: ''}] })">添加纱线</div>
           </div>
         </div>
       </div>

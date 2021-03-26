@@ -218,27 +218,27 @@ export default Vue.extend({
     changeRouter(page: string) {
       const pages = page || 1
       this.$router.push(
-        '/order/list/page=' +
+        '/order/list?page=' +
           pages +
-          '&&order_code=' +
+          '&order_code=' +
           this.order_code +
-          '&&product_name=' +
+          '&product_name=' +
           this.product_name +
-          '&&client_id=' +
+          '&client_id=' +
           this.client_id +
-          '&&user_id=' +
+          '&user_id=' +
           this.user_id +
-          '&&page_size=' +
+          '&page_size=' +
           this.page_size +
-          '&&date=' +
+          '&date=' +
           this.date
       )
     },
     reset() {
-      this.$router.push('/order/list/page=1&&order_code=&&product_name=&&client_id=&&user_id=&&page_size=10&&date=')
+      this.$router.push('/order/list?page=1&order_code=&product_name=&client_id=&user_id=&page_size=10&date=')
     },
     getFilters() {
-      const params = this.$getHash(this.$route.params.params)
+      const params = this.$route.query
       this.page = Number(params.page)
       this.page_size = Number(params.page_size)
       this.user_id = params.user_id ? Number(params.user_id) : ''
@@ -246,7 +246,7 @@ export default Vue.extend({
       this.product_name = params.product_name
       this.order_code = params.order_code
       if (params.date !== 'null' && params.date !== '') {
-        this.date = params.date.split(',')
+        this.date = (params.date as string).split(',')
       } else {
         this.date = []
       }

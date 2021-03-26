@@ -105,7 +105,8 @@
                     :key="indexPro">
                     <div class="tcolumn">
                       <div class="el">
-                        <span v-if="itemPro.product_name">{{itemPro.product_name}}</span>
+                        <span style="line-height:32px"
+                          v-if="itemPro.product_name">{{itemPro.product_name}}</span>
                         <el-select v-if="!itemPro.product_name"
                           v-model="itemPro.product_id"
                           filterable
@@ -210,17 +211,17 @@
           <div class="colCtn flex3">
             <div class="btn btnMain"
               @click="$addItem(order_info.product_info,{
-            product_id: '',
-            child_data: [
-              {
-                number_attribute: '',
-                weight: '',
-                price: '',
-                attribute: '',
-                color: ''
-              }
-            ]
-          })">添加纱线</div>
+                product_id: '',
+                child_data: [
+                  {
+                    number_attribute: '',
+                    weight: '',
+                    price: '',
+                    attribute: '',
+                    color: ''
+                  }
+                ]
+              })">添加纱线</div>
           </div>
         </div>
         <div class="rowCtn">
@@ -251,8 +252,64 @@
             </div>
           </div>
         </div>
-        <div class="rowCtn">
+        <div class="rowCtn"
+          v-for="(item,index) in order_info.additional_fee"
+          :key="'fee' + index">
           <div class="colCtn">
+            <div class="label"
+              v-if="index===0">
+              <span class="text">额外费用名称</span>
+              <span class="explanation">(选填)</span>
+            </div>
+            <div class="content">
+              <div class="elCtn">
+                <el-input v-model="item.name"
+                  placeholder="请输入额外费用名称">
+                </el-input>
+              </div>
+            </div>
+          </div>
+          <div class="colCtn">
+            <div class="label"
+              v-if="index===0">
+              <span class="text">额外费用金额</span>
+              <span class="explanation">(选填)</span>
+            </div>
+            <div class="content">
+              <div class="elCtn">
+                <el-input v-model="item.price"
+                  placeholder="请输入额外费用金额"
+                  @input="cmpTotal">
+                  <template slot="append">元</template>
+                </el-input>
+              </div>
+            </div>
+          </div>
+          <div class="colCtn">
+            <div class="label"
+              v-if="index===0">
+              <span class="text">额外费用备注</span>
+              <span class="explanation">(必选)</span>
+            </div>
+            <div class="elCtn">
+              <el-input v-model="item.desc"
+                placeholder="请输入额外费用备注"></el-input>
+            </div>
+            <div v-if="index===0"
+              class="editBtn blue"
+              @click="$addItem(order_info.additional_fee,{
+                  name: '',
+                  price: '',
+                  desc:''
+                })">添加</div>
+            <div v-if="index>0"
+              class="editBtn red"
+              @click="$deleteItem(order_info.additional_fee,index)">删除</div>
+          </div>
+        </div>
+        <div class="rowCtn">
+          <div class="colCtn"
+            style="z-index:1">
             <div class="label">
               <span class="text">备注信息</span>
             </div>
@@ -298,6 +355,13 @@ export default Vue.extend({
         total_price: 0,
         total_weight: 0,
         desc: '',
+        additional_fee: [
+          {
+            name: '',
+            price: '',
+            desc: ''
+          }
+        ],
         product_info: [
           {
             product_id: '',
@@ -324,14 +388,18 @@ export default Vue.extend({
   },
   methods: {
     cmpTotal() {
-      this.order_info.total_price = this.order_info.product_info.reduce((total, current) => {
-        return (
-          total +
-          current.child_data.reduce((totalChild, currentChild) => {
-            return totalChild + Number(currentChild.weight) * Number(currentChild.price)
-          }, 0)
-        )
-      }, 0)
+      this.order_info.total_price =
+        this.order_info.product_info.reduce((total, current) => {
+          return (
+            total +
+            current.child_data.reduce((totalChild, currentChild) => {
+              return totalChild + Number(currentChild.weight) * Number(currentChild.price)
+            }, 0)
+          )
+        }, 0) +
+        (this.order_info.additional_fee as any[]).reduce((total, current) => {
+          return total + Number(current.price)
+        }, 0)
       this.order_info.total_weight = this.order_info.product_info.reduce((total, current) => {
         return (
           total +
@@ -393,10 +461,73 @@ export default Vue.extend({
       }
     },
     saveOrder() {
-      console.log(this.order_info)
+      if (
+        this.$formCheck(this.order_info, [
+          {
+            key: 'order_code',
+            errMsg: '请输入客户单号'
+          },
+          {
+            key: 'client_id',
+            errMsg: '请选择下单客户'
+          },
+          {
+            key: 'delivery_time',
+            errMsg: '请选择下单日期'
+          }
+        ])
+      ) {
+        return
+      }
+      if (
+        this.order_info.product_info.some((item) => {
+          return this.$formCheck(item, [
+            {
+              key: 'product_id',
+              errMsg: '请按照提示输入产品名称选择产品'
+            }
+          ])
+        })
+      ) {
+        return
+      }
+      if (
+        this.order_info.product_info.some((item) => {
+          return item.child_data.some((itemChild) => {
+            return this.$formCheck(itemChild, [
+              {
+                key: 'color',
+                errMsg: '请输入颜色'
+              },
+              {
+                key: 'attribute',
+                errMsg: '请选择纱线属性'
+              },
+              {
+                key: 'price',
+                errMsg: '请输入下单价格',
+                regNormal: 'isNum'
+              },
+              {
+                key: 'weight',
+                errMsg: '请输入下单数量',
+                regNormal: 'isNum'
+              }
+            ])
+          })
+        })
+      ) {
+        return
+      }
+      // 额外费用为空时提交空字符串方便后续使用
+      this.order_info.additional_fee =
+        (this.order_info.additional_fee as any[]).filter((itemChild) => itemChild.name && itemChild.price).length > 0
+          ? JSON.stringify(this.order_info.additional_fee)
+          : ''
       order.create(this.order_info).then((res) => {
         if (res.data.status) {
           this.$message.success('修改成功')
+          this.$router.push('/order/list?page=1&&order_code=&&product_name=&&client_id=&&user_id=&&page_size=10&&date=')
         }
       })
     }
@@ -449,6 +580,15 @@ export default Vue.extend({
           childrenName: 'child_data',
           otherRule: [{ name: 'product_id' }]
         })
+        this.order_info.additional_fee = this.order_info.additional_fee
+          ? JSON.parse(this.order_info.additional_fee as string)
+          : [
+              {
+                name: '',
+                price: '',
+                desc: ''
+              }
+            ]
       })
   }
 })

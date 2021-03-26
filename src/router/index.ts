@@ -38,7 +38,7 @@ const routes: RouteConfig[] = [
         component: () => import('../views/settings/user.vue')
       },
       {
-        path: '/product/list/:params',
+        path: '/product/list',
         name: '纱线列表',
         component: () => import('../views/product/list.vue')
       },
@@ -56,11 +56,11 @@ const routes: RouteConfig[] = [
         name: '纱线详情',
         component: () => import('../views/product/detail.vue')
       }, {
-        path: '/material/list/:params',
+        path: '/material/list',
         name: '毛条列表',
         component: () => import('../views/material/list.vue')
       }, {
-        path: '/material/craftList/:params',
+        path: '/material/craftList',
         name: '工艺单列表',
         component: () => import('../views/material/craftList.vue')
       }, {
@@ -88,11 +88,11 @@ const routes: RouteConfig[] = [
         name: '订单详情',
         component: () => import('../views/order/detail.vue')
       }, {
-        path: '/order/list/:params',
+        path: '/order/list',
         name: '订单列表',
         component: () => import('../views/order/list.vue')
       }, {
-        path: '/orderProcessYarn/list/:params',
+        path: '/orderProcessYarn/list',
         name: '订购调取列表',
         component: () => import('../views/orderProcessYarn/list.vue')
       }, {
@@ -100,7 +100,7 @@ const routes: RouteConfig[] = [
         name: '纱线订购调取',
         component: () => import('../views/orderProcessYarn/detail.vue')
       }, {
-        path: '/inAndOut/list/:params',
+        path: '/inAndOut/list',
         name: '纱线出入库',
         component: () => import('../views/inAndOut/list.vue')
       }, {
@@ -136,11 +136,11 @@ const routes: RouteConfig[] = [
         name: '毛条设置',
         component: () => import('../views/settings/material.vue')
       }, {
-        path: '/store/list/:params',
+        path: '/store/list',
         name: '纱线仓库列表',
         component: () => import('../views/store/list.vue')
       }, {
-        path: '/store/materialList/:params',
+        path: '/store/materialList',
         name: '毛条仓库列表',
         component: () => import('../views/store/materialList.vue')
       }, {
@@ -152,7 +152,7 @@ const routes: RouteConfig[] = [
         name: '毛条仓库详情',
         component: () => import('../views/store/materialDeatail.vue')
       }, {
-        path: '/directOrder/materialList/:params',
+        path: '/directOrder/materialList',
         name: '毛条采购列表',
         component: () => import('../views/directOrder/materialList.vue')
       }, {
@@ -160,15 +160,30 @@ const routes: RouteConfig[] = [
         name: '毛条采购详情',
         component: () => import('../views/directOrder/materialDetail.vue')
       }, {
-        path: '/directOrder/yarnList/:params',
+        path: '/directOrder/yarnList',
         name: '纱线采购列表',
         component: () => import('../views/directOrder/yarnList.vue')
       }, {
         path: '/directOrder/yarnDetail/:id',
         name: '纱线采购详情',
         component: () => import('../views/directOrder/yarnDetail.vue')
+      }, {
+        path: '/directProcess/materialList',
+        name: '毛条加工列表',
+        component: () => import('../views/directOrder/materialList.vue')
+      }, {
+        path: '/directProcess/materialDetail/:id',
+        name: '毛条加工详情',
+        component: () => import('../views/directOrder/materialDetail.vue')
+      }, {
+        path: '/directProcess/yarnList',
+        name: '纱线加工列表',
+        component: () => import('../views/directOrder/yarnList.vue')
+      }, {
+        path: '/directProcess/yarnDetail/:id',
+        name: '纱线加工详情',
+        component: () => import('../views/directOrder/yarnDetail.vue')
       }
-
     ]
   }
 ]
@@ -181,7 +196,7 @@ const router = new VueRouter({
 
 router.beforeEach((to, from, next) => {
   store.commit('status/getBreadUrl', {
-    url: to.path,
+    url: to.fullPath,
     name: to.name
   })
   next()

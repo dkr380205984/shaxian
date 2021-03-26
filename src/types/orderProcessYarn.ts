@@ -24,6 +24,7 @@ export interface OrderYarn {
   client_name?: string
   client_id: number | string
   child_data: YarnInfo[]
+  is_check?: string
   order_time: string
   delivery_time: string
   additional_fee?: string | AditionalFee[]// 额外费用的JSON字符串
@@ -52,5 +53,7 @@ export interface ProcessYarn {
   desc: string
   order_time: string
   delivery_time: string
+  total_price?: string | number
+  additional_fee?: string | AditionalFee[]// 额外费用的JSON字符串
   child_data: ChildData[]
 }

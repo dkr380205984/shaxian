@@ -1,10 +1,29 @@
 @import '../common.less';
 @import '../detail.less';
+@import '../bottomBar.less';
 @import '../table.less';
 @import '../popup.less';
 @import '../edit.less';
 @import '../list.less';
 #orderDeatil{
+  .sortContainer{
+    display: flex;
+    align-items: center;
+    .sort{
+      display: flex;
+      flex-direction: column;
+      margin-right: 8px;
+      align-items: center;
+      color: #D0D0D0;
+      .hover{
+        font-weight: bold;
+        &:hover{
+          color:@blue;
+          cursor: pointer;
+        }
+      }
+    }
+  }
   .orderNum{
     width: 16px;
     height: 16px;

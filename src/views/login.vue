@@ -79,14 +79,14 @@ export default Vue.extend({
   methods: {
     goLogin() {
       login({
-        user_name: '17602103060',
-        password: '1234567'
+        user_name: this.telephone,
+        password: this.password
       }).then((res) => {
         if (res.data.status !== false) {
-          window.localStorage.setItem('zhUserName', '17602103060')
+          window.localStorage.setItem('zhUserName', this.telephone as string)
           window.localStorage.setItem('remPsd', this.remPsd ? '1' : '0')
           if (this.remPsd) {
-            window.localStorage.setItem('zhPassWord', '1234567')
+            window.localStorage.setItem('zhPassWord', this.password as string)
           } else {
             window.localStorage.removeItem('zhPassWord')
           }
@@ -95,7 +95,7 @@ export default Vue.extend({
           const { authInfo } = require('@/assets/js/api')
           authInfo().then((res2: any) => {
             if (res2.data.status !== false) {
-              this.$router.push('/homePage/homePage')
+              this.$router.push('/order/list?page=1&order_code=&product_name=&client_id=&user_id=&page_size=10&date=')
             }
           })
         }

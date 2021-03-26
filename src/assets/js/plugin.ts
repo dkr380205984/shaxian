@@ -138,7 +138,59 @@ const plugin = {
     }
     return newData
   },
-  // 日期相差时间
+  // 摊平数据
+  flatten: (datas: any[]): any[] => {
+    const self = plugin
+    const oldData = self.clone(datas)
+    const type = self.getDataType(oldData)
+    if (type === 'Object') {
+      for (const index of Object.keys(oldData)) {
+        const item = oldData[index as any]
+        const itemType = self.getDataType(item)
+        if (itemType === 'Object') {
+          const deleteProp = self.clone(item) // 保存一份需要处理的数据
+          delete oldData[index as any]
+          for (const hasKey in oldData) {
+            if (deleteProp.hasOwnProperty(hasKey)) {
+              throw new TypeError('存在相同的key值，无法执行')
+            }
+          }
+          return self.flatten({ ...oldData, ...deleteProp })
+        } else if (itemType === 'Array') {
+          const newData = []
+          const deleteProp = self.clone(item) // 保存一份需要处理的数据
+          delete oldData[index as any]
+          if (deleteProp.length < 1) {
+            newData.push({ ...oldData })
+          } else {
+            deleteProp.forEach((itemDel: any) => {
+              newData.push({ ...oldData, [index]: itemDel })
+            })
+          }
+          return self.flatten(newData)
+        }
+      }
+      return oldData
+    } else if (type === 'Array') {
+      for (const index of Object.keys(oldData)) {
+        const item = oldData[index as any]
+        const itemType = self.getDataType(item)
+        if (itemType === 'Object') {
+          oldData[index as any] = self.flatten(item)
+        } else if (itemType === 'Array') {
+          const newArr: any[] = []
+          oldData.forEach((itemOld) => {
+            newArr.push(...itemOld)
+          })
+          return self.flatten(newArr)
+        }
+      }
+      return oldData
+    } else {
+      return oldData
+    }
+  },
+  // 日期相差时间 用于计算过期时间
   diffDate(date: DateConstructor): string {
     if (!date) {
       return '日期格式错误'
@@ -161,6 +213,16 @@ const plugin = {
         }
       }
     }
+  },
+  // 日期相差时间，用于计算相差时间 ,比如离交货还有几天
+  diffByDate(date: DateConstructor): number | string {
+    if (!date) {
+      return '日期格式错误'
+    }
+    const now = Date.parse(new Date().toString())
+    const past = Date.parse(date.toString())
+    const diff = past - now
+    return (diff / (24 * 60 * 60 * 1000)).toFixed()
   },
   getDate(date?: Date, connector: string = '-'): string {
     date = date ? new Date(date) : new Date()
@@ -228,8 +290,8 @@ const plugin = {
   addItem<T>(father: T[], son: T): void {
     father.push(son)
   },
-  deleteItem(father: any[], index: number) {
-    father.splice(index, 1)
+  deleteItem(father: any[], index: number | string): void {
+    father.splice(index as number, 1)
   },
   // 表单验证，这里只验证对象，不验证数组，通常数组只要检测到某一次formCheck返回false即可停止验证
   // 第一个参数接收一个待验证对象 第二个参数接收一个待验证字段数组，如有特殊正则验证可以自定义new RegExp,通常我们只验证是否为空
@@ -327,6 +389,7 @@ export default {
     Vue.prototype.$getDataType = plugin.getDataType
     Vue.prototype.$mergeData = plugin.mergeData
     Vue.prototype.$diffDate = plugin.diffDate
+    Vue.prototype.$diffByDate = plugin.diffByDate
     Vue.prototype.$getDate = plugin.getDate
     Vue.prototype.$downloadExcel = plugin.downloadExcel
     Vue.prototype.$checkCommonInfo = plugin.checkCommonInfo
@@ -337,5 +400,6 @@ export default {
     Vue.prototype.$formatNum = formatNum
     Vue.prototype.$unique = unique
     Vue.prototype.$formCheck = plugin.formCheck
+    Vue.prototype.$flatten = plugin.flatten
   }
 }

@@ -10,7 +10,7 @@
         <div class="rowCtn">
           <div class="colCtn">
             <span class="label">订单号：</span>
-            <span class="text green">暂时没有，自己编的</span>
+            <span class="text green">{{order_info.code}}</span>
           </div>
           <div class="colCtn">
             <span class="label">客户单号：</span>
@@ -49,8 +49,7 @@
         </div>
       </div>
     </div>
-    <div class="module"
-      v-show="false">
+    <div class="module">
       <div class="titleCtn">
         <span class="title">下单信息</span>
       </div>
@@ -88,8 +87,8 @@
                   <div class="tcolumn">{{itemChild.price}}</div>
                   <div class="tcolumn blue">{{itemChild.weight}}</div>
                   <div class="tcolumn">{{itemChild.number_attribute}}</div>
-                  <div class="tcolumn blue">0</div>
-                  <div class="tcolumn blue">0</div>
+                  <div class="tcolumn blue">{{itemChild.transfer_weight}}</div>
+                  <div class="tcolumn blue">{{itemChild.purchase_weight}}</div>
                 </div>
               </div>
             </div>
@@ -140,14 +139,14 @@
                     <div class="column min120">调取纱线</div>
                     <div class="column min120">调取颜色/属性</div>
                     <div class="column"
-                      style="flex:10;flex-direction:column">
+                      style="flex:4;flex-direction:column">
                       <div class="row">
                         <div class="column min120">订单纱线</div>
                         <div class="column min120">下单颜色/属性</div>
-                        <div class="column min120">调取数量</div>
                         <div class="column min120">实际调取数量</div>
                       </div>
                     </div>
+                    <div class="column min120">出库数量</div>
                     <div class="column min120">操作日期</div>
                     <div class="column min120">备注信息</div>
                     <div class="column min120">操作</div>
@@ -162,18 +161,18 @@
                     <div class="column min120">{{item.name}}</div>
                     <div class="column min120">{{item.color}}/{{item.attribute}}</div>
                     <div class="column"
-                      style="flex:10;flex-direction:column">
+                      style="flex:4;flex-direction:column">
                       <div class="row"
                         v-for="itemChild in item.child_data"
                         :key="itemChild.order_info_id">
                         <div class="column min120">{{itemChild.name}}</div>
                         <div class="column min120">{{itemChild.color}}/{{itemChild.attribute}}</div>
-                        <div class="column min120 blue">{{itemChild.weight}}</div>
                         <div class="column min120 blue">{{itemChild.reality_weight}}</div>
                       </div>
                     </div>
-                    <div class="column min120">操作日期</div>
-                    <div class="column min120">备注信息</div>
+                    <div class="column min120 green">{{item.pop_weight}}</div>
+                    <div class="column min120">{{item.create_time}}</div>
+                    <div class="column min120">{{item.desc||'无'}}</div>
                     <div class="column min120">操作</div>
                   </div>
                 </div>
@@ -248,14 +247,11 @@
                         <div class="column min120">订购颜色</div>
                         <div class="column min120">订购属性</div>
                         <div class="column min120">采购数量</div>
-                        <div class="column min120">入库数量</div>
                         <div class="column min120">备注信息</div>
-                        <div class="column min120">创建人</div>
-                        <div class="column min120">审核状态</div>
-                        <div class="column min120">结算状态</div>
-                        <div class="column min120">扣款信息</div>
                       </div>
                     </div>
+                    <div class="column min120">入库数量</div>
+                    <div class="column min120">创建人</div>
                     <div class="column min120">下单日期</div>
                     <div class="column min120">交货日期</div>
                     <div class="column min120">操作</div>
@@ -276,14 +272,11 @@
                         <div class="column min120">{{itemChild.color}}</div>
                         <div class="column min120">{{itemChild.attribute}}</div>
                         <div class="column min120 blue">{{itemChild.reality_weight}}</div>
-                        <div class="column min120 blue">0</div>
                         <div class="column min120">{{itemChild.desc||'无'}}</div>
-                        <div class="column min120">创建人</div>
-                        <div class="column min120">审核状态</div>
-                        <div class="column min120">结算状态</div>
-                        <div class="column min120">扣款信息</div>
                       </div>
                     </div>
+                    <div class="column min120 green">{{item.push_weight}}</div>
+                    <div class="column min120">{{item.user_name}}</div>
                     <div class="column min120">{{item.order_time}}</div>
                     <div class="column min120">{{item.delivery_time}}</div>
                     <div class="column min120">操作</div>
@@ -354,9 +347,6 @@
                         <div class="column min120">订购颜色</div>
                         <div class="column min120">订购属性</div>
                         <div class="column min120">入库数量</div>
-                        <div class="column min120">审核状态</div>
-                        <div class="column min120">结算状态</div>
-                        <div class="column min120">扣款信息</div>
                       </div>
                     </div>
                     <div class="column min120">备注信息</div>
@@ -380,9 +370,6 @@
                         <div class="column min120">{{itemChild.color}}</div>
                         <div class="column min120">{{itemChild.attribute}}</div>
                         <div class="column min120 blue">{{itemChild.action_weight}}</div>
-                        <div class="column min120">审核状态</div>
-                        <div class="column min120">结算状态</div>
-                        <div class="column min120">扣款信息</div>
                       </div>
                     </div>
                     <div class="column min120">{{item.desc||'无'}}</div>
@@ -456,9 +443,6 @@
                         <div class="column min120">出库颜色</div>
                         <div class="column min120">出库属性</div>
                         <div class="column min120">出库数量</div>
-                        <div class="column min120">审核状态</div>
-                        <div class="column min120">结算状态</div>
-                        <div class="column min120">扣款信息</div>
                       </div>
                     </div>
                     <div class="column min120">备注信息</div>
@@ -482,9 +466,6 @@
                         <div class="column min120">{{itemChild.color}}</div>
                         <div class="column min120">{{itemChild.attribute}}</div>
                         <div class="column min120 blue">{{itemChild.action_weight}}</div>
-                        <div class="column min120">审核状态</div>
-                        <div class="column min120">结算状态</div>
-                        <div class="column min120">扣款信息</div>
                       </div>
                     </div>
                     <div class="column min120">{{item.desc}}</div>
@@ -558,9 +539,6 @@
                         <div class="column min120">入库颜色</div>
                         <div class="column min120">入库属性</div>
                         <div class="column min120">入库数量</div>
-                        <div class="column min120">审核状态</div>
-                        <div class="column min120">结算状态</div>
-                        <div class="column min120">扣款信息</div>
                       </div>
                     </div>
                     <div class="column min120">备注信息</div>
@@ -584,9 +562,6 @@
                         <div class="column min120">{{itemChild.color}}</div>
                         <div class="column min120">{{itemChild.attribute}}</div>
                         <div class="column min120 blue">{{itemChild.action_weight}}</div>
-                        <div class="column min120">审核状态</div>
-                        <div class="column min120">结算状态</div>
-                        <div class="column min120">扣款信息</div>
                       </div>
                     </div>
                     <div class="column min120">{{item.desc}}</div>
@@ -660,9 +635,6 @@
                         <div class="column min120">入库颜色</div>
                         <div class="column min120">入库属性</div>
                         <div class="column min120">入库数量</div>
-                        <div class="column min120">审核状态</div>
-                        <div class="column min120">结算状态</div>
-                        <div class="column min120">扣款信息</div>
                       </div>
                     </div>
                     <div class="column min120">备注信息</div>
@@ -685,12 +657,9 @@
                         <div class="column min120">{{itemChild.color}}</div>
                         <div class="column min120">{{itemChild.attribute}}</div>
                         <div class="column min120 blue">{{itemChild.action_weight}}</div>
-                        <div class="column min120">审核状态</div>
-                        <div class="column min120">结算状态</div>
-                        <div class="column min120">扣款信息</div>
                       </div>
                     </div>
-                    <div class="column min120">{{item.desc}}</div>
+                    <div class="column min120">{{item.desc||'无'}}</div>
                     <div class="column min120">{{item.complete_time}}</div>
                     <div class="column min120">{{item.user_name}}</div>
                   </div>
@@ -854,7 +823,7 @@
               <div class="colCtn">
                 <div class="label">
                   <span class="text">备注信息</span>
-                  <span class="explanation">(必填)</span>
+                  <span class="explanation">(选填)</span>
                 </div>
                 <div class="content">
                   <div class="elCtn">
@@ -1110,7 +1079,8 @@
             <div style="background:#f0f0f0;padding:12px;margin:12px 0"
               v-for="(item,index) in order_out_info.child_data"
               :key="index">
-              <div class="rowCtn">
+              <div class="rowCtn"
+                style="background:#f0f0f0">
                 <div class="colCtn">
                   <div class="label">
                     <span class="text">纱线信息</span>
@@ -1154,7 +1124,8 @@
                   </div>
                 </div>
               </div>
-              <div class="rowCtn">
+              <div class="rowCtn"
+                style="background:#f0f0f0;">
                 <div class="colCtn">
                   <div class="label">
                     <span class="text">出库数量</span>
@@ -1287,7 +1258,8 @@
             <div style="background:#f0f0f0;padding:12px;margin:12px 0"
               v-for="(item,index) in order_store_in_info.child_data"
               :key="index">
-              <div class="rowCtn">
+              <div class="rowCtn"
+                style="background:#f0f0f0;">
                 <div class="colCtn">
                   <div class="label">
                     <span class="text">纱线名称</span>
@@ -1315,8 +1287,10 @@
                           v-model="item.before_color"></el-input>
                       </div>
                       <div class="elCtn">
-                        <el-input placeholder="入库颜色"
-                          v-model="item.color"></el-input>
+                        <el-autocomplete class="inline-input"
+                          v-model="item.color"
+                          :fetch-suggestions="searchColor"
+                          placeholder="入库颜色"></el-autocomplete>
                       </div>
                     </div>
                   </div>
@@ -1334,13 +1308,19 @@
                         v-model="item.before_attribute"></el-input>
                     </div>
                     <div class="elCtn">
-                      <el-input placeholder="入库属性"
-                        v-model="item.attribute"></el-input>
+                      <el-select placeholder="入库属性"
+                        v-model="item.attribute">
+                        <el-option label="筒纱"
+                          value="筒纱"></el-option>
+                        <el-option label="绞纱"
+                          value="绞纱"></el-option>
+                      </el-select>
                     </div>
                   </div>
                 </div>
               </div>
-              <div class="rowCtn">
+              <div class="rowCtn"
+                style="background:#f0f0f0;">
                 <div class="colCtn">
                   <div class="label">
                     <span class="text">入库色号/批(缸)号</span>
@@ -1597,6 +1577,16 @@
         </div>
       </div>
     </div>
+    <div class="bottomFixBar">
+      <div class="main">
+        <div class="btnCtn">
+          <div class="btn btnGray"
+            @click="$router.go(-1)">返回</div>
+          <div class="btn btnBlue"
+            @click="$router.push('/orderProcessYarn/detail/' + $route.params.id)">订购加工</div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -1620,6 +1610,7 @@ export default Vue.extend({
       checkAll: false,
       indeterminate: false,
       module_state: 1,
+      color_arr: [],
       order_info: {
         order_code: '',
         order_time: '',
@@ -1628,6 +1619,7 @@ export default Vue.extend({
         total_price: '',
         total_weight: 0,
         desc: '',
+        additional_fee: '',
         product_info: []
       },
       flags: {
@@ -1697,7 +1689,7 @@ export default Vue.extend({
   },
   computed: {
     store_list() {
-      return this.$store.state.api.storeHouse.arr
+      return this.$store.state.api.storeHouse.arr.filter((item: any) => item.store_type === 1)
     }
   },
   methods: {
@@ -1731,6 +1723,14 @@ export default Vue.extend({
         })
       ]).then((res) => {
         this.order_info = res[0].data.data
+        this.order_info.product_info.forEach((itemChild: any) => {
+          if (!this.color_arr.find((itemFind: any) => itemFind.value === itemChild.color)) {
+            this.color_arr.push({
+              value: itemChild.color
+            })
+          }
+        })
+        console.log(this.color_arr)
         this.order_info.product_info = this.$mergeData(this.order_info.product_info, {
           mainRule: 'product_name',
           childrenName: 'child_data',
@@ -1779,7 +1779,7 @@ export default Vue.extend({
             color_code: '',
             vat_code: '',
             item: '',
-            related_id: item.order_info_id // 关联单据
+            related_id: item.id // 关联单据
           }
         }),
         date: this.$getDate(new Date()),
@@ -2225,6 +2225,16 @@ export default Vue.extend({
           this.init()
         }
       })
+    },
+    // 颜色优化
+    searchColor(queryString: string, cb: any) {
+      const results = queryString
+        ? this.color_arr.filter((item: any) => {
+            return item.value.toLowerCase().indexOf(item.toLowerCase()) === 0
+          })
+        : this.color_arr
+      // 调用 callback 返回建议列表的数据
+      cb(results)
     }
   },
   mounted() {

@@ -124,6 +124,7 @@ export default class Deduct extends Vue {
     const fileName = file.name.lastIndexOf('.') // 取到文件名开始到最后一个点的长度
     const fileNameLength = file.name.length // 取到文件名长度
     const fileFormat = file.name.substring(fileName + 1, fileNameLength) // 截
+    this.postData.token = this.token
     this.postData.key = Date.parse(new Date() + '') + '.' + fileFormat
     const isJPG = file.type === 'image/jpeg'
     const isPNG = file.type === 'image/png'

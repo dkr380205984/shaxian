@@ -287,7 +287,7 @@ export default Vue.extend({
                 type: 'success',
                 message: `${(item.status && '禁用') || '启用'}成功!`
               })
-              this.changeRouter()
+              this.init()
             }
           })
       })

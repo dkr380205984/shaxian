@@ -77,14 +77,15 @@
         <div class="list">
           <div class="headCtn">
             <div class="row">
-              <div class="column min120">采购单号</div>
-              <div class="column min120">采购单位</div>
-              <div class="column min120">纱线名称</div>
-              <div class="column min120">颜色属性</div>
-              <div class="column min120">数量/单价</div>
-              <div class="column min120">采购总数</div>
-              <div class="column min120">交货日期</div>
-              <div class="column min120">创建人</div>
+              <div class="column">采购单号</div>
+              <div class="column">采购单位</div>
+              <div class="column">采购单状态</div>
+              <div class="column">纱线名称</div>
+              <div class="column">颜色/属性</div>
+              <div class="column">数量/单价</div>
+              <div class="column">交货日期</div>
+              <div class="column">创建人</div>
+              <div class="column">审核信息</div>
               <div class="column min120">操作</div>
             </div>
           </div>
@@ -92,9 +93,12 @@
             <div class="row"
               v-for="item in list"
               :key="item.id">
-              <div class="column min120">{{item.code}}</div>
-              <div class="column min120">{{item.client_name}}</div>
-              <div class="column min120">
+              <div class="column">{{item.code}}</div>
+              <div class="column">{{item.client_name}}</div>
+              <div class="column">
+                <span :class="{'orange':item.status===1,'blue':item.status===2,'green':item.status===3}">{{item.status | orderStatusFilter}}</span>
+              </div>
+              <div class="column">
                 <div class="sortContainer">
                   <div class="sort">
                     <i class="el-icon-caret-top hover"
@@ -108,11 +112,19 @@
                   <span>{{item.child_data[item.index||0].name}}</span>
                 </div>
               </div>
-              <div class="column min120">{{item.child_data[item.index||0].color}}/{{item.child_data[item.index||0].attribute}}</div>
-              <div class="column min120">{{item.child_data[item.index||0].weight}}kg/{{item.child_data[item.index||0].price}}元</div>
-              <div class="column min120">{{item.total_weight}}kg</div>
-              <div class="column min120">{{item.delivery_time}}</div>
-              <div class="column min120">{{item.user_name}}</div>
+              <div class="column">{{item.child_data[item.index||0].color}}/{{item.child_data[item.index||0].attribute}}</div>
+              <div class="column">{{item.child_data[item.index||0].weight}}kg/{{item.child_data[item.index||0].price}}元</div>
+              <div class="column">
+                <div style="display:flex;flex-direction:column">
+                  <span>{{item.delivery_time}}</span>
+                  <span :class="{'red':$diffByDate(item.delivery_time)<=0,'green':$diffByDate(item.delivery_time)>7,'yellow':$diffByDate(item.delivery_time)<=7 &&$diffByDate(item.delivery_time)>0 }">
+                    {{$diffByDate(item.delivery_time)>0?'交货还剩'+$diffByDate(item.delivery_time)+'天':'延期发货'+Math.abs($diffByDate(item.delivery_time))+'天'}}
+                  </span>
+                </div>
+              </div>
+              <div class="column">{{item.user_name}}</div>
+              <div class="column"
+                :class="{'orange':item.is_check===0||!item.is_check,'green':item.is_check===1,'red':item.is_check===2}">{{item.is_check|orderCheckFilter}}</div>
               <div class="column min120">
                 <div class="opr blue"
                   @click="$router.push('/directOrder/yarnDetail/' + item.id)">详情</div>
@@ -201,19 +213,10 @@
                 </div>
                 <div class="content">
                   <div class="elCtn">
-                    <el-select v-model="item.name"
+                    <el-cascader v-model="item.name"
                       filterable
-                      remote
-                      reserve-keyword
-                      placeholder="请输入纱线名称搜索"
-                      :remote-method="searchPro"
-                      :loading="select_loading">
-                      <el-option v-for="itemPro in product_arr"
-                        :key="itemPro.id"
-                        :label="itemPro.name"
-                        :value="itemPro.name">
-                      </el-option>
-                    </el-select>
+                      placeholder="请选择纱线"
+                      :options="yarn_list"></el-cascader>
                   </div>
                 </div>
               </div>
@@ -263,7 +266,7 @@
                   @click="$addItem(order_yarn_info.child_data,{
                   name: '',
                   weight: '',
-                  color: '',
+                  color: '白胚',
                   attribute: '',
                   price: ''
                 })">添加</div>
@@ -283,11 +286,9 @@
                 </div>
                 <div class="content">
                   <div class="elCtn">
-                    <el-select v-model="item.name"
+                    <el-input v-model="item.name"
                       placeholder="请选择额外费用名称">
-                      <el-option value="运费"
-                        label="运费"></el-option>
-                    </el-select>
+                    </el-input>
                   </div>
                 </div>
               </div>
@@ -301,7 +302,9 @@
                   <div class="elCtn">
                     <el-input v-model="item.price"
                       placeholder="请输入额外费用金额"
-                      @input="cmpTotalPrice"></el-input>
+                      @input="cmpTotalPrice">
+                      <template slot="append">元</template>
+                    </el-input>
                   </div>
                 </div>
               </div>
@@ -404,7 +407,7 @@ export default Vue.extend({
           {
             name: '',
             weight: '',
-            color: '',
+            color: '白胚',
             attribute: '',
             price: ''
           }
@@ -426,10 +429,24 @@ export default Vue.extend({
   },
   computed: {
     client_arr() {
-      return this.$store.state.api.client.arr
+      return this.$store.state.api.factory.arr
     },
     user_list() {
       return this.$store.state.api.user.arr
+    },
+    yarn_list() {
+      return this.$store.state.api.yarnType.arr.map((item: any) => {
+        return {
+          value: item.name,
+          label: item.name,
+          children: item.yarns.map((itemChild: any) => {
+            return {
+              value: itemChild.name,
+              label: itemChild.name
+            }
+          })
+        }
+      })
     }
   },
   watch: {
@@ -446,27 +463,27 @@ export default Vue.extend({
     changeRouter(page: string) {
       const pages = page || 1
       this.$router.push(
-        '/directOrder/yarnList/page=' +
+        '/directOrder/yarnList?page=' +
           pages +
-          '&&code=' +
+          '&code=' +
           this.code +
-          '&&name=' +
+          '&name=' +
           this.name +
-          '&&client_id=' +
+          '&client_id=' +
           this.client_id +
-          '&&user_id=' +
+          '&user_id=' +
           this.user_id +
-          '&&page_size=' +
+          '&page_size=' +
           this.page_size +
-          '&&date=' +
+          '&date=' +
           this.date
       )
     },
     reset() {
-      this.$router.push('/directOrder/yarnList/page=1&&code=&&name=&&client_id=&&user_id=&&page_size=10&&date=')
+      this.$router.push('/directOrder/yarnList?page=1&code=&name=&client_id=&user_id=&page_size=10&date=')
     },
     getFilters() {
-      const params = this.$getHash(this.$route.params.params)
+      const params = this.$route.query
       this.page = Number(params.page)
       this.page_size = Number(params.page_size)
       this.user_id = params.user_id ? Number(params.user_id) : ''
@@ -474,7 +491,7 @@ export default Vue.extend({
       this.name = params.name
       this.code = params.code
       if (params.date !== 'null' && params.date !== '') {
-        this.date = params.date.split(',')
+        this.date = (params.date as string).split(',')
       } else {
         this.date = []
       }
@@ -551,6 +568,7 @@ export default Vue.extend({
       }
       this.loading = true
       this.order_yarn_info.additional_fee = JSON.stringify(this.order_yarn_info.additional_fee)
+      this.order_yarn_info.child_data.forEach((item) => (item.name = ((item.name as unknown) as any[])[1]))
       yarnOrder
         .create({
           data: [this.order_yarn_info]
@@ -559,6 +577,7 @@ export default Vue.extend({
           if (res.data.status) {
             this.$message.success('添加成功')
             this.resetInfo()
+            this.getList()
           }
         })
     },
@@ -573,7 +592,7 @@ export default Vue.extend({
           {
             name: '',
             weight: '',
-            color: '',
+            color: '白胚',
             attribute: '',
             price: ''
           }
@@ -670,6 +689,16 @@ export default Vue.extend({
         checkWhich: 'api/client',
         getInfoMethed: 'dispatch',
         getInfoApi: 'getPartyBAsync'
+      },
+      {
+        checkWhich: 'api/user',
+        getInfoMethed: 'dispatch',
+        getInfoApi: 'getUserAsync'
+      },
+      {
+        checkWhich: 'api/yarnType',
+        getInfoMethed: 'dispatch',
+        getInfoApi: 'getYarnTypeAsync'
       }
     ])
     this.getFilters()

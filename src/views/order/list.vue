@@ -17,7 +17,7 @@
               @click="showMore=!showMore">{{!showMore?'展示更多':'收起筛选'}}</div>
             <div class="elCtn">
               <el-input v-model="order_code"
-                placeholder="输入订单号"
+                placeholder="输入客户单号"
                 @change="changeRouter(1)"></el-input>
             </div>
             <div class="elCtn">
@@ -51,6 +51,7 @@
               style="width:350px;">
               <el-date-picker v-model="date"
                 type="daterange"
+                value-format="yyyy-MM-dd"
                 range-separator="至"
                 start-placeholder="开始日期"
                 end-placeholder="结束日期"
@@ -80,14 +81,33 @@
             style="width: 100%"
             ref="table">
             <el-table-column fixed
-              prop="order_code"
+              prop="code"
               label="订单号"
+              width="120">
+            </el-table-column>
+            <el-table-column fixed
+              prop="order_code"
+              label="客户单号"
               width="120">
             </el-table-column>
             <el-table-column fixed
               prop="client_name"
               label="客户名称"
               width="140">
+            </el-table-column>
+            <el-table-column prop="status"
+              label="订单状态"
+              width="120">
+              <template slot-scope="scope">
+                <span :class="{'orange':scope.row.status===1,'blue':scope.row.status===2,'green':scope.row.status===3}">{{scope.row.status | orderStatusFilter}}</span>
+              </template>
+            </el-table-column>
+            <el-table-column prop="is_check"
+              label="审核信息"
+              width="120">
+              <template slot-scope="scope">
+                <span :class="{'orange':scope.row.is_check===0,'green':scope.row.is_check===1,'red':scope.row.is_check===2}">{{scope.row.is_check | orderCheckFilter}}</span>
+              </template>
             </el-table-column>
             <el-table-column label="纱线名称"
               width="170">
@@ -135,15 +155,29 @@
               label="下单总价(元)"
               width="120">
             </el-table-column>
-            <el-table-column label="已发货(kg)"
+            <!-- <el-table-column label="已发货(kg)"
               width="120">
               <template>
                 <span class="blue">0</span>
               </template>
-            </el-table-column>
+            </el-table-column> -->
             <el-table-column prop="delivery_time"
               label="交货日期"
               width="120">
+              <template slot-scope="scope">
+                <div v-if="scope.row.status!==3"
+                  style="display:flex;flex-direction:column">
+                  <span>{{scope.row.delivery_time}}</span>
+                  <span :class="{'red':$diffByDate(scope.row.delivery_time)<=0,'green':$diffByDate(scope.row.delivery_time)>7,'orange':$diffByDate(scope.row.delivery_time)<=7 &&$diffByDate(scope.row.delivery_time)>0 }">
+                    {{$diffByDate(scope.row.delivery_time)>0?'交货还剩'+$diffByDate(scope.row.delivery_time)+'天':'延期发货'+Math.abs($diffByDate(scope.row.delivery_time))+'天'}}
+                  </span>
+                </div>
+                <div v-if="scope.row.status===3"
+                  style="display:flex;flex-direction:column">
+                  <span>{{scope.row.delivery_time}}</span>
+                  <span class="green">已发货</span>
+                </div>
+              </template>
             </el-table-column>
             <el-table-column prop="order_time"
               label="下单日期"
@@ -224,27 +258,27 @@ export default Vue.extend({
     changeRouter(page: string) {
       const pages = page || 1
       this.$router.push(
-        '/order/list/page=' +
+        '/order/list?page=' +
           pages +
-          '&&order_code=' +
+          '&order_code=' +
           this.order_code +
-          '&&product_name=' +
+          '&product_name=' +
           this.product_name +
-          '&&client_id=' +
+          '&client_id=' +
           this.client_id +
-          '&&user_id=' +
+          '&user_id=' +
           this.user_id +
-          '&&page_size=' +
+          '&page_size=' +
           this.page_size +
-          '&&date=' +
+          '&date=' +
           this.date
       )
     },
     reset() {
-      this.$router.push('/order/list/page=1&&order_code=&&product_name=&&client_id=&&user_id=&&page_size=10&&date=')
+      this.$router.push('/order/list?page=1&order_code=&product_name=&client_id=&user_id=&page_size=10&date=')
     },
     getFilters() {
-      const params = this.$getHash(this.$route.params.params)
+      const params = this.$route.query
       this.page = Number(params.page)
       this.page_size = Number(params.page_size)
       this.user_id = params.user_id ? Number(params.user_id) : ''
@@ -252,7 +286,7 @@ export default Vue.extend({
       this.product_name = params.product_name
       this.order_code = params.order_code
       if (params.date !== 'null' && params.date !== '') {
-        this.date = params.date.split(',')
+        this.date = (params.date as string).split(',')
       } else {
         this.date = []
       }

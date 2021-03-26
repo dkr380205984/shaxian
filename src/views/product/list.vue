@@ -202,26 +202,26 @@ export default Vue.extend({
         })
     },
     reset() {
-      this.$router.push('/product/list/page=1&&page_size=10&&name=&&color=&&attribute=&&yarn_type=')
+      this.$router.push('/product/list?page=1&page_size=10&name=&color=&attribute=&yarn_type=')
     },
     changeRouter(page: string) {
       this.$router.push(
-        '/product/list/page=' +
+        '/product/list?page=' +
           (page || 1) +
-          '&&page_size=' +
+          '&page_size=' +
           this.page_size +
-          '&&name=' +
+          '&name=' +
           this.name +
-          '&&color=' +
+          '&color=' +
           this.color +
-          '&&attribute=' +
+          '&attribute=' +
           this.attribute +
-          '&&yarn_type=' +
+          '&yarn_type=' +
           this.yarn_type
       )
     },
     getFilters() {
-      const params = this.$getHash(this.$route.params.params)
+      const params = this.$route.query
       this.page = Number(params.page)
       this.page_size = Number(params.page_size)
       this.name = params.name

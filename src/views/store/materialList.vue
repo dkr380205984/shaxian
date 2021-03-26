@@ -240,13 +240,13 @@ export default Vue.extend({
     changeRouter(page: number) {
       const pages = page || 1
       this.$router.push(
-        '/store/materialList/page=' +
+        '/store/materialList?page=' +
           pages +
-          '&&type=' +
+          '&type=' +
           this.type +
-          '&&name=' +
+          '&name=' +
           this.name +
-          '&&page_size=' +
+          '&page_size=' +
           this.page_size
       )
     },
@@ -279,14 +279,14 @@ export default Vue.extend({
         })
     },
     getFilters() {
-      const params = this.$getHash(this.$route.params.params)
+      const params = this.$route.query
       this.page = Number(params.page)
       this.page_size = Number(params.page_size)
       this.name = params.name
       this.type = Number(params.type) || ''
     },
     reset() {
-      this.$router.push('/store/materialList/page=&&type=&&name=&&page_size=')
+      this.$router.push('/store/materialList?page=&type=&name=&page_size=')
     },
     saveStore() {
       if (this.$submitLock()) {

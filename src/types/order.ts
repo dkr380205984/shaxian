@@ -19,5 +19,6 @@ export interface Order {
   additional_fee: string | AditionalFee[]
   desc: HTMLElement | string
   process_log?: any[] // 统计加工信息用的加工日志
-  product_info: OrderPro[]
+  product_info: OrderPro[],
+  file_url?: string
 }

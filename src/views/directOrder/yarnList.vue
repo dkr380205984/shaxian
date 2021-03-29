@@ -75,66 +75,142 @@
           </div>
         </div>
         <div class="list">
-          <div class="headCtn">
-            <div class="row">
-              <div class="column">采购单号</div>
-              <div class="column">采购单位</div>
-              <div class="column">采购单状态</div>
-              <div class="column">纱线名称</div>
-              <div class="column">颜色/属性</div>
-              <div class="column">数量/单价</div>
-              <div class="column">交货日期</div>
-              <div class="column">创建人</div>
-              <div class="column">审核信息</div>
-              <div class="column min120">操作</div>
-            </div>
-          </div>
-          <div class="bodyCtn">
-            <div class="row"
-              v-for="item in list"
-              :key="item.id">
-              <div class="column">{{item.code}}</div>
-              <div class="column">{{item.client_name}}</div>
-              <div class="column">
-                <span :class="{'orange':item.status===1,'blue':item.status===2,'green':item.status===3}">{{item.status | orderStatusFilter}}</span>
-              </div>
-              <div class="column">
+          <el-table :data="list"
+            style="width: 100%"
+            ref="table">
+            <el-table-column fixed
+              prop="code"
+              label="采购单号"
+              width="120">
+            </el-table-column>
+            <el-table-column fixed
+              prop="client_name"
+              label="采购单位"
+              width="140">
+            </el-table-column>
+            <el-table-column prop="status"
+              label="采购单状态"
+              width="120">
+              <template slot-scope="scope">
+                <span :class="{'orange':scope.row.status===1,'blue':scope.row.status===2,'green':scope.row.status===3}">{{scope.row.status | orderStatusFilter}}</span>
+              </template>
+            </el-table-column>
+            <el-table-column prop="is_check"
+              label="审核信息"
+              width="120">
+              <template slot-scope="scope">
+                <span :class="{'orange':!scope.row.is_check,'green':scope.row.is_check===1,'red':scope.row.is_check===2}">{{scope.row.is_check | orderCheckFilter}}</span>
+              </template>
+            </el-table-column>
+            <el-table-column label="纱线名称"
+              width="200">
+              <template slot-scope="scope">
                 <div class="sortContainer">
                   <div class="sort">
                     <i class="el-icon-caret-top hover"
-                      @click="changeIndex(item,'add')"></i>
+                      @click="changeIndex(scope.row,'add')"></i>
                     <div class="number">
-                      {{(item.index||0)+1}}/{{item.child_data.length}}
+                      {{(scope.row.index||0)+1}}/{{scope.row.child_data.length}}
                     </div>
                     <i class="el-icon-caret-bottom hover"
-                      @click="changeIndex(item,'delete')"></i>
+                      @click="changeIndex(scope.row,'delete')"></i>
                   </div>
-                  <span>{{item.child_data[item.index||0].name}}</span>
+                  <span>{{scope.row.child_data[scope.row.index||0].name}}</span>
                 </div>
-              </div>
-              <div class="column">{{item.child_data[item.index||0].color}}/{{item.child_data[item.index||0].attribute}}</div>
-              <div class="column">{{item.child_data[item.index||0].weight}}kg/{{item.child_data[item.index||0].price}}元</div>
-              <div class="column">
-                <div style="display:flex;flex-direction:column">
-                  <span>{{item.delivery_time}}</span>
-                  <span :class="{'red':$diffByDate(item.delivery_time)<=0,'green':$diffByDate(item.delivery_time)>7,'yellow':$diffByDate(item.delivery_time)<=7 &&$diffByDate(item.delivery_time)>0 }">
-                    {{$diffByDate(item.delivery_time)>0?'交货还剩'+$diffByDate(item.delivery_time)+'天':'延期发货'+Math.abs($diffByDate(item.delivery_time))+'天'}}
+              </template>
+            </el-table-column>
+            <el-table-column prop="total_price"
+              label="颜色"
+              width="120">
+              <template slot-scope="scope">
+                <span>{{scope.row.child_data[scope.row.index||0].color}}</span>
+              </template>
+            </el-table-column>
+            <el-table-column prop="total_price"
+              label="属性"
+              width="120">
+              <template slot-scope="scope">
+                <span>{{scope.row.child_data[scope.row.index||0].attribute}}</span>
+              </template>
+            </el-table-column>
+            <el-table-column prop="total_price"
+              label="采购数量(kg)"
+              width="120">
+              <template slot-scope="scope">
+                <span>{{scope.row.child_data[scope.row.index||0].weight}}</span>
+              </template>
+            </el-table-column>
+            <el-table-column prop="total_weight"
+              label="采购总数(kg)"
+              width="120">
+              <template slot-scope="scope">
+                <span class="blue">{{scope.row.total_weight}}</span>
+              </template>
+            </el-table-column>
+            <el-table-column prop="push_weight"
+              label="入库总数(kg)"
+              width="120">
+              <template slot-scope="scope">
+                <span class="green">{{scope.row.push_weight}}</span>
+              </template>
+            </el-table-column>
+            <el-table-column prop="total_price"
+              label="下单总价(元)"
+              width="120">
+            </el-table-column>
+            <el-table-column prop="delivery_time"
+              label="交货日期"
+              width="120">
+              <template slot-scope="scope">
+                <div v-if="scope.row.status!==3"
+                  style="display:flex;flex-direction:column">
+                  <span>{{scope.row.delivery_time}}</span>
+                  <span :class="{'red':$diffByDate(scope.row.delivery_time)<=0,'green':$diffByDate(scope.row.delivery_time)>7,'orange':$diffByDate(scope.row.delivery_time)<=7 &&$diffByDate(scope.row.delivery_time)>0 }">
+                    {{$diffByDate(scope.row.delivery_time)>0?'交货还剩'+$diffByDate(scope.row.delivery_time)+'天':'延期发货'+Math.abs($diffByDate(scope.row.delivery_time))+'天'}}
                   </span>
                 </div>
-              </div>
-              <div class="column">{{item.user_name}}</div>
-              <div class="column"
-                :class="{'orange':item.is_check===0||!item.is_check,'green':item.is_check===1,'red':item.is_check===2}">{{item.is_check|orderCheckFilter}}</div>
-              <div class="column min120">
-                <div class="opr blue"
-                  @click="$router.push('/directOrder/yarnDetail/' + item.id)">详情</div>
-                <div class="opr orange"
-                  @click="openUpdate(item)">修改</div>
-                <div class="opr red"
-                  @click="openDelete(item.id)">删除</div>
-              </div>
-            </div>
-          </div>
+                <div v-if="scope.row.status===3"
+                  style="display:flex;flex-direction:column">
+                  <span>{{scope.row.delivery_time}}</span>
+                  <span class="green">已发货</span>
+                </div>
+              </template>
+            </el-table-column>
+            <el-table-column prop="order_time"
+              label="下单日期"
+              width="120">
+            </el-table-column>
+            <el-table-column label="补充说明">
+              <template slot-scope="scope">
+                <div class="column">
+                  <el-image style="width: 50px; height: 50px;line-height:50px;text-align:center;font-size:22px"
+                    :src="scope.row.file_url"
+                    :preview-src-list="[scope.row.file_url]">
+                    <div slot="error"
+                      class="image-slot">
+                      <i class="el-icon-picture-outline"></i>
+                    </div>
+                  </el-image>
+                </div>
+              </template>
+            </el-table-column>
+            <el-table-column prop="user_name"
+              label="操作人"
+              width="120">
+            </el-table-column>
+            <el-table-column fixed="right"
+              label="操作"
+              width="150">
+              <template slot-scope="scope">
+                <span class="opr blue"
+                  @click="$router.push('/directOrder/yarnDetail/' + scope.row.id)">详情</span>
+                <span class="opr orange"
+                  @click="openUpdate(scope.row)">修改</span>
+                <span class="opr red"
+                  @click="openDelete(scope.row.id)">删除</span>
+              </template>
+            </el-table-column>
+          </el-table>
         </div>
         <div class="pageCtn">
           <el-pagination background
@@ -360,10 +436,36 @@
                 </div>
               </div>
             </div>
+            <div class="rowCtn">
+              <div class="colCtn">
+                <div class="label">
+                  <span class="text">图片补充说明</span>
+                  <span class="explanation">(选填)</span>
+                </div>
+                <el-upload class="upload"
+                  action="https://upload.qiniup.com/"
+                  accept="image/jpeg,image/gif,image/png,image/bmp"
+                  :before-upload="beforeAvatarUpload"
+                  :multiple="false"
+                  :data="postData"
+                  :limit="1"
+                  :on-success="successFile"
+                  ref="uploada"
+                  list-type="picture">
+                  <div class="uploadBtn">
+                    <i class="el-icon-upload"></i>
+                    <span>上传文件</span>
+                  </div>
+                  <div slot="tip"
+                    class="el-upload__tip">只能上传一张jpg/png图片文件，且不超过10M</div>
+                </el-upload>
+              </div>
+            </div>
           </div>
         </div>
         <div class="oprCtn">
           <div class="opr"
+            style="padding-left:8px"
             @click="resetInfo">取消</div>
           <div class="opr"
             :class="{'blue':create_flag,'orange':update_flag}"
@@ -421,10 +523,12 @@ export default Vue.extend({
             desc: ''
           }
         ],
+        file_url: '',
         desc: ''
       },
       list: [],
-      product_arr: []
+      product_arr: [],
+      postData: { key: '', token: '' }
     }
   },
   computed: {
@@ -447,6 +551,9 @@ export default Vue.extend({
           })
         }
       })
+    },
+    token() {
+      return this.$store.state.status.token
     }
   },
   watch: {
@@ -599,6 +706,7 @@ export default Vue.extend({
         ],
         order_time: this.$getDate(new Date()),
         delivery_time: '',
+        file_url: '',
         additional_fee: [
           {
             name: '',
@@ -681,6 +789,27 @@ export default Vue.extend({
             message: '已取消删除'
           })
         })
+    },
+    beforeAvatarUpload(file: any) {
+      const fileName = file.name.lastIndexOf('.') // 取到文件名开始到最后一个点的长度
+      const fileNameLength = file.name.length // 取到文件名长度
+      const fileFormat = file.name.substring(fileName + 1, fileNameLength) // 截
+      this.postData.token = this.token
+      this.postData.key = Date.parse(new Date() + '') + '.' + fileFormat
+      const isJPG = file.type === 'image/jpeg'
+      const isPNG = file.type === 'image/png'
+      const isLt2M = file.size / 1024 / 1024 < 10
+      if (!isJPG && !isPNG) {
+        this.$message.error('图片只能是 JPG/PNG 格式!')
+        return false
+      }
+      if (!isLt2M) {
+        this.$message.error('图片大小不能超过 10MB!')
+        return false
+      }
+    },
+    successFile(response: any) {
+      this.order_yarn_info.file_url = 'https://file.zwyknit.com/' + response.key
     }
   },
   mounted() {
@@ -699,6 +828,11 @@ export default Vue.extend({
         checkWhich: 'api/yarnType',
         getInfoMethed: 'dispatch',
         getInfoApi: 'getYarnTypeAsync'
+      },
+      {
+        checkWhich: 'status/token',
+        getInfoMethed: 'dispatch',
+        getInfoApi: 'getTokenAsync'
       }
     ])
     this.getFilters()

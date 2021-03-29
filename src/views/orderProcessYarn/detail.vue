@@ -990,8 +990,9 @@
                     <div class="trow">
                       <div class="tcolumn">纱线颜色</div>
                       <div class="tcolumn">纱线属性</div>
+                      <div class="tcolumn">批号</div>
                       <div class="tcolumn">色号</div>
-                      <div class="tcolumn">批/缸号</div>
+                      <div class="tcolumn">缸号</div>
                       <div class="tcolumn">仓库名称</div>
                       <div class="tcolumn">实际库存</div>
                       <div class="tcolumn">可用库存</div>
@@ -1012,6 +1013,7 @@
                       :key="itemChild.id">
                       <div class="tcolumn">{{itemChild.color}}</div>
                       <div class="tcolumn">{{itemChild.attribute}}</div>
+                      <div class="tcolumn">{{itemChild.batch_code}}</div>
                       <div class="tcolumn">{{itemChild.color_code}}</div>
                       <div class="tcolumn">{{itemChild.vat_code}}</div>
                       <div class="tcolumn">{{itemChild.store_name}}</div>
@@ -1036,8 +1038,9 @@
                     <div class="column">纱线名称</div>
                     <div class="column">纱线颜色</div>
                     <div class="column">属性</div>
+                    <div class="column">批号</div>
                     <div class="column">色号</div>
-                    <div class="column">批/缸号</div>
+                    <div class="column">缸号</div>
                     <div class="column">仓库名称</div>
                     <div class="column">实际库存</div>
                     <div class="column">可用库存</div>
@@ -1048,6 +1051,7 @@
                     <div class="column">{{store_info.product_name}}</div>
                     <div class="column">{{store_info.color}}</div>
                     <div class="column">{{store_info.attribute}}</div>
+                    <div class="column">{{store_info.batch_code}}</div>
                     <div class="column">{{store_info.color_code}}</div>
                     <div class="column">{{store_info.vat_code}}</div>
                     <div class="column">{{store_info.store_name}}</div>

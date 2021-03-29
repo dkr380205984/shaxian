@@ -90,8 +90,7 @@
               label="客户单号"
               width="120">
             </el-table-column>
-            <el-table-column fixed
-              prop="client_name"
+            <el-table-column prop="client_name"
               label="客户名称"
               width="140">
             </el-table-column>
@@ -155,12 +154,6 @@
               label="下单总价(元)"
               width="120">
             </el-table-column>
-            <!-- <el-table-column label="已发货(kg)"
-              width="120">
-              <template>
-                <span class="blue">0</span>
-              </template>
-            </el-table-column> -->
             <el-table-column prop="delivery_time"
               label="交货日期"
               width="120">
@@ -183,13 +176,27 @@
               label="下单日期"
               width="120">
             </el-table-column>
+            <el-table-column label="补充说明">
+              <template slot-scope="scope">
+                <div class="column">
+                  <el-image style="width: 50px; height: 50px;line-height:50px;text-align:center;font-size:22px"
+                    :src="scope.row.file_url"
+                    :preview-src-list="[scope.row.file_url]">
+                    <div slot="error"
+                      class="image-slot">
+                      <i class="el-icon-picture-outline"></i>
+                    </div>
+                  </el-image>
+                </div>
+              </template>
+            </el-table-column>
             <el-table-column prop="user_name"
               label="操作人"
               width="120">
             </el-table-column>
             <el-table-column fixed="right"
               label="操作"
-              width="140">
+              width="150">
               <template slot-scope="scope">
                 <span class="blue opr"
                   @click="$router.push('/order/detail/'+scope.row.id)">详情</span>

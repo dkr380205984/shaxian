@@ -123,8 +123,9 @@
                 style="flex:4">
                 <div class="trow">
                   <div class="tcolumn">颜色/属性</div>
+                  <div class="tcolumn">批号</div>
                   <div class="tcolumn">色号</div>
-                  <div class="tcolumn">批/缸号</div>
+                  <div class="tcolumn">缸号</div>
                   <div class="tcolumn">数量</div>
                 </div>
               </div>
@@ -159,6 +160,7 @@
                   v-for="(itemChilid,indexChild) in item.child_data"
                   :key="indexChild">
                   <div class="tcolumn">{{itemChilid.color}}/{{itemChilid.attribute}}</div>
+                  <div class="tcolumn">{{itemChilid.batch_codeq}}</div>
                   <div class="tcolumn">{{itemChilid.color_code}}</div>
                   <div class="tcolumn">{{itemChilid.vat_code}}</div>
                   <div class="tcolumn"

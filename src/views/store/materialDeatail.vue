@@ -635,6 +635,7 @@ export default Vue.extend({
           attribute: item1.attribute,
           color_code: item2.color_code,
           vat_code: item2.vat_code,
+          batch_code: item2.batch_code,
           action_weight: '',
           item: '',
           desc: ''
@@ -654,6 +655,7 @@ export default Vue.extend({
               attribute: item1.attribute,
               color_code: item2.color_code,
               vat_code: item2.vat_code,
+              batch_code: item2.batch_code,
               action_weight: '',
               item: '',
               desc: ''

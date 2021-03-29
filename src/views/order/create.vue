@@ -82,9 +82,10 @@
                   <div class="trow">
                     <div class="tcolumn">纱线名称</div>
                     <div class="tcolumn noPad"
-                      style="flex:5.5">
+                      style="flex:5.9">
                       <div class="trow">
-                        <div class="tcolumn">纱线颜色</div>
+                        <div class="tcolumn"
+                          style="flex:1.2">纱线颜色</div>
                         <div class="tcolumn">纱线属性</div>
                         <div class="tcolumn">下单价格</div>
                         <div class="tcolumn">下单数量</div>
@@ -121,14 +122,17 @@
                       </div>
                     </div>
                     <div class="tcolumn noPad"
-                      style="flex:5.5">
+                      style="flex:5.9">
                       <div class="trow"
                         v-for="(itemChild,indexChild) in itemPro.child_data"
                         :key="indexChild">
-                        <div class="tcolumn">
+                        <div class="tcolumn"
+                          style="flex:1.2">
                           <el-input class="el"
                             v-model="itemChild.color"
-                            placeholder="下单颜色"></el-input>
+                            placeholder="下单颜色">
+                            <template slot="prepend">{{indexChild+1}}</template>
+                          </el-input>
                         </div>
                         <div class="tcolumn">
                           <div class="el">
@@ -305,6 +309,31 @@
           </div>
         </div>
         <div class="rowCtn">
+          <div class="colCtn">
+            <div class="label">
+              <span class="text">图片补充说明</span>
+              <span class="explanation">(选填)</span>
+            </div>
+            <el-upload class="upload"
+              action="https://upload.qiniup.com/"
+              accept="image/jpeg,image/gif,image/png,image/bmp"
+              :before-upload="beforeAvatarUpload"
+              :multiple="false"
+              :data="postData"
+              :limit="1"
+              :on-success="successFile"
+              ref="uploada"
+              list-type="picture">
+              <div class="uploadBtn">
+                <i class="el-icon-upload"></i>
+                <span>上传文件</span>
+              </div>
+              <div slot="tip"
+                class="el-upload__tip">只能上传一张jpg/png图片文件，且不超过10M</div>
+            </el-upload>
+          </div>
+        </div>
+        <div class="rowCtn">
           <div class="colCtn"
             style="z-index:1">
             <div class="label">
@@ -351,6 +380,7 @@ export default Vue.extend({
         total_price: 0,
         total_weight: 0,
         desc: '',
+        file_url: '',
         additional_fee: [
           {
             name: '',
@@ -374,12 +404,16 @@ export default Vue.extend({
         ]
       },
       product_arr: [],
-      editor: ''
+      editor: '',
+      postData: { key: '', token: '' }
     }
   },
   computed: {
     clientArr() {
       return this.$store.state.api.client.arr
+    },
+    token() {
+      return this.$store.state.status.token
     }
   },
   methods: {
@@ -508,6 +542,7 @@ export default Vue.extend({
                 total_price: 0,
                 total_weight: 0,
                 desc: '',
+                file_url: '',
                 additional_fee: [
                   {
                     name: '',
@@ -538,6 +573,27 @@ export default Vue.extend({
             })
         }
       })
+    },
+    beforeAvatarUpload(file: any) {
+      const fileName = file.name.lastIndexOf('.') // 取到文件名开始到最后一个点的长度
+      const fileNameLength = file.name.length // 取到文件名长度
+      const fileFormat = file.name.substring(fileName + 1, fileNameLength) // 截
+      this.postData.token = this.token
+      this.postData.key = Date.parse(new Date() + '') + '.' + fileFormat
+      const isJPG = file.type === 'image/jpeg'
+      const isPNG = file.type === 'image/png'
+      const isLt2M = file.size / 1024 / 1024 < 10
+      if (!isJPG && !isPNG) {
+        this.$message.error('图片只能是 JPG/PNG 格式!')
+        return false
+      }
+      if (!isLt2M) {
+        this.$message.error('图片大小不能超过 10MB!')
+        return false
+      }
+    },
+    successFile(response: any) {
+      this.order_info.file_url = 'https://file.zwyknit.com/' + response.key
     }
   },
   mounted() {
@@ -574,6 +630,11 @@ export default Vue.extend({
         checkWhich: 'api/client',
         getInfoMethed: 'dispatch',
         getInfoApi: 'getPartyBAsync'
+      },
+      {
+        checkWhich: 'status/token',
+        getInfoMethed: 'dispatch',
+        getInfoApi: 'getTokenAsync'
       }
     ])
   }

@@ -30,6 +30,7 @@ export interface OrderYarn {
   additional_fee?: string | AditionalFee[]// 额外费用的JSON字符串
   common_price?: string | number
   common_attr?: string
+  file_url?: string
   total_price?: string | number
   desc: string
 }

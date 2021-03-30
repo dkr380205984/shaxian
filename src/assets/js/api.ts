@@ -15,7 +15,8 @@ import {
   PartyBCheckParams, PartyBCreateParams, PartyBListParams,
   YarnTypeCreateParams, YarnTypeDetailParams, YarnTypeListParams,
   YarnColorCreateParams, YarnColorDetailParams, YarnColorListParams,
-  UserCreateParams, UserDetailParams, UserListParams
+  UserCreateParams, UserDetailParams, UserListParams,
+  PrintCreateParams, PrintDetailParams, PrintListParams,
 } from '@/types/settings'
 // 供应商加工厂客户
 const partyB = {
@@ -46,6 +47,13 @@ const user = {
   list: (params?: UserListParams) => http.get(`${baseUrl}/user/lists`, params)
 }
 
+// 打印设置
+const print = {
+  create: (params: PrintCreateParams) => http.post(`${baseUrl}/print/config/save`, params, 'application/json'),
+  detail: (params: PrintDetailParams) => http.get(`${baseUrl}/print/config/detail`, params),
+  delete: (params: { id: number }) => http.post(`${baseUrl}/print/config/delete`, params, 'application/json'),
+  list: (params?: PrintListParams) => http.get(`${baseUrl}/print/config/lists`, params)
+}
 // 产品
 import { Product, ProductDetail } from '@/types/product'
 const product = {
@@ -166,5 +174,6 @@ export {
   material,
   craft,
   deduct,
-  check
+  check,
+  print
 }

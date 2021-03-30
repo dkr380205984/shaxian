@@ -1,0 +1,272 @@
+@import './common.less';
+.printHtml{
+  color: #000;
+  .printTable{
+    page-break-after: always;
+    padding: 30px 50px;
+    height: auto;
+    min-height: 1490px;
+    width: 982px;
+    font-size: 20px;
+    display: flex;
+    flex-direction: column;
+    &.crosswise{
+      font-size: 22px;
+      width: 1490px!important;
+      min-height: 982px!important;
+      overflow: hidden;
+      .print_head{
+        flex-direction: column;
+        height: auto;
+        align-items: center;
+        &.row{
+          flex-direction: row;
+          align-items: flex-end;
+        }
+        .top{
+          text-align: center;
+          width: 100%;
+          margin-bottom: 40px;
+          .title{
+            font-size: 32px;
+            font-weight: 600;
+          }
+        }
+        .bottom{
+          display: flex;
+          justify-content: space-between;
+          width: 100%;
+        }
+      }
+    }
+    .print_head{
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      height: 151px;
+      .left{
+        display: flex;
+        flex-direction: column;
+        // justify-content: space-between;
+        height: 100%;
+        .title{
+          font-size: 24px;
+          font-weight: 600;
+        }
+        .item{
+          display: flex;
+          align-items: center;
+          margin-top: 16px;
+          .label{
+            width: 6em;
+          }
+        }
+      }
+      .right{
+        display: flex;
+        justify-content: flex-end;
+        align-items: flex-end;
+        width: auto;
+        height: auto;
+        .text{
+          line-height: 1.3em;
+          margin-right: 8px;
+        }
+        .qrCode_box{
+          width: 120px;
+          height: 120px;
+          border: 1px solid @font25;
+          box-sizing: border-box;
+          img{
+            width: 100%;
+            height: 100%;
+          }
+        }
+      }
+    }
+    .print_body{
+      flex: 1;
+      margin-top: 8px;
+      border-left: 1px solid @font25;
+      border-right: 1px solid @font25;
+      border-bottom: 1px solid @font25;
+      box-sizing: border-box;
+      overflow: hidden;
+      width: 100%;
+      .col{
+        flex-direction: column;
+        justify-content: center;
+        align-items: flex-start;
+      }
+      .bgGray{
+        background-color: #F5F5F5;
+      }
+      &>.print_row{
+        &:last-of-type{
+          border-bottom: 1px solid @font25;
+        }
+      }
+    }    
+    .print_row{
+      page-break-before: auto;
+      page-break-after: auto;
+      min-height: 50px;
+      border-top: 1px solid @font25;
+      display: flex;
+      width: 100%;
+      box-sizing: border-box;
+      &.has_marginBottom{
+        margin-bottom: 16px;
+        border-bottom:1px solid @font25;
+      }
+      &.noBorder{
+        border: 0;
+      }
+      &.canWarp{
+        flex-wrap: wrap;
+        .warpMax4{
+          min-width: 25%;
+          max-width: 25%;
+          box-sizing: border-box;
+          &:nth-of-type(n+5){
+            border-top: 1px solid @font25;
+          }
+          &:nth-of-type(4n){
+            border-right: none;
+          }
+        }
+      }
+      .row_item{
+        flex: 1;
+        border-right: 1px solid @font25;
+        display: flex;
+        align-items: center;
+        height: auto;
+        position: relative;
+        word-break: break-all;
+        &:last-of-type{
+          border-right: 0;
+        }
+        &.w180{
+          min-width: 180px;
+          max-width: 180px;
+        }
+        &.left{            
+          padding-left: 24px;
+          box-sizing: border-box;
+        }
+        &.right{
+          padding-right: 36px;
+          justify-content: flex-end;
+          box-sizing: border-box;
+        }
+        &.center{            
+          justify-content: center;
+          text-align: center;
+        }
+        .flex3{
+          display: flex;
+          width: 100%;
+          min-height: 30px;
+          align-items: center;
+          .code{
+            flex: 1;
+          }
+          .type{
+            flex: 1.8;
+            margin-left: 24px;
+          }
+          .number{
+            flex: 2.5;
+            margin-left: 24px;
+          }
+        }
+        &.unit{
+          position: relative;
+          .text{
+            position: absolute;
+            font-size: 12px;
+            color: @font25;
+            top: 50%;
+            right: 0;
+            transform: translate(-8px,-50%);
+          }
+        }
+        // &>.print_row{
+        //   height: 100%;
+        // }
+      }
+    }
+    .print_remark{
+      min-height: 50px;
+      border: 1px solid @font25;
+      border-top: none;
+      height: auto;
+      display: flex;      
+      .remark_span{
+        display: inline-block;
+        height: 100%;
+        width: 100%;
+        line-height: 1.2em;
+        &.left{
+          padding-left: 24px;
+          box-sizing: border-box;
+        }
+      }
+    }
+  }
+  .printTag{
+    page-break-before: always;
+    page-break-after: always;
+    height: auto;
+    max-height: 330px;
+    max-width: 226px;
+    padding: 24px 36px;
+    box-sizing: border-box;
+    font-size: @fontMiddle;
+    overflow: hidden;
+    line-height: 1em;
+    &.center>.tag_item{
+      justify-content: center;
+      &>.tag_info{
+        text-align: center;
+      }
+    }
+    .tag_item{
+      height: auto;
+      margin-bottom: 8px;
+      width: 100%;
+      display: flex;
+      align-items: flex-start;
+      &.col{
+        flex-direction: column;
+      }
+      .tag_label{
+        min-width: 3em;
+        text-align: left;
+        &.longWidht{
+          min-width: 4em;
+          text-align: justify;
+          text-align-last: justify;
+        }
+      }
+      .tag_info{
+        // flex: 1;
+        // display: flex;
+        // flex-wrap: wrap;
+        width: 100%;
+        word-break: break-all;
+        
+      }      
+      .tag_qrCode{
+        width: 90px;
+        height: 90px;
+        margin: 0 auto;        
+      }
+      .tag_text{
+        margin: 0 auto;
+        color: @font85;
+      }
+    }
+  }
+}

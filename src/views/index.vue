@@ -49,6 +49,7 @@
               <el-menu-item index="/settings/supplier">供货商管理</el-menu-item>
               <el-menu-item index="/settings/client">客户管理</el-menu-item>
               <el-menu-item index="/settings/color">颜色管理</el-menu-item>
+              <el-menu-item index="/settings/print">打印设置</el-menu-item>
               <!-- <el-menu-item index="/settings/material">毛条管理</el-menu-item> -->
             </el-submenu>
           </el-menu>

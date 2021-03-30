@@ -382,6 +382,23 @@ const formatNum = (num: number): string => {
   return str.replace(reg, '$1,')
 }
 
+/**
+ * @param { number | string[number]} num:需要处理的数据
+ * @param {number} precision 精度
+ * @returns {number}
+ */
+const toFixedAuto = (num: number, precision: number = 2): number => {
+  if (isNaN(Number(num))) {
+    return NaN
+  }
+  if (precision === 0) {
+    return Math.round(num)
+  } else if (precision) {
+    return Math.round(num * Math.pow(10, precision)) / Math.pow(10, precision)
+  } else {
+    return num
+  }
+}
 export default {
   install: (Vue: any) => {
     Vue.prototype.$getHash = plugin.getHash
@@ -401,5 +418,7 @@ export default {
     Vue.prototype.$unique = unique
     Vue.prototype.$formCheck = plugin.formCheck
     Vue.prototype.$flatten = plugin.flatten
+    Vue.prototype.$toFixed = toFixedAuto
+    Vue.prototype.$openUrl = (url: string) => window.open(url)
   }
 }

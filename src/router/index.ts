@@ -131,6 +131,11 @@ const routes: RouteConfig[] = [
         path: '/settings/color',
         name: '颜色设置',
         component: () => import('../views/settings/color.vue')
+      },
+      {
+        path: '/settings/print',
+        name: '打印设置',
+        component: () => import('../views/settings/print.vue')
       }, {
         path: '/settings/material',
         name: '毛条设置',
@@ -183,6 +188,29 @@ const routes: RouteConfig[] = [
         path: '/directProcess/yarnDetail/:id',
         name: '纱线加工详情',
         component: () => import('../views/directOrder/yarnDetail.vue')
+      }
+    ]
+  },
+  {
+    path: '/print',
+    name: 'print',
+    redirect: '/index',
+    component: () => import('@/views/print/index.vue'),
+    children: [
+      {// 1调取单
+        path: 'orderYarn/1/:orderId',
+        name: 'orderYarnFS',
+        component: () => import('@/views/print/orderYarnFS.vue')
+      },
+      {// 2订购单
+        path: 'orderYarn/2',
+        name: 'orderYarnFC',
+        component: () => import('@/views/print/orderYarnFC.vue')
+      },
+      {// 加工单
+        path: 'processYarn',
+        name: 'processYarn',
+        component: () => import('@/views/print/processYarn.vue')
       }
     ]
   }

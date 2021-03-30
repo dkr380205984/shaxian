@@ -44,6 +44,7 @@ export interface Color {
   name: string,
   [key: string]: any
 }
+
 export interface Store {
   id: number | null
   name: string
@@ -92,4 +93,9 @@ export interface CheckInfo {
   desc: string // 备注信息
   user_name?: string
   create_time?: string
+}
+
+export interface Print {
+  id: number | null,
+  [key: string]: any
 }

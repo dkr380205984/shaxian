@@ -71,3 +71,16 @@ export interface UserListParams {
 export interface UserDetailParams {
   id: number | null
 }
+export interface PrintCreateParams {
+  id: null | number
+  type: number
+  title: string
+  desc: string
+}
+export interface PrintDetailParams {
+  type: number
+}
+export interface PrintListParams {
+  page: number,
+  limit: number
+}

@@ -197,7 +197,7 @@ export default Vue.extend({
     changeRouter(page: string) {
       const pages = page || 1
       this.$router.push(
-        '/material/list?page=' + pages + '&&type=' + this.type + '&&name=' + this.name + '&&page_size=' + this.page_size
+        '/material/list?page=' + pages + '&type=' + this.type + '&name=' + this.name + '&page_size=' + this.page_size
       )
     },
     getFilters() {
@@ -208,7 +208,7 @@ export default Vue.extend({
       this.type = Number(params.type) || ''
     },
     reset() {
-      this.$router.push('/material/list?page=1&&type=&&name=&&page_size=10')
+      this.$router.push('/material/list?page=1&type=&name=&page_size=10')
     },
     resetMat() {
       this.material_info = {

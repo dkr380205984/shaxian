@@ -598,6 +598,8 @@ export default Vue.extend({
         this.order_yarn_info = res[0].data.data
         this.order_yarn_info.additional_fee = JSON.parse(this.order_yarn_info.additional_fee as string)
         this.order_in_log = res[1].data.data.data.items
+        console.log(this.order_yarn_info)
+        console.log(this.order_in_log)
         this.deduct_list = res[2].data.data
         this.deduct_list.forEach((item: any) => {
           item.deduct_content = JSON.parse(item.deduct_content)

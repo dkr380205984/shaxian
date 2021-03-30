@@ -104,7 +104,7 @@
     <div class="module"
       v-show="order_in_log.length>0">
       <div class="titleCtn">
-        <span class="title">纱线入库信息</span>
+        <span class="title">毛条入库信息</span>
       </div>
       <div class="listCtn">
         <div class="list">

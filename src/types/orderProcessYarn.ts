@@ -55,6 +55,7 @@ export interface ProcessYarn {
   order_time: string
   delivery_time: string
   total_price?: string | number
+  file_url: string
   additional_fee?: string | AditionalFee[]// 额外费用的JSON字符串
   child_data: ChildData[]
 }

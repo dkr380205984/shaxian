@@ -172,7 +172,7 @@
                 <div v-if="scope.row.status===3"
                   style="display:flex;flex-direction:column">
                   <span>{{scope.row.delivery_time}}</span>
-                  <span class="green">已发货</span>
+                  <span class="green">已完成</span>
                 </div>
               </template>
             </el-table-column>

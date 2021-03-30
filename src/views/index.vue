@@ -22,13 +22,13 @@
               <el-menu-item index="/directOrder/yarnList?page=1&code=&name=&client_id=&user_id=&page_size=10&date=">纱线采购列表</el-menu-item>
               <!-- <el-menu-item index="/directProcess/yarnList?page=1&code=&name=&client_id=&user_id=&page_size=10&date=">纱线加工列表</el-menu-item> -->
             </el-submenu>
-            <!-- <el-submenu index='1'>
+            <el-submenu index='1'>
               <template slot="title">毛条管理</template>
               <el-menu-item index="/material/list?page=1&type=&name=&page_size=10">毛条列表</el-menu-item>
               <el-menu-item index="/directOrder/materialList?page=1&code=&name=&client_id=&user_id=&page_size=10&date=">毛条采购列表</el-menu-item>
-              <el-menu-item index="/directProcess/materialList?page=1&code=&name=&client_id=&user_id=&page_size=10&date=">毛条采购列表</el-menu-item>
+              <el-menu-item index="/directProcess/materialList?page=1&code=&name=&client_id=&user_id=&page_size=10&date=">毛条加工列表</el-menu-item>
               <el-menu-item index="/material/craftList?page=1&code=&name=&client_id=&user_id=&status=&page_size=10&date=">工艺单列表</el-menu-item>
-            </el-submenu> -->
+            </el-submenu>
             <el-submenu index='2'>
               <template slot="title">订单管理</template>
               <el-menu-item index="/order/list?page=1&order_code=&product_name=&client_id=&user_id=&page_size=10&date=">订单列表</el-menu-item>
@@ -38,7 +38,7 @@
             <el-submenu index='3'>
               <template slot="title">库存管理</template>
               <el-menu-item index="/store/list?page=&type=&name=&page_size=">纱线库存</el-menu-item>
-              <!-- <el-menu-item index="/store/materialList?page=&type=&name=&page_size=">毛条库存</el-menu-item> -->
+              <el-menu-item index="/store/materialList?page=&type=&name=&page_size=">毛条库存</el-menu-item>
             </el-submenu>
             <!-- <el-menu-item index="4">财务管理</el-menu-item> -->
             <el-submenu index='5'>

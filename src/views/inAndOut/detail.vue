@@ -139,13 +139,16 @@
                     <div class="column min120">调取纱线</div>
                     <div class="column min120">调取颜色/属性</div>
                     <div class="column"
-                      style="flex:4;flex-direction:column">
+                      style="flex-direction:column">
                       <div class="row">
                         <div class="column min120">订单纱线</div>
                         <div class="column min120">下单颜色/属性</div>
                         <div class="column min120">实际调取数量</div>
                       </div>
                     </div>
+                    <div class="column min120">批号</div>
+                    <div class="column min120">色号</div>
+                    <div class="column min120">缸号</div>
                     <div class="column min120">出库数量</div>
                     <div class="column min120">操作日期</div>
                     <div class="column min120">备注信息</div>
@@ -161,7 +164,7 @@
                     <div class="column min120">{{item.name}}</div>
                     <div class="column min120">{{item.color}}/{{item.attribute}}</div>
                     <div class="column"
-                      style="flex:4;flex-direction:column">
+                      style="flex-direction:column">
                       <div class="row"
                         v-for="itemChild in item.child_data"
                         :key="itemChild.order_info_id">
@@ -170,8 +173,11 @@
                         <div class="column min120 blue">{{itemChild.reality_weight}}</div>
                       </div>
                     </div>
+                    <div class="column min120">{{item.batch_code}}</div>
+                    <div class="column min120">{{item.color_code}}</div>
+                    <div class="column min120">{{item.vat_code}}</div>
                     <div class="column min120 green">{{item.pop_weight}}</div>
-                    <div class="column min120">{{item.create_time}}</div>
+                    <div class="column min120">{{item.create_time || '暂无'}}</div>
                     <div class="column min120">{{item.desc||'无'}}</div>
                     <div class="column min120">操作</div>
                   </div>
@@ -341,12 +347,15 @@
                     <div class="column min120">入库单号</div>
                     <div class="column min120">入库仓库</div>
                     <div class="column"
-                      style="flex:10;flex-direction:column">
+                      style="flex-direction:column">
                       <div class="row">
                         <div class="column min120">纱线名称</div>
                         <div class="column min120">订购颜色</div>
                         <div class="column min120">订购属性</div>
                         <div class="column min120">入库数量</div>
+                        <div class="column min120">批号</div>
+                        <div class="column min120">色号</div>
+                        <div class="column min120">缸号</div>
                       </div>
                     </div>
                     <div class="column min120">备注信息</div>
@@ -362,7 +371,7 @@
                     <div class="column min120">{{item.code}}</div>
                     <div class="column min120">{{item.store_name}}/{{item.second_store_name}}</div>
                     <div class="column"
-                      style="flex:10;flex-direction:column">
+                      style="flex-direction:column">
                       <div class="row"
                         v-for="(itemChild,indexChild) in item.child_data"
                         :key="indexChild">
@@ -370,6 +379,9 @@
                         <div class="column min120">{{itemChild.color}}</div>
                         <div class="column min120">{{itemChild.attribute}}</div>
                         <div class="column min120 blue">{{itemChild.action_weight}}</div>
+                        <div class="column min120">{{itemChild.batch_code}}</div>
+                        <div class="column min120">{{itemChild.color_code}}</div>
+                        <div class="column min120">{{itemChild.vat_code}}</div>
                       </div>
                     </div>
                     <div class="column min120">{{item.desc||'无'}}</div>
@@ -468,7 +480,7 @@
                         <div class="column min120 blue">{{itemChild.action_weight}}</div>
                       </div>
                     </div>
-                    <div class="column min120">{{item.desc}}</div>
+                    <div class="column min120">{{item.desc||'无'}}</div>
                     <div class="column min120">{{item.complete_time}}</div>
                     <div class="column min120">{{item.user_name}}</div>
                     <div class="column min120">操作</div>
@@ -533,12 +545,15 @@
                     <div class="column min120">入库单号</div>
                     <div class="column min120">来源仓库</div>
                     <div class="column"
-                      style="flex:10;flex-direction:column">
+                      style="flex-direction:column">
                       <div class="row">
                         <div class="column min120">纱线名称</div>
                         <div class="column min120">入库颜色</div>
                         <div class="column min120">入库属性</div>
                         <div class="column min120">入库数量</div>
+                        <div class="column min120">批号</div>
+                        <div class="column min120">色号</div>
+                        <div class="column min120">缸号</div>
                       </div>
                     </div>
                     <div class="column min120">备注信息</div>
@@ -554,7 +569,7 @@
                     <div class="column min120">{{item.code}}</div>
                     <div class="column min120">{{item.store_name}}/{{item.second_store_name}}</div>
                     <div class="column"
-                      style="flex:10;flex-direction:column">
+                      style="flex-direction:column">
                       <div class="row"
                         v-for="(itemChild,indexChild) in item.child_data"
                         :key="indexChild">
@@ -562,6 +577,9 @@
                         <div class="column min120">{{itemChild.color}}</div>
                         <div class="column min120">{{itemChild.attribute}}</div>
                         <div class="column min120 blue">{{itemChild.action_weight}}</div>
+                        <div class="column min120">{{itemChild.batch_code}}</div>
+                        <div class="column min120">{{itemChild.color_code}}</div>
+                        <div class="column min120">{{itemChild.vat_code}}</div>
                       </div>
                     </div>
                     <div class="column min120">{{item.desc}}</div>
@@ -632,13 +650,13 @@
                       style="flex:10;flex-direction:column">
                       <div class="row">
                         <div class="column min120">纱线名称</div>
-                        <div class="column min120">入库颜色</div>
-                        <div class="column min120">入库属性</div>
-                        <div class="column min120">入库数量</div>
+                        <div class="column min120">出库颜色</div>
+                        <div class="column min120">出库属性</div>
+                        <div class="column min120">出库数量</div>
                       </div>
                     </div>
                     <div class="column min120">备注信息</div>
-                    <div class="column min120">入库日期</div>
+                    <div class="column min120">出库日期</div>
                     <div class="column min120">操作人</div>
                   </div>
                 </div>
@@ -729,60 +747,133 @@
               </div>
               <div class="colCtn"></div>
             </div>
-            <div class="rowCtn"
+            <div style="background:#f0f0f0;padding:12px;margin:12px 0"
               v-for="(itemChild,indexChild) in order_in_info.child_data"
-              :key="itemChild.order_info_id">
-              <div class="colCtn">
-                <div class="label"
-                  v-if="indexChild===0">
-                  <span class="text">纱线信息</span>
-                  <span class="explanation">(必填)</span>
+              :key="indexChild">
+              <div class="rowCtn"
+                style="background:#f0f0f0">
+                <div class="colCtn">
+                  <div class="label">
+                    <span class="text">纱线名称</span>
+                    <span class="explanation">(默认)</span>
+                  </div>
+                  <div class="content">
+                    <div class="elCtn">
+                      <el-input disabled
+                        placeholder="请输入纱线信息"
+                        v-model="itemChild.name"></el-input>
+                    </div>
+                  </div>
                 </div>
-                <div class="content">
-                  <div class="elCtn">
-                    <el-input disabled
-                      placeholder="请输入纱线信息"
-                      v-model="itemChild.name"></el-input>
+                <div class="colCtn">
+                  <div class="label">
+                    <span class="text">纱线颜色</span>
+                    <span class="explanation">(默认)</span>
+                  </div>
+                  <div class="content">
+                    <div class="elCtn">
+                      <el-input disabled
+                        placeholder="请输入纱线信息"
+                        v-model="itemChild.color"></el-input>
+                    </div>
+                  </div>
+                </div>
+                <div class="colCtn">
+                  <div class="label">
+                    <span class="text">纱线属性</span>
+                    <span class="explanation">(默认)</span>
+                  </div>
+                  <div class="content">
+                    <div class="elCtn">
+                      <el-input disabled
+                        placeholder="请输入纱线信息"
+                        v-model="itemChild.attribute"></el-input>
+                    </div>
                   </div>
                 </div>
               </div>
-              <div class="colCtn">
-                <div class="label"
-                  v-if="indexChild===0">
-                  <span class="text">采购数量</span>
-                  <span class="explanation">(必填)</span>
+              <div class="rowCtn"
+                style="background:#f0f0f0">
+                <div class="colCtn">
+                  <div class="label">
+                    <span class="text">入库批号</span>
+                  </div>
+                  <div class="content">
+                    <div class="elCtn">
+                      <el-input placeholder="请输入入库批号"
+                        v-model="itemChild.batch_code"></el-input>
+                    </div>
+                  </div>
                 </div>
-                <div class="content">
-                  <div class="elCtn">
-                    <el-input disabled
-                      placeholder="请输入采购数量"
-                      v-model="itemChild.order_weight">
-                      <template slot="append">kg</template>
-                    </el-input>
+                <div class="colCtn">
+                  <div class="label">
+                    <span class="text">入库色号</span>
+                  </div>
+                  <div class="content">
+                    <div class="elCtn">
+                      <el-input placeholder="请输入入库色号"
+                        v-model="itemChild.color_code"></el-input>
+                    </div>
+                  </div>
+                </div>
+                <div class="colCtn">
+                  <div class="label">
+                    <span class="text">入库缸号</span>
+                  </div>
+                  <div class="content">
+                    <div class="elCtn">
+                      <el-input placeholder="请输入入库缸号"
+                        v-model="itemChild.vat_code"></el-input>
+                    </div>
                   </div>
                 </div>
               </div>
-              <div class="colCtn">
-                <div class="label"
-                  v-if="indexChild===0">
-                  <span class="text">入库数量/件数</span>
-                  <span class="explanation">(必填)</span>
+              <div class="rowCtn"
+                style="background:#f0f0f0">
+                <div class="colCtn">
+                  <div class="label">
+                    <span class="text">采购数量</span>
+                    <span class="explanation">(必填)</span>
+                  </div>
+                  <div class="content">
+                    <div class="elCtn">
+                      <el-input disabled
+                        placeholder="请输入采购数量"
+                        v-model="itemChild.order_weight">
+                        <template slot="append">kg</template>
+                      </el-input>
+                    </div>
+                  </div>
                 </div>
-                <div class="content flexRow">
-                  <div class="elCtn">
-                    <el-input placeholder="数量"
-                      v-model="itemChild.action_weight">
-                      <template slot="append">kg</template>
-                    </el-input>
+                <div class="colCtn">
+                  <div class="label">
+                    <span class="text">入库数量</span>
+                    <span class="explanation">(必填)</span>
                   </div>
-                  <div class="elCtn">
-                    <el-input placeholder="件数"
-                      v-model="itemChild.item">
-                      <template slot="append">件</template>
-                    </el-input>
+                  <div class="content">
+                    <div class="elCtn">
+                      <el-input placeholder="请输入入库数量"
+                        v-model="itemChild.action_weight">
+                        <template slot="append">kg</template>
+                      </el-input>
+                    </div>
                   </div>
-                  <div class="oprCtn">
-                    <div class="editBtn deleteBtn">删除</div>
+                </div>
+                <div class="colCtn">
+                  <div class="label">
+                    <span class="text">入库件数</span>
+                  </div>
+                  <div class="content">
+                    <div class="elCtn">
+                      <el-input placeholder="件数"
+                        v-model="itemChild.item">
+                        <template slot="append">件</template>
+                      </el-input>
+                    </div>
+                    <div class="oprCtn">
+                      <div class="editBtn deleteBtn"
+                        @click="$deleteItem(order_in_info.child_data,indexChild)">删除</div>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -897,27 +988,32 @@
             <div class="rowCtn">
               <div class="colCtn">
                 <div class="label">
-                  <span class="text">调取纱线颜色</span>
+                  <span class="text">调取颜色/属性</span>
                   <span class="explanation">(默认)</span>
                 </div>
-                <div class="content">
+                <div class="content flexRow">
                   <div class="elCtn">
                     <el-input disabled
                       placeholder="请输入单号"
                       v-model="store_out_info.color"></el-input>
                   </div>
+                  <div class="elCtn">
+                    <el-input disabled
+                      placeholder="请输入来源仓库"
+                      v-model="store_out_info.attribute"></el-input>
+                  </div>
                 </div>
               </div>
               <div class="colCtn">
                 <div class="label">
-                  <span class="text">调取纱线属性</span>
+                  <span class="text">调取纱线批号</span>
                   <span class="explanation">(默认)</span>
                 </div>
                 <div class="content">
                   <div class="elCtn">
                     <el-input disabled
-                      placeholder="请输入来源仓库"
-                      v-model="store_out_info.attribute"></el-input>
+                      placeholder="调取纱线批号"
+                      v-model="store_out_info.batch_code"></el-input>
                   </div>
                 </div>
               </div>
@@ -1096,13 +1192,13 @@
                 </div>
                 <div class="colCtn">
                   <div class="label">
-                    <span class="text">色号/批(缸)号</span>
+                    <span class="text">批号/色号/缸号</span>
                     <span class="explanation">(默认)</span>
                   </div>
                   <div class="content">
                     <div class="elCtn">
                       <el-input disabled
-                        placeholder="请输入纱线信息"
+                        placeholder="色号/缸号"
                         v-model="item.yarn_other"></el-input>
                     </div>
                   </div>
@@ -1323,7 +1419,19 @@
                 style="background:#f0f0f0;">
                 <div class="colCtn">
                   <div class="label">
-                    <span class="text">入库色号/批(缸)号</span>
+                    <span class="text">入库批号</span>
+                  </div>
+                  <div class="content">
+                    <div class="elCtn">
+                      <el-input placeholder="入库批号"
+                        v-model="item.batch_code">
+                      </el-input>
+                    </div>
+                  </div>
+                </div>
+                <div class="colCtn">
+                  <div class="label">
+                    <span class="text">入库色号/缸号</span>
                   </div>
                   <div class="content flexRow">
                     <div class="elCtn">
@@ -1331,30 +1439,14 @@
                         v-model="item.color_code"></el-input>
                     </div>
                     <div class="elCtn">
-                      <el-input placeholder="批(缸)号"
+                      <el-input placeholder="缸号"
                         v-model="item.vat_code"></el-input>
                     </div>
                   </div>
                 </div>
                 <div class="colCtn">
                   <div class="label">
-                    <span class="text">出库数量</span>
-                    <span class="explanation">(默认)</span>
-                  </div>
-                  <div class="content">
-                    <div class="elCtn">
-                      <el-input placeholder="出库数量"
-                        disabled
-                        v-model="item.out_weight">
-                        <template slot="append">kg</template>
-                      </el-input>
-                    </div>
-                  </div>
-                </div>
-                <div class="colCtn">
-                  <div class="label">
                     <span class="text">入库数量/件数</span>
-                    <span class="explanation">(默认)</span>
                   </div>
                   <div class="content flexRow">
                     <div class="elCtn">
@@ -1730,7 +1822,6 @@ export default Vue.extend({
             })
           }
         })
-        console.log(this.color_arr)
         this.order_info.product_info = this.$mergeData(this.order_info.product_info, {
           mainRule: 'product_name',
           childrenName: 'child_data',
@@ -1750,7 +1841,9 @@ export default Vue.extend({
           (item: StoreCreate) => Number(item.action_type) === 3
         )
         this.log_info.order_store_out_log = res[4].data.data.data.items.filter(
-          (item: StoreCreate) => Number(item.action_type) === 4 || Number(item.action_type) === 7
+          (item: StoreCreate) =>
+            (Number(item.action_type) === 4 || Number(item.action_type) === 7) &&
+            Number(item.client_id) !== Number(this.order_info.client_id)
         )
         this.log_info.process_in_log = res[4].data.data.data.items.filter(
           (item: StoreCreate) => Number(item.action_type) === 5
@@ -1766,16 +1859,18 @@ export default Vue.extend({
         id: info.id,
         code: info.code,
         client_name: info.client_name,
+        client_id: info.client_id,
         select_id: '',
         action_type: 3,
         child_data: info.child_data.map((item) => {
           return {
-            name: item.name + '/' + item.color + '/' + item.attribute,
+            name: item.name,
             yarn_name: item.name,
             order_weight: item.reality_weight,
             action_weight: '',
             color: item.color,
             attribute: item.attribute,
+            batch_code: '',
             color_code: '',
             vat_code: '',
             item: '',
@@ -1827,7 +1922,7 @@ export default Vue.extend({
         desc: this.order_in_info.desc,
         store_id: this.order_in_info.select_id[0],
         second_store_id: this.order_in_info.select_id[1],
-        client_id: '',
+        client_id: this.order_in_info.client_id,
         child_data: this.order_in_info.child_data.map((item: any) => {
           return {
             order_id: this.$route.params.id,
@@ -1835,8 +1930,9 @@ export default Vue.extend({
             action_weight: item.action_weight,
             color: item.color,
             attribute: item.attribute,
-            color_code: 'NOT_SET',
-            vat_code: 'NOT_SET',
+            batch_code: item.batch_code || 'NOT_SET',
+            color_code: item.color_code || 'NOT_SET',
+            vat_code: item.vat_code || 'NOT_SET',
             item: item.item,
             related_info_id: item.related_id,
             desc: ''
@@ -1863,6 +1959,7 @@ export default Vue.extend({
         color: info.color,
         color_code: info.color_code,
         vat_code: info.vat_code,
+        batch_code: info.batch_code,
         attribute: info.attribute,
         total_weight: info.total_weight,
         action_weight: '',
@@ -1908,6 +2005,7 @@ export default Vue.extend({
             name: this.store_out_info.name,
             action_weight: this.store_out_info.action_weight,
             color: this.store_out_info.color,
+            batch_code: this.store_out_info.batch_code,
             attribute: this.store_out_info.attribute,
             color_code: this.store_out_info.color_code,
             vat_code: this.store_out_info.vat_code,
@@ -1939,9 +2037,11 @@ export default Vue.extend({
           return {
             yarn_info: item.name + '/' + item.color + '/' + item.attribute,
             yarn_other:
+              (item.batch_code === 'NOT_SET' ? '无批号' : item.batch_code) +
+              '/' +
               (item.color_code === 'NOT_SET' ? '无色号' : item.color_code) +
               '/' +
-              (item.vat_code === 'NOT_SET' ? '无批(缸)号' : item.vat_code),
+              (item.vat_code === 'NOT_SET' ? '无缸号' : item.vat_code),
             item: '',
             name: item.name,
             client_id: '',
@@ -1949,6 +2049,7 @@ export default Vue.extend({
             action_weight: '',
             color: item.color,
             attribute: item.attribute,
+            batch_code: item.batch_code,
             color_code: item.color_code,
             vat_code: item.vat_code,
             related_info_id: '',
@@ -2004,6 +2105,7 @@ export default Vue.extend({
             action_weight: item.action_weight,
             color: item.color,
             attribute: item.attribute,
+            batch_code: item.batch_code,
             color_code: item.color_code,
             vat_code: item.vat_code,
             related_info_id: '',
@@ -2043,6 +2145,8 @@ export default Vue.extend({
             color_code: '',
             before_vat_code: item.vat_code,
             vat_code: '',
+            before_batch_code: item.batch_code,
+            batch_code: '',
             related_info_id: '',
             desc: '',
             item: ''
@@ -2112,6 +2216,7 @@ export default Vue.extend({
             action_weight: item.action_weight,
             color: item.color,
             attribute: item.attribute,
+            batch_code: item.batch_code,
             color_code: item.color_code,
             vat_code: item.vat_code,
             related_info_id: '',
@@ -2147,15 +2252,18 @@ export default Vue.extend({
               '/' +
               item.attribute +
               '/' +
+              (item.batch_code === 'NOT_SET' ? '无批号' : item.batch_code) +
+              '/' +
               (item.color_code === 'NOT_SET' ? '无色号' : item.color_code) +
               '/' +
-              (item.vat_code === 'NOT_SET' ? '无批(缸)号' : item.vat_code),
+              (item.vat_code === 'NOT_SET' ? '无批号' : item.vat_code),
             name: item.name,
             client_id: '',
             in_weight: item.action_weight,
             action_weight: item.action_weight,
             color: item.color,
             attribute: item.attribute,
+            batch_code: item.batch_code,
             color_code: item.color_code,
             vat_code: item.vat_code,
             related_info_id: '',
@@ -2212,6 +2320,7 @@ export default Vue.extend({
             color: item.color,
             attribute: item.attribute,
             color_code: item.color_code,
+            batch_code: item.batch_code,
             vat_code: item.vat_code,
             related_info_id: '',
             desc: '',

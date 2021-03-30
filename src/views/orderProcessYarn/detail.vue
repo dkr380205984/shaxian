@@ -264,6 +264,7 @@
                     <div class="column min120">扣款信息</div>
                     <div class="column min120">下单日期</div>
                     <div class="column min120">交货日期</div>
+                    <div class="column min120">补充信息</div>
                     <div class="column min120">备注信息</div>
                     <div class="column min120">操作</div>
                   </div>
@@ -299,6 +300,16 @@
                       @click="lookDeduct(item.id,1)">{{item.is_deduct===1?'查看费用':'无扣款'}}</div>
                     <div class="column min120">{{item.order_time}}</div>
                     <div class="column min120">{{item.delivery_time}}</div>
+                    <div class="column min120">
+                      <el-image style="width: 50px; height: 50px;line-height:50px;text-align:center;font-size:22px"
+                        :src="item.file_url"
+                        :preview-src-list="[item.file_url]">
+                        <div slot="error"
+                          class="image-slot">
+                          <i class="el-icon-picture-outline"></i>
+                        </div>
+                      </el-image>
+                    </div>
                     <div class="column min120"
                       :class="{'blue':item.desc,'gray':!item.desc}">{{item.desc||'无'}}</div>
                     <div class="column min120">操作</div>
@@ -385,6 +396,7 @@
                     <div class="column min120">备注信息</div>
                     <div class="column min120">下单日期</div>
                     <div class="column min120">交货日期</div>
+                    <div class="column min120">补充信息</div>
                     <div class="column min120">操作</div>
                   </div>
                 </div>
@@ -437,6 +449,16 @@
                     <div class="column min120">{{item.desc}}</div>
                     <div class="column min120">{{item.order_time}}</div>
                     <div class="column min120">{{item.delivery_time}}</div>
+                    <div class="column min120">
+                      <el-image style="width: 50px; height: 50px;line-height:50px;text-align:center;font-size:22px"
+                        :src="item.file_url"
+                        :preview-src-list="[item.file_url]">
+                        <div slot="error"
+                          class="image-slot">
+                          <i class="el-icon-picture-outline"></i>
+                        </div>
+                      </el-image>
+                    </div>
                     <div class="column min120">操作</div>
                   </div>
                 </div>
@@ -695,6 +717,32 @@
                     @click="$deleteItem(item.additional_fee,indexFee)">删除</div>
                 </div>
               </div>
+              <div class="eRow">
+                <div class="eColumn">
+                  <div class="label">
+                    <span class="text">图片补充说明</span>
+                  </div>
+                  <div class="elCtn">
+                    <el-upload class="upload"
+                      action="https://upload.qiniup.com/"
+                      accept="image/jpeg,image/gif,image/png,image/bmp"
+                      :before-upload="beforeAvatarUpload"
+                      :multiple="false"
+                      :data="postData"
+                      :limit="1"
+                      :on-success="(response,file,fileList)=>successFile(item,response, file,fileList)"
+                      ref="uploada"
+                      list-type="picture">
+                      <div class="uploadBtn">
+                        <i class="el-icon-upload"></i>
+                        <span>上传文件</span>
+                      </div>
+                      <div slot="tip"
+                        class="el-upload__tip">只能上传一张jpg/png图片文件，且不超过10M</div>
+                    </el-upload>
+                  </div>
+                </div>
+              </div>
             </div>
             <div class="btns">
               <div class="btn btnMain"
@@ -918,6 +966,33 @@
                     @click="$deleteItem(update_order_info.additional_fee,indexFee)">删除</div>
                 </div>
               </div>
+              <div class="eRow">
+                <div class="eColumn">
+                  <div class="label">
+                    <span class="text">图片补充说明</span>
+                  </div>
+                  <div class="elCtn">
+                    <el-upload class="upload"
+                      action="https://upload.qiniup.com/"
+                      accept="image/jpeg,image/gif,image/png,image/bmp"
+                      :before-upload="beforeAvatarUpload"
+                      :multiple="false"
+                      :data="postData"
+                      :limit="1"
+                      :file-list="update_order_info.file_url?[{name:'说明文件',url:update_order_info.file_url}]:[]"
+                      :on-success="(response,file,fileList)=>successFile(update_order_info,response, file,fileList)"
+                      ref="uploada"
+                      list-type="picture">
+                      <div class="uploadBtn">
+                        <i class="el-icon-upload"></i>
+                        <span>上传文件</span>
+                      </div>
+                      <div slot="tip"
+                        class="el-upload__tip">只能上传一张jpg/png图片文件，且不超过10M</div>
+                    </el-upload>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -993,8 +1068,9 @@
                     <div class="trow">
                       <div class="tcolumn">纱线颜色</div>
                       <div class="tcolumn">纱线属性</div>
+                      <div class="tcolumn">批号</div>
                       <div class="tcolumn">色号</div>
-                      <div class="tcolumn">批/缸号</div>
+                      <div class="tcolumn">缸号</div>
                       <div class="tcolumn">仓库名称</div>
                       <div class="tcolumn">实际库存</div>
                       <div class="tcolumn">可用库存</div>
@@ -1015,6 +1091,7 @@
                       :key="itemChild.id">
                       <div class="tcolumn">{{itemChild.color}}</div>
                       <div class="tcolumn">{{itemChild.attribute}}</div>
+                      <div class="tcolumn">{{itemChild.batch_code}}</div>
                       <div class="tcolumn">{{itemChild.color_code}}</div>
                       <div class="tcolumn">{{itemChild.vat_code}}</div>
                       <div class="tcolumn">{{itemChild.store_name}}</div>
@@ -1039,8 +1116,9 @@
                     <div class="column">纱线名称</div>
                     <div class="column">纱线颜色</div>
                     <div class="column">属性</div>
+                    <div class="column">批号</div>
                     <div class="column">色号</div>
-                    <div class="column">批/缸号</div>
+                    <div class="column">缸号</div>
                     <div class="column">仓库名称</div>
                     <div class="column">实际库存</div>
                     <div class="column">可用库存</div>
@@ -1051,6 +1129,7 @@
                     <div class="column">{{store_info.product_name}}</div>
                     <div class="column">{{store_info.color}}</div>
                     <div class="column">{{store_info.attribute}}</div>
+                    <div class="column">{{store_info.batch_code}}</div>
                     <div class="column">{{store_info.color_code}}</div>
                     <div class="column">{{store_info.vat_code}}</div>
                     <div class="column">{{store_info.store_name}}</div>
@@ -1338,7 +1417,9 @@
                   <div class="content">
                     <div class="elCtn">
                       <el-input v-model="itemFee.price"
-                        placeholder="请输入额外费用金额"></el-input>
+                        placeholder="请输入额外费用金额">
+                        <template slot="append">元</template>
+                      </el-input>
                     </div>
                   </div>
                 </div>
@@ -1362,6 +1443,32 @@
                     style="margin-top:0"
                     class="opr red"
                     @click="$deleteItem(item.additional_fee,indexFee)">删除</div>
+                </div>
+              </div>
+              <div class="eRow">
+                <div class="eColumn">
+                  <div class="label">
+                    <span class="text">图片补充说明</span>
+                  </div>
+                  <div class="elCtn">
+                    <el-upload class="upload"
+                      action="https://upload.qiniup.com/"
+                      accept="image/jpeg,image/gif,image/png,image/bmp"
+                      :before-upload="beforeAvatarUpload"
+                      :multiple="false"
+                      :data="postData"
+                      :limit="1"
+                      :on-success="(response,file,fileList)=>successFile(item,response, file,fileList)"
+                      ref="uploada"
+                      list-type="picture">
+                      <div class="uploadBtn">
+                        <i class="el-icon-upload"></i>
+                        <span>上传文件</span>
+                      </div>
+                      <div slot="tip"
+                        class="el-upload__tip">只能上传一张jpg/png图片文件，且不超过10M</div>
+                    </el-upload>
+                  </div>
                 </div>
               </div>
             </div>
@@ -1422,7 +1529,6 @@
     <!-- 额外费用详情 -->
     <extra-fee :show.sync="extra_fee_show"
       :feeArr="feeArr"></extra-fee>
-
   </div>
 </template>
 
@@ -1533,7 +1639,8 @@ export default Vue.extend({
       },
       deduct_id: '',
       deduct_type: 1,
-      deduct_detail_show: false
+      deduct_detail_show: false,
+      postData: { key: '', token: '' }
     }
   },
   computed: {
@@ -1565,6 +1672,9 @@ export default Vue.extend({
         }
       })
       return returnData
+    },
+    token() {
+      return this.$store.state.status.token
     }
   },
   methods: {
@@ -1705,6 +1815,7 @@ export default Vue.extend({
                 desc: ''
               }
             ],
+            file_url: '',
             child_data: yarnInfo
           }
         ]
@@ -1718,6 +1829,7 @@ export default Vue.extend({
             desc: '',
             common_price: '',
             common_attr: '',
+            file_url: '',
             additional_fee: [
               {
                 name: '',
@@ -1946,6 +2058,7 @@ export default Vue.extend({
       ]
     },
     getUpdateInfo(info: OrderYarn) {
+      console.log(info)
       this.update_order_info = info
       this.update_order_info.additional_fee = info.additional_fee
         ? JSON.parse(info.additional_fee as string)
@@ -2075,6 +2188,7 @@ export default Vue.extend({
                 desc: ''
               }
             ],
+            file_url: '',
             child_data: [
               {
                 name: '',
@@ -2149,6 +2263,7 @@ export default Vue.extend({
                 desc: ''
               }
             ],
+            file_url: '',
             child_data: childData
           }
         ]
@@ -2272,6 +2387,27 @@ export default Vue.extend({
       }
       this.extra_fee_show = true
       this.feeArr = JSON.parse(info)
+    },
+    beforeAvatarUpload(file: any) {
+      const fileName = file.name.lastIndexOf('.') // 取到文件名开始到最后一个点的长度
+      const fileNameLength = file.name.length // 取到文件名长度
+      const fileFormat = file.name.substring(fileName + 1, fileNameLength) // 截
+      this.postData.token = this.token
+      this.postData.key = Date.parse(new Date() + '') + '.' + fileFormat
+      const isJPG = file.type === 'image/jpeg'
+      const isPNG = file.type === 'image/png'
+      const isLt2M = file.size / 1024 / 1024 < 10
+      if (!isJPG && !isPNG) {
+        this.$message.error('图片只能是 JPG/PNG 格式!')
+        return false
+      }
+      if (!isLt2M) {
+        this.$message.error('图片大小不能超过 10MB!')
+        return false
+      }
+    },
+    successFile(item: any, response: any) {
+      item.file_url = 'https://file.zwyknit.com/' + response.key
     }
   },
   mounted() {
@@ -2285,6 +2421,11 @@ export default Vue.extend({
         checkWhich: 'api/storeHouse',
         getInfoMethed: 'dispatch',
         getInfoApi: 'getStoreAsync'
+      },
+      {
+        checkWhich: 'status/token',
+        getInfoMethed: 'dispatch',
+        getInfoApi: 'getTokenAsync'
       }
     ])
     this.init()

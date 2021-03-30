@@ -94,13 +94,16 @@
               <div class="tcolumn">纱线名称</div>
               <div class="tcolumn">纱线颜色</div>
               <div class="tcolumn">属性</div>
-              <div class="tcolumn noPad flex5">
+              <div class="tcolumn noPad"
+                style="flex:6">
                 <div class="trow">
-                  <div class="tcolumn">纱线色号</div>
-                  <div class="tcolumn">批/缸号</div>
+                  <div class="tcolumn">批号</div>
+                  <div class="tcolumn">色号</div>
+                  <div class="tcolumn">缸号</div>
                   <div class="tcolumn">实际库存(KG)</div>
                   <div class="tcolumn">可用库存(KG)</div>
-                  <div class="tcolumn">操作</div>
+                  <div class="tcolumn"
+                    style="min-width:110px">操作</div>
                 </div>
               </div>
             </div>
@@ -113,15 +116,18 @@
               <div class="tcolumn">{{item.name}}</div>
               <div class="tcolumn">{{item.color}}</div>
               <div class="tcolumn">{{item.attribute}}</div>
-              <div class="tcolumn noPad flex5">
+              <div class="tcolumn noPad"
+                style="flex:6">
                 <div class="trow"
                   v-for="(itemStore,indexStore) in item.store_info"
                   :key="indexStore">
+                  <div class="tcolumn">{{itemStore.batch_code || '-'}}</div>
                   <div class="tcolumn">{{itemStore.color_code || '-'}}</div>
                   <div class="tcolumn">{{itemStore.vat_code || '-'}}</div>
                   <div class="tcolumn">{{itemStore.reality_weight && $formatNum(itemStore.reality_weight) || '-'}}</div>
                   <div class="tcolumn blue">{{itemStore.useable_weight && $formatNum(itemStore.useable_weight) || '-'}}</div>
-                  <div class="tcolumn flexRow">
+                  <div class="tcolumn flexRow"
+                    style="min-width:110px">
                     <span class="opr blue"
                       @click="handleStockBtn(item,itemStore,1)">入库</span>
                     <span class="opr orange"
@@ -137,13 +143,16 @@
               <div class="tcolumn"></div>
               <div class="tcolumn"></div>
               <div class="tcolumn"></div>
-              <div class="tcolumn noPad flex5">
+              <div class="tcolumn noPad"
+                style="flex:6">
                 <div class="trow">
+                  <div class="tcolumn"></div>
                   <div class="tcolumn"></div>
                   <div class="tcolumn"></div>
                   <div class="tcolumn">{{$formatNum(storeListCom.reality_weight)}}</div>
                   <div class="tcolumn blue">{{$formatNum(storeListCom.useable_weight)}}</div>
-                  <div class="tcolumn"></div>
+                  <div class="tcolumn"
+                    style="min-width:110px"></div>
                 </div>
               </div>
             </div>
@@ -237,6 +246,14 @@
               </div>
               <div class="eRow">
                 <div class="eColumn">
+                  <span class="label isMust">批号</span>
+                  <div class="from">
+                    <el-input v-model="itemStore.batch_code"
+                      placeholder="请输入批号">
+                    </el-input>
+                  </div>
+                </div>
+                <div class="eColumn">
                   <div class="eRow innerEl">
                     <div class="eColumn flexMode">
                       <span class="label">色号</span>
@@ -247,31 +264,31 @@
                       </div>
                     </div>
                     <div class="eColumn flexMode">
-                      <span class="label">批/缸号</span>
+                      <span class="label">缸号</span>
                       <div class="from">
                         <el-autocomplete v-model="itemStore.vat_code"
                           :fetch-suggestions="querySearchVatCode"
-                          placeholder="请输入纱线批/缸号"></el-autocomplete>
+                          placeholder="请输入纱线缸号"></el-autocomplete>
                       </div>
                     </div>
                   </div>
                 </div>
                 <div class="eColumn">
-                  <span class="label isMust">数量</span>
-                  <div class="from">
-                    <el-input v-model="itemStore.action_weight"
-                      placeholder="请输入数量信息">
-                      <template slot="append">kg</template>
-                    </el-input>
-                  </div>
-                </div>
-                <div class="eColumn">
-                  <span class="label isMust">件数</span>
-                  <div class="from">
-                    <el-input v-model="itemStore.item"
-                      placeholder="请输入件数">
-                      <template slot="append">件</template>
-                    </el-input>
+                  <div class="eRow innerEl">
+                    <div class="eColumn flexMode">
+                      <span class="label">数量</span>
+                      <div class="from">
+                        <el-input v-model="itemStore.action_weight"
+                          placeholder="请输入数量"></el-input>
+                      </div>
+                    </div>
+                    <div class="eColumn flexMode">
+                      <span class="label">件数</span>
+                      <div class="from">
+                        <el-input v-model="itemStore.item"
+                          placeholder="请输入件数"></el-input>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -454,12 +471,13 @@
                 <div class="tcolumn"
                   style="flex:2">库存变动</div>
                 <div class="tcolumn noPad"
-                  style="flex:5">
+                  style="flex:6">
                   <div class="trow">
                     <div class="tcolumn">名称</div>
                     <div class="tcolumn">颜色/属性</div>
+                    <div class="tcolumn">批号</div>
                     <div class="tcolumn">色号</div>
-                    <div class="tcolumn">批/缸号</div>
+                    <div class="tcolumn">缸号</div>
                     <div class="tcolumn">数量</div>
                   </div>
                 </div>
@@ -489,12 +507,13 @@
                   </span>
                 </div>
                 <div class="tcolumn noPad"
-                  style="flex:5">
+                  style="flex:6">
                   <div class="trow"
                     v-for="(itemChilid,indexChild) in item.child_data"
                     :key="indexChild">
                     <div class="tcolumn">{{itemChilid.name}}</div>
                     <div class="tcolumn">{{itemChilid.color}}/{{itemChilid.attribute}}</div>
+                    <div class="tcolumn">{{itemChilid.batch_code}}</div>
                     <div class="tcolumn">{{itemChilid.color_code}}</div>
                     <div class="tcolumn">{{itemChilid.vat_code}}</div>
                     <div class="tcolumn"
@@ -624,26 +643,6 @@ export default Vue.extend({
           {
             id: 2,
             name: '出库'
-          },
-          {
-            id: 3,
-            name: '订购入库'
-          },
-          {
-            id: 4,
-            name: '调取出库'
-          },
-          {
-            id: 5,
-            name: '加工入库'
-          },
-          {
-            id: 6,
-            name: '加工出库'
-          },
-          {
-            id: 7,
-            name: '订购出库'
           }
         ],
         materialAttrArr: [
@@ -694,7 +693,6 @@ export default Vue.extend({
     },
     getStoreInfoList() {
       this.loading.info = true
-      console.log(this.storeListFiter)
       store
         .detailYarnList({
           store_id: this.$route.params.id,
@@ -704,6 +702,7 @@ export default Vue.extend({
           weight: this.storeListFilter.isFilterZero ? 0 : null
         })
         .then((res) => {
+          console.log(res)
           this.storeList = res.data.data
           this.loading.info = false
         })
@@ -758,6 +757,7 @@ export default Vue.extend({
           attribute: item1.attribute,
           color_code: item2.color_code,
           vat_code: item2.vat_code,
+          batch_code: item2.batch_code,
           action_weight: '',
           item: '',
           desc: ''
@@ -776,6 +776,7 @@ export default Vue.extend({
               color: item1.color,
               attribute: item1.attribute,
               color_code: item2.color_code,
+              batch_code: item2.batch_code,
               vat_code: item2.vat_code,
               action_weight: '',
               item: '',
@@ -879,6 +880,7 @@ export default Vue.extend({
       this.loading.page = true
       this.storeEditInfo.child_data.forEach((item) => {
         item.name = item.name[1]
+        item.batch_code = item.batch_code || 'NOT_SET'
         item.color_code = item.color_code || 'NOT_SET'
         item.vat_code = item.vat_code || 'NOT_SET'
       })
@@ -915,7 +917,6 @@ export default Vue.extend({
               : ''
         })
         .then((res) => {
-          console.log(res)
           this.storeLogInfo = {
             total_pop: res.data.data.others_data.total_pop || 0,
             total_push: res.data.data.others_data.total_push || 0,
@@ -986,7 +987,7 @@ export default Vue.extend({
           otherRule: [{ name: 'second_store_name' }],
           childrenName: 'store_info',
           childrenRule: {
-            mainRule: ['color_code', 'vat_code'],
+            mainRule: ['color_code', 'vat_code', 'batch_code'],
             otherRule: [
               { name: 'total_weight/reality_weight', type: 'add' },
               { name: 'use_weight/useable_weight', type: 'add' }

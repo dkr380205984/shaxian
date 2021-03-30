@@ -67,5 +67,6 @@ export interface OrderMaterialInfo {
   delivery_time: string
   additional_fee?: string | AditionalFee[]// 额外费用的JSON字符串
   total_price?: string | number
+  file_url?: string
   desc: string
 }

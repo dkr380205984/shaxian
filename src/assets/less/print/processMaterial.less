@@ -1,0 +1,112 @@
+@import '../print.less';
+@fontNormal: calc( @fontMiddle + 2px);
+@fontBigNormal: calc( @fontNormal + 2px);
+@borderColor: #888;
+@border: 1px solid @borderColor;
+#processMaterial{
+  .print_head{
+    position: relative;
+    .titleCenter{
+      position: absolute;
+      width: 100%;
+      &>*{
+        text-align: center;
+        margin-bottom: 16px;
+      }
+    }
+  }
+  .print_body{
+    padding: 0;
+    list-style: none;
+    margin-bottom: 0;
+  }
+  .line_item{
+    page-break-inside: avoid;    
+    .first_title{
+      font-size: @fontBigNormal;
+      color: #000;
+    }
+    .content{
+      font-size: @fontNormal;
+      margin: 8px 0px;
+      // word-break: break-all;
+      .bold{
+        font-size: @fontBigNormal;
+        font-weight: bold;
+        margin: 0 4px;
+      }
+      &.flexModle{
+        display: flex;
+        flex-wrap: wrap;
+      }
+      .fromCtn{
+        display: flex;
+        width: calc((100% - 24px) / 2);
+        border: @border;
+        box-sizing: border-box;
+        &.I2_5{
+          width: calc((100% - 24px) / 2.5);          
+          &:nth-child(2n + 1){
+            margin-right: 12px;
+          }
+        }
+        &:nth-child(2n + 1){
+          margin-right: 24px;
+        }
+        &:nth-child(n + 3){
+          margin-top: 8px;
+        }
+        &.col{
+          flex-direction: column;
+        }
+        .itemCtn{
+          display: flex;
+          align-items: center;
+          border-right: 1px solid @borderColor;
+          min-height: 40px;
+          box-sizing: border-box;
+          padding: 0 8px;
+          // word-break: break-all;
+          &.center{
+            justify-content: center;
+          }
+          &.w70{
+            width: 70%;
+          }
+          &.w60{
+            width: 60%;
+          }
+          &.w50{
+            width: 50%;
+          }
+          &.w40{
+            width: 40%;
+          }
+          &.w30{
+            width: 30%;
+          }
+          &.w20{
+            width: 20%;
+          }
+          &:last-of-type{
+            border: none;
+          }
+        }        
+        .fromColCtn{
+          flex: 1;
+          display: flex;
+          width: 100%;
+          border-bottom: 1px solid @borderColor;
+          &:last-child{
+            border-bottom: none;
+          }  
+        }
+      }
+    }
+    .left,
+    .right{
+      display: inline-block;
+      width: 50%;
+    }
+  }
+}

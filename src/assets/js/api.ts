@@ -94,6 +94,7 @@ import { StoreCreate } from '@/types/store'
 const stock = {
   delete: (params: any) => http.post(`${baseUrl}/store/log/delete`, params, 'application/json'),
   list: (params?: any) => http.get(`${baseUrl}/store/log/lists`, params),
+  detail: (params: { id: number }) => http.get(`${baseUrl}/store/log/detail`, params),
   materialList: (params?: any) => http.get(`${baseUrl}/material/store/log/lists`, params),
   create: (params: { data: StoreCreate[] }) => http.post(`${baseUrl}/store/total/save`, params, 'application/json'),
   materialCreate: (params: { data: StoreCreate[] }) => http.post(`${baseUrl}/material/store/total/save`, params, 'application/json')

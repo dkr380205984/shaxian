@@ -426,6 +426,8 @@
                     :style="{'height':50*item.child_data.length + 'px'}">
                     <span class="blue opr"
                       @click="openOrderOut(item)">出库</span>
+                    <span class="blue opr"
+                      @click="$openUrl(`/print/store/1?orderId=${$route.params.id}&documentId=${item.id}`)">打印入库单</span>
                   </div>
                 </div>
               </div>
@@ -522,6 +524,8 @@
                     :style="{'height':50*item.child_data.length + 'px'}">
                     <span class="blue opr"
                       @click="openOrderStoreIn(item)">入库</span>
+                    <span class="blue opr"
+                      @click="$openUrl(`/print/store/2?orderId=${$route.params.id}&documentId=${item.id}`)">打印出库单</span>
                   </div>
                 </div>
               </div>
@@ -624,6 +628,8 @@
                     :style="{'height':50*item.child_data.length + 'px'}">
                     <span class="blue opr"
                       @click="openProcessOut(item)">出库</span>
+                    <span class="blue opr"
+                      @click="$openUrl(`/print/store/1?orderId=${$route.params.id}&documentId=${item.id}`)">打印入库单</span>
                   </div>
                 </div>
               </div>
@@ -658,6 +664,7 @@
                     <div class="column min120">备注信息</div>
                     <div class="column min120">出库日期</div>
                     <div class="column min120">操作人</div>
+                    <div class="column min120">操作</div>
                   </div>
                 </div>
                 <div class="bodyCtn">
@@ -680,6 +687,7 @@
                     <div class="column min120">{{item.desc||'无'}}</div>
                     <div class="column min120">{{item.complete_time}}</div>
                     <div class="column min120">{{item.user_name}}</div>
+                    <div class="column min120">操作</div>
                   </div>
                 </div>
               </div>
@@ -701,6 +709,24 @@
                     :style="{'height':50*item.child_data.length + 'px'}">{{item.code}}</div>
                   <div class="column min120 "
                     :style="{'height':50*item.child_data.length + 'px'}">{{item.client_name}}</div>
+                </div>
+              </div>
+            </div>
+            <div class="floatR">
+              <div class="headCtn">
+                <div class="row">
+                  <div class="column min120">操作</div>
+                </div>
+              </div>
+              <div class="bodyCtn">
+                <div class="row"
+                  v-for="item in log_info.final_out_log"
+                  :key="item.id">
+                  <div class="column min120"
+                    :style="{'height':50*item.child_data.length + 'px'}">
+                    <span class="blue opr"
+                      @click="$openUrl(`/print/store/2?orderId=${$route.params.id}&documentId=${item.id}`)">打印出库单</span>
+                  </div>
                 </div>
               </div>
             </div>

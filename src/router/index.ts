@@ -211,6 +211,16 @@ const routes: RouteConfig[] = [
         path: 'processYarn',
         name: 'processYarn',
         component: () => import('@/views/print/processYarn.vue')
+      },
+      {// 毛条加工/工艺单
+        path: 'processMaterial/:documentId',
+        name: 'processMaterial',
+        component: () => import('@/views/print/processMaterial.vue')
+      },
+      {// 出入库单
+        path: 'store/:type',
+        name: 'store',
+        component: () => import('@/views/print/store.vue')
       }
     ]
   }

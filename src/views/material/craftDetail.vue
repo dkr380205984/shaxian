@@ -351,7 +351,8 @@
         <div class="btnCtn">
           <div class="btn btnGray"
             @click="$router.go(-1)">返回</div>
-          <div class="btn btnBlue">打印</div>
+          <div class="btn btnBlue"
+            @click="$openUrl(`/print/processMaterial/${$route.params.id}`)">打印</div>
         </div>
       </div>
     </div>

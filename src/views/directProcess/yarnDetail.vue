@@ -87,8 +87,8 @@
     <div class="module">
       <div class="titleCtn">
         <span class="title">纱线加工信息</span>
-        <!-- <span class="addBtn btn btnMain"
-          @click="openOrderIn">纱线入库</span> -->
+        <span class="addBtn btn btnMain"
+          @click="openStore">纱线调取</span>
       </div>
       <div style="padding:20px 32px">
         <div class="tableCtn">
@@ -147,6 +147,24 @@
         </div>
       </div>
     </div>
+    <div class="popup"
+      v-show="false">
+      <div class="main">
+        <div class="titleCtn">
+          <span class="text">调取出库</span>
+          <i class="close_icon el-icon-close"></i>
+        </div>
+        <div class="contentCtn">
+          <div class="createCtn">
+
+          </div>
+        </div>
+        <div class="oprCtn">
+          <div class="opr">取消</div>
+          <div class="opr blue">确认出库</div>
+        </div>
+      </div>
+    </div>
     <check :show.sync="check_flag"
       :pid="$route.params.id"
       @afterCheck="init"
@@ -176,7 +194,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import { yarnProcess, check } from '@/assets/js/api'
-import { ProcessYarn } from '@/types/orderProcessYarn'
+import { ProcessYarn, ProcessYarnChild } from '@/types/orderProcessYarn'
 export default Vue.extend({
   data(): {
     process_info: ProcessYarn
@@ -218,6 +236,11 @@ export default Vue.extend({
       loading: false
     }
   },
+  computed: {
+    check_list(): ProcessYarnChild[] {
+      return this.process_info.child_data.filter((item: any) => item.check)
+    }
+  },
   methods: {
     init() {
       Promise.all([
@@ -226,7 +249,6 @@ export default Vue.extend({
         })
       ]).then((res) => {
         this.process_info = res[0].data.data
-        console.log(this.process_info)
         this.process_info.additional_fee = JSON.parse(this.process_info.additional_fee as string)
       })
     },
@@ -237,8 +259,19 @@ export default Vue.extend({
       }
       this.check_detail_flag = true
     },
-    openOrderIn() {
-      // ..
+    openStore() {
+      console.log(this.process_info)
+      // if (this.checkList.length === 1) {
+      //   this.store_filter.name = this.$clone(this.checkList[0].product_name)
+      //   this.getStoreList()
+      //   this.flags.store_flag = true
+      // } else {
+      //   if (this.checkList.length === 0) {
+      //     this.$message.error('请选择一种纱线进行调取')
+      //   } else {
+      //     this.$message.error('只能同时选择一种纱线进行库存调取操作')
+      //   }
+      // }
     },
     openCheck() {
       this.check_flag = true

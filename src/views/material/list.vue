@@ -239,7 +239,7 @@ export default Vue.extend({
       ) {
         return
       }
-      material.create(this.material_info).then((res) => {
+      material.create({ data: [this.material_info] }).then((res) => {
         if (res.data.status) {
           this.$message.success('添加成功')
           this.resetMat()

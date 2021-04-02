@@ -85,7 +85,7 @@ export default Vue.extend({
   created() {
     Promise.all([
       stock.materialDetail({
-        id: +this.$route.query.documentId
+        id: +this.$route.params.documentId
       }),
       printList(undefined, this.$route.params.type === '1' ? 8 : 9)
     ]).then((res) => {

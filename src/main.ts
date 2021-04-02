@@ -6,6 +6,7 @@ import plugin from '@/assets/js/plugin'
 import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
 import mycomponent from './components'
+Vue.prototype.window = window
 Vue.config.productionTip = false;
 Vue.use(mycomponent)
 Vue.use(plugin)

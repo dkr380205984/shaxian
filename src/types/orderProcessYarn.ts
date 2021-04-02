@@ -36,7 +36,7 @@ export interface OrderYarn {
   desc: string
 }
 
-interface ChildData {
+export interface ProcessYarnChild {
   name: string
   before_color?: string
   after_color?: string
@@ -59,5 +59,5 @@ export interface ProcessYarn {
   total_price?: string | number
   file_url: string
   additional_fee?: string | AditionalFee[]// 额外费用的JSON字符串
-  child_data: ChildData[]
+  child_data: ProcessYarnChild[]
 }

@@ -280,8 +280,10 @@
         <div class="btnCtn">
           <div class="btn btnGray"
             @click="$router.go(-1)">返回</div>
-          <div class="btn btnBlue"
+          <div class="btn btnOrange"
             @click="$openUrl(`/print/orderMaterial/2/${$route.params.id}`)">打印</div>
+          <div class="btn btnGreen"
+            @click="openCheck">审核</div>
           <div class="btn btnRed"
             @click="openDeduct">扣款</div>
           <div class="btn btnBlue"
@@ -370,7 +372,7 @@
                   </div>
                   <div class="content">
                     <div class="elCtn">
-                      <el-input placeholder="件数"
+                      <el-input placeholder="批号"
                         v-model="itemChild.batch_code">
                       </el-input>
                     </div>
@@ -640,8 +642,7 @@ export default Vue.extend({
             order_id: '',
             name: item.yarn_name,
             action_weight: item.action_weight,
-            color_code: 'NOT_SET',
-            vat_code: 'NOT_SET',
+            batch_code: item.batch_code || 'NOT_SET',
             item: item.item,
             related_info_id: '',
             desc: ''

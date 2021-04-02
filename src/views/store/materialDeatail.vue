@@ -94,6 +94,7 @@
               <div class="tcolumn">毛条名称</div>
               <div class="tcolumn noPad flex5">
                 <div class="trow">
+                  <div class="tcolumn">批号</div>
                   <div class="tcolumn">实际库存(KG)</div>
                   <div class="tcolumn">可用库存(KG)</div>
                   <div class="tcolumn">操作</div>
@@ -111,6 +112,7 @@
                 <div class="trow"
                   v-for="(itemStore,indexStore) in item.store_info"
                   :key="indexStore">
+                  <div class="tcolumn">{{itemStore.batch_code}}</div>
                   <div class="tcolumn">{{itemStore.reality_weight && $formatNum(itemStore.reality_weight) || '-'}}</div>
                   <div class="tcolumn blue">{{itemStore.useable_weight && $formatNum(itemStore.useable_weight) || '-'}}</div>
                   <div class="tcolumn flexRow">
@@ -129,6 +131,7 @@
               <div class="tcolumn"></div>
               <div class="tcolumn noPad flex5">
                 <div class="trow">
+                  <div class="tcolumn"></div>
                   <div class="tcolumn">{{$formatNum(storeListCom.reality_weight)}}</div>
                   <div class="tcolumn blue">{{$formatNum(storeListCom.useable_weight)}}</div>
                   <div class="tcolumn"></div>
@@ -202,19 +205,24 @@
                   </div>
                 </div>
                 <div class="eColumn">
-                  <span class="label isMust">数量</span>
+                  <span class="label">批号</span>
                   <div class="from">
-                    <el-input v-model="itemStore.action_weight"
-                      placeholder="请输入数量信息">
-                      <template slot="append">kg</template>
+                    <el-input v-model="itemStore.batch_code"
+                      placeholder="请输入批号">
                     </el-input>
                   </div>
                 </div>
                 <div class="eColumn">
-                  <span class="label isMust">件数</span>
-                  <div class="from">
+                  <span class="label isMust">数量/件数</span>
+                  <div class="from"
+                    style="display: flex;">
+                    <el-input style="margin-right:8px"
+                      v-model="itemStore.action_weight"
+                      placeholder="数量信息">
+                      <template slot="append">kg</template>
+                    </el-input>
                     <el-input v-model="itemStore.item"
-                      placeholder="请输入件数">
+                      placeholder="件数信息">
                       <template slot="append">件</template>
                     </el-input>
                   </div>
@@ -251,7 +259,8 @@
                 name:'',
                 item:'',
                 action_weight:'',
-                desc:''
+                desc:'',
+                batch_code:''
               })">继续添加</div>
             <div class="editBtn btnGreen"
               @click="saveStoreEditInfo">确认提交</div>
@@ -263,7 +272,8 @@
                 name:'',
                 item:'',
                 action_weight:'',
-                desc:''
+                desc:'',
+                batch_code:''
               })">添加新库存</div>
           </div>
         </div>
@@ -374,10 +384,11 @@
                 <div class="tcolumn"
                   style="flex:2">库存变动</div>
                 <div class="tcolumn noPad"
-                  style="flex:2">
+                  style="flex:3">
                   <div class="trow">
                     <div class="tcolumn">名称</div>
                     <div class="tcolumn">数量</div>
+                    <div class="tcolumn">批号</div>
                   </div>
                 </div>
                 <div class="tcolumn">日期</div>
@@ -407,13 +418,14 @@
                   </span>
                 </div>
                 <div class="tcolumn noPad"
-                  style="flex:2">
+                  style="flex:3">
                   <div class="trow"
                     v-for="(itemChilid,indexChild) in item.child_data"
                     :key="indexChild">
                     <div class="tcolumn">{{itemChilid.name}}</div>
                     <div class="tcolumn"
                       :class="{'blue':item.action_type===1||item.action_type===3||item.action_type===5,'green':item.action_type===2||item.action_type===4||item.action_type===6||item.action_type===7}">{{itemChilid.action_weight}}</div>
+                    <div class="tcolumn">{{itemChilid.batch_code}}</div>
                   </div>
                 </div>
                 <div class="tcolumn">{{item.complete_time}}</div>
@@ -459,7 +471,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import { StoreDetail } from '@/types/common'
-import { store, stock, product, yarnColor } from '@/assets/js/api'
+import { store, stock } from '@/assets/js/api'
 import { StoreCreate } from '@/types/store'
 export default Vue.extend({
   data(): {
@@ -858,11 +870,11 @@ export default Vue.extend({
         reality_weight: this.storeList.map((itemM) => +itemM.total_weight).reduce((a, b) => a + b, 0),
         useable_weight: this.storeList.map((itemM) => +itemM.use_weight).reduce((a, b) => a + b, 0),
         data: this.$mergeData(this.storeList, {
-          mainRule: ['second_store_id', 'name', 'color', 'attribute'],
+          mainRule: ['second_store_id', 'name'],
           otherRule: [{ name: 'second_store_name' }],
           childrenName: 'store_info',
           childrenRule: {
-            mainRule: ['color_code', 'vat_code'],
+            mainRule: ['batch_code'],
             otherRule: [
               { name: 'total_weight/reality_weight', type: 'add' },
               { name: 'use_weight/useable_weight', type: 'add' }

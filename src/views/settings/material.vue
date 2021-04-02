@@ -131,7 +131,7 @@ export default Vue.extend({
         })
         .then((res: any) => {
           if (res.data.status !== false) {
-            this.colorList = res.data.data.data
+            this.colorList = res.data.data.items
             this.total = res.data.data.total
             this.loading = false
             // 更新页码

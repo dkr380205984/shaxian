@@ -628,8 +628,6 @@ export default Vue.extend({
             })
           })
         })
-        console.log(this.order_yarn_info)
-        console.log(this.order_in_log)
         this.deduct_list = res[2].data.data
         this.deduct_list.forEach((item: any) => {
           item.deduct_content = JSON.parse(item.deduct_content)

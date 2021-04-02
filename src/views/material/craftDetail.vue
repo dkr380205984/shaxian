@@ -7,6 +7,15 @@
         <span class="title">工艺单详情</span>
       </div>
       <div class="detailCtn">
+        <div class="checkCtn">
+          <el-tooltip class="item"
+            effect="dark"
+            content="点击查看审核日志"
+            placement="bottom">
+            <img @click="checkReason"
+              :src="craft_info.is_check|checkFilter" />
+          </el-tooltip>
+        </div>
         <div class="rowCtn">
           <div class="colCtn">
             <span class="label">工艺单号：</span>
@@ -510,17 +519,45 @@
         <div class="btnCtn">
           <div class="btn btnGray"
             @click="$router.go(-1)">返回</div>
-          <div class="btn btnBlue"
+          <div class="btn btnOrange"
             @click="$openUrl(`/print/processMaterial/${$route.params.id}`)">打印</div>
+          <div class="btn btnGreen"
+            @click="openCheck">审核</div>
+          <div class="btn btnBlue"
+            @click="confirm"
+            v-if="craft_info.status!==3">确认完成</div>
         </div>
       </div>
     </div>
+    <check :show.sync="check_flag"
+      :pid="$route.params.id"
+      @afterCheck="init"
+      :checkType="4"
+      :checkList="[{
+        value:'费用问题',
+        label:'费用问题'
+      },{
+        value:'质量问题',
+        label:'质量问题'
+      },{
+        value:'产品问题',
+        label:'产品问题'
+      },{
+        value:'交期问题',
+        label:'交期问题'
+      },{
+        value:'数量问题',
+        label:'数量问题'
+      }]"></check>
+    <check-detail :show.sync="check_detail_flag"
+      :checkType="4"
+      :pid="$route.params.id"></check-detail>
   </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
-import { craft, stock } from '@/assets/js/api'
+import { craft, stock, check } from '@/assets/js/api'
 import { CraftInfo } from '@/types/material'
 import { StoreCreate } from '@/types/store'
 export default Vue.extend({
@@ -534,6 +571,8 @@ export default Vue.extend({
       loading: true,
       yarn_in_flag: false,
       material_out_flag: false,
+      check_detail_flag: false,
+      check_flag: false,
       store_yarn_info: {
         id: '',
         client_id: '',
@@ -738,6 +777,41 @@ export default Vue.extend({
     openMaterialOut(info: any) {
       this.store_material_info.child_data[0].name = info.material_name
       this.material_out_flag = true
+    },
+    openCheck() {
+      this.check_flag = true
+    },
+    checkReason() {
+      if (this.order_info.is_check === 0 || !this.order_info.is_check) {
+        this.$message.warning('暂无审核信息')
+        return
+      }
+      this.check_detail_flag = true
+    },
+    confirm() {
+      this.$confirm('是否确认工艺单完成?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      })
+        .then(() => {
+          check
+            .confirm({
+              pid: this.$route.params.id,
+              complete_type: 4
+            })
+            .then((res) => {
+              if (res.data.status) {
+                this.init()
+              }
+            })
+        })
+        .catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消'
+          })
+        })
     }
   },
   mounted() {

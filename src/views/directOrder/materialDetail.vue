@@ -139,6 +139,7 @@
                         <div class="column min120">毛条名称</div>
                         <div class="column min120">入库数量</div>
                         <div class="column min120">入库件数</div>
+                        <div class="column min120">入库批号</div>
                       </div>
                     </div>
                     <div class="column min120">备注信息</div>
@@ -161,6 +162,7 @@
                         <div class="column min120">{{itemChild.name}}</div>
                         <div class="column min120 blue">{{itemChild.action_weight}}kg</div>
                         <div class="column min120">{{itemChild.item}}件</div>
+                        <div class="column min120">{{itemChild.batch_code}}</div>
                       </div>
                     </div>
                     <div class="column min120">{{item.desc||'无'}}</div>
@@ -298,9 +300,11 @@
         </div>
         <div class="contentCtn">
           <div class="createCtn">
-            <div v-for="(itemChild,indexChild) in order_in_info.child_data"
+            <div style="background:#f0f0f0;padding:12px;margin:12px 0"
+              v-for="(itemChild,indexChild) in order_in_info.child_data"
               :key="indexChild">
-              <div class="rowCtn">
+              <div class="rowCtn"
+                style="background:#f0f0f0">
                 <div class="colCtn">
                   <div class="label">
                     <span class="text">毛条信息</span>
@@ -331,16 +335,18 @@
                 </div>
                 <div class="colCtn"></div>
               </div>
-              <div class="rowCtn">
+              <div class="rowCtn"
+                style="background:#f0f0f0">
                 <div class="colCtn">
                   <div class="label">
-                    <span class="text">入库件数</span>
+                    <span class="text">入库数量</span>
                     <span class="explanation">(必填)</span>
                   </div>
                   <div class="content">
                     <div class="elCtn">
                       <el-input placeholder="数量"
                         v-model="itemChild.action_weight">
+                        <template slot="append">kg</template>
                       </el-input>
                     </div>
                   </div>
@@ -348,12 +354,12 @@
                 <div class="colCtn">
                   <div class="label">
                     <span class="text">入库件数</span>
-                    <span class="explanation">(必填)</span>
                   </div>
                   <div class="content">
                     <div class="elCtn">
                       <el-input placeholder="件数"
                         v-model="itemChild.item">
+                        <template slot="append">件</template>
                       </el-input>
                     </div>
                   </div>

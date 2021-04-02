@@ -19,7 +19,7 @@ export interface CraftInfo {
   client_id: number | string
   order_time: string
   yarn_name?: string
-  yarn_id: number | string
+  yarn_id: number | string | string[]
   color: string
   attribute: string
   weight: string
@@ -34,7 +34,7 @@ export interface CraftInfo {
   kuangchang: string // 框长
   kuangchang_desc: string // 框长备注
   meijiao: string // 每绞克重
-  yaojiao_net_weight: string // 摇纱净重
+  yaojiao_net_weight: string | number // 摇纱净重
   yaojiao_gross_weight: string // 摇纱毛重
   tongsha_net_weight: string // 筒纱净重
   tongsha_gross_weight: string // 筒纱毛重

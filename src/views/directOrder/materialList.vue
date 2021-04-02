@@ -503,7 +503,7 @@ export default Vue.extend({
   },
   computed: {
     client_arr() {
-      return this.$store.state.api.client.arr
+      return this.$store.state.api.factory.arr
     },
     user_list() {
       return this.$store.state.api.user.arr

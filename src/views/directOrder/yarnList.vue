@@ -39,7 +39,8 @@
             <div class="elCtn">
               <el-select v-model="user_id"
                 clearable
-                placeholder="选择创建人">
+                placeholder="选择创建人"
+                @change="changeRouter(1)">
                 <el-option v-for="item in user_list"
                   :key="item.id"
                   :value="item.id"
@@ -751,6 +752,7 @@ export default Vue.extend({
         .list({
           code: this.code,
           client_id: this.client_id,
+          name: this.name,
           user_id: this.user_id,
           start_time: this.date && this.date.length > 0 ? this.date[0] : '',
           end_time: this.date && this.date.length > 0 ? this.date[1] : '',

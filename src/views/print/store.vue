@@ -4,7 +4,7 @@
     <div class="printTable crosswise">
       <div class="print_body">
         <div class="print_row">
-          <div class="row_item center"
+          <div class="row_item center title"
             style="height:60px">{{companyName}}</div>
         </div>
         <div class="print_row bgGray">

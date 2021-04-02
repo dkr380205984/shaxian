@@ -291,7 +291,7 @@
           <div class="btn btnGray"
             @click="$router.go(-1)">返回</div>
           <div class="btn btnBlue"
-            @click="$openUrl(`/print/orderYarn/2?purchaseId=${$route.params.id}`)">打印</div>
+            @click="$openUrl(`/print/orderYarn/2/${$route.params.id}`)">打印</div>
           <div class="btn btnGreen"
             @click="openCheck">审核</div>
           <div class="btn btnRed"

@@ -350,7 +350,7 @@
                   <div class="column min120"
                     :style="{'height':50*item.child_data.length + 'px'}">
                     <span class="blue opr"
-                      @click="$openUrl(`/print/orderYarn/2?orderId=${$route.params.id}&purchaseId=${item.id}`)">打印</span>
+                      @click="$openUrl(`/print/orderYarn/2/${item.id}?orderId=${$route.params.id}`)">打印</span>
                     <span class="green opr"
                       @click="openDeduct(item.id,item.code,item.child_data,1)">扣款</span>
                     <span class="orange opr"
@@ -497,7 +497,7 @@
                   <div class="column min120"
                     :style="{'height':50*item.child_data.length + 'px'}">
                     <span class="blue opr"
-                      @click="$openUrl(`/print/processYarn?orderId=${$route.params.id}&processId=${item.id}`)">打印</span>
+                      @click="$openUrl(`/print/processYarn/${item.id}?orderId=${$route.params.id}`)">打印</span>
                     <span class="green opr"
                       @click="openDeduct(item.id,item.code,item.child_data,2)">扣款</span>
                     <span class="red opr"

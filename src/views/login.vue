@@ -95,6 +95,8 @@ export default Vue.extend({
           const { authInfo } = require('@/assets/js/api')
           authInfo().then((res2: any) => {
             if (res2.data.status !== false) {
+              window.sessionStorage.setItem('full_name', res2.data.data.company_name)
+              window.sessionStorage.setItem('user_name', res2.data.data.name)
               this.$router.push('/order/list?page=1&order_code=&product_name=&client_id=&user_id=&page_size=10&date=')
             }
           })

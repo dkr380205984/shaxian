@@ -525,7 +525,7 @@
                 <div class="tcolumn">
                   <span class="blue"
                     style="cursor: pointer"
-                    @click="$openUrl(`/print/store/${ (item.action_type===1||item.action_type===3||item.action_type===5) ?  1 : 2}?documentId=${item.id}${(item.order_id && ('&orderId=' + item.order_id)) || ''}`)">打印</span>
+                    @click="$openUrl(`/print/store/${ (item.action_type===1||item.action_type===3||item.action_type===5) ?  1 : 2}/${item.id}${(item.order_id && ('?orderId=' + item.order_id)) || ''}`)">打印</span>
                 </div>
               </div>
               <div class="trow bgGray noBorder">

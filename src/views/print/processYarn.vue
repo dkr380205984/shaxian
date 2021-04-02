@@ -105,25 +105,27 @@
             </div>
           </div>
         </div>
-        <div class="print_row bgGray">
-          <div class="row_item center">序号</div>
-          <div class="row_item center flex30">其它费用名称</div>
-          <div class="row_item center flex40">费用金额</div>
-          <div class="row_item center flex40">费用描述</div>
-        </div>
-        <div class="print_row"
-          v-for="(itemOther,indexOther) in otherFeeArr"
-          :key="`other_${indexOther}`">
-          <div class="row_item center">{{indexOther + 1}}</div>
-          <div class="row_item center flex30">{{itemOther.name}}</div>
-          <div class="row_item center flex40">{{itemOther.price || 0}}元</div>
-          <div class="row_item center flex40">{{itemOther.desc}}</div>
-        </div>
-        <div class="print_row has_marginBottom bgGray">
-          <div class="row_item center flex40"
-            style="border-left:1px solid transparent">合计</div>
-          <div class="row_item flex80 center">{{totalCom.otherPrice || 0}}元</div>
-        </div>
+        <template v-if="otherFeeArr.length>0">
+          <div class="print_row bgGray">
+            <div class="row_item center">序号</div>
+            <div class="row_item center flex30">其它费用名称</div>
+            <div class="row_item center flex40">费用金额</div>
+            <div class="row_item center flex40">费用描述</div>
+          </div>
+          <div class="print_row"
+            v-for="(itemOther,indexOther) in otherFeeArr"
+            :key="`other_${indexOther}`">
+            <div class="row_item center">{{indexOther + 1}}</div>
+            <div class="row_item center flex30">{{itemOther.name}}</div>
+            <div class="row_item center flex40">{{itemOther.price || 0}}元</div>
+            <div class="row_item center flex40">{{itemOther.desc}}</div>
+          </div>
+          <div class="print_row has_marginBottom bgGray">
+            <div class="row_item center flex40"
+              style="border-left:1px solid transparent">合计</div>
+            <div class="row_item flex80 center">{{totalCom.otherPrice || 0}}元</div>
+          </div>
+        </template>
       </div>
       <div class="print_row print_remark"
         style="flex-direction:column">
@@ -161,7 +163,7 @@ export default Vue.extend({
     return {
       companyName: window.sessionStorage.getItem('full_name') + '纱线订购单',
       desc: '',
-      print_user: '',
+      print_user: window.sessionStorage.getItem('user_name'),
       qrCodeUrl: '',
       orderInfo: {
         code: '',
@@ -188,7 +190,7 @@ export default Vue.extend({
         }
         // 初始化采购单数据
         this.documentInfo =
-          orderDetail.process_log.find((itemF: any) => +itemF.id === +this.$route.query.processId) || {}
+          orderDetail.process_log.find((itemF: any) => +itemF.id === +this.$route.params.documentId) || {}
         this.yarnProcessArr = this.documentInfo.child_data
           ? this.$mergeData(this.documentInfo.child_data, { mainRule: 'name', childrenName: 'other_info' })
           : []

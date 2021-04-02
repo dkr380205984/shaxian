@@ -203,14 +203,19 @@ const routes: RouteConfig[] = [
         component: () => import('@/views/print/orderYarnFS.vue')
       },
       {// 2订购单
-        path: 'orderYarn/2',
+        path: 'orderYarn/2/:documentId',
         name: 'orderYarnFC',
         component: () => import('@/views/print/orderYarnFC.vue')
       },
       {// 加工单
-        path: 'processYarn',
+        path: 'processYarn/:documentId',
         name: 'processYarn',
         component: () => import('@/views/print/processYarn.vue')
+      },
+      {// 毛条采购单
+        path: 'orderMaterial/2/:documentId',
+        name: 'orderMaterial',
+        component: () => import('@/views/print/orderMaterialFC.vue')
       },
       {// 毛条加工/工艺单
         path: 'processMaterial/:documentId',
@@ -218,7 +223,7 @@ const routes: RouteConfig[] = [
         component: () => import('@/views/print/processMaterial.vue')
       },
       {// 出入库单
-        path: 'store/:type',
+        path: 'store/:type/:documentId',
         name: 'store',
         component: () => import('@/views/print/store.vue')
       }

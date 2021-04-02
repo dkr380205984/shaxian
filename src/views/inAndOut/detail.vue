@@ -427,7 +427,7 @@
                     <span class="blue opr"
                       @click="openOrderOut(item)">出库</span>
                     <span class="blue opr"
-                      @click="$openUrl(`/print/store/1?orderId=${$route.params.id}&documentId=${item.id}`)">打印入库单</span>
+                      @click="$openUrl(`/print/store/1/${item.id}?orderId=${$route.params.id}`)">打印入库单</span>
                   </div>
                 </div>
               </div>
@@ -525,7 +525,7 @@
                     <span class="blue opr"
                       @click="openOrderStoreIn(item)">入库</span>
                     <span class="blue opr"
-                      @click="$openUrl(`/print/store/2?orderId=${$route.params.id}&documentId=${item.id}`)">打印出库单</span>
+                      @click="$openUrl(`/print/store/2/${item.id}?orderId=${$route.params.id}`)">打印出库单</span>
                   </div>
                 </div>
               </div>
@@ -629,7 +629,7 @@
                     <span class="blue opr"
                       @click="openProcessOut(item)">出库</span>
                     <span class="blue opr"
-                      @click="$openUrl(`/print/store/1?orderId=${$route.params.id}&documentId=${item.id}`)">打印入库单</span>
+                      @click="$openUrl(`/print/store/1/${item.id}?orderId=${$route.params.id}`)">打印入库单</span>
                   </div>
                 </div>
               </div>
@@ -725,7 +725,7 @@
                   <div class="column min120"
                     :style="{'height':50*item.child_data.length + 'px'}">
                     <span class="blue opr"
-                      @click="$openUrl(`/print/store/2?orderId=${$route.params.id}&documentId=${item.id}`)">打印出库单</span>
+                      @click="$openUrl(`/print/store/2/${item.id}?orderId=${$route.params.id}`)">打印出库单</span>
                   </div>
                 </div>
               </div>

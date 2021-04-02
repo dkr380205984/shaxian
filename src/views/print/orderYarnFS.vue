@@ -87,7 +87,7 @@ export default Vue.extend({
   } {
     return {
       companyName: window.sessionStorage.getItem('full_name') || '桐庐凯瑞针纺有限公司',
-      print_user: '',
+      print_user: window.sessionStorage.getItem('user_name'),
       handler_user: '',
       handler_time: '',
       orderInfo: {

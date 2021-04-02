@@ -1,4 +1,4 @@
-<template>
+ <template>
   <div id='orderYarnFC'
     class='printHtml'>
     <div class="printTable">
@@ -51,8 +51,8 @@
           <div class="row_item center flex30">纱线名称</div>
           <div class="row_item flex80 col">
             <div class="print_row noBorder">
-              <span class="row_item center">纱线颜色</span>
-              <span class="row_item center">纱线属性</span>
+              <!-- <span class="row_item center">纱线颜色</span>
+              <span class="row_item center">纱线属性</span> -->
               <span class="row_item center">采购单价</span>
               <span class="row_item center">计划采购数量</span>
             </div>
@@ -67,8 +67,8 @@
             v-for="(itemColor,indexColor) in itemYarn.color_info"
             :key="`order_${indexColor}`">
             <div class="print_row noBorder">
-              <span class="row_item center">{{itemColor.color}}</span>
-              <span class="row_item center">{{itemColor.attribute}}</span>
+              <!-- <span class="row_item center">{{itemColor.color}}</span>
+              <span class="row_item center">{{itemColor.attribute}}</span> -->
               <span class="row_item center">{{itemColor.price || 0}}元</span>
               <span class="row_item center">{{itemColor.weight || 0}}KG</span>
             </div>
@@ -79,33 +79,30 @@
             style="border-left:1px solid transparent">合计</div>
           <div class="row_item flex80 col">
             <div class="print_row noBorder">
-              <span class="row_item center flex30"
-                style="border-left:1px solid transparent">{{totalCom.orderPrice || 0}}元</span>
+              <span class="row_item center">{{totalCom.orderPrice || 0}}元</span>
               <span class="row_item center">{{totalCom.orderWeight}}KG</span>
             </div>
           </div>
         </div>
-        <template v-if="otherFeeArr > 0">
-          <div class="print_row bgGray">
-            <div class="row_item center">序号</div>
-            <div class="row_item center flex30">其它费用名称</div>
-            <div class="row_item center flex40">费用金额</div>
-            <div class="row_item center flex40">费用描述</div>
-          </div>
-          <div class="print_row"
-            v-for="(itemOther,indexOther) in otherFeeArr"
-            :key="`other_${indexOther}`">
-            <div class="row_item center">{{indexOther + 1}}</div>
-            <div class="row_item center flex30">{{itemOther.name}}</div>
-            <div class="row_item center flex40">{{itemOther.price || 0}}元</div>
-            <div class="row_item center flex40">{{itemOther.desc}}</div>
-          </div>
-          <div class="print_row has_marginBottom bgGray">
-            <div class="row_item center flex40"
-              style="border-left:1px solid transparent">合计</div>
-            <div class="row_item flex80 center">{{totalCom.otherPrice || 0}}元</div>
-          </div>
-        </template>
+        <div class="print_row bgGray">
+          <div class="row_item center">序号</div>
+          <div class="row_item center flex30">其它费用名称</div>
+          <div class="row_item center flex40">费用金额</div>
+          <div class="row_item center flex40">费用描述</div>
+        </div>
+        <div class="print_row"
+          v-for="(itemOther,indexOther) in otherFeeArr"
+          :key="`other_${indexOther}`">
+          <div class="row_item center">{{indexOther + 1}}</div>
+          <div class="row_item center flex30">{{itemOther.name}}</div>
+          <div class="row_item center flex40">{{itemOther.price || 0}}元</div>
+          <div class="row_item center flex40">{{itemOther.desc}}</div>
+        </div>
+        <div class="print_row has_marginBottom bgGray">
+          <div class="row_item center flex40"
+            style="border-left:1px solid transparent">合计</div>
+          <div class="row_item flex80 center">{{totalCom.otherPrice || 0}}元</div>
+        </div>
       </div>
       <div class="print_row print_remark"
         style="flex-direction:column">
@@ -134,14 +131,14 @@
 <script lang='ts'>
 import Vue from 'vue'
 import { printList } from '@/assets/js/settingCommon'
-import { order, yarnOrder } from '@/assets/js/api'
+import { order, material } from '@/assets/js/api'
 export default Vue.extend({
   data(): {
     companyName: string
     [key: string]: any
   } {
     return {
-      companyName: window.sessionStorage.getItem('full_name') + '纱线采购单',
+      companyName: window.sessionStorage.getItem('full_name') + '毛条采购单',
       desc: '',
       print_user: window.sessionStorage.getItem('user_name'),
       qrCodeUrl: '',
@@ -181,10 +178,10 @@ export default Vue.extend({
       })
     } else {
       Promise.all([
-        yarnOrder.detail({
+        material.orderDetail({
           id: +this.$route.params.documentId
         }),
-        printList(undefined, 1)
+        printList(undefined, 7)
       ]).then((res) => {
         // 初始化采购单数据
         this.documentInfo = res[0].data.data
@@ -201,9 +198,9 @@ export default Vue.extend({
   mounted() {
     const QRCode = require('qrcode')
     QRCode.toDataURL(
-      this.$route.query.orderId
-        ? window.location.origin + '/orderProcessYarn/detail/' + this.$route.query.orderId
-        : window.location.origin + '/directOrder/yarnDetail/' + this.$route.params.documentId,
+      // this.$route.query.orderId
+      //   ? window.location.origin + '/orderProcessYarn/detail/' + this.$route.query.orderId:
+      window.location.origin + '/directOrder/materialDetail/' + this.$route.params.documentId,
       { errorCorrectionLevel: 'H' },
       (err: any, url: string) => {
         if (!err) {

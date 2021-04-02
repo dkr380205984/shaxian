@@ -9,14 +9,11 @@
         </div>
         <div class="print_row bgGray">
           <div class="row_item center">序号</div>
-          <div class="row_item center flex30">纱线名称</div>
-          <div class="row_item flex80 col">
+          <div class="row_item center flex30">毛条名称</div>
+          <div class="row_item col"
+            style="flex:6">
             <div class="print_row noBorder">
-              <div class="row_item center flex20">纱线颜色</div>
-              <div class="row_item center">属性</div>
               <div class="row_item center">批号</div>
-              <div class="row_item center">色号</div>
-              <div class="row_item center">缸号</div>
               <div class="row_item center">数量</div>
               <div class="row_item center">件数</div>
             </div>
@@ -27,15 +24,12 @@
           :key="indexYarn">
           <div class="row_item center">{{indexYarn + 1}}</div>
           <div class="row_item center flex30">{{itemYarn.name}}</div>
-          <div class="row_item flex80 col">
+          <div class="row_item col"
+            style="flex:6">
             <div class="print_row noBorder"
               v-for="(itemOther,indexOther) in itemYarn.other_info"
               :key="indexOther">
-              <div class="row_item center flex20">{{itemOther.color}}</div>
-              <div class="row_item center">{{itemOther.attribute}}</div>
               <div class="row_item center">{{itemOther.batch_code}}</div>
-              <div class="row_item center">{{itemOther.vat_code}}</div>
-              <div class="row_item center">{{itemOther.color_code}}</div>
               <div class="row_item center">{{itemOther.action_weight || 0}}KG</div>
               <div class="row_item center">{{itemOther.item || 0}}件</div>
             </div>
@@ -91,9 +85,9 @@ export default Vue.extend({
   created() {
     Promise.all([
       stock.detail({
-        id: +this.$route.params.documentId
+        id: +this.$route.query.documentId
       }),
-      printList(undefined, this.$route.params.type === '1' ? 4 : 5)
+      printList(undefined, this.$route.params.type === '1' ? 7 : 8)
     ]).then((res) => {
       this.stockInfo = res[0].data.data
       this.stockYarnArr = this.stockInfo.child_data

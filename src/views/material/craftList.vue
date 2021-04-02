@@ -82,41 +82,99 @@
           </div>
         </div>
         <div class="list">
-          <div class="headCtn">
-            <div class="row">
-              <div class="column min120">工艺单编号</div>
-              <div class="column min120">下单客户</div>
-              <div class="column min120">纺纱名称</div>
-              <div class="column min120">纺纱重量/吨</div>
-              <div class="column min120">下单总价/元</div>
-              <div class="column min120">下单日期</div>
-              <div class="column min120">交货日期</div>
-              <div class="column min120">操作</div>
-            </div>
-          </div>
-          <div class="bodyCtn">
-            <div class="row"
-              v-for="item in list"
-              :key="item.id">
-              <div class="column min120">{{item.code}}</div>
-              <div class="column min120">{{item.client_name}}</div>
-              <div class="column min120">{{item.yarn_name}}</div>
-              <div class="column min120">{{item.weight}}吨</div>
-              <div class="column min120">{{item.total_fee}}元</div>
-              <div class="column min120">{{item.order_time}}</div>
-              <div class="column min120">
-                <span>{{item.date}}</span>
-                <span></span>
-              </div>
-              <div class="column min120">
-                <div class="opr blue"
-                  @click="$router.push('/material/craftDetail/'+item.id)">详情</div>
-                <div class="opr orange"
-                  @click="$router.push('/material/craftUpdate/'+item.id)">修改</div>
-                <div class="opr red"
-                  @click="deleteCraft(item.id)">删除</div>
-              </div>
-            </div>
+          <div class="list">
+            <el-table :data="list"
+              style="width: 100%"
+              ref="table">
+              <el-table-column fixed
+                prop="code"
+                label="工艺单号"
+                width="120">
+              </el-table-column>
+              <el-table-column fixed
+                prop="client_name"
+                label="加工单位"
+                width="140">
+              </el-table-column>
+              <el-table-column prop="status"
+                label="工艺单状态"
+                width="120">
+                <template slot-scope="scope">
+                  <span :class="{'orange':scope.row.status===1,'blue':scope.row.status===2,'green':scope.row.status===3}">{{scope.row.status | orderStatusFilter}}</span>
+                </template>
+              </el-table-column>
+              <el-table-column prop="is_check"
+                label="审核信息"
+                width="120">
+                <template slot-scope="scope">
+                  <span :class="{'orange':!scope.row.is_check,'green':scope.row.is_check===1,'red':scope.row.is_check===2}">{{scope.row.is_check | orderCheckFilter}}</span>
+                </template>
+              </el-table-column>
+              <el-table-column prop="yarn_name"
+                label="纺纱名称"
+                width="140">
+              </el-table-column>
+              <el-table-column prop="weight"
+                label="纺纱重量(吨)"
+                width="140">
+              </el-table-column>
+              <el-table-column prop="total_fee"
+                label="总费用(元)"
+                width="140">
+              </el-table-column>
+              <el-table-column prop="date"
+                label="交货日期"
+                width="120">
+                <template slot-scope="scope">
+                  <div v-if="scope.row.status!==3"
+                    style="display:flex;flex-direction:column">
+                    <span>{{scope.row.date}}</span>
+                    <span :class="{'red':$diffByDate(scope.row.date)<=0,'green':$diffByDate(scope.row.date)>7,'orange':$diffByDate(scope.row.date)<=7 &&$diffByDate(scope.row.date)>0 }">
+                      {{$diffByDate(scope.row.date)>0?'交货还剩'+$diffByDate(scope.row.date)+'天':'延期发货'+Math.abs($diffByDate(scope.row.date))+'天'}}
+                    </span>
+                  </div>
+                  <div v-if="scope.row.status===3"
+                    style="display:flex;flex-direction:column">
+                    <span>{{scope.row.date}}</span>
+                    <span class="green">已完成</span>
+                  </div>
+                </template>
+              </el-table-column>
+              <el-table-column prop="order_time"
+                label="下单日期"
+                width="120">
+              </el-table-column>
+              <el-table-column label="补充说明">
+                <template slot-scope="scope">
+                  <div class="column">
+                    <el-image style="width: 50px; height: 50px;line-height:50px;text-align:center;font-size:22px"
+                      :src="scope.row.file_url"
+                      :preview-src-list="[scope.row.file_url]">
+                      <div slot="error"
+                        class="image-slot">
+                        <i class="el-icon-picture-outline"></i>
+                      </div>
+                    </el-image>
+                  </div>
+                </template>
+              </el-table-column>
+              <el-table-column prop="user_name"
+                label="操作人"
+                width="120">
+              </el-table-column>
+              <el-table-column fixed="right"
+                label="操作"
+                width="150">
+                <template slot-scope="scope">
+                  <span class="opr blue"
+                    @click="$router.push('/material/craftDetail/' + scope.row.id)">详情</span>
+                  <span class="opr orange"
+                    @click="$router.push('/material/craftUpdate/' + scope.row.id)">修改</span>
+                  <span class="opr red"
+                    @click="deleteCraft(scope.row.id)">删除</span>
+                </template>
+              </el-table-column>
+            </el-table>
           </div>
         </div>
         <div class="pageCtn">
@@ -278,5 +336,5 @@ export default Vue.extend({
 </script>
 
 <style lang="less" scoped>
-@import '~@/assets/less/css/list.less';
+@import '~@/assets/less/material/craftList.less';
 </style>

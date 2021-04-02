@@ -49,19 +49,11 @@
             </div>
             <div class="content">
               <div class="elCtn">
-                <el-select v-model="craft_info.yarn_id"
+                <el-cascader v-model="craft_info.yarn_id"
                   filterable
-                  remote
-                  reserve-keyword
-                  placeholder="请输入关键词"
-                  :remote-method="searchYarn"
-                  :loading="select_loading">
-                  <el-option v-for="item in yarn_arr"
-                    :key="item.id"
-                    :label="item.name"
-                    :value="item.id">
-                  </el-option>
-                </el-select>
+                  placeholder="请选择纱线"
+                  :options="yarn_list"
+                  @change="getProColor($event)"></el-cascader>
               </div>
             </div>
           </div>
@@ -72,9 +64,11 @@
             </div>
             <div class="content">
               <div class="elCtn">
-                <el-input v-model="craft_info.color"
-                  placeholder="请输入纺纱颜色">
-                </el-input>
+                <el-autocomplete style="max-height:32px"
+                  v-model="craft_info.color"
+                  :fetch-suggestions="querySearchColor"
+                  placeholder="纺纱颜色">
+                </el-autocomplete>
               </div>
             </div>
           </div>
@@ -282,7 +276,8 @@
             <span class="text">每绞</span>
             <div class="elCtn">
               <el-input v-model="craft_info.meijiao"
-                placeholder="输入克数">
+                placeholder="输入克数"
+                @input="cmpYaojiaoNetWeight">
                 <template slot="append">克</template>
               </el-input>
             </div>
@@ -301,11 +296,13 @@
             <span class="text">；毛重在</span>
             <div class="elCtn">
               <el-input v-model="craft_info.yaojiao_gross_weight"
-                placeholder="输入毛重">
+                placeholder="输入毛重"
+                @input="cmpSunhao">
                 <template slot="append">kg</template>
               </el-input>
             </div>
-            <span class="text">以上，机包六道标准件。</span>
+            <span class="text">以上，机包六道标准件。<span v-if="yaojiao_sunhao"
+                class="orange">（损耗为{{yaojiao_sunhao.toFixed(2)}}%）</span></span>
           </div>
         </div>
         <div class="rowCtn blockCtn">
@@ -458,9 +455,8 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { product } from '@/assets/js/api'
 import { CraftInfo } from '@/types/material'
-import { craft } from '@/assets/js/api'
+import { craft, product } from '@/assets/js/api'
 export default Vue.extend({
   data(): {
     craft_info: CraftInfo
@@ -469,6 +465,8 @@ export default Vue.extend({
     return {
       select_loading: false,
       yarn_arr: [],
+      color_list: [],
+      yaojiao_sunhao: 0,
       craft_info: {
         is_draft: 1,
         client_id: '',
@@ -512,6 +510,20 @@ export default Vue.extend({
     }
   },
   computed: {
+    yarn_list() {
+      return this.$store.state.api.yarnType.arr.map((item: any) => {
+        return {
+          value: item.id,
+          label: item.name,
+          children: item.yarns.map((itemChild: any) => {
+            return {
+              value: itemChild.id,
+              label: itemChild.name
+            }
+          })
+        }
+      })
+    },
     supplier_list() {
       return this.$store.state.api.supplier.arr.filter((item: any) => item.client_type === '混纺单位')
     },
@@ -531,24 +543,34 @@ export default Vue.extend({
     }
   },
   methods: {
-    searchYarn(query: string) {
-      if (query !== '') {
-        this.select_loading = true
-        product
-          .list({
-            limit: 5,
-            page: 1,
-            name: query
-          })
-          .then((res) => {
-            this.yarn_arr = res.data.data.items
-            this.select_loading = false
-          })
-      } else {
-        this.yarn_arr = []
-      }
-    },
     saveCraft() {
+      if (
+        this.$formCheck(this.craft_info, [
+          {
+            key: 'client_id',
+            errMsg: '请选择加工单位'
+          },
+          {
+            key: 'yarn_id',
+            errMsg: '请选择纱线名称'
+          },
+          {
+            key: 'color',
+            errMsg: '请输入纺纱颜色'
+          },
+          {
+            key: 'attribute',
+            errMsg: '请选择纺纱属性'
+          },
+          {
+            key: 'weight',
+            errMsg: '请输入吨数'
+          }
+        ])
+      ) {
+        return
+      }
+      this.craft_info.yarn_id = (this.craft_info.yarn_id as string[])[1]
       this.craft_info.material_info.forEach((item) => {
         item.material_type_id = item.material_id[0]
         item.material_id = item.material_id[1]
@@ -561,6 +583,40 @@ export default Vue.extend({
           )
         }
       })
+    },
+    cmpYaojiaoNetWeight(val: string) {
+      this.craft_info.yaojiao_net_weight = (Number(val) * 0.4).toFixed(2)
+    },
+    cmpSunhao() {
+      this.yaojiao_sunhao =
+        ((Number(this.craft_info.yaojiao_gross_weight) - Number(this.craft_info.yaojiao_net_weight)) /
+          Number(this.craft_info.yaojiao_net_weight)) *
+        100
+    },
+    querySearchColor(queryString: string, cb: (params: any) => void) {
+      if (this.color_list.length > 0) {
+        const returnData = queryString
+          ? this.color_list.filter((itemF: any) => itemF.value.indexOf(queryString) !== -1)
+          : this.color_list
+        cb(returnData)
+      } else {
+        cb([])
+      }
+    },
+    getProColor(ev: string[]) {
+      product
+        .detail({
+          id: ev[1]
+        })
+        .then((res) => {
+          this.color_list = Array.from(new Set(res.data.data.child_data.map((itemChild: any) => itemChild.color))).map(
+            (itemChild: any) => {
+              return {
+                value: itemChild
+              }
+            }
+          )
+        })
     }
   },
   mounted() {
@@ -574,6 +630,11 @@ export default Vue.extend({
         checkWhich: 'api/materialType',
         getInfoMethed: 'dispatch',
         getInfoApi: 'getMaterialTypeAsync'
+      },
+      {
+        checkWhich: 'api/yarnType',
+        getInfoMethed: 'dispatch',
+        getInfoApi: 'getYarnTypeAsync'
       }
     ])
   }

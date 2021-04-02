@@ -87,8 +87,8 @@
     <div class="module">
       <div class="titleCtn">
         <span class="title">纱线加工信息</span>
-        <span class="addBtn btn btnMain"
-          @click="openOrderIn">纱线入库</span>
+        <!-- <span class="addBtn btn btnMain"
+          @click="openOrderIn">纱线入库</span> -->
       </div>
       <div style="padding:20px 32px">
         <div class="tableCtn">
@@ -133,12 +133,49 @@
         </div>
       </div>
     </div>
+    <div class="bottomFixBar">
+      <div class="main">
+        <div class="btnCtn">
+          <div class="btn btnGray"
+            @click="$router.go(-1)">返回</div>
+          <div class="btn btnOrange">打印</div>
+          <div class="btn btnGreen"
+            @click="openCheck">审核</div>
+          <div class="btn btnBlue"
+            @click="confirm"
+            v-if="process_info.status!==3">确认完成</div>
+        </div>
+      </div>
+    </div>
+    <check :show.sync="check_flag"
+      :pid="$route.params.id"
+      @afterCheck="init"
+      :checkType="2"
+      :checkList="[{
+        value:'费用问题',
+        label:'费用问题'
+      },{
+        value:'质量问题',
+        label:'质量问题'
+      },{
+        value:'产品问题',
+        label:'产品问题'
+      },{
+        value:'交期问题',
+        label:'交期问题'
+      },{
+        value:'数量问题',
+        label:'数量问题'
+      }]"></check>
+    <check-detail :show.sync="check_detail_flag"
+      :checkType="2"
+      :pid="$route.params.id"></check-detail>
   </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
-import { yarnProcess } from '@/assets/js/api'
+import { yarnProcess, check } from '@/assets/js/api'
 import { ProcessYarn } from '@/types/orderProcessYarn'
 export default Vue.extend({
   data(): {
@@ -146,6 +183,8 @@ export default Vue.extend({
     [propName: string]: any
   } {
     return {
+      check_flag: false,
+      check_detail_flag: false,
       process_info: {
         order_id: '',
         client_id: '',
@@ -176,7 +215,6 @@ export default Vue.extend({
           }
         ]
       },
-      check_detail_flag: false,
       loading: false
     }
   },
@@ -201,6 +239,34 @@ export default Vue.extend({
     },
     openOrderIn() {
       // ..
+    },
+    openCheck() {
+      this.check_flag = true
+    },
+    confirm() {
+      this.$confirm('是否确认采购单完成?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      })
+        .then(() => {
+          check
+            .confirm({
+              pid: this.$route.params.id,
+              complete_type: 1
+            })
+            .then((res) => {
+              if (res.data.status) {
+                this.init()
+              }
+            })
+        })
+        .catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消'
+          })
+        })
     }
   },
   mounted() {

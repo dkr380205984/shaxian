@@ -15,7 +15,8 @@
             <div class="content">
               <div class="elCtn">
                 <el-select v-model="input_form.type"
-                  placeholder="请选择纱线类型">
+                  placeholder="请选择纱线类型"
+                  multiple>
                   <el-option v-for="item in typeArr"
                     :key="item.id"
                     :label="item.name"
@@ -102,8 +103,9 @@
               v-for="(item,index) in input_form.colorArr"
               :key="index">
               <div class="elCtn">
-                <el-input placeholder="请输入纱线颜色"
-                  v-model="item.name"></el-input>
+                <el-autocomplete v-model="item.name"
+                  :fetch-suggestions="querySearchColor"
+                  placeholder="请输入纱线颜色"></el-autocomplete>
               </div>
               <div class="editBtn addBtn"
                 @click="$addItem(input_form.colorArr,{name:''})"
@@ -158,8 +160,8 @@
                     <div class="tcolumn noPad"
                       style="flex:5">
                       <div class="trow">
-                        <div class="tcolumn">纱线颜色</div>
-                        <div class="tcolumn">纱线属性</div>
+                        <div class="tcolumn">颜色属性</div>
+                        <div class="tcolumn">外形属性</div>
                         <div class="tcolumn">纱线价格</div>
                         <div class="tcolumn">备注信息</div>
                         <div class="tcolumn">操作</div>
@@ -185,16 +187,20 @@
                         v-for="(itemChild,indexChild) in item.child_data"
                         :key="indexChild">
                         <div class="tcolumn">
-                          <el-input class="el"
+                          <el-autocomplete style="max-height:32px"
                             v-model="itemChild.color"
-                            placeholder="颜色">
-                          </el-input>
+                            :fetch-suggestions="querySearchColor"
+                            placeholder="请输入纱线颜色"></el-autocomplete>
                         </div>
                         <div class="tcolumn">
-                          <el-input class="el"
+                          <el-select style="max-height:32px"
                             v-model="itemChild.attribute"
                             placeholder="属性">
-                          </el-input>
+                            <el-option label="筒纱"
+                              value="筒纱"></el-option>
+                            <el-option label="绞纱"
+                              value="绞纱"></el-option>
+                          </el-select>
                         </div>
                         <div class="tcolumn">
                           <el-input class="el"
@@ -216,7 +222,7 @@
                             @click="$addItem(item.child_data,{color: '',
                               attribute: '',
                               price: '',
-                              desc: ''})">添加</span>
+                              desc: ''})">新增子项</span>
                         </div>
                       </div>
                     </div>
@@ -254,7 +260,7 @@
 import Vue from 'vue'
 import { Product, ProductDetail } from '@/types/product'
 import { product } from '@/assets/js/api'
-import { YarnType } from '@/types/common'
+import { YarnType, Color } from '@/types/common'
 export default Vue.extend({
   data(): {
     submit_form: Product[]
@@ -262,7 +268,7 @@ export default Vue.extend({
   } {
     return {
       input_form: {
-        type: '',
+        type: [],
         normal_name: '',
         zs_times: '', // 支数间隔
         zs_min: '',
@@ -290,6 +296,9 @@ export default Vue.extend({
   computed: {
     typeArr(): YarnType[] {
       return this.$store.state.api.yarnType.arr
+    },
+    colorArr(): Color[] {
+      return this.$store.state.api.yarnColor.arr.map((itemM: any) => ({ value: itemM.name, id: itemM.id }))
     }
   },
   methods: {
@@ -443,8 +452,47 @@ export default Vue.extend({
       product.create({ data: this.submit_form }).then((res) => {
         if (res.data.status) {
           this.$message.success('添加成功')
+          this.$confirm('继续添加新产品?', '提示', {
+            confirmButtonText: '继续添加',
+            cancelButtonText: '返回列表',
+            type: 'warning'
+          })
+            .then(() => {
+              this.input_form = {
+                type: [],
+                normal_name: '',
+                zs_times: '', // 支数间隔
+                zs_min: '',
+                zs_max: '',
+                zs_unit: '支',
+                gs_times: '',
+                gs_min: '',
+                gs_max: '',
+                complex_name: '',
+                colorArr: [
+                  {
+                    name: ''
+                  }
+                ],
+                attributeArr: [
+                  {
+                    name: ''
+                  }
+                ]
+              }
+              this.submit_form = []
+            })
+            .catch(() => {
+              this.$router.push('/product/list?page=1&page_size=10&name=&color=&attribute=&yarn_type=')
+            })
         }
       })
+    },
+    querySearchColor(queryString: string, cb: (params: any) => void) {
+      const returnData = queryString
+        ? this.colorArr.filter((itemF) => itemF.value.indexOf(queryString) !== -1)
+        : this.colorArr
+      cb(returnData)
     }
   },
   mounted() {
@@ -453,6 +501,11 @@ export default Vue.extend({
         checkWhich: 'api/yarnType',
         getInfoMethed: 'dispatch',
         getInfoApi: 'getYarnTypeAsync'
+      },
+      {
+        checkWhich: 'api/yarnColor',
+        getInfoMethed: 'dispatch',
+        getInfoApi: 'getYarnColorAsync'
       }
     ])
   }

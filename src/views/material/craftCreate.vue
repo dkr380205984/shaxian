@@ -156,12 +156,12 @@
               </el-input>
             </div>
             <div class="explanation">
-              <span class="text">库存数量：
+              <!-- <span class="text">库存数量：
                 <span>待选则毛条</span>
               </span>
               <span class="text">预计使用：
                 <span>待选则毛条</span>
-              </span>
+              </span> -->
             </div>
             <div v-if="index===0"
               class="editBtn blue"
@@ -417,7 +417,6 @@
           <div class="colCtn flex2">
             <div class="label">
               <span class="text">期限备注</span>
-              <span class="explanation">(必选)</span>
             </div>
             <div class="content">
               <div class="elCtn">

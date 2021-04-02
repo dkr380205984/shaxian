@@ -15,7 +15,7 @@
             <div class="showMore"
               @click="showMore=!showMore">{{!showMore?'展示更多':'收起筛选'}}</div>
             <div class="elCtn">
-              <el-input v-model="yarn_name"
+              <el-input v-model="name"
                 placeholder="搜索纺纱名称"
                 @change="changeRouter(1)"></el-input>
             </div>

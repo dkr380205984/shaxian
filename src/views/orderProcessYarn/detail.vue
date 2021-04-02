@@ -2055,10 +2055,10 @@ export default Vue.extend({
       ]
     },
     getUpdateInfo(info: OrderYarn) {
-      console.log(info)
-      this.update_order_info = info
-      this.update_order_info.additional_fee = info.additional_fee
-        ? JSON.parse(info.additional_fee as string)
+      const selfInfo = JSON.parse(JSON.stringify(info))
+      this.update_order_info = selfInfo
+      this.update_order_info.additional_fee = selfInfo.additional_fee
+        ? JSON.parse(selfInfo.additional_fee as string)
         : [
             {
               name: '',

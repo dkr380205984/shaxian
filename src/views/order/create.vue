@@ -106,19 +106,11 @@
                     :key="indexPro">
                     <div class="tcolumn">
                       <div class="el">
-                        <el-select v-model="itemPro.product_id"
+                        <el-cascader v-model="itemPro.product_id"
                           filterable
-                          remote
-                          reserve-keyword
-                          placeholder="请输入关键词"
-                          :remote-method="searchPro"
-                          :loading="select_loading">
-                          <el-option v-for="item in product_arr"
-                            :key="item.id"
-                            :label="item.name"
-                            :value="item.id">
-                          </el-option>
-                        </el-select>
+                          placeholder="请选择纱线"
+                          :options="yarn_list"
+                          @change="getProColor($event,itemPro)"></el-cascader>
                       </div>
                     </div>
                     <div class="tcolumn noPad"
@@ -128,11 +120,12 @@
                         :key="indexChild">
                         <div class="tcolumn"
                           style="flex:1.2">
-                          <el-input class="el"
+                          <el-autocomplete style="max-height:32px"
                             v-model="itemChild.color"
-                            placeholder="下单颜色">
+                            :fetch-suggestions="(query,cb)=>{querySearchColor(query,cb,itemPro.color_list)}"
+                            placeholder="颜色属性">
                             <template slot="prepend">{{indexChild+1}}</template>
-                          </el-input>
+                          </el-autocomplete>
                         </div>
                         <div class="tcolumn">
                           <div class="el">
@@ -390,7 +383,7 @@ export default Vue.extend({
         ],
         product_info: [
           {
-            product_id: '',
+            product_id: [],
             child_data: [
               {
                 number_attribute: '98纱',
@@ -403,7 +396,6 @@ export default Vue.extend({
           }
         ]
       },
-      product_arr: [],
       editor: '',
       postData: { key: '', token: '' }
     }
@@ -414,6 +406,20 @@ export default Vue.extend({
     },
     token() {
       return this.$store.state.status.token
+    },
+    yarn_list() {
+      return this.$store.state.api.yarnType.arr.map((item: any) => {
+        return {
+          value: item.name,
+          label: item.name,
+          children: item.yarns.map((itemChild: any) => {
+            return {
+              value: itemChild.id,
+              label: itemChild.name
+            }
+          })
+        }
+      })
     }
   },
   methods: {
@@ -446,20 +452,28 @@ export default Vue.extend({
         this.order_info.product_info.splice(indexFather, 1)
       }
     },
-    searchPro(query: string) {
-      if (query !== '') {
-        product
-          .list({
-            limit: 2,
-            page: 1,
-            name: query
-          })
-          .then((res) => {
-            this.product_arr = res.data.data.items
-          })
+    querySearchColor(queryString: string, cb: (params: any) => void, list: any[]) {
+      if (list) {
+        const returnData = queryString ? list.filter((itemF: any) => itemF.value.indexOf(queryString) !== -1) : list
+        cb(returnData)
       } else {
-        this.product_arr = []
+        cb([])
       }
+    },
+    getProColor(ev: string[], proInfo: any) {
+      product
+        .detail({
+          id: ev[1]
+        })
+        .then((res) => {
+          proInfo.color_list = Array.from(
+            new Set(res.data.data.child_data.map((itemChild: any) => itemChild.color))
+          ).map((itemChild: any) => {
+            return {
+              value: itemChild
+            }
+          })
+        })
     },
     saveOrder() {
       if (
@@ -520,6 +534,7 @@ export default Vue.extend({
       ) {
         return
       }
+      this.order_info.product_info.forEach((item) => (item.product_id = (item.product_id as any[])[1]))
       // 额外费用为空时提交空字符串方便后续使用
       this.order_info.additional_fee =
         (this.order_info.additional_fee as any[]).filter((itemChild) => itemChild.name && itemChild.price).length > 0
@@ -635,6 +650,11 @@ export default Vue.extend({
         checkWhich: 'status/token',
         getInfoMethed: 'dispatch',
         getInfoApi: 'getTokenAsync'
+      },
+      {
+        checkWhich: 'api/yarnType',
+        getInfoMethed: 'dispatch',
+        getInfoApi: 'getYarnTypeAsync'
       }
     ])
   }

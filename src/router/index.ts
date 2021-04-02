@@ -170,19 +170,19 @@ const routes: RouteConfig[] = [
       }, {
         path: '/directProcess/materialList',
         name: '毛条加工列表',
-        component: () => import('../views/directOrder/materialList.vue')
+        component: () => import('../views/directProcess/materialList.vue')
       }, {
         path: '/directProcess/materialDetail/:id',
         name: '毛条加工详情',
-        component: () => import('../views/directOrder/materialDetail.vue')
+        component: () => import('../views/directProcess/materialDetail.vue')
       }, {
         path: '/directProcess/yarnList',
         name: '纱线加工列表',
-        component: () => import('../views/directOrder/yarnList.vue')
+        component: () => import('../views/directProcess/yarnList.vue')
       }, {
         path: '/directProcess/yarnDetail/:id',
         name: '纱线加工详情',
-        component: () => import('../views/directOrder/yarnDetail.vue')
+        component: () => import('../views/directProcess/yarnDetail.vue')
       }
     ]
   }

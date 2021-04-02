@@ -1,20 +1,24 @@
 export interface MaterialInfo {
   id?: number | string
   type_id?: string
-  name: string
+  name: string | string[]
   price: string | number
   store?: string | number
   user_name?: string
   weight?: string
   desc?: string
+  batch_code?: string
+  push_weight?: number | string
 }
 
 export interface CraftInfo {
+  push_weight?: string | number
   code?: string
   id?: number
   is_draft: number
   client_id: number | string
   order_time: string
+  yarn_name?: string
   yarn_id: number | string
   color: string
   attribute: string
@@ -68,5 +72,6 @@ export interface OrderMaterialInfo {
   additional_fee?: string | AditionalFee[]// 额外费用的JSON字符串
   total_price?: string | number
   file_url?: string
+  is_check?: string | number
   desc: string
 }

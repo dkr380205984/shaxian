@@ -20,13 +20,13 @@
               <template slot="title">纱线管理</template>
               <el-menu-item index="/product/list?page=1&page_size=10&name=&color=&attribute=&yarn_type=">纱线列表</el-menu-item>
               <el-menu-item index="/directOrder/yarnList?page=1&code=&name=&client_id=&user_id=&page_size=10&date=">纱线采购列表</el-menu-item>
-              <!-- <el-menu-item index="/directProcess/yarnList?page=1&code=&name=&client_id=&user_id=&page_size=10&date=">纱线加工列表</el-menu-item> -->
+              <el-menu-item index="/directProcess/yarnList?page=1&code=&name=&client_id=&user_id=&page_size=10&date=">纱线加工列表</el-menu-item>
             </el-submenu>
             <el-submenu index='1'>
               <template slot="title">毛条管理</template>
               <el-menu-item index="/material/list?page=1&type=&name=&page_size=10">毛条列表</el-menu-item>
               <el-menu-item index="/directOrder/materialList?page=1&code=&name=&client_id=&user_id=&page_size=10&date=">毛条采购列表</el-menu-item>
-              <el-menu-item index="/directProcess/materialList?page=1&code=&name=&client_id=&user_id=&page_size=10&date=">毛条加工列表</el-menu-item>
+              <!-- <el-menu-item index="/directProcess/materialList?page=1&code=&name=&client_id=&user_id=&page_size=10&date=">毛条加工列表</el-menu-item> -->
               <el-menu-item index="/material/craftList?page=1&code=&name=&client_id=&user_id=&status=&page_size=10&date=">工艺单列表</el-menu-item>
             </el-submenu>
             <el-submenu index='2'>

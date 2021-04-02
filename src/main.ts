@@ -31,9 +31,14 @@ Vue.filter('orderCheckFilter', (val: 0 | 1 | 2 | null) => {
   const statusArr = ['待审核', '已通过', '已驳回']
   return statusArr[index]
 })
-Vue.filter('stockTypeFilter', (val: 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7) => {
-  const statusArr = ['未知', '仓库入库', '仓库出库', '订购入库', '调取出库', '加工入库', '加工出库', '订购出库']
+// 出入库操作类型
+Vue.filter('stockTypeFilter', (val: 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9) => {
+  const statusArr = ['未知', '仓库入库', '仓库出库', '订购入库', '调取出库', '加工入库', '加工出库', '订购出库', '工艺单入库', '最终出库']
   return statusArr[val]
+})
+// 纱线类型
+Vue.filter('yarnTypeFilter', (val: any[]) => {
+  return val.map((item) => item.type_name).join(',')
 })
 // 注册公共方法后需要声明
 type regNormal = 'isNum' | 'isEmail' | 'isPhone' | 'isNull'

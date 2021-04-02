@@ -106,7 +106,8 @@ import { ProcessYarn } from '@/types/orderProcessYarn'
 const yarnProcess = {
   create: (params: { data: ProcessYarn[], order_id: string }) => http.post(`${baseUrl}/order/process/save`, params, 'application/json'),
   list: (params: ListParam) => http.get(`${baseUrl}/order/process/lists`, params),
-  delete: (params: DeleteParam) => http.post(`${baseUrl}/order/process/delete`, params, 'application/json')
+  delete: (params: DeleteParam) => http.post(`${baseUrl}/order/process/delete`, params, 'application/json'),
+  detail: (params: DetailParam) => http.get(`${baseUrl}/order/process/detail`, params)
 }
 
 // 毛条

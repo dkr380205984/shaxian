@@ -16,6 +16,7 @@
             <div class="content">
               <div class="elCtn">
                 <el-select v-model="input_form.type"
+                  multiple
                   placeholder="请选择纱线类型"
                   :disabled="!edit_type_flag">
                   <el-option v-for="item in typeArr"
@@ -248,7 +249,7 @@ export default Vue.extend({
       })
       .then((res) => {
         const data = res.data.data
-        this.input_form.type = data.yarn_type
+        this.input_form.type = data.yarn_type.map((item: any) => item.type_id)
         this.input_form.normal_name = data.name
         this.submit_form = data.child_data
         this.loading = false

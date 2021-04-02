@@ -8,6 +8,7 @@ export interface YarnInfo {
   color: string
   attribute: string
   price: number | string
+  push_weight?: string | number
 }
 
 // 额外费用
@@ -45,6 +46,7 @@ interface ChildData {
   attribute?: string
   price?: string | number
   weight: string | number
+  push_weight?: string | number
 }
 export interface ProcessYarn {
   order_id: number | string

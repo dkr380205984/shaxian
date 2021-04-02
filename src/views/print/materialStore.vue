@@ -84,16 +84,16 @@ export default Vue.extend({
   methods: {},
   created() {
     Promise.all([
-      stock.detail({
+      stock.materialDetail({
         id: +this.$route.query.documentId
       }),
-      printList(undefined, this.$route.params.type === '1' ? 7 : 8)
+      printList(undefined, this.$route.params.type === '1' ? 8 : 9)
     ]).then((res) => {
+      this.companyName = (res[1] as any).title
       this.stockInfo = res[0].data.data
       this.stockYarnArr = this.stockInfo.child_data
         ? this.$mergeData(this.stockInfo.child_data, { mainRule: 'name', childrenName: 'other_info' })
         : []
-      this.companyName = (res[1] as any).title
     })
   },
   computed: {

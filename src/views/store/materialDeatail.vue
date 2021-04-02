@@ -296,24 +296,7 @@
             <div class="elCtn">
               <el-input v-model="storeLogListFilter.name"
                 @change="getStoreLogList(1)"
-                placeholder="输入纱线名称"></el-input>
-            </div>
-            <div class="elCtn">
-              <el-input v-model="storeLogListFilter.color"
-                @change="getStoreLogList(1)"
-                placeholder="输入纱线颜色"></el-input>
-            </div>
-            <div class="elCtn">
-              <el-select v-model="storeLogListFilter.attr"
-                clearable
-                @change="getStoreLogList(1)"
-                placeholder="选择纱线属性">
-                <el-option v-for="item in commonInit.materialAttrArr"
-                  :key="item.id"
-                  :label="item.name"
-                  :value="item.name">
-                </el-option>
-              </el-select>
+                placeholder="输入毛条名称"></el-input>
             </div>
             <div class="elCtn">
               <el-select v-model="storeLogListFilter.type"
@@ -336,7 +319,7 @@
               <el-select v-model="storeLogListFilter.limit"
                 clearable
                 @change="getStoreLogList(1)"
-                placeholder="每页展示条数（默认‘5’）">
+                placeholder="每页展示条数（默认5）">
                 <el-option v-for="item in [
                   {
                     id:5,
@@ -388,7 +371,8 @@
               <div class="trow">
                 <div class="tcolumn">单号</div>
                 <div class="tcolumn">类型</div>
-                <div class="tcolumn">仓库/单位名称</div>
+                <div class="tcolumn"
+                  style="flex:2">库存变动</div>
                 <div class="tcolumn noPad"
                   style="flex:2">
                   <div class="trow">
@@ -406,7 +390,21 @@
                 <div class="tcolumn">{{item.code}}</div>
                 <div class="tcolumn"
                   :class="{'blue':item.action_type===1||item.action_type===3||item.action_type===5,'green':item.action_type===2||item.action_type===4||item.action_type===6||item.action_type===7}">{{item.action_type|stockTypeFilter}}</div>
-                <div class="tcolumn">{{item.action_type===1||item.action_type===3||item.action_type===5?item.second_store_name:item.client_name}}</div>
+                <div class="tcolumn"
+                  style="flex:2">
+                  <span v-if="item.action_type===1||item.action_type===3||item.action_type===5">
+                    <span class="green">{{item.client_name ||'无来源'}}</span>
+                    <i class="el-icon-s-unfold orange"
+                      style="margin:0 5px;font-size:16px"></i>
+                    <span class="blue">{{item.second_store_name}}</span>
+                  </span>
+                  <span v-if="item.action_type===2||item.action_type===4||item.action_type===6||item.action_type===7">
+                    <span class="blue">{{item.second_store_name}}</span>
+                    <i class="el-icon-s-unfold orange"
+                      style="margin:0 5px;font-size:16px"></i>
+                    <span class="green">{{item.client_name}}</span>
+                  </span>
+                </div>
                 <div class="tcolumn noPad"
                   style="flex:2">
                   <div class="trow"
@@ -771,8 +769,6 @@ export default Vue.extend({
           limit: this.storeLogListFilter.limit || 5,
           store_second_id: this.storeLogListFilter.LV2_name || null,
           name: this.storeLogListFilter.LV2_name || null,
-          color: this.storeLogListFilter.color || null,
-          attribute: this.storeLogListFilter.attr || null,
           action_type: this.storeLogListFilter.type || null,
           start_time:
             this.storeLogListFilter.time && this.storeLogListFilter.time.length > 0

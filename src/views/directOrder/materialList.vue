@@ -275,19 +275,10 @@
                 </div>
                 <div class="content">
                   <div class="elCtn">
-                    <el-select v-model="item.name"
+                    <el-cascader v-model="item.name"
                       filterable
-                      remote
-                      reserve-keyword
-                      placeholder="请输入毛条名称搜索"
-                      :remote-method="searchPro"
-                      :loading="select_loading">
-                      <el-option v-for="itemPro in product_arr"
-                        :key="itemPro.id"
-                        :label="itemPro.name"
-                        :value="itemPro.name">
-                      </el-option>
-                    </el-select>
+                      placeholder="请选择毛条"
+                      :options="material_arr"></el-cascader>
                   </div>
                 </div>
               </div>
@@ -429,6 +420,7 @@
                   :before-upload="beforeAvatarUpload"
                   :multiple="false"
                   :data="postData"
+                  :file-list="order_yarn_info.file_url?[{name:'说明文件',url:order_yarn_info.file_url}]:[]"
                   :limit="1"
                   :on-success="successFile"
                   ref="uploada"
@@ -486,9 +478,10 @@ export default Vue.extend({
         total_price: '',
         child_data: [
           {
-            name: '',
+            name: [],
             weight: '',
-            price: ''
+            price: '',
+            batch_code: ''
           }
         ],
         file_url: '',
@@ -517,6 +510,20 @@ export default Vue.extend({
     },
     token() {
       return this.$store.state.status.token
+    },
+    material_arr() {
+      return this.$store.state.api.materialType.arr.map((item: any) => {
+        return {
+          value: item.name,
+          label: item.name,
+          children: item.child_data.map((itemChild: any) => {
+            return {
+              value: itemChild.name,
+              label: itemChild.name
+            }
+          })
+        }
+      })
     }
   },
   watch: {
@@ -630,6 +637,7 @@ export default Vue.extend({
       }
       this.loading = true
       this.order_yarn_info.additional_fee = JSON.stringify(this.order_yarn_info.additional_fee)
+      this.order_yarn_info.child_data.forEach((item) => (item.name = ((item.name as unknown) as any[])[1]))
       material
         .orderCreate({
           data: [this.order_yarn_info]
@@ -643,9 +651,18 @@ export default Vue.extend({
         })
     },
     openUpdate(info: OrderMaterialInfo) {
+      const selfInfo = JSON.parse(JSON.stringify(info))
       this.update_flag = true
-      info.additional_fee = JSON.parse(info.additional_fee as string)
-      this.order_yarn_info = info
+      selfInfo.additional_fee = selfInfo.additional_fee
+        ? JSON.parse(info.additional_fee as string)
+        : [
+            {
+              name: '',
+              price: '',
+              desc: ''
+            }
+          ]
+      this.order_yarn_info = selfInfo
     },
     resetInfo() {
       this.update_flag = false
@@ -657,7 +674,8 @@ export default Vue.extend({
           {
             name: '',
             weight: '',
-            price: ''
+            price: '',
+            batch_code: ''
           }
         ],
         order_time: this.$getDate(new Date()),
@@ -779,6 +797,11 @@ export default Vue.extend({
         checkWhich: 'status/token',
         getInfoMethed: 'dispatch',
         getInfoApi: 'getTokenAsync'
+      },
+      {
+        checkWhich: 'api/materialType',
+        getInfoMethed: 'dispatch',
+        getInfoApi: 'getMaterialTypeAsync'
       }
     ])
     this.getFilters()

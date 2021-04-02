@@ -20,20 +20,20 @@ const plugin = {
     }
     return Object.prototype.toString.call(data).split(' ')[1].split(']')[0]
   },
-  clone<T extends any[]>(data: T): T {
+  clone<T extends any | any[]>(data: T): T {
     const selfThis = plugin
     const type = selfThis.getDataType(data)
     let newData = null
     if (type === 'Array') {
       newData = [] as any
-      data.forEach((item: any, index: any) => {
+      (data as any[]).forEach((item: any, index: any) => {
         newData[index] = selfThis.clone(item)
       })
     } else if (type === 'Object') {
       newData = {} as any
       let index: any
-      for (index of Object.keys(data)) {
-        newData[index] = selfThis.clone(data[index])
+      for (index of Object.keys((data as any[]))) {
+        newData[index] = selfThis.clone((data as any[])[index])
       }
     } else {
       newData = data ? JSON.parse(JSON.stringify(data)) : data

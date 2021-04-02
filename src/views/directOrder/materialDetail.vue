@@ -7,6 +7,15 @@
         <span class="title">基本信息</span>
       </div>
       <div class="detailCtn">
+        <div class="checkCtn">
+          <el-tooltip class="item"
+            effect="dark"
+            content="点击查看审核日志"
+            placement="bottom">
+            <img @click="checkReason"
+              :src="order_material_info.is_check|checkFilter" />
+          </el-tooltip>
+        </div>
         <div class="rowCtn">
           <div class="colCtn">
             <span class="label">采购单号：</span>
@@ -32,13 +41,22 @@
           </div>
           <div class="colCtn">
             <span class="label">交货日期：</span>
-            <span class="text">{{order_material_info.delivery_time}}</span>
+            <span class="text">{{order_material_info.delivery_time}}
+              （<span :class="{'red':$diffByDate(order_material_info.delivery_time)<=0,'green':$diffByDate(order_material_info.delivery_time)>7,'yellow':$diffByDate(order_material_info.delivery_time)<=7 &&$diffByDate(order_material_info.delivery_time)>0 }">
+                {{$diffByDate(order_material_info.delivery_time)>0?'交货还剩'+$diffByDate(order_material_info.delivery_time)+'天':'延期发货'+Math.abs($diffByDate(order_material_info.delivery_time))+'天'}}
+              </span>）
+            </span>
           </div>
         </div>
         <div class="rowCtn">
-          <div class="colCtn">
+          <div class="colCtn"
+            style="min-width:796px">
             <span class="label">备注信息：</span>
             <span class="text">{{order_material_info.desc || '无'}}</span>
+          </div>
+          <div class="colCtn">
+            <span class="label">入库数量：</span>
+            <span class="text green">{{order_material_info.push_weight || 0}}kg</span>
           </div>
         </div>
         <div class="rowCtn"
@@ -94,8 +112,8 @@
                 <el-checkbox v-model="item.check">{{item.name}}</el-checkbox>
               </div>
               <div class="tcolumn">{{item.price}}元</div>
-              <div class="tcolumn">{{item.weight}}kg</div>
-              <div class="tcolumn">还没统计</div>
+              <div class="tcolumn blue">{{item.weight}}kg</div>
+              <div class="tcolumn green">{{item.push_weight}}kg</div>
             </div>
           </div>
         </div>
@@ -185,7 +203,8 @@
                   :key="item.id">
                   <div class="column min120"
                     :style="{'height':50*item.child_data.length + 'px'}">
-                    <span class="blue opr">打印</span>
+                    <span class="blue opr"
+                      @click="$openUrl(`/print/materialStore/1/${item.id}`)">打印</span>
                     <span class="red opr">删除</span>
                   </div>
                 </div>
@@ -263,6 +282,9 @@
             @click="$openUrl(`/print/orderMaterial/2/${$route.params.id}`)">打印</div>
           <div class="btn btnRed"
             @click="openDeduct">扣款</div>
+          <div class="btn btnBlue"
+            @click="confirm"
+            v-if="order_material_info.status!==3">确认完成</div>
         </div>
       </div>
     </div>
@@ -276,59 +298,80 @@
         </div>
         <div class="contentCtn">
           <div class="createCtn">
-            <div class="rowCtn"
-              v-for="(itemChild,indexChild) in order_in_info.child_data"
+            <div v-for="(itemChild,indexChild) in order_in_info.child_data"
               :key="indexChild">
-              <div class="colCtn">
-                <div class="label"
-                  v-if="indexChild===0">
-                  <span class="text">毛条信息</span>
-                  <span class="explanation">(必填)</span>
-                </div>
-                <div class="content">
-                  <div class="elCtn">
-                    <el-input disabled
-                      placeholder="请输入毛条信息"
-                      v-model="itemChild.name"></el-input>
+              <div class="rowCtn">
+                <div class="colCtn">
+                  <div class="label">
+                    <span class="text">毛条信息</span>
+                    <span class="explanation">(必填)</span>
+                  </div>
+                  <div class="content">
+                    <div class="elCtn">
+                      <el-input disabled
+                        placeholder="请输入毛条信息"
+                        v-model="itemChild.name"></el-input>
+                    </div>
                   </div>
                 </div>
+                <div class="colCtn">
+                  <div class="label">
+                    <span class="text">采购数量</span>
+                    <span class="explanation">(必填)</span>
+                  </div>
+                  <div class="content">
+                    <div class="elCtn">
+                      <el-input disabled
+                        placeholder="请输入采购数量"
+                        v-model="itemChild.order_number">
+                        <template slot="append">kg</template>
+                      </el-input>
+                    </div>
+                  </div>
+                </div>
+                <div class="colCtn"></div>
               </div>
-              <div class="colCtn">
-                <div class="label"
-                  v-if="indexChild===0">
-                  <span class="text">采购数量</span>
-                  <span class="explanation">(必填)</span>
-                </div>
-                <div class="content">
-                  <div class="elCtn">
-                    <el-input disabled
-                      placeholder="请输入采购数量"
-                      v-model="itemChild.order_number">
-                      <template slot="append">kg</template>
-                    </el-input>
+              <div class="rowCtn">
+                <div class="colCtn">
+                  <div class="label">
+                    <span class="text">入库件数</span>
+                    <span class="explanation">(必填)</span>
+                  </div>
+                  <div class="content">
+                    <div class="elCtn">
+                      <el-input placeholder="数量"
+                        v-model="itemChild.action_weight">
+                      </el-input>
+                    </div>
                   </div>
                 </div>
-              </div>
-              <div class="colCtn">
-                <div class="label"
-                  v-if="indexChild===0">
-                  <span class="text">入库数量/件数</span>
-                  <span class="explanation">(必填)</span>
+                <div class="colCtn">
+                  <div class="label">
+                    <span class="text">入库件数</span>
+                    <span class="explanation">(必填)</span>
+                  </div>
+                  <div class="content">
+                    <div class="elCtn">
+                      <el-input placeholder="件数"
+                        v-model="itemChild.item">
+                      </el-input>
+                    </div>
+                  </div>
                 </div>
-                <div class="content flexRow">
-                  <div class="elCtn">
-                    <el-input placeholder="数量"
-                      v-model="itemChild.action_weight">
-                    </el-input>
+                <div class="colCtn">
+                  <div class="label">
+                    <span class="text">批号</span>
                   </div>
-                  <div class="elCtn">
-                    <el-input placeholder="件数"
-                      v-model="itemChild.item">
-                    </el-input>
-                  </div>
-                  <div class="oprCtn">
-                    <div class="editBtn deleteBtn"
-                      @click="$deleteItem(order_in_info.child_data,indexChild)">删除</div>
+                  <div class="content">
+                    <div class="elCtn">
+                      <el-input placeholder="件数"
+                        v-model="itemChild.batch_code">
+                      </el-input>
+                    </div>
+                    <div class="oprCtn">
+                      <div class="editBtn deleteBtn"
+                        @click="$deleteItem(order_in_info.child_data,indexChild)">删除</div>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -369,7 +412,6 @@
               <div class="colCtn">
                 <div class="label">
                   <span class="text">备注信息</span>
-                  <span class="explanation">(必填)</span>
                 </div>
                 <div class="content">
                   <div class="elCtn">
@@ -389,8 +431,31 @@
         </div>
       </div>
     </div>
+    <check :show.sync="check_flag"
+      :pid="$route.params.id"
+      @afterCheck="init"
+      :checkType="3"
+      :checkList="[{
+        value:'费用问题',
+        label:'费用问题'
+      },{
+        value:'质量问题',
+        label:'质量问题'
+      },{
+        value:'产品问题',
+        label:'产品问题'
+      },{
+        value:'交期问题',
+        label:'交期问题'
+      },{
+        value:'数量问题',
+        label:'数量问题'
+      }]"></check>
     <deduct :show.sync="deduct_show"
       :data="deduct_info"></deduct>
+    <check-detail :show.sync="check_detail_flag"
+      :checkType="3"
+      :pid="$route.params.id"></check-detail>
   </div>
 </template>
 
@@ -398,7 +463,7 @@
 import Vue from 'vue'
 import { StoreCreate } from '@/types/store'
 import { OrderMaterialInfo } from '@/types/material'
-import { stock, deduct, material } from '@/assets/js/api'
+import { stock, deduct, material, check } from '@/assets/js/api'
 export default Vue.extend({
   data(): {
     order_material_info: OrderMaterialInfo
@@ -407,6 +472,8 @@ export default Vue.extend({
     return {
       loading: true,
       deduct_show: false,
+      check_flag: false,
+      check_detail_flag: false,
       deduct_info: {
         yarn: [],
         pid: 1,
@@ -416,12 +483,14 @@ export default Vue.extend({
       order_material_info: {
         code: '',
         client_id: '',
+        is_check: '',
         total_price: '',
         child_data: [
           {
             name: '',
             weight: '',
-            price: ''
+            price: '',
+            batch_code: ''
           }
         ],
         order_time: '',
@@ -454,7 +523,7 @@ export default Vue.extend({
       return this.order_material_info.child_data.filter((item: any) => item.check)
     },
     store_list() {
-      return this.$store.state.api.storeHouse.arr
+      return this.$store.state.api.storeHouse.arr.filter((item: any) => item.store_type === 2)
     }
   },
   methods: {
@@ -476,6 +545,16 @@ export default Vue.extend({
         this.order_material_info = res[0].data.data
         this.order_material_info.additional_fee = JSON.parse(this.order_material_info.additional_fee as string)
         this.order_in_log = res[1].data.data.data.items
+        this.order_material_info.child_data.forEach((item) => {
+          item.push_weight = 0
+          this.order_in_log.forEach((itemLog: any) => {
+            itemLog.child_data.forEach((itemChild: any) => {
+              if (itemChild.name === item.name) {
+                item.push_weight = Number(itemChild.action_weight) + Number(item.push_weight)
+              }
+            })
+          })
+        })
         this.deduct_list = res[2].data.data
         this.deduct_list.forEach((item: any) => {
           item.deduct_content = JSON.parse(item.deduct_content)
@@ -571,6 +650,13 @@ export default Vue.extend({
         }
       })
     },
+    checkReason() {
+      if (!this.order_material_info.is_check) {
+        this.$message.warning('暂无审核信息')
+        return
+      }
+      this.check_detail_flag = true
+    },
     // 打开扣款窗口
     openDeduct() {
       this.deduct_info = {
@@ -585,6 +671,34 @@ export default Vue.extend({
         type: 3
       }
       this.deduct_show = true
+    },
+    openCheck() {
+      this.check_flag = true
+    },
+    confirm() {
+      this.$confirm('是否确认采购单完成?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      })
+        .then(() => {
+          check
+            .confirm({
+              pid: this.$route.params.id,
+              complete_type: 3
+            })
+            .then((res) => {
+              if (res.data.status) {
+                this.init()
+              }
+            })
+        })
+        .catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消'
+          })
+        })
     }
   },
   mounted() {

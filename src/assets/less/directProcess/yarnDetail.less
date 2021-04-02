@@ -1,0 +1,80 @@
+@import '../common.less';
+@import '../detail.less';
+@import '../create.less';
+@import '../list.less';
+@import '../table.less';
+@import '../bottomBar.less';
+@import '../popup.less';
+#yarnDetail{
+  .sortContainer{
+    display: flex;
+    align-items: center;
+    .sort{
+      display: flex;
+      flex-direction: column;
+      margin-right: 8px;
+      align-items: center;
+      color: #D0D0D0;
+      .hover{
+        font-weight: bold;
+        &:hover{
+          color:@blue;
+          cursor: pointer;
+        }
+      }
+    }
+  }
+  .listCtn{
+    .tableCtn{
+      margin: 0;
+    }
+    .row{
+      min-height: 50px;
+      height: auto;
+    }
+    .elCtn{
+      width: 160px;
+    }
+    &.smallHeight{
+      padding: 0;
+      .list{
+        margin: 0;
+      }
+      .row{
+        min-height: 32px;
+        margin: 6px 0;
+      }
+    }
+  }
+  .popup{
+    .main{
+      width: 966px;
+    }
+    .contentCtn{
+      padding: 0;
+      min-height: 300px;
+      max-height: 660px;
+    }
+    .sort{
+      position: absolute;
+      right:0;
+      top: 0;
+      line-height: 24px;
+      color: #fff;
+      background: @orange;
+      min-width: 24px;
+      text-align: center;
+    }
+    .eRowCtn{
+      position: relative;
+    }
+    .editCtn{
+      margin: 15px 0;
+    }
+    .createCtn{
+      .rowCtn{
+        background: #fff;
+      }
+    }
+  }
+}

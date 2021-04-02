@@ -19,7 +19,7 @@ export interface Product {
 }
 
 export interface OrderPro {
-  product_id: string | number
+  product_id: string | number | any[]
   product_name?: string
   child_data: ProductDetail[]
 }

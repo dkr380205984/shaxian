@@ -150,6 +150,10 @@
               label="下单总数(kg)"
               width="120">
             </el-table-column>
+            <el-table-column prop="reality_push_weight"
+              label="发货总数(kg)"
+              width="120">
+            </el-table-column>
             <el-table-column prop="total_price"
               label="下单总价(元)"
               width="120">

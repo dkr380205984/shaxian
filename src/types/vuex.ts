@@ -21,6 +21,19 @@ export interface ApiState {
   [propName: string]: StatusAndArr
 }
 
+// 全局state
+export interface State {
+  api: {
+    [propName: string]: StatusAndArr
+  }
+  status: {
+    breadUrl: Array<{
+      url: string
+      name: string
+    }>
+    token: string
+  }
+}
 
 // 维护全局的state，暂时保留，没什么用
 export interface SelfState {

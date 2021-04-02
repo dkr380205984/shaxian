@@ -127,13 +127,6 @@
               </template>
             </el-table-column>
             <el-table-column prop="total_price"
-              label="属性"
-              width="120">
-              <template slot-scope="scope">
-                <span>{{scope.row.child_data[scope.row.index||0].attribute}}</span>
-              </template>
-            </el-table-column>
-            <el-table-column prop="total_price"
               label="采购数量(kg)"
               width="120">
               <template slot-scope="scope">
@@ -226,7 +219,7 @@
       v-show="create_flag || update_flag">
       <div class="main">
         <div class="titleCtn">
-          <span class="text">添加采购单</span>
+          <span class="text">{{create_flag?'添加':'修改'}}采购单</span>
           <i class="close_icon el-icon-close"
             @click="resetInfo"></i>
         </div>
@@ -449,6 +442,7 @@
                   :multiple="false"
                   :data="postData"
                   :limit="1"
+                  :file-list="order_yarn_info.file_url?[{name:'说明文件',url:order_yarn_info.file_url}]:[]"
                   :on-success="successFile"
                   ref="uploada"
                   list-type="picture">
@@ -738,9 +732,18 @@ export default Vue.extend({
       this.$forceUpdate()
     },
     openUpdate(info: OrderYarn) {
+      const selfInfo = JSON.parse(JSON.stringify(info))
       this.update_flag = true
-      info.additional_fee = JSON.parse(info.additional_fee as string)
-      this.order_yarn_info = info
+      selfInfo.additional_fee = selfInfo.additional_fee
+        ? JSON.parse(info.additional_fee as string)
+        : [
+            {
+              name: '',
+              price: '',
+              desc: ''
+            }
+          ]
+      this.order_yarn_info = selfInfo
     },
     getList() {
       this.loading = true
@@ -835,6 +838,7 @@ export default Vue.extend({
         getInfoApi: 'getTokenAsync'
       }
     ])
+
     this.getFilters()
     this.getList()
   }

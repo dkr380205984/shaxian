@@ -1874,6 +1874,7 @@ export default Vue.extend({
         this.log_info.process_in_log = res[4].data.data.data.items.filter(
           (item: StoreCreate) => Number(item.action_type) === 5
         )
+        // 这里用action_type===9 或 client
         this.log_info.final_out_log = res[4].data.data.data.items.filter(
           (item: StoreCreate) => Number(item.client_id) === Number(this.order_info.client_id)
         )
@@ -2118,7 +2119,7 @@ export default Vue.extend({
       const formData: StoreCreate = {
         order_id: this.$route.params.id,
         related_id: this.order_out_info.id,
-        action_type: 7,
+        action_type: Number(this.order_out_info.client_id) === Number(this.order_info.client_id) ? 9 : 7,
         complete_time: this.order_out_info.complete_time,
         desc: this.order_out_info.desc,
         store_id: this.order_out_info.store_id,
@@ -2333,7 +2334,7 @@ export default Vue.extend({
       const formData: StoreCreate = {
         order_id: this.$route.params.id,
         related_id: this.process_out_info.id,
-        action_type: 6,
+        action_type: Number(this.order_out_info.client_id) === Number(this.order_info.client_id) ? 9 : 6,
         complete_time: this.process_out_info.complete_time,
         store_id: this.process_out_info.store_id,
         second_store_id: this.process_out_info.second_store_id,

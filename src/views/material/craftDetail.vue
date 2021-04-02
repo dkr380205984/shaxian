@@ -1,6 +1,7 @@
 <template>
   <div id="craftDetail"
-    class="indexMain">
+    class="indexMain"
+    v-loading="loading">
     <div class="module">
       <div class="titleCtn">
         <span class="title">工艺单详情</span>
@@ -39,8 +40,6 @@
     <div class="module">
       <div class="titleCtn">
         <span class="title">纱线入库信息</span>
-        <span class="addBtn btn btnMain"
-          @click="yarn_in_flag = true">点击入库</span>
       </div>
       <div class="tableCtn"
         style="margin:20px 32px 0 32px">
@@ -50,41 +49,53 @@
             <div class="tcolumn">颜色/属性</div>
             <div class="tcolumn">计划数量</div>
             <div class="tcolumn">已入库数量</div>
-            <div class="tcolumn">待入库数量</div>
+            <div class="tcolumn">操作</div>
           </div>
         </div>
         <div class="tbody">
           <div class="trow">
             <div class="tcolumn">{{craft_info.yarn_name}}</div>
             <div class="tcolumn">{{craft_info.color}}/{{craft_info.attribute}}</div>
-            <div class="tcolumn blue">{{craft_info.weight}}</div>
-            <div class="tcolumn green">已入库数量</div>
-            <div class="tcolumn orange">待入库数量</div>
+            <div class="tcolumn blue">{{craft_info.weight*1000}}kg</div>
+            <div class="tcolumn green">{{craft_info.push_weight}}kg</div>
+            <div class="tcolumn">
+              <div class="opr orange"
+                @click="yarn_in_flag=true">入库</div>
+            </div>
           </div>
         </div>
       </div>
       <div class="listCtn">
-        <div class="list">
+        <div class="list"
+          v-show="store_yarn_list.length>0">
           <div class="headCtn">
             <div class="row">
               <div class="column min120">入库单号</div>
               <div class="column min120">入库日期</div>
               <div class="column min120">入库数量</div>
+              <div class="column min120">入库件数</div>
               <div class="column min120">色号</div>
-              <div class="column min120">批/缸号</div>
+              <div class="column min120">批号</div>
+              <div class="column min120">缸号</div>
               <div class="column min120">备注信息</div>
               <div class="column min120">操作</div>
             </div>
           </div>
           <div class="bodyCtn">
-            <div class="row">
-              <div class="column min120">入库单号</div>
-              <div class="column min120">入库日期</div>
-              <div class="column min120">入库数量</div>
-              <div class="column min120">色号</div>
-              <div class="column min120">批/缸号</div>
-              <div class="column min120">备注信息</div>
-              <div class="column min120">操作</div>
+            <div class="row"
+              v-for="item in store_yarn_list"
+              :key="item.id">
+              <div class="column min120">{{item.code}}</div>
+              <div class="column min120">{{item.complete_time}}</div>
+              <div class="column min120">{{item.child_data[0].action_weight}}kg</div>
+              <div class="column min120">{{item.child_data[0].item}}件</div>
+              <div class="column min120">{{item.child_data[0].color_code}}</div>
+              <div class="column min120">{{item.child_data[0].batch_code}}</div>
+              <div class="column min120">{{item.child_data[0].vat_code}}</div>
+              <div class="column min120">{{item.desc||'无'}}</div>
+              <div class="column min120">
+                <span class="opr red">删除</span>
+              </div>
             </div>
           </div>
         </div>
@@ -93,7 +104,61 @@
     <div class="module">
       <div class="titleCtn">
         <span class="title">毛条出库信息</span>
-        <span class="addBtn btn btnMain">点击出库</span>
+      </div>
+      <div class="tableCtn"
+        style="margin:20px 32px 0 32px">
+        <div class="thead">
+          <div class="trow">
+            <div class="tcolumn">毛条名称</div>
+            <div class="tcolumn">计划数量</div>
+            <div class="tcolumn">已出库数量</div>
+            <div class="tcolumn">操作</div>
+          </div>
+        </div>
+        <div class="tbody">
+          <div class="trow"
+            v-for="(item,index) in craft_info.material_info"
+            :key="index">
+            <div class="tcolumn">{{item.material_name}}</div>
+            <div class="tcolumn blue">{{item.proportion1*craft_info.weight*10}}~{{item.proportion2*craft_info.weight*10}}kg</div>
+            <div class="tcolumn green">{{item.push_weight}}kg</div>
+            <div class="tcolumn">
+              <div class="opr orange"
+                @click="openMaterialOut(item)">出库</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="listCtn">
+        <div class="list"
+          v-show="store_material_list.length>0">
+          <div class="headCtn">
+            <div class="row">
+              <div class="column min120">出库单号</div>
+              <div class="column min120">出库日期</div>
+              <div class="column min120">毛条名称</div>
+              <div class="column min120">出库数量</div>
+              <div class="column min120">出库件数</div>
+              <div class="column min120">备注信息</div>
+              <div class="column min120">操作</div>
+            </div>
+          </div>
+          <div class="bodyCtn">
+            <div class="row"
+              v-for="item in store_material_list"
+              :key="item.id">
+              <div class="column min120">{{item.code}}</div>
+              <div class="column min120">{{item.complete_time}}</div>
+              <div class="column min120">{{item.child_data[0].name}}</div>
+              <div class="column min120">{{item.child_data[0].action_weight}}kg</div>
+              <div class="column min120">{{item.child_data[0].item}}件</div>
+              <div class="column min120">{{item.desc}}</div>
+              <div class="column min120">
+                <span class="opr red">删除</span>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
     <div class="module">
@@ -278,48 +343,65 @@
       <div class="main">
         <div class="titleCtn">
           <span class="text">纱线入库</span>
-          <i class="close_icon el-icon-close"></i>
+          <i class="close_icon el-icon-close"
+            @click="yarn_in_flag = false"></i>
         </div>
         <div class="contentCtn">
           <div class="row">
             <div class="label">纱线名称：</div>
             <div class="info">
               <el-input disabled
-                placeholder="请选择纱线"></el-input>
+                placeholder="请选择纱线"
+                v-model="store_yarn_info.child_data[0].name"></el-input>
             </div>
           </div>
           <div class="row">
             <div class="label">加工色号：</div>
             <div class="info">
-              <el-input placeholder="请输入加工色号"></el-input>
+              <el-input placeholder="请输入加工色号"
+                v-model="store_yarn_info.child_data[0].color_code"></el-input>
             </div>
           </div>
           <div class="row">
-            <div class="label">批/缸号：</div>
+            <div class="label">批号：</div>
             <div class="info">
-              <el-input placeholder="请输入批/缸号"></el-input>
+              <el-input placeholder="请输入批号"
+                v-model="store_yarn_info.child_data[0].batch_code"></el-input>
             </div>
           </div>
           <div class="row">
-            <div class="label">入库件数：</div>
+            <div class="label">缸号：</div>
             <div class="info">
-              <el-input placeholder="请输入入库件数">
-                <template slot="append">件</template>
-              </el-input>
+              <el-input placeholder="请输入缸号"
+                v-model="store_yarn_info.child_data[0].vat_code"></el-input>
             </div>
           </div>
           <div class="row">
             <div class="label isMust">入库数量：</div>
             <div class="info">
-              <el-input placeholder="请输入入库数量">
+              <el-input placeholder="请输入入库数量"
+                v-model="store_yarn_info.child_data[0].action_weight">
                 <template slot="append">kg</template>
               </el-input>
             </div>
           </div>
           <div class="row">
-            <div class="label">入库仓库：</div>
+            <div class="label">入库件数：</div>
             <div class="info">
-              <el-select placeholder="请选择入库仓库"></el-select>
+              <el-input placeholder="请输入入库件数"
+                v-model="store_yarn_info.child_data[0].item">
+                <template slot="append">件</template>
+              </el-input>
+            </div>
+          </div>
+          <div class="row">
+            <div class="label isMust">入库仓库：</div>
+            <div class="info">
+              <el-cascader v-model="store_yarn_info.select_id"
+                :options="store_list"
+                :props="{value:'id',label:'name',children:'second_data'}"
+                placeholder="请选择入库仓库">
+              </el-cascader>
             </div>
           </div>
           <div class="row">
@@ -328,21 +410,98 @@
               <el-date-picker style="width:100%"
                 type="date"
                 value-format="yyyy-MM-dd"
-                placeholder="选择入库时间">
+                placeholder="选择入库时间"
+                v-model="store_yarn_info.complete_time">
               </el-date-picker>
             </div>
           </div>
           <div class="row">
             <div class="label">备注信息：</div>
             <div class="info">
-              <el-input placeholder="请输入备注信息">
+              <el-input placeholder="请输入备注信息"
+                v-model="store_yarn_info.desc">
               </el-input>
             </div>
           </div>
         </div>
         <div class="oprCtn">
-          <div class="opr blue">确认</div>
-          <div class="opr">取消</div>
+          <div class="opr"
+            @click="yarn_in_flag = false">取消</div>
+          <div class="opr blue"
+            @click="saveYarnIn">确认</div>
+        </div>
+      </div>
+    </div>
+    <div class="popup"
+      v-show="material_out_flag">
+      <div class="main">
+        <div class="titleCtn">
+          <span class="text">毛条出库</span>
+          <i class="close_icon el-icon-close"
+            @click="material_out_flag = false"></i>
+        </div>
+        <div class="contentCtn">
+          <div class="row">
+            <div class="label">毛条名称：</div>
+            <div class="info">
+              <el-input disabled
+                placeholder="请选择纱线"
+                v-model="store_material_info.child_data[0].name"></el-input>
+            </div>
+          </div>
+          <div class="row">
+            <div class="label isMust">出库数量：</div>
+            <div class="info">
+              <el-input placeholder="请输入出库数量"
+                v-model="store_material_info.child_data[0].action_weight">
+                <template slot="append">kg</template>
+              </el-input>
+            </div>
+          </div>
+          <div class="row">
+            <div class="label">出库件数：</div>
+            <div class="info">
+              <el-input placeholder="请输入出库件数"
+                v-model="store_material_info.child_data[0].item">
+                <template slot="append">件</template>
+              </el-input>
+            </div>
+          </div>
+          <div class="row">
+            <div class="label isMust">来源仓库：</div>
+            <div class="info">
+              <el-cascader v-model="store_material_info.select_id"
+                :options="materail_store_list"
+                :props="{value:'id',label:'name',children:'second_data'}"
+                placeholder="请选择来源仓库">
+              </el-cascader>
+            </div>
+          </div>
+          <div class="row">
+            <div class="label">出库时间：</div>
+            <div class="info">
+              <el-date-picker style="width:100%"
+                type="date"
+                value-format="yyyy-MM-dd"
+                placeholder="选择出库时间"
+                v-model="store_material_info.complete_time">
+              </el-date-picker>
+            </div>
+          </div>
+          <div class="row">
+            <div class="label">备注信息：</div>
+            <div class="info">
+              <el-input placeholder="请输入备注信息"
+                v-model="store_material_info.desc">
+              </el-input>
+            </div>
+          </div>
+        </div>
+        <div class="oprCtn">
+          <div class="opr blue"
+            @click="saveMaterialOut">确认</div>
+          <div class="opr"
+            @click="material_out_flag = false">取消</div>
         </div>
       </div>
     </div>
@@ -361,16 +520,67 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { craft } from '@/assets/js/api'
+import { craft, stock } from '@/assets/js/api'
 import { CraftInfo } from '@/types/material'
+import { StoreCreate } from '@/types/store'
 export default Vue.extend({
   data(): {
     craft_info: CraftInfo
+    store_material_info: StoreCreate
+    store_yarn_info: StoreCreate
     [propName: string]: any
   } {
     return {
+      loading: true,
       yarn_in_flag: false,
+      material_out_flag: false,
+      store_yarn_info: {
+        id: '',
+        client_id: '',
+        related_id: this.$route.params.id,
+        select_id: [],
+        action_type: 9,
+        store_id: '',
+        second_store_id: '',
+        complete_time: this.$getDate(new Date()),
+        desc: '',
+        child_data: [
+          {
+            name: '',
+            action_weight: '',
+            color: '',
+            attribute: '',
+            batch_code: '',
+            color_code: '',
+            vat_code: '',
+            item: '',
+            desc: ''
+          }
+        ]
+      },
+      store_material_info: {
+        id: '',
+        client_id: '',
+        related_id: this.$route.params.id,
+        select_id: [],
+        action_type: 6,
+        store_id: '',
+        second_store_id: '',
+        complete_time: this.$getDate(new Date()),
+        desc: '',
+        child_data: [
+          {
+            name: '',
+            action_weight: '',
+            item: '',
+            desc: ''
+          }
+        ]
+      },
+      store_yarn_list: [],
+      store_material_list: [],
       craft_info: {
+        push_weight: '',
         code: '',
         is_draft: 1,
         client_id: '',
@@ -413,14 +623,132 @@ export default Vue.extend({
       }
     }
   },
+  computed: {
+    store_list() {
+      return this.$store.state.api.storeHouse.arr.filter((item: any) => item.store_type === 1)
+    },
+    materail_store_list() {
+      return this.$store.state.api.storeHouse.arr.filter((item: any) => item.store_type === 2)
+    }
+  },
+  methods: {
+    init() {
+      this.loading = true
+      Promise.all([
+        craft.detail({
+          id: this.$route.params.id
+        }),
+        stock.list({
+          related_id: this.$route.params.id,
+          action_type: 9
+        }),
+        stock.materialList({
+          related_id: this.$route.params.id,
+          action_type: 6
+        })
+      ]).then((res) => {
+        this.craft_info = res[0].data.data
+        this.store_yarn_info = {
+          id: '',
+          client_id: this.craft_info.client_id,
+          related_id: this.$route.params.id,
+          select_id: [],
+          action_type: 9,
+          store_id: '',
+          second_store_id: '',
+          complete_time: this.$getDate(new Date()),
+          desc: '',
+          child_data: [
+            {
+              name: this.craft_info.yarn_name as string,
+              action_weight: '',
+              color: this.craft_info.color,
+              attribute: this.craft_info.attribute,
+              batch_code: '',
+              color_code: '',
+              vat_code: '',
+              item: '',
+              desc: ''
+            }
+          ]
+        }
+        this.store_yarn_list = res[1].data.data.data.items
+        this.craft_info.push_weight = this.store_yarn_list.reduce((total: number, current: any) => {
+          return total + Number(current.child_data[0].action_weight)
+        }, 0)
+        this.store_material_list = res[2].data.data.data.items
+        this.craft_info.material_info.forEach((item: any) => {
+          item.push_weight = this.store_material_list
+            .filter((itemChild: any) => itemChild.child_data[0].name === item.material_name)
+            .reduce((total: number, current: any) => {
+              return total + Number(current.child_data[0].action_weight)
+            }, 0)
+        })
+
+        this.loading = false
+      })
+    },
+    saveYarnIn() {
+      if (!this.store_yarn_info.select_id) {
+        this.$message.error('请选择入库仓库')
+        return
+      }
+      if (!this.store_yarn_info.child_data[0].action_weight) {
+        this.$message.error('请输入入库数量')
+        return
+      }
+      this.store_yarn_info.child_data[0].color_code = this.store_yarn_info.child_data[0].color_code
+        ? this.store_yarn_info.child_data[0].color_code
+        : 'NOT_SET'
+      this.store_yarn_info.child_data[0].batch_code = this.store_yarn_info.child_data[0].batch_code
+        ? this.store_yarn_info.child_data[0].batch_code
+        : 'NOT_SET'
+      this.store_yarn_info.child_data[0].vat_code = this.store_yarn_info.child_data[0].vat_code
+        ? this.store_yarn_info.child_data[0].vat_code
+        : 'NOT_SET'
+      this.store_yarn_info.store_id = (this.store_yarn_info.select_id as number[])[0]
+      this.store_yarn_info.second_store_id = (this.store_yarn_info.select_id as number[])[1]
+      stock.create({ data: [this.store_yarn_info] }).then((res) => {
+        if (res.data.status) {
+          this.$message.success('入库成功')
+          this.yarn_in_flag = false
+          this.init()
+        }
+      })
+    },
+    saveMaterialOut() {
+      if (!this.store_material_info.select_id) {
+        this.$message.error('请选择来源仓库')
+        return
+      }
+      if (!this.store_material_info.child_data[0].action_weight) {
+        this.$message.error('请输入出库数量')
+        return
+      }
+      this.store_material_info.store_id = (this.store_material_info.select_id as number[])[0]
+      this.store_material_info.second_store_id = (this.store_material_info.select_id as number[])[1]
+      stock.materialCreate({ data: [this.store_material_info] }).then((res) => {
+        if (res.data.status) {
+          this.$message.success('出库成功')
+          this.material_out_flag = false
+          this.init()
+        }
+      })
+    },
+    openMaterialOut(info: any) {
+      this.store_material_info.child_data[0].name = info.material_name
+      this.material_out_flag = true
+    }
+  },
   mounted() {
-    craft
-      .detail({
-        id: this.$route.params.id
-      })
-      .then((res) => {
-        this.craft_info = res.data.data
-      })
+    this.$checkCommonInfo([
+      {
+        checkWhich: 'api/storeHouse',
+        getInfoMethed: 'dispatch',
+        getInfoApi: 'getStoreAsync'
+      }
+    ])
+    this.init()
   }
 })
 </script>

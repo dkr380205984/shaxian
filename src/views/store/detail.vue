@@ -218,14 +218,15 @@
                     <el-cascader v-model="itemStore.name"
                       filterable
                       placeholder="请选择纱线"
-                      :options="commonInit.yarnList"></el-cascader>
+                      :options="commonInit.yarnList"
+                      @change="getProColor($event,itemStore)"></el-cascader>
                   </div>
                 </div>
                 <div class="eColumn">
                   <span class="label isMust">纱线颜色</span>
                   <div class="from">
                     <el-autocomplete v-model="itemStore.color"
-                      :fetch-suggestions="querySearchColor"
+                      :fetch-suggestions="(query,cb)=>{querySearchColor(query,cb,itemStore.color_list)}"
                       placeholder="请输入纱线颜色"></el-autocomplete>
                   </div>
                 </div>
@@ -344,7 +345,7 @@
                 color_code:'',
                 vat_code:'',
                 desc:''
-              })">添加新库存</div>
+              })">添加出入库</div>
           </div>
         </div>
       </div>
@@ -491,16 +492,16 @@
                 :key="item.id">
                 <div class="tcolumn">{{item.code}}</div>
                 <div class="tcolumn"
-                  :class="{'blue':item.action_type===1||item.action_type===3||item.action_type===5,'green':item.action_type===2||item.action_type===4||item.action_type===6||item.action_type===7}">{{item.action_type|stockTypeFilter}}</div>
+                  :class="{'blue':item.action_type===1||item.action_type===3||item.action_type===5||item.action_type===8,'green':item.action_type===2||item.action_type===4||item.action_type===6||item.action_type===7||item.action_type===9}">{{item.action_type|stockTypeFilter}}</div>
                 <div class="tcolumn"
                   style="flex:2">
-                  <span v-if="item.action_type===1||item.action_type===3||item.action_type===5">
+                  <span v-if="item.action_type===1||item.action_type===3||item.action_type===5||item.action_type===8">
                     <span class="green">{{item.client_name ||'无来源'}}</span>
                     <i class="el-icon-s-unfold orange"
                       style="margin:0 5px;font-size:16px"></i>
                     <span class="blue">{{item.second_store_name}}</span>
                   </span>
-                  <span v-if="item.action_type===2||item.action_type===4||item.action_type===6||item.action_type===7">
+                  <span v-if="item.action_type===2||item.action_type===4||item.action_type===6||item.action_type===7||item.action_type===9">
                     <span class="blue">{{item.second_store_name}}</span>
                     <i class="el-icon-s-unfold orange"
                       style="margin:0 5px;font-size:16px"></i>
@@ -792,12 +793,12 @@ export default Vue.extend({
         }
       }
     },
-    querySearchColor(queryString: string, cb: (params: any) => void) {
-      const returnData = queryString
-        ? this.commonInit.yarnColorList.filter((itemF) => itemF.value.indexOf(queryString) !== -1)
-        : this.commonInit.yarnColorList
-      cb(returnData)
-    },
+    // querySearchColor(queryString: string, cb: (params: any) => void) {
+    //   const returnData = queryString
+    //     ? this.commonInit.yarnColorList.filter((itemF) => itemF.value.indexOf(queryString) !== -1)
+    //     : this.commonInit.yarnColorList
+    //   cb(returnData)
+    // },
     querySearchColorCode(queryString: string, cb: (params: any) => void) {
       const colorCodeList = this.$unique(
         this.storeList.map((itemM: any) => {
@@ -945,6 +946,29 @@ export default Vue.extend({
       this.storeLogListFilter.attr = item.attribute
       this.$goElView('stockLogEl')
       this.getStoreLogList()
+    },
+    getProColor(ev: string[], proInfo: any) {
+      product
+        .list({
+          name: ev[1]
+        })
+        .then((res) => {
+          proInfo.color_list = Array.from(
+            new Set(res.data.data.items[0].child_data.map((itemChild: any) => itemChild.color))
+          ).map((itemChild: any) => {
+            return {
+              value: itemChild
+            }
+          })
+        })
+    },
+    querySearchColor(queryString: string, cb: (params: any) => void, list: any[]) {
+      if (list) {
+        const returnData = queryString ? list.filter((itemF: any) => itemF.value.indexOf(queryString) !== -1) : list
+        cb(returnData)
+      } else {
+        cb([])
+      }
     }
   },
   mounted() {

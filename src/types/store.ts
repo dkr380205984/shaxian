@@ -38,7 +38,7 @@ export interface OrderStoreInfo {
   [propName: string]: any
 }
 
-// 入库
+// 出入库
 export interface StoreCreate {
   id?: string | number
   code?: string
@@ -64,7 +64,7 @@ export interface StoreCreateChild {
   action_weight: string | number
   color?: string
   attribute?: string
-  batch_code: string
+  batch_code?: string
   color_code?: string
   vat_code?: string
   item: string // 件数

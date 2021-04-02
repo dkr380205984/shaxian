@@ -41,13 +41,22 @@
           </div>
           <div class="colCtn">
             <span class="label">交货日期：</span>
-            <span class="text">{{order_yarn_info.delivery_time}}</span>
+            <span class="text">{{order_yarn_info.delivery_time}}
+              （<span :class="{'red':$diffByDate(order_yarn_info.delivery_time)<=0,'green':$diffByDate(order_yarn_info.delivery_time)>7,'yellow':$diffByDate(order_yarn_info.delivery_time)<=7 &&$diffByDate(order_yarn_info.delivery_time)>0 }">
+                {{$diffByDate(order_yarn_info.delivery_time)>0?'交货还剩'+$diffByDate(order_yarn_info.delivery_time)+'天':'延期发货'+Math.abs($diffByDate(order_yarn_info.delivery_time))+'天'}}
+              </span>）
+            </span>
           </div>
         </div>
         <div class="rowCtn">
-          <div class="colCtn">
+          <div class="colCtn"
+            style="min-width:796px">
             <span class="label">备注信息：</span>
             <span class="text">{{order_yarn_info.desc || '无'}}</span>
+          </div>
+          <div class="colCtn">
+            <span class="label">入库数量：</span>
+            <span class="text green">{{order_yarn_info.push_weight || 0}}kg</span>
           </div>
         </div>
         <div class="rowCtn"
@@ -94,6 +103,7 @@
               <div class="tcolumn">纱线属性</div>
               <div class="tcolumn">采购单价(元)</div>
               <div class="tcolumn">采购数量(kg)</div>
+              <div class="tcolumn">入库数量(kg)</div>
             </div>
           </div>
           <div class="tbody">
@@ -106,7 +116,8 @@
               <div class="tcolumn">{{item.color}}</div>
               <div class="tcolumn">{{item.attribute}}</div>
               <div class="tcolumn">{{item.price}}元</div>
-              <div class="tcolumn">{{item.weight}}kg</div>
+              <div class="tcolumn blue">{{item.weight}}kg</div>
+              <div class="tcolumn green">{{item.push_weight}}kg</div>
             </div>
           </div>
         </div>
@@ -204,7 +215,8 @@
                   :key="item.id">
                   <div class="column min120"
                     :style="{'height':50*item.child_data.length + 'px'}">
-                    <span class="blue opr">打印</span>
+                    <span class="blue opr"
+                      @click="$openUrl(`/print/store/1/${item.id}`)">打印</span>
                     <span class="red opr">删除</span>
                   </div>
                 </div>
@@ -284,6 +296,9 @@
             @click="openCheck">审核</div>
           <div class="btn btnRed"
             @click="openDeduct">扣款</div>
+          <div class="btn btnBlue"
+            @click="confirm"
+            v-if="order_yarn_info.status!==3">确认完成</div>
         </div>
       </div>
     </div>
@@ -516,7 +531,7 @@
 import Vue from 'vue'
 import { StoreCreate } from '@/types/store'
 import { OrderYarn } from '@/types/orderProcessYarn'
-import { yarnOrder, stock, deduct } from '@/assets/js/api'
+import { yarnOrder, stock, deduct, check } from '@/assets/js/api'
 export default Vue.extend({
   data(): {
     order_yarn_info: OrderYarn
@@ -577,7 +592,7 @@ export default Vue.extend({
       return this.order_yarn_info.child_data.filter((item: any) => item.check)
     },
     store_list() {
-      return this.$store.state.api.storeHouse.arr
+      return this.$store.state.api.storeHouse.arr.filter((item: any) => item.store_type === 1)
     }
   },
   methods: {
@@ -599,6 +614,20 @@ export default Vue.extend({
         this.order_yarn_info = res[0].data.data
         this.order_yarn_info.additional_fee = JSON.parse(this.order_yarn_info.additional_fee as string)
         this.order_in_log = res[1].data.data.data.items
+        this.order_yarn_info.child_data.forEach((item) => {
+          item.push_weight = 0
+          this.order_in_log.forEach((itemLog: any) => {
+            itemLog.child_data.forEach((itemChild: any) => {
+              if (
+                itemChild.name === item.name &&
+                itemChild.color === item.color &&
+                itemChild.attribute === item.attribute
+              ) {
+                item.push_weight = Number(itemChild.action_weight) + Number(item.push_weight)
+              }
+            })
+          })
+        })
         console.log(this.order_yarn_info)
         console.log(this.order_in_log)
         this.deduct_list = res[2].data.data
@@ -728,6 +757,31 @@ export default Vue.extend({
     },
     openCheck() {
       this.check_flag = true
+    },
+    confirm() {
+      this.$confirm('是否确认采购单完成?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      })
+        .then(() => {
+          check
+            .confirm({
+              pid: this.$route.params.id,
+              complete_type: 1
+            })
+            .then((res) => {
+              if (res.data.status) {
+                this.init()
+              }
+            })
+        })
+        .catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消'
+          })
+        })
     }
   },
   mounted() {

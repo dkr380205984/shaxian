@@ -138,16 +138,16 @@
               :key="item.id">
               <div class="tcolumn">{{item.code}}</div>
               <div class="tcolumn"
-                :class="{'blue':item.action_type===1||item.action_type===3||item.action_type===5,'green':item.action_type===2||item.action_type===4||item.action_type===6||item.action_type===7}">{{item.action_type|stockTypeFilter}}</div>
+                :class="{'blue':item.action_type===1||item.action_type===3||item.action_type===5||item.action_type===8,'green':item.action_type===2||item.action_type===4||item.action_type===6||item.action_type===7||item.action_type===9}">{{item.action_type|stockTypeFilter}}</div>
               <div class="tcolumn"
                 style="flex:2">
-                <span v-if="item.action_type===1||item.action_type===3||item.action_type===5">
+                <span v-if="item.action_type===1||item.action_type===3||item.action_type===5||item.action_type===8">
                   <span class="green">{{item.client_name ||'无来源'}}</span>
                   <i class="el-icon-s-unfold orange"
                     style="margin:0 5px;font-size:16px"></i>
                   <span class="blue">{{item.second_store_name}}</span>
                 </span>
-                <span v-if="item.action_type===2||item.action_type===4||item.action_type===6||item.action_type===7">
+                <span v-if="item.action_type===2||item.action_type===4||item.action_type===6||item.action_type===7||item.action_type===9">
                   <span class="blue">{{item.second_store_name}}</span>
                   <i class="el-icon-s-unfold orange"
                     style="margin:0 5px;font-size:16px"></i>
@@ -164,7 +164,7 @@
                   <div class="tcolumn">{{itemChilid.color_code}}</div>
                   <div class="tcolumn">{{itemChilid.vat_code}}</div>
                   <div class="tcolumn"
-                    :class="{'blue':item.action_type===1||item.action_type===3||item.action_type===5,'green':item.action_type===2||item.action_type===4||item.action_type===6||item.action_type===7}">{{itemChilid.action_weight}}</div>
+                    :class="{'blue':item.action_type===1||item.action_type===3||item.action_type===5||item.action_type===8,'green':item.action_type===2||item.action_type===4||item.action_type===6||item.action_type===7||item.action_type===9 }">{{itemChilid.action_weight}}</div>
                 </div>
               </div>
               <div class="tcolumn">{{item.complete_time}}</div>

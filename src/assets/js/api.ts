@@ -97,7 +97,8 @@ const stock = {
   detail: (params: { id: number }) => http.get(`${baseUrl}/store/log/detail`, params),
   materialList: (params?: any) => http.get(`${baseUrl}/material/store/log/lists`, params),
   create: (params: { data: StoreCreate[] }) => http.post(`${baseUrl}/store/total/save`, params, 'application/json'),
-  materialCreate: (params: { data: StoreCreate[] }) => http.post(`${baseUrl}/material/store/total/save`, params, 'application/json')
+  materialCreate: (params: { data: StoreCreate[] }) => http.post(`${baseUrl}/material/store/total/save`, params, 'application/json'),
+  materialDetail: (params: { id: number }) => http.get(`${baseUrl}/material/store/log/detail`, params)
 }
 
 // 采购
@@ -115,7 +116,8 @@ import { ProcessYarn } from '@/types/orderProcessYarn'
 const yarnProcess = {
   create: (params: { data: ProcessYarn[], order_id: string }) => http.post(`${baseUrl}/order/process/save`, params, 'application/json'),
   list: (params: ListParam) => http.get(`${baseUrl}/order/process/lists`, params),
-  delete: (params: DeleteParam) => http.post(`${baseUrl}/order/process/delete`, params, 'application/json')
+  delete: (params: DeleteParam) => http.post(`${baseUrl}/order/process/delete`, params, 'application/json'),
+  detail: (params: DetailParam) => http.get(`${baseUrl}/order/process/detail`, params)
 }
 
 // 毛条

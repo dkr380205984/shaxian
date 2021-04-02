@@ -91,7 +91,7 @@
             <div class="row"
               v-for="item in list"
               :key="item.id">
-              <div class="column">{{item.yarn_type_name}}</div>
+              <div class="column">{{item.yarn_type|yarnTypeFilter}}</div>
               <div class="column">{{item.name}}</div>
               <div class="column">{{item.child_data|fiterColor}}</div>
               <div class="column">{{item.child_data|fiterAttr}}</div>
@@ -192,7 +192,9 @@ export default Vue.extend({
                 })
               }
             })
+          this.getFilters()
           this.getList()
+          this.$forceUpdate()
         })
         .catch(() => {
           this.$message({

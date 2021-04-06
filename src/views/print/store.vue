@@ -34,8 +34,8 @@
               <div class="row_item center flex20">{{itemOther.color}}</div>
               <div class="row_item center">{{itemOther.attribute}}</div>
               <div class="row_item center">{{itemOther.batch_code}}</div>
-              <div class="row_item center">{{itemOther.vat_code}}</div>
               <div class="row_item center">{{itemOther.color_code}}</div>
+              <div class="row_item center">{{itemOther.vat_code}}</div>
               <div class="row_item center">{{itemOther.action_weight || 0}}KG</div>
               <div class="row_item center">{{itemOther.item || 0}}件</div>
             </div>

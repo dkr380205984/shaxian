@@ -128,6 +128,10 @@
                   <div class="tcolumn blue">{{itemStore.useable_weight && $formatNum(itemStore.useable_weight) || '-'}}</div>
                   <div class="tcolumn flexRow"
                     style="min-width:110px">
+                    <span class="opr blue"
+                      @click="handleStockBtn(item,itemStore,1)">入库</span>
+                    <span class="opr orange"
+                      @click="handleStockBtn(item,itemStore,2)">出库</span>
                     <span class="opr green"
                       @click="goLogEl(item)">日志</span>
                   </div>
@@ -152,6 +156,196 @@
                 </div>
               </div>
             </div>
+          </div>
+        </div>
+        <div class="editCtn"
+          id="stockEditEl">
+          <div class="editContainer"
+            v-show="storeEditInfo.child_data.length>0">
+            <div class="eRow">
+              <div class="eColumn">
+                <span class="label isMust">二级仓库</span>
+                <div class="from">
+                  <el-select v-model="storeEditInfo.second_store_id"
+                    placeholder="请选择二级仓库"
+                    clearable>
+                    <el-option v-for="item in storeDetail.second_data"
+                      :key="item.id"
+                      :label="item.name"
+                      :value="item.id">
+                    </el-option>
+                  </el-select>
+                </div>
+              </div>
+              <div class="eColumn">
+                <span class="label isMust">操作类型</span>
+                <div class="from">
+                  <el-select v-model="storeEditInfo.action_type"
+                    placeholder="请选择操作类型">
+                    <el-option v-for="item in commonInit.typeArr"
+                      :key="item.id"
+                      :label="item.name"
+                      :value="item.id">
+                    </el-option>
+                  </el-select>
+                </div>
+              </div>
+              <div class="eColumn">
+                <span class="label">出入库单位</span>
+                <div class="from">
+                  <el-select v-model="storeEditInfo.client_id"
+                    placeholder="请选择出入库单位"
+                    filterable>
+                    <el-option v-for="item in client_list"
+                      :key="item.id"
+                      :label="item.name"
+                      :value="item.id">
+                    </el-option>
+                  </el-select>
+                </div>
+              </div>
+            </div>
+            <div class="eRowCtn"
+              style="position:relative"
+              v-for="(itemStore,indexStore) in storeEditInfo.child_data"
+              :key="indexStore">
+              <span class="el-icon-circle-close"
+                @click="storeEditInfo.child_data.length===1?$message.error('至少有一种纱线'):$deleteItem(storeEditInfo.child_data,indexStore)"></span>
+              <div class="eRow">
+                <div class="eColumn">
+                  <span class="label isMust">纱线名称</span>
+                  <div class="from">
+                    <el-cascader v-model="itemStore.name"
+                      filterable
+                      placeholder="请选择纱线"
+                      :options="commonInit.yarnList"
+                      @change="getProColor($event,itemStore)"></el-cascader>
+                  </div>
+                </div>
+                <div class="eColumn">
+                  <span class="label isMust">纱线颜色</span>
+                  <div class="from">
+                    <el-autocomplete v-model="itemStore.color"
+                      :fetch-suggestions="(query,cb)=>{querySearchColor(query,cb,itemStore.color_list)}"
+                      placeholder="请输入纱线颜色"></el-autocomplete>
+                  </div>
+                </div>
+                <div class="eColumn">
+                  <span class="label isMust">纱线属性</span>
+                  <div class="from">
+                    <el-select v-model="itemStore.attribute"
+                      clearable
+                      placeholder="请选择纱线属性">
+                      <el-option v-for="item in commonInit.materialAttrArr"
+                        :key="item.id"
+                        :label="item.name"
+                        :value="item.name">
+                      </el-option>
+                    </el-select>
+                  </div>
+                </div>
+              </div>
+              <div class="eRow">
+                <div class="eColumn">
+                  <span class="label isMust">批号</span>
+                  <div class="from">
+                    <el-input v-model="itemStore.batch_code"
+                      placeholder="请输入批号">
+                    </el-input>
+                  </div>
+                </div>
+                <div class="eColumn">
+                  <div class="eRow innerEl">
+                    <div class="eColumn flexMode">
+                      <span class="label">色号</span>
+                      <div class="from">
+                        <el-autocomplete v-model="itemStore.color_code"
+                          :fetch-suggestions="querySearchColorCode"
+                          placeholder="请输入纱线色号"></el-autocomplete>
+                      </div>
+                    </div>
+                    <div class="eColumn flexMode">
+                      <span class="label">缸号</span>
+                      <div class="from">
+                        <el-autocomplete v-model="itemStore.vat_code"
+                          :fetch-suggestions="querySearchVatCode"
+                          placeholder="请输入纱线缸号"></el-autocomplete>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="eColumn">
+                  <div class="eRow innerEl">
+                    <div class="eColumn flexMode">
+                      <span class="label">数量</span>
+                      <div class="from">
+                        <el-input v-model="itemStore.action_weight"
+                          placeholder="请输入数量"></el-input>
+                      </div>
+                    </div>
+                    <div class="eColumn flexMode">
+                      <span class="label">件数</span>
+                      <div class="from">
+                        <el-input v-model="itemStore.item"
+                          placeholder="请输入件数"></el-input>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="eRow">
+              <div class="eColumn">
+                <span class="label isMust">操作日期</span>
+                <div class="from">
+                  <el-date-picker style="width:100%"
+                    v-model="storeEditInfo.complete_time"
+                    type="date"
+                    value-format="yyyy-MM-dd"
+                    placeholder="选择操作日期">
+                  </el-date-picker>
+                </div>
+              </div>
+              <div class="eColumn">
+                <span class="label isMust">备注信息</span>
+                <div class="from">
+                  <el-input v-model="storeEditInfo.desc"
+                    placeholder="请输入备注信息"></el-input>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="editBtnCtn"
+            v-if="storeEditInfo.child_data.length > 0">
+            <div class="editBtn btnGray"
+              @click="resetData">取消</div>
+            <div class="editBtn btnBluePurple"
+              @click="$addItem(storeEditInfo.child_data,{
+                name:'',
+                color:'',
+                attribute:'',
+                item:'',
+                action_weight:'',
+                color_code:'',
+                vat_code:'',
+                desc:''
+              })">继续添加</div>
+            <div class="editBtn btnGreen"
+              @click="saveStoreEditInfo">确认提交</div>
+          </div>
+          <div class="editBtnCtn"
+            v-if="storeEditInfo.child_data.length === 0">
+            <div class="editBtn btnBluePurple"
+              @click="$addItem(storeEditInfo.child_data,{
+                name:'',
+                color:'',
+                attribute:'',
+                item:'',
+                action_weight:'',
+                color_code:'',
+                vat_code:'',
+                desc:''
+              })">添加出入库</div>
           </div>
         </div>
       </div>
@@ -224,7 +418,28 @@
                 clearable
                 @change="getStoreLogList(1)"
                 placeholder="每页展示条数（默认‘5’）">
-                <el-option v-for="item in commonInit.limitArr"
+                <el-option v-for="item in [
+                  {
+                    id:5,
+                    name:'5条'
+                  },
+                  {
+                    id:10,
+                    name:'10条'
+                  },
+                  {
+                    id:15,
+                    name:'15条'
+                  },
+                  {
+                    id:20,
+                    name:'20条'
+                  },
+                  {
+                    id:25,
+                    name:'25条'
+                  }
+                ]"
                   :key="item.id"
                   :label="item.name"
                   :value="item.id">
@@ -350,7 +565,8 @@
 <script lang="ts">
 import Vue from 'vue'
 import { StoreDetail } from '@/types/common'
-import { store, stock } from '@/assets/js/api'
+import { store, stock, product, yarnColor, yarnType } from '@/assets/js/api'
+import { StoreCreate } from '@/types/store'
 export default Vue.extend({
   data(): {
     storeDetail: StoreDetail
@@ -358,11 +574,13 @@ export default Vue.extend({
       [key: string]: any
     }>
     commonInit: {
+      yarnList: []
+      yarnColorList: Array<{ value: string; id: number }>
       typeArr: Array<{ id: number; name: string }>
       materialAttrArr: Array<{ id: number; name: string }>
       remarkList: Array<{ value: string }>
-      limitArr: Array<{ id: number; name: string }>
     }
+    storeEditInfo: StoreCreate
     [propName: string]: any
   } {
     return {
@@ -393,6 +611,15 @@ export default Vue.extend({
         page: 1,
         total: 1
       },
+      storeEditInfo: {
+        client_id: '',
+        action_type: '',
+        desc: '',
+        complete_time: this.$getDate(new Date()),
+        store_id: this.$route.params.id,
+        second_store_id: '',
+        child_data: []
+      },
       // 日志数据
       storeLogInfo: {
         total_push: 0,
@@ -413,6 +640,8 @@ export default Vue.extend({
       },
       // 初始化公共数据
       commonInit: {
+        yarnList: [],
+        yarnColorList: [],
         typeArr: [
           {
             id: 1,
@@ -433,29 +662,7 @@ export default Vue.extend({
             name: '筒纱'
           }
         ],
-        remarkList: [],
-        limitArr: [
-          {
-            id: 5,
-            name: '5条'
-          },
-          {
-            id: 10,
-            name: '10条'
-          },
-          {
-            id: 15,
-            name: '15条'
-          },
-          {
-            id: 20,
-            name: '20条'
-          },
-          {
-            id: 25,
-            name: '25条'
-          }
-        ]
+        remarkList: []
       }
     }
   },
@@ -464,10 +671,29 @@ export default Vue.extend({
       Promise.all([
         store.detail({
           id: Number(this.$route.params.id)
-        })
+        }),
+        yarnType.list(),
+        yarnColor.list()
       ]).then((res) => {
         this.loading.page = false
         this.storeDetail = res[0].data.data
+        // *** 初始化公共数据 ***
+        // 初始化纱线列表
+        this.commonInit.yarnList = res[1].data.data.map((item: any) => {
+          return {
+            value: item.name,
+            label: item.name,
+            children: item.yarns.map((itemChild: any) => {
+              return {
+                value: itemChild.name,
+                label: itemChild.name
+              }
+            })
+          }
+        })
+
+        // 初始化纱线颜色
+        this.commonInit.yarnColorList = res[2].data.data.map((itemM: any) => ({ value: itemM.name, id: itemM.id }))
       })
       this.getStoreInfoList()
       this.getStoreLogList()
@@ -518,6 +744,163 @@ export default Vue.extend({
         this.$message.warning('未知重置错误')
       }
     },
+    // 入库出库按钮事件
+    handleStockBtn(item1: any, item2: any, type: 1 | 2) {
+      if (this.storeEditInfo.action_type && this.storeEditInfo.action_type !== type) {
+        this.$message.error('请选择相同操作类型进行出入库')
+        return
+      }
+      if (this.storeEditInfo.second_store_id && this.storeEditInfo.second_store_id !== item1.second_store_id) {
+        this.$message.error('请选择相同二级仓库进行出入库')
+        return
+      }
+      const findName: any = this.commonInit.yarnList.find((itemF: any) =>
+        itemF.children.find((itemFC: any) => itemFC.label === item1.name)
+      )
+      if (this.storeEditInfo.child_data.length > 0) {
+        this.storeEditInfo.child_data.push({
+          name: (findName && [findName.label, item1.name]) || '',
+          color: item1.color,
+          attribute: item1.attribute,
+          color_code: item2.color_code,
+          vat_code: item2.vat_code,
+          batch_code: item2.batch_code,
+          action_weight: '',
+          item: '',
+          desc: ''
+        })
+      } else {
+        this.storeEditInfo = {
+          client_id: '',
+          action_type: type,
+          desc: '',
+          complete_time: this.$getDate(new Date()),
+          store_id: this.$route.params.id,
+          second_store_id: item1.second_store_id,
+          child_data: [
+            {
+              name: (findName && [findName.label, item1.name]) || '',
+              color: item1.color,
+              attribute: item1.attribute,
+              color_code: item2.color_code,
+              batch_code: item2.batch_code,
+              vat_code: item2.vat_code,
+              action_weight: '',
+              item: '',
+              desc: ''
+            }
+          ]
+        }
+      }
+    },
+    // querySearchColor(queryString: string, cb: (params: any) => void) {
+    //   const returnData = queryString
+    //     ? this.commonInit.yarnColorList.filter((itemF) => itemF.value.indexOf(queryString) !== -1)
+    //     : this.commonInit.yarnColorList
+    //   cb(returnData)
+    // },
+    querySearchColorCode(queryString: string, cb: (params: any) => void) {
+      const colorCodeList = this.$unique(
+        this.storeList.map((itemM: any) => {
+          return {
+            value: itemM.color_code
+          }
+        }),
+        'value'
+      )
+      const returnData = queryString
+        ? colorCodeList.filter((itemF: { value: string }) => itemF.value && itemF.value.indexOf(queryString) !== -1)
+        : colorCodeList
+      cb(returnData)
+    },
+    querySearchVatCode(queryString: string, cb: (params: any) => void) {
+      const vatCodeList = this.$unique(
+        this.storeList.map((itemM: any) => {
+          return {
+            value: itemM.vat_code
+          }
+        }),
+        'value'
+      )
+      const returnData = queryString
+        ? vatCodeList.filter((itemF: { value: string }) => itemF.value && itemF.value.indexOf(queryString) !== -1)
+        : vatCodeList
+      cb(returnData)
+    },
+    querySearchRemark(queryString: string, cb: (params: any) => void) {
+      const returnData = queryString
+        ? this.commonInit.remarkList.filter((itemF) => itemF.value.indexOf(queryString) !== -1)
+        : this.commonInit.remarkList
+      cb(returnData)
+    },
+    resetData() {
+      this.storeEditInfo = {
+        client_id: '',
+        action_type: '',
+        desc: '',
+        complete_time: this.$getDate(new Date()),
+        store_id: this.$route.params.id,
+        second_store_id: '',
+        child_data: []
+      }
+    },
+    saveStoreEditInfo() {
+      if (
+        this.$formCheck(this.storeEditInfo, [
+          {
+            key: 'second_store_id',
+            errMsg: '请选择二级仓库'
+          },
+          {
+            key: 'action_type',
+            errMsg: '请选择出入库类型'
+          }
+        ])
+      ) {
+        return
+      }
+      if (
+        this.storeEditInfo.child_data.some((item: any) => {
+          return this.$formCheck(item, [
+            {
+              key: 'name',
+              errMsg: '请选择纱线名称'
+            },
+            {
+              key: 'color',
+              errMsg: '请填写纱线颜色'
+            },
+            {
+              key: 'attribute',
+              errMsg: '请选择纱线属性'
+            },
+            {
+              key: 'action_weight',
+              errMsg: '请填写数量',
+              regNormal: 'isNum'
+            }
+          ])
+        })
+      ) {
+        return
+      }
+      this.loading.page = true
+      this.storeEditInfo.child_data.forEach((item) => {
+        item.name = item.name[1]
+        item.batch_code = item.batch_code || 'NOT_SET'
+        item.color_code = item.color_code || 'NOT_SET'
+        item.vat_code = item.vat_code || 'NOT_SET'
+      })
+      stock.create({ data: [this.storeEditInfo] }).then((res) => {
+        if (res.data.status !== false) {
+          this.$message.success('添加成功')
+          this.resetData()
+          this.loading.page = false
+          this.getStoreInfoList()
+          this.getStoreLogList()
+        }
+      })
+    },
     // 获取出入库日志
     getStoreLogList(pages: number = 1) {
       this.loading.log = true
@@ -563,6 +946,29 @@ export default Vue.extend({
       this.storeLogListFilter.attr = item.attribute
       this.$goElView('stockLogEl')
       this.getStoreLogList()
+    },
+    getProColor(ev: string[], proInfo: any) {
+      product
+        .list({
+          name: ev[1]
+        })
+        .then((res) => {
+          proInfo.color_list = Array.from(
+            new Set(res.data.data.items[0].child_data.map((itemChild: any) => itemChild.color))
+          ).map((itemChild: any) => {
+            return {
+              value: itemChild
+            }
+          })
+        })
+    },
+    querySearchColor(queryString: string, cb: (params: any) => void, list: any[]) {
+      if (list) {
+        const returnData = queryString ? list.filter((itemF: any) => itemF.value.indexOf(queryString) !== -1) : list
+        cb(returnData)
+      } else {
+        cb([])
+      }
     }
   },
   mounted() {
@@ -582,6 +988,16 @@ export default Vue.extend({
           return '本厂仓库'
         case 2:
           return '染厂仓库'
+        default:
+          return 'unknown type'
+      }
+    },
+    filterType(item: number) {
+      switch (item) {
+        case 1:
+          return '入库'
+        case 2:
+          return '出库'
         default:
           return 'unknown type'
       }
@@ -609,6 +1025,11 @@ export default Vue.extend({
           }
         })
       }
+    },
+    client_list() {
+      return this.$store.state.api.client.arr
+        .concat(this.$store.state.api.supplier.arr)
+        .concat(this.$store.state.api.factory.arr)
     }
   }
 })

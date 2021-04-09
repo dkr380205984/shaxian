@@ -27,7 +27,8 @@
             <div class="content">
               <div class="elCtn">
                 <el-select placeholder="请选择下单客户"
-                  v-model="order_info.client_id">
+                  v-model="order_info.client_id"
+                  filterable>
                   <el-option v-for="item in clientArr"
                     :key="item.id"
                     :value="item.id"

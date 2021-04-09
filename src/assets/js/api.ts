@@ -87,7 +87,8 @@ const store = {
   detailMateiralList: (params: StoreDetailYarnListParams) => http.get(`${baseUrl}/material/store/total/lists`, params),
   orderSave: (params: OrderStoreInfo) => http.post(`${baseUrl}/order/transfer/save`, params, 'application/json'),
   orderList: (params?: { order_id: string }) => http.get(`${baseUrl}/order/transfer/lists`, params),
-  orderDelete: (params: DeleteParam) => http.post(`${baseUrl}/order/transfer/delete`, params, 'application/json')
+  orderDelete: (params: DeleteParam) => http.post(`${baseUrl}/order/transfer/delete`, params, 'application/json'),
+  orderDetail: (params: DetailParam) => http.get(`${baseUrl}/order/transfer/detail`, params)
 }
 // 出入库
 import { StoreCreate } from '@/types/store'
@@ -160,6 +161,11 @@ const check = {
   list: (params: ListParam) => http.get(`${baseUrl}/financial/check/logs`, params),
   confirm: (params: { pid: string | number, complete_type: 1 | 2 | 3 | 4 | 5 | 6 | 7 }) => http.post(`${baseUrl}/financial/complete`, params, 'application/json')
 }
+
+// 单据列表 此接口包含所有单据列表信息，根据单号进行搜索
+const allList = {
+  forSeachId: (params: ListParam) => http.get(`${baseUrl}/order/document/code/lists`, params)
+}
 export {
   login,
   authInfo,
@@ -178,5 +184,6 @@ export {
   craft,
   deduct,
   check,
-  print
+  print,
+  allList
 }

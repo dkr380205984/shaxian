@@ -530,7 +530,8 @@
                   <div class="label isMust">供货商名称</div>
                   <div class="from">
                     <el-select placeholder="请选择供货商"
-                      v-model="item.client_id">
+                      v-model="item.client_id"
+                      filterable>
                       <el-option v-for="item in client_arr"
                         :key="item.id"
                         :label="item.name"
@@ -796,7 +797,8 @@
                   <div class="label isMust">供货商名称</div>
                   <div class="from">
                     <el-select placeholder="请选择供货商"
-                      v-model="update_order_info.client_id">
+                      v-model="update_order_info.client_id"
+                      filterable>
                       <el-option v-for="item in client_arr"
                         :key="item.id"
                         :label="item.name"
@@ -1230,7 +1232,8 @@
                   <div class="from">
                     <el-select v-model="item.client_id"
                       placeholder="请选择加工单位"
-                      v-if="item.type==='倒筒'">
+                      v-if="item.type==='倒筒'"
+                      filterable>
                       <el-option v-for="item in supplier_arr_a"
                         :key="item.id"
                         :label="item.name"
@@ -1238,7 +1241,8 @@
                     </el-select>
                     <el-select v-model="item.client_id"
                       placeholder="请选择加工单位"
-                      v-if="item.type==='染色'">
+                      v-if="item.type==='染色'"
+                      filterable>
                       <el-option v-for="item in supplier_arr_b"
                         :key="item.id"
                         :label="item.name"
@@ -1246,7 +1250,8 @@
                     </el-select>
                     <el-select v-model="item.client_id"
                       placeholder="请选择加工单位"
-                      v-if="item.type==='膨纱'">
+                      v-if="item.type==='膨纱'"
+                      filterable>
                       <el-option v-for="item in supplier_arr_c"
                         :key="item.id"
                         :label="item.name"
@@ -1891,7 +1896,7 @@ export default Vue.extend({
           order_info_id: item.id,
           color: item.color,
           attribute: item.attribute,
-          weight: '',
+          weight: item.weight,
           order_weight: item.weight
         }
       })

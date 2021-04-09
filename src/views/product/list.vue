@@ -17,6 +17,7 @@
               @click="showMore=!showMore">{{!showMore?'展示更多':'收起筛选'}}</div>
             <div class="elCtn">
               <el-select v-model="yarn_type"
+                multiple
                 @change="changeRouter(1)"
                 placeholder="选择纱线类型"
                 clearable>
@@ -141,7 +142,7 @@ export default Vue.extend({
       name: '',
       color: '',
       attribute: '',
-      yarn_type: '',
+      yarn_type: [],
       sort_store: 0
     }
   },
@@ -219,7 +220,7 @@ export default Vue.extend({
           '&attribute=' +
           this.attribute +
           '&yarn_type=' +
-          this.yarn_type
+          this.yarn_type.join(',')
       )
     },
     getFilters() {
@@ -229,7 +230,7 @@ export default Vue.extend({
       this.name = params.name
       this.color = params.color
       this.attribute = params.attribute
-      this.yarn_type = params.yarn_type ? Number(params.yarn_type) : ''
+      this.yarn_type = params.yarn_type ? (params.yarn_type as string).split(',').map((item) => Number(item)) : ''
     },
     getList() {
       this.loading = true

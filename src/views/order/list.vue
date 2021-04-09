@@ -29,6 +29,7 @@
               <el-select v-model="client_id"
                 placeholder="选择下单公司"
                 clearable
+                filterable
                 @change="changeRouter(1)">
                 <el-option v-for="item in client_list"
                   :key="item.id"

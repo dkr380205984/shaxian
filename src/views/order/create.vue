@@ -10,7 +10,6 @@
           <div class="colCtn flex3">
             <div class="label">
               <span class="text">客户单号</span>
-              <span class="explanation">(必填)</span>
             </div>
             <div class="content">
               <div class="elCtn">
@@ -27,7 +26,8 @@
             <div class="content">
               <div class="elCtn">
                 <el-select placeholder="请选择下单客户"
-                  v-model="order_info.client_id">
+                  v-model="order_info.client_id"
+                  filterable>
                   <el-option v-for="item in clientArr"
                     :key="item.id"
                     :value="item.id"
@@ -402,7 +402,7 @@ export default Vue.extend({
   },
   computed: {
     clientArr() {
-      return this.$store.state.api.client.arr
+      return this.$store.state.api.client.arr.filter((item: any) => item.status === 1)
     },
     token() {
       return this.$store.state.status.token
@@ -478,10 +478,6 @@ export default Vue.extend({
     saveOrder() {
       if (
         this.$formCheck(this.order_info, [
-          {
-            key: 'order_code',
-            errMsg: '请输入客户单号'
-          },
           {
             key: 'client_id',
             errMsg: '请选择下单客户'

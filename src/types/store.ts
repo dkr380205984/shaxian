@@ -45,7 +45,8 @@ export interface StoreCreate {
   order_id?: string
   related_id?: string | number
   action_type: number | string
-  select_id?: number[] | string
+  select_id?: number[] | string // 二级仓库选择框
+  move_select_id?: number[] | string // 移库时候选择框
   desc: string
   complete_time: string
   client_id?: number | string
@@ -54,16 +55,18 @@ export interface StoreCreate {
   store_name?: string
   second_store_id?: number | string
   second_store_name?: string
+  move_store_id?: number | string // 移库id
+  move_second_store_id?: number | string
   child_data: StoreCreateChild[]
 }
 
 export interface StoreCreateChild {
   name: string | any[]
-  move_second_store_id?: number | string // 移库时需要:移入仓库id
-  move_store_id?: number | string
   action_weight: string | number
   color?: string
   attribute?: string
+  colorAttr?: string // 用于同时选择color和attr的情况
+  colorAttrArr?: any[]
   batch_code?: string
   color_code?: string
   vat_code?: string

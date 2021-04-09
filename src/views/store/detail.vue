@@ -48,6 +48,8 @@
     <div class="module">
       <div class="titleCtn">
         <span class="title">库存信息</span>
+        <span class="addBtn btn btnMain"
+          @click="openStore">新增出入库</span>
       </div>
       <div class="listCtn">
         <div class="filterCtn">
@@ -206,7 +208,7 @@
               <el-select v-model="storeLogListFilter.type"
                 clearable
                 @change="getStoreLogList(1)"
-                placeholder="选择出库类型">
+                placeholder="选择操作类型">
                 <el-option v-for="item in commonInit.typeArr"
                   :key="item.id"
                   :label="item.name"
@@ -253,6 +255,7 @@
             <div class="thead">
               <div class="trow">
                 <div class="tcolumn">单号</div>
+                <div class="tcolumn">关联单号</div>
                 <div class="tcolumn">类型</div>
                 <div class="tcolumn"
                   style="flex:2">库存变动</div>
@@ -277,7 +280,9 @@
                 :key="item.id">
                 <div class="tcolumn">{{item.code}}</div>
                 <div class="tcolumn"
-                  :class="{'blue':item.action_type===1||item.action_type===3||item.action_type===5||item.action_type===8,'green':item.action_type===2||item.action_type===4||item.action_type===6||item.action_type===7||item.action_type===9}">{{item.action_type|stockTypeFilter}}</div>
+                  @click="item.order_id&&$router.push('/order/detail/' + item.order_id)">{{item.order_code || '无'}}</div>
+                <div class="tcolumn"
+                  :class="{'blue':item.action_type===1||item.action_type===3||item.action_type===5||item.action_type===8||item.action_type===11,'green':item.action_type===2||item.action_type===4||item.action_type===6||item.action_type===7||item.action_type===9||item.action_type===10}">{{item.action_type|stockTypeFilter}}</div>
                 <div class="tcolumn"
                   style="flex:2">
                   <span v-if="item.action_type===1||item.action_type===3||item.action_type===5||item.action_type===8">
@@ -291,6 +296,12 @@
                     <i class="el-icon-s-unfold orange"
                       style="margin:0 5px;font-size:16px"></i>
                     <span class="green">{{item.client_name}}</span>
+                  </span>
+                  <span v-if="item.action_type===10 || item.action_type===11">
+                    <span class="green">{{item.store_name}}/{{item.second_store_name}}</span>
+                    <i class="el-icon-s-unfold orange"
+                      style="margin:0 5px;font-size:16px"></i>
+                    <span class="blue">{{item.move_store_name}}/{{item.move_second_store_name}}</span>
                   </span>
                 </div>
                 <div class="tcolumn noPad"
@@ -309,9 +320,12 @@
                 </div>
                 <div class="tcolumn">{{item.complete_time}}</div>
                 <div class="tcolumn">
-                  <span class="blue"
-                    style="cursor: pointer"
-                    @click="$openUrl(`/print/store/${ (item.action_type===1||item.action_type===3||item.action_type===5) ?  1 : 2}/${item.id}${(item.order_id && ('?orderId=' + item.order_id)) || ''}`)">打印</span>
+                  <div class="oprCtn">
+                    <span class="opr blue"
+                      @click="$openUrl(`/print/store/${ (item.action_type===1||item.action_type===3||item.action_type===5||item.action_type===8) ?  1 : 2}/${item.id}${(item.order_id && ('?orderId=' + item.order_id)) || ''}`)">打印</span>
+                    <span class="opr red"
+                      @click="deleteLog(item.id)">删除</span>
+                  </div>
                 </div>
               </div>
               <div class="trow bgGray noBorder">
@@ -344,6 +358,10 @@
         </div>
       </div>
     </div>
+    <in-and-out :noChange="false"
+      :firstStoreId="$route.params.id"
+      :show.sync="store_info.show"
+      @close="resetStoreInfo"></in-and-out>
   </div>
 </template>
 
@@ -367,6 +385,9 @@ export default Vue.extend({
   } {
     return {
       showMore: false,
+      store_info: {
+        show: false
+      },
       loading: {
         page: true,
         info: true,
@@ -416,11 +437,39 @@ export default Vue.extend({
         typeArr: [
           {
             id: 1,
-            name: '入库'
+            name: '仓库入库'
           },
           {
             id: 2,
-            name: '出库'
+            name: '仓库出库'
+          },
+          {
+            id: 3,
+            name: '采购入库'
+          },
+          {
+            id: 4,
+            name: '调取出库'
+          },
+          {
+            id: 5,
+            name: '加工回库'
+          },
+          {
+            id: 6,
+            name: '加工出库'
+          },
+          {
+            id: 8,
+            name: '工艺单入库'
+          },
+          {
+            id: 9,
+            name: '订单发货'
+          },
+          {
+            id: 10,
+            name: '仓库移库'
           }
         ],
         materialAttrArr: [
@@ -563,6 +612,38 @@ export default Vue.extend({
       this.storeLogListFilter.attr = item.attribute
       this.$goElView('stockLogEl')
       this.getStoreLogList()
+    },
+    resetStoreInfo() {
+      this.store_info = {
+        show: false
+      }
+      this.init()
+    },
+    openStore() {
+      this.store_info = {
+        show: true
+      }
+    },
+    deleteLog(id: number) {
+      this.$confirm('是否删除该日志，这可能会导致相关库存变动?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      })
+        .then(() => {
+          stock.delete({ id }).then((res) => {
+            if (res.data.status) {
+              this.$message.success('删除成功')
+              this.init()
+            }
+          })
+        })
+        .catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          })
+        })
     }
   },
   mounted() {

@@ -68,10 +68,10 @@
           :key="`process_${indexYarn}`">
           <div class="row_item center">{{indexYarn + 1}}</div>
           <div class="row_item center flex30">{{itemYarn.name}}</div>
-          <div class="row_item flex80 col"
-            v-for="(itemColor,indexColor) in itemYarn.other_info"
-            :key="indexColor">
-            <div class="print_row noBorder">
+          <div class="row_item flex80 col">
+            <div :class="`print_row ${indexColor === 0 && 'noBorder'}`"
+              v-for="(itemColor,indexColor) in itemYarn.other_info"
+              :key="indexColor">
               <span class="row_item center flex20">
                 <span v-if="documentInfo.type==='倒筒'">
                   {{itemColor.before_attribute}}

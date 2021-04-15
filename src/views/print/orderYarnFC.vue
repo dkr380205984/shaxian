@@ -63,10 +63,10 @@
           :key="indexYarn">
           <div class="row_item center">{{indexYarn + 1}}</div>
           <div class="row_item center flex30">{{itemYarn.name}}</div>
-          <div class="row_item flex80 col"
-            v-for="(itemColor,indexColor) in itemYarn.color_info"
-            :key="`order_${indexColor}`">
-            <div class="print_row noBorder">
+          <div class="row_item flex80 col">
+            <div :class="`print_row ${indexColor === 0 && 'noBorder'}`"
+              v-for="(itemColor,indexColor) in itemYarn.color_info"
+              :key="`order_${indexColor}`">
               <span class="row_item center">{{itemColor.color}}</span>
               <span class="row_item center">{{itemColor.attribute}}</span>
               <span class="row_item center">{{itemColor.price || 0}}元</span>

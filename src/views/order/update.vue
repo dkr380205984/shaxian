@@ -10,7 +10,6 @@
           <div class="colCtn flex3">
             <div class="label">
               <span class="text">客户单号</span>
-              <span class="explanation">(必填)</span>
             </div>
             <div class="content">
               <div class="elCtn">
@@ -27,7 +26,8 @@
             <div class="content">
               <div class="elCtn">
                 <el-select placeholder="请选择下单客户"
-                  v-model="order_info.client_id">
+                  v-model="order_info.client_id"
+                  filterable>
                   <el-option v-for="item in clientArr"
                     :key="item.id"
                     :value="item.id"
@@ -494,10 +494,6 @@ export default Vue.extend({
       if (
         this.$formCheck(this.order_info, [
           {
-            key: 'order_code',
-            errMsg: '请输入客户单号'
-          },
-          {
             key: 'client_id',
             errMsg: '请选择下单客户'
           },
@@ -549,12 +545,14 @@ export default Vue.extend({
       ) {
         return
       }
+      const formData = JSON.parse(JSON.stringify(this.order_info))
       // 额外费用为空时提交空字符串方便后续使用
-      this.order_info.additional_fee =
-        (this.order_info.additional_fee as any[]).filter((itemChild) => itemChild.name && itemChild.price).length > 0
-          ? JSON.stringify(this.order_info.additional_fee)
+      formData.additional_fee =
+        (formData.additional_fee as any[]).filter((itemChild) => itemChild.name && itemChild.price).length > 0
+          ? JSON.stringify(formData.additional_fee)
           : ''
-      order.create(this.order_info).then((res) => {
+      // 额外费用为空时提交空字符串方便后续使用
+      order.create(formData).then((res) => {
         if (res.data.status) {
           this.$message.success('修改成功')
           this.$router.push('/order/list?page=1&&order_code=&&product_name=&&client_id=&&user_id=&&page_size=10&&date=')

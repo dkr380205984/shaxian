@@ -1,0 +1,46 @@
+@import '../../assets/less/common.less';
+@import '../../assets/less/popup.less';
+@import '../../assets/less/create.less';
+@import '../../assets/less/table.less';
+.inAndOut{
+  .main{
+    width: 1200px;
+    .createCtn{
+      padding:20px 0;
+      .rowCtnCtn{
+        background:#f0f0f0;
+        padding:12px;
+        margin:12px 0;
+        position: relative;
+        .el-icon-circle-close{
+          position: absolute;
+          top: 8px;
+          right: 16px;
+          width: 23px;
+          height: 23px;
+          color: @red;
+          border-radius: 50%;
+          font-size: 24px;
+          overflow: hidden;
+          user-select: none;
+          cursor: pointer;
+        }
+        .rowCtn{
+          background:#f0f0f0;
+        }
+      }
+      .rowCtn{
+        background: #fff;
+        .flex3{
+          max-width: 325px;
+        }
+      }
+    }
+    .tips{
+      color: @orange;
+      text-align: center;
+      line-height: 40px;
+      font-size: @fontBig;
+    }
+  }
+}

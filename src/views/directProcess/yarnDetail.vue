@@ -88,7 +88,9 @@
       <div class="titleCtn">
         <span class="title">纱线加工信息</span>
         <span class="addBtn btn btnMain"
-          @click="openStore">纱线调取</span>
+          @click="openStore(6)">加工出库</span>
+        <span class="addBtn btn btnMain"
+          @click="openStore(5)">加工回库</span>
       </div>
       <div style="padding:20px 32px">
         <div class="tableCtn">
@@ -104,9 +106,7 @@
             <div class="trow"
               v-for="(item,index) in process_info.child_data"
               :key="index">
-              <div class="tcolumn">
-                <el-checkbox v-model="item.check">{{item.name}}</el-checkbox>
-              </div>
+              <div class="tcolumn">{{item.name}}</div>
               <div class="tcolumn">
                 <span class="green"
                   style="margin-right:12px">{{process_info.type}}</span>
@@ -133,6 +133,116 @@
         </div>
       </div>
     </div>
+    <div class="module"
+      v-show="process_store_log.length>0">
+      <div class="titleCtn">
+        <span class="title">纱线出入库信息</span>
+      </div>
+      <div class="listCtn">
+        <div class="list">
+          <div class="overflow">
+            <div class="tableCtn">
+              <div class="table">
+                <div class="headCtn">
+                  <div class="row">
+                    <div class="column min120">单号</div>
+                    <div class="column min120">仓库</div>
+                    <div class="column min120">操作类型</div>
+                    <div class="column"
+                      style="flex-direction:column">
+                      <div class="row">
+                        <div class="column min120">纱线名称</div>
+                        <div class="column min120">纱线颜色</div>
+                        <div class="column min120">纱线属性</div>
+                        <div class="column min120">入库数量</div>
+                        <div class="column min120">批号</div>
+                        <div class="column min120">色号</div>
+                        <div class="column min120">缸号</div>
+                      </div>
+                    </div>
+                    <div class="column min120">备注信息</div>
+                    <div class="column min120">入库日期</div>
+                    <div class="column min120">操作人</div>
+                    <div class="column min120">操作</div>
+                  </div>
+                </div>
+                <div class="bodyCtn">
+                  <div class="row"
+                    v-for="item in process_store_log"
+                    :key="item.id">
+                    <div class="column min120">{{item.code}}</div>
+                    <div class="column min120">{{item.store_name}}/{{item.second_store_name}}</div>
+                    <div class="column min120">操作类型</div>
+                    <div class="column"
+                      style="flex-direction:column">
+                      <div class="row"
+                        v-for="(itemChild,indexChild) in item.child_data"
+                        :key="indexChild">
+                        <div class="column min120">{{itemChild.name}}</div>
+                        <div class="column min120">{{itemChild.color}}</div>
+                        <div class="column min120">{{itemChild.attribute}}</div>
+                        <div class="column min120 blue">{{itemChild.action_weight}}</div>
+                        <div class="column min120">{{itemChild.batch_code}}</div>
+                        <div class="column min120">{{itemChild.color_code}}</div>
+                        <div class="column min120">{{itemChild.vat_code}}</div>
+                      </div>
+                    </div>
+                    <div class="column min120">{{item.desc||'无'}}</div>
+                    <div class="column min120">{{item.complete_time}}</div>
+                    <div class="column min120">{{item.user_name}}</div>
+                    <div class="column min120">操作</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="coverTable">
+            <div class="floatL">
+              <div class="headCtn">
+                <div class="row">
+                  <div class="column min120">单号</div>
+                  <div class="column min120">仓库</div>
+                  <div class="column min120">操作类型</div>
+                </div>
+              </div>
+              <div class="bodyCtn">
+                <div class="row"
+                  v-for="item in process_store_log"
+                  :key="item.id">
+                  <div class="column min120 blue"
+                    :style="{'height':50*item.child_data.length + 'px'}">{{item.code}}</div>
+                  <div class="column min120"
+                    :style="{'height':50*item.child_data.length + 'px'}">{{item.store_name}}/{{item.second_store_name}}</div>
+                  <div class="column min120"
+                    :class="{'blue':item.action_type===5,'green':item.action_type===6}"
+                    :style="{'height':50*item.child_data.length + 'px'}">{{item.action_type===5?'回库':'出库'}}</div>
+                </div>
+              </div>
+            </div>
+            <div class="floatR">
+              <div class="headCtn">
+                <div class="row">
+                  <div class="column min120">操作</div>
+                </div>
+              </div>
+              <div class="bodyCtn">
+                <div class="row"
+                  v-for="item in process_store_log"
+                  :key="item.id">
+                  <div class="column min120"
+                    :style="{'height':50*item.child_data.length + 'px'}">
+                    <span class="blue opr"
+                      @click="$openUrl(`/print/store/1/${item.id}`)">打印</span>
+                    <span class="red opr"
+                      @click="deleteLog(item.id)">删除</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
     <div class="bottomFixBar">
       <div class="main">
         <div class="btnCtn">
@@ -144,24 +254,6 @@
           <div class="btn btnBlue"
             @click="confirm"
             v-if="process_info.status!==3">确认完成</div>
-        </div>
-      </div>
-    </div>
-    <div class="popup"
-      v-show="false">
-      <div class="main">
-        <div class="titleCtn">
-          <span class="text">调取出库</span>
-          <i class="close_icon el-icon-close"></i>
-        </div>
-        <div class="contentCtn">
-          <div class="createCtn">
-
-          </div>
-        </div>
-        <div class="oprCtn">
-          <div class="opr">取消</div>
-          <div class="opr blue">确认出库</div>
         </div>
       </div>
     </div>
@@ -188,12 +280,20 @@
     <check-detail :show.sync="check_detail_flag"
       :checkType="2"
       :pid="$route.params.id"></check-detail>
+    <in-and-out :orderId="process_info.order_id"
+      :relatedCode="process_info.code"
+      :relatedId="process_info.id"
+      :outClientArr="store_info.out_client_arr"
+      :clientId="store_info.client_id"
+      :show.sync="store_info.show"
+      :type="store_info.type"
+      @close="init"></in-and-out>
   </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
-import { yarnProcess, check } from '@/assets/js/api'
+import { yarnProcess, check, stock } from '@/assets/js/api'
 import { ProcessYarn, ProcessYarnChild } from '@/types/orderProcessYarn'
 export default Vue.extend({
   data(): {
@@ -213,6 +313,7 @@ export default Vue.extend({
         delivery_time: '',
         total_price: '',
         file_url: '',
+        client_name: '',
         additional_fee: [
           {
             name: '',
@@ -233,23 +334,48 @@ export default Vue.extend({
           }
         ]
       },
+      store_info: {
+        show: false,
+        client_id: '',
+        out_client_arr: [],
+        type: 0
+      },
+      process_store_log: [],
       loading: false
-    }
-  },
-  computed: {
-    check_list(): ProcessYarnChild[] {
-      return this.process_info.child_data.filter((item: any) => item.check)
     }
   },
   methods: {
     init() {
+      this.loading = true
       Promise.all([
         yarnProcess.detail({
           id: this.$route.params.id
+        }),
+        stock.list({
+          related_id: this.$route.params.id,
+          action_type: [5, 6]
         })
       ]).then((res) => {
         this.process_info = res[0].data.data
-        this.process_info.additional_fee = JSON.parse(this.process_info.additional_fee as string)
+        this.process_info.additional_fee = this.process_info.additional_fee
+          ? JSON.parse(this.process_info.additional_fee as string)
+          : []
+        this.process_store_log = res[1].data.data.data.items
+        this.process_info.child_data.forEach((item) => {
+          item.push_weight = 0
+          this.process_store_log.forEach((itemLog: any) => {
+            itemLog.child_data.forEach((itemChild: any) => {
+              if (
+                itemChild.name === item.name &&
+                itemChild.color === item.color &&
+                itemChild.attribute === item.attribute
+              ) {
+                item.push_weight = Number(itemChild.action_weight) + Number(item.push_weight)
+              }
+            })
+          })
+        })
+        this.loading = false
       })
     },
     checkReason() {
@@ -259,19 +385,18 @@ export default Vue.extend({
       }
       this.check_detail_flag = true
     },
-    openStore() {
-      console.log(this.process_info)
-      // if (this.checkList.length === 1) {
-      //   this.store_filter.name = this.$clone(this.checkList[0].product_name)
-      //   this.getStoreList()
-      //   this.flags.store_flag = true
-      // } else {
-      //   if (this.checkList.length === 0) {
-      //     this.$message.error('请选择一种纱线进行调取')
-      //   } else {
-      //     this.$message.error('只能同时选择一种纱线进行库存调取操作')
-      //   }
-      // }
+    openStore(type: number) {
+      this.store_info = {
+        show: true,
+        type,
+        client_id: this.process_info.client_id,
+        out_client_arr: [
+          {
+            id: this.process_info.client_id,
+            name: this.process_info.client_name
+          }
+        ]
+      }
     },
     openCheck() {
       this.check_flag = true
@@ -298,6 +423,27 @@ export default Vue.extend({
           this.$message({
             type: 'info',
             message: '已取消'
+          })
+        })
+    },
+    deleteLog(id: number) {
+      this.$confirm('是否删除该日志，这可能会导致相关库存变动?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      })
+        .then(() => {
+          stock.delete({ id }).then((res) => {
+            if (res.data.status) {
+              this.$message.success('删除成功')
+              this.init()
+            }
+          })
+        })
+        .catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
           })
         })
     }

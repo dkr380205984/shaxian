@@ -98,26 +98,36 @@
         <div class="tableCtn">
           <div class="thead">
             <div class="trow">
-              <div class="tcolumn">纱线名称</div>
-              <div class="tcolumn">纱线颜色</div>
-              <div class="tcolumn">纱线属性</div>
-              <div class="tcolumn">采购单价(元)</div>
-              <div class="tcolumn">采购数量(kg)</div>
+              <div class="tcolumn"
+                style="flex:5">
+                <div class="trow">
+                  <div class="tcolumn">纱线名称</div>
+                  <div class="tcolumn">纱线颜色</div>
+                  <div class="tcolumn">纱线属性</div>
+                  <div class="tcolumn">采购单价(元)</div>
+                  <div class="tcolumn">采购数量(kg)</div>
+                </div>
+              </div>
+              <div class="tcolumn">待入库数量(kg)</div>
               <div class="tcolumn">入库数量(kg)</div>
             </div>
           </div>
           <div class="tbody">
-            <div class="trow"
-              v-for="(item,index) in order_yarn_info.child_data"
-              :key="index">
-              <div class="tcolumn">
-                <el-checkbox v-model="item.check">{{item.name}}</el-checkbox>
+            <div class="trow">
+              <div class="tcolumn"
+                style="flex:5">
+                <div class="trow"
+                  v-for="(item,index) in order_yarn_info.child_data"
+                  :key="index">
+                  <div class="tcolumn">{{item.name}}</div>
+                  <div class="tcolumn">{{item.color}}</div>
+                  <div class="tcolumn">{{item.attribute}}</div>
+                  <div class="tcolumn">{{item.price}}元</div>
+                  <div class="tcolumn blue">{{item.weight}}kg</div>
+                </div>
               </div>
-              <div class="tcolumn">{{item.color}}</div>
-              <div class="tcolumn">{{item.attribute}}</div>
-              <div class="tcolumn">{{item.price}}元</div>
-              <div class="tcolumn blue">{{item.weight}}kg</div>
-              <div class="tcolumn green">{{item.push_weight}}kg</div>
+              <div class="tcolumn orange">{{order_yarn_info.total_weight-order_yarn_info.push_weight}}kg</div>
+              <div class="tcolumn green">{{order_yarn_info.push_weight}}kg</div>
             </div>
           </div>
         </div>
@@ -199,7 +209,7 @@
                   <div class="column min120 blue"
                     :style="{'height':50*item.child_data.length + 'px'}">{{item.code}}</div>
                   <div class="column min120"
-                    :style="{'height':50*item.child_data.length + 'px'}">{{item.second_store_name}}</div>
+                    :style="{'height':50*item.child_data.length + 'px'}">{{item.store_name}}/{{item.second_store_name}}</div>
                 </div>
               </div>
             </div>
@@ -217,7 +227,8 @@
                     :style="{'height':50*item.child_data.length + 'px'}">
                     <span class="blue opr"
                       @click="$openUrl(`/print/store/1/${item.id}`)">打印</span>
-                    <span class="red opr">删除</span>
+                    <span class="red opr"
+                      @click="deleteLog(item.id)">删除</span>
                   </div>
                 </div>
               </div>
@@ -302,203 +313,6 @@
         </div>
       </div>
     </div>
-    <div class="popup"
-      v-show="order_in_flag">
-      <div class="main">
-        <div class="titleCtn">
-          <span class="text">纱线入库</span>
-          <i class="close_icon el-icon-close"
-            @click="resetOrderIn"></i>
-        </div>
-        <div class="contentCtn">
-          <div class="createCtn">
-            <div style="background:#f0f0f0;padding:12px;margin:12px 0"
-              v-for="(itemChild,indexChild) in order_in_info.child_data"
-              :key="indexChild">
-              <div class="rowCtn"
-                style="background:#f0f0f0">
-                <div class="colCtn">
-                  <div class="label">
-                    <span class="text">纱线名称</span>
-                    <span class="explanation">(默认)</span>
-                  </div>
-                  <div class="content">
-                    <div class="elCtn">
-                      <el-input disabled
-                        placeholder="请输入纱线信息"
-                        v-model="itemChild.name"></el-input>
-                    </div>
-                  </div>
-                </div>
-                <div class="colCtn">
-                  <div class="label">
-                    <span class="text">纱线颜色</span>
-                    <span class="explanation">(默认)</span>
-                  </div>
-                  <div class="content">
-                    <div class="elCtn">
-                      <el-input disabled
-                        placeholder="请输入纱线信息"
-                        v-model="itemChild.color"></el-input>
-                    </div>
-                  </div>
-                </div>
-                <div class="colCtn">
-                  <div class="label">
-                    <span class="text">纱线属性</span>
-                    <span class="explanation">(默认)</span>
-                  </div>
-                  <div class="content">
-                    <div class="elCtn">
-                      <el-input disabled
-                        placeholder="请输入纱线信息"
-                        v-model="itemChild.attribute"></el-input>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="rowCtn"
-                style="background:#f0f0f0">
-                <div class="colCtn">
-                  <div class="label">
-                    <span class="text">入库批号</span>
-                  </div>
-                  <div class="content">
-                    <div class="elCtn">
-                      <el-input placeholder="请输入入库批号"
-                        v-model="itemChild.batch_code"></el-input>
-                    </div>
-                  </div>
-                </div>
-                <div class="colCtn">
-                  <div class="label">
-                    <span class="text">入库色号</span>
-                  </div>
-                  <div class="content">
-                    <div class="elCtn">
-                      <el-input placeholder="请输入入库色号"
-                        v-model="itemChild.color_code"></el-input>
-                    </div>
-                  </div>
-                </div>
-                <div class="colCtn">
-                  <div class="label">
-                    <span class="text">入库缸号</span>
-                  </div>
-                  <div class="content">
-                    <div class="elCtn">
-                      <el-input placeholder="请输入入库缸号"
-                        v-model="itemChild.vat_code"></el-input>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="rowCtn"
-                style="background:#f0f0f0">
-                <div class="colCtn">
-                  <div class="label">
-                    <span class="text">采购数量</span>
-                    <span class="explanation">(必填)</span>
-                  </div>
-                  <div class="content">
-                    <div class="elCtn">
-                      <el-input disabled
-                        placeholder="请输入采购数量"
-                        v-model="itemChild.order_number">
-                        <template slot="append">kg</template>
-                      </el-input>
-                    </div>
-                  </div>
-                </div>
-                <div class="colCtn">
-                  <div class="label">
-                    <span class="text">入库数量</span>
-                    <span class="explanation">(必填)</span>
-                  </div>
-                  <div class="content">
-                    <div class="elCtn">
-                      <el-input placeholder="请输入入库数量"
-                        v-model="itemChild.action_weight">
-                        <template slot="append">kg</template>
-                      </el-input>
-                    </div>
-                  </div>
-                </div>
-                <div class="colCtn">
-                  <div class="label">
-                    <span class="text">入库件数</span>
-                  </div>
-                  <div class="content">
-                    <div class="elCtn">
-                      <el-input placeholder="件数"
-                        v-model="itemChild.item">
-                        <template slot="append">件</template>
-                      </el-input>
-                    </div>
-                    <div class="oprCtn">
-                      <div class="editBtn deleteBtn"
-                        @click="$deleteItem(order_in_info.child_data,indexChild)">删除</div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="rowCtn">
-              <div class="colCtn">
-                <div class="label">
-                  <span class="text">入库仓库</span>
-                  <span class="explanation">(必填)</span>
-                </div>
-                <div class="content">
-                  <div class="elCtn">
-                    <el-cascader v-model="order_in_info.select_id"
-                      :options="store_list"
-                      :props="{value:'id',label:'name',children:'second_data'}"
-                      placeholder="请选择入库仓库">
-                    </el-cascader>
-                  </div>
-                </div>
-              </div>
-              <div class="colCtn">
-                <div class="label">
-                  <span class="text">入库时间</span>
-                  <span class="explanation">(必填)</span>
-                </div>
-                <div class="content">
-                  <div class="elCtn">
-                    <el-date-picker class="el"
-                      style="width:100%"
-                      v-model="order_in_info.date"
-                      type="date"
-                      value-format="yyyy-MM-dd"
-                      placeholder="选择日期">
-                    </el-date-picker>
-                  </div>
-                </div>
-              </div>
-              <div class="colCtn">
-                <div class="label">
-                  <span class="text">备注信息</span>
-                  <span class="explanation">(必填)</span>
-                </div>
-                <div class="content">
-                  <div class="elCtn">
-                    <el-input placeholder="请输入备注信息"
-                      v-model="order_in_info.desc"></el-input>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="oprCtn">
-          <div class="opr"
-            @click="resetOrderIn">取消</div>
-          <div class="opr blue"
-            @click="saveOrderIn">确认入库</div>
-        </div>
-      </div>
-    </div>
     <deduct :show.sync="deduct_show"
       :data="deduct_info"></deduct>
     <check :show.sync="check_flag"
@@ -524,6 +338,15 @@
     <check-detail :show.sync="check_detail_flag"
       :checkType="1"
       :pid="$route.params.id"></check-detail>
+
+    <in-and-out :relatedCode="order_yarn_info.code"
+      :relatedId="$route.params.id"
+      :yarnArr="store_info.yarn_arr"
+      :outClientArr="store_info.out_client_arr"
+      :clientId="store_info.client_id"
+      :show.sync="store_info.show"
+      :type="store_info.type"
+      @close="init"></in-and-out>
   </div>
 </template>
 
@@ -573,24 +396,18 @@ export default Vue.extend({
         ],
         desc: ''
       },
-      order_in_info: {
-        code: '',
-        client_name: '',
-        select_id: '',
-        action_type: '',
-        child_data: [],
-        desc: '',
-        date: this.$getDate(new Date())
+      store_info: {
+        type: 3,
+        show: false,
+        out_client_arr: [],
+        client_id: '',
+        yarn_arr: []
       },
       deduct_list: [],
-      order_in_log: [],
-      order_in_flag: false
+      order_in_log: []
     }
   },
   computed: {
-    checkList(): any {
-      return this.order_yarn_info.child_data.filter((item: any) => item.check)
-    },
     store_list() {
       return this.$store.state.api.storeHouse.arr.filter((item: any) => item.store_type === 1)
     }
@@ -604,7 +421,7 @@ export default Vue.extend({
         }),
         stock.list({
           related_id: this.$route.params.id,
-          action_type: 3
+          action_type: [3]
         }),
         deduct.list({
           pid: this.$route.params.id,
@@ -612,22 +429,13 @@ export default Vue.extend({
         })
       ]).then((res) => {
         this.order_yarn_info = res[0].data.data
-        this.order_yarn_info.additional_fee = JSON.parse(this.order_yarn_info.additional_fee as string)
+        this.order_yarn_info.additional_fee = this.order_yarn_info.additional_fee
+          ? JSON.parse(this.order_yarn_info.additional_fee as string)
+          : []
+        this.order_yarn_info.total_weight = this.order_yarn_info.child_data.reduce((total, current) => {
+          return total + Number(current.weight)
+        }, 0)
         this.order_in_log = res[1].data.data.data.items
-        this.order_yarn_info.child_data.forEach((item) => {
-          item.push_weight = 0
-          this.order_in_log.forEach((itemLog: any) => {
-            itemLog.child_data.forEach((itemChild: any) => {
-              if (
-                itemChild.name === item.name &&
-                itemChild.color === item.color &&
-                itemChild.attribute === item.attribute
-              ) {
-                item.push_weight = Number(itemChild.action_weight) + Number(item.push_weight)
-              }
-            })
-          })
-        })
         this.deduct_list = res[2].data.data
         this.deduct_list.forEach((item: any) => {
           item.deduct_content = JSON.parse(item.deduct_content)
@@ -641,102 +449,6 @@ export default Vue.extend({
         return
       }
       this.check_detail_flag = true
-    },
-    resetOrderIn() {
-      this.order_in_flag = false
-    },
-    openOrderIn() {
-      if (this.checkList.length === 0) {
-        this.$message.error('请选择至少一种纱线入库')
-        return
-      }
-      this.order_in_info = {
-        code: '',
-        client_name: this.order_yarn_info.client_name,
-        select_id: '',
-        action_type: 3,
-        child_data: this.checkList.map((item: any) => {
-          return {
-            yarn_name: item.name,
-            name: item.name + '/' + item.color + '/' + item.attribute,
-            order_number: item.weight,
-            weight: '',
-            color: item.color,
-            attribute: item.attribute,
-            batch_code: '',
-            color_code: '',
-            vat_code: '',
-            item: '',
-            price: ''
-          }
-        }),
-        desc: '',
-        date: this.$getDate(new Date())
-      }
-      this.order_in_flag = true
-    },
-    saveOrderIn() {
-      // 数据验证
-      if (
-        this.$formCheck(this.order_in_info, [
-          {
-            key: 'select_id',
-            errMsg: '请选择入库仓库'
-          }
-        ])
-      ) {
-        return
-      }
-      if (
-        this.order_in_info.child_data.some((itemChild: any) => {
-          return this.$formCheck(itemChild, [
-            {
-              key: 'action_weight',
-              errMsg: '请输入入库重量'
-            },
-            {
-              key: 'item',
-              errMsg: '请输入入库件数'
-            }
-          ])
-        })
-      ) {
-        return
-      }
-      this.loading = true
-      // 数据验证结束
-      const formData: StoreCreate = {
-        order_id: '',
-        related_id: this.$route.params.id, // 关联采购单id
-        action_type: 3,
-        complete_time: this.order_in_info.date,
-        desc: this.order_in_info.desc,
-        store_id: this.order_in_info.select_id[0],
-        second_store_id: this.order_in_info.select_id[1],
-        client_id: '',
-        child_data: this.order_in_info.child_data.map((item: any) => {
-          return {
-            order_id: '',
-            name: item.yarn_name,
-            action_weight: item.action_weight,
-            color: item.color,
-            attribute: item.attribute,
-            batch_code: item.batch_code || 'NOT_SET',
-            color_code: item.color_code || 'NOT_SET',
-            vat_code: item.vat_code || 'NOT_SET',
-            item: item.item,
-            related_info_id: '',
-            desc: ''
-          }
-        })
-      }
-      stock.create({ data: [formData] }).then((res) => {
-        if (res.data.status) {
-          this.$message.success('入库成功')
-          this.resetOrderIn()
-          this.init()
-        }
-      })
     },
     // 打开扣款窗口
     openDeduct() {
@@ -778,6 +490,42 @@ export default Vue.extend({
           this.$message({
             type: 'info',
             message: '已取消'
+          })
+        })
+    },
+    openOrderIn() {
+      this.store_info.out_client_arr = [
+        {
+          id: this.order_yarn_info.client_id,
+          name: this.order_yarn_info.client_name
+        }
+      ]
+      this.store_info.related_code = this.order_yarn_info.code
+      this.store_info.type = 3
+      this.store_info.yarn_arr = this.$mergeData(this.order_yarn_info.child_data, {
+        mainRule: 'name'
+      })
+      this.store_info.client_id = this.order_yarn_info.client_id
+      this.store_info.show = true
+    },
+    deleteLog(id: number) {
+      this.$confirm('是否删除该日志，这可能会导致相关库存变动?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      })
+        .then(() => {
+          stock.delete({ id }).then((res) => {
+            if (res.data.status) {
+              this.$message.success('删除成功')
+              this.init()
+            }
+          })
+        })
+        .catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
           })
         })
     }

@@ -33,6 +33,7 @@ export interface OrderYarn {
   common_attr?: string
   file_url?: string
   total_price?: string | number
+  total_weight?: string | number
   desc: string
 }
 
@@ -51,6 +52,7 @@ export interface ProcessYarnChild {
 export interface ProcessYarn {
   order_id: number | string
   client_id: number | string
+  client_name?: string
   type: string // 加工类型
   price?: number | string // 加工单价
   desc: string

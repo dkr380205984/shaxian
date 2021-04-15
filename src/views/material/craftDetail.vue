@@ -679,7 +679,7 @@ export default Vue.extend({
         }),
         stock.list({
           related_id: this.$route.params.id,
-          action_type: 9
+          action_type: [9]
         }),
         stock.materialList({
           related_id: this.$route.params.id,

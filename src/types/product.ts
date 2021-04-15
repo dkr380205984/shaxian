@@ -12,7 +12,7 @@ export interface ProductDetail {
 export interface Product {
   id?: number | string
   name: string
-  yarn_type: string
+  yarn_type: string | any[]
   yarn_type_name?: string
   user_name?: string
   child_data: ProductDetail[]
@@ -22,4 +22,5 @@ export interface OrderPro {
   product_id: string | number | any[]
   product_name?: string
   child_data: ProductDetail[]
+  process_info?: any[]
 }

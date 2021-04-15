@@ -4,7 +4,7 @@
     v-loading="loading">
     <div class="module">
       <div class="titleCtn">
-        <span class="title hasBorder">正常列表</span>
+        <span class="title hasBorder">加工单信息</span>
         <span class="addBtn btn btnMain"
           @click="resetProcess();create_flag=true">添加加工单</span>
       </div>
@@ -747,9 +747,13 @@ export default Vue.extend({
         child_data: [
           {
             name: '',
-            weight: '',
+            before_attribute: '',
+            after_attribute: '',
+            before_color: '白胚',
+            after_color: '',
             color: '',
             attribute: '',
+            weight: '',
             price: ''
           }
         ]

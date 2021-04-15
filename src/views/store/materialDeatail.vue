@@ -48,6 +48,8 @@
     <div class="module">
       <div class="titleCtn">
         <span class="title">库存信息</span>
+        <span class="addBtn btn btnMain"
+          @click="openStore">新增出入库</span>
       </div>
       <div class="listCtn">
         <div class="filterCtn">
@@ -68,16 +70,16 @@
             <div class="elCtn">
               <el-input v-model="storeListFilter.name"
                 @change="getStoreInfoList"
-                placeholder="请输入纱线名称"></el-input>
+                placeholder="请输入毛条名称"></el-input>
             </div>
             <div class="elCtn">
               <el-input v-model="storeListFilter.color"
                 @change="getStoreInfoList"
-                placeholder="请输入纱线颜色"></el-input>
+                placeholder="请输入毛条颜色"></el-input>
             </div>
             <div class="elCtn">
               <el-checkbox v-model="storeListFilter.isFilterZero"
-                @change="getStoreInfoList">过滤库存为0的纱线</el-checkbox>
+                @change="getStoreInfoList">过滤库存为0的毛条</el-checkbox>
             </div>
           </div>
           <div class="rightCtn">
@@ -116,10 +118,6 @@
                   <div class="tcolumn">{{itemStore.reality_weight && $formatNum(itemStore.reality_weight) || '-'}}</div>
                   <div class="tcolumn blue">{{itemStore.useable_weight && $formatNum(itemStore.useable_weight) || '-'}}</div>
                   <div class="tcolumn flexRow">
-                    <span class="opr blue"
-                      @click="handleStockBtn(item,itemStore,1)">入库</span>
-                    <span class="opr orange"
-                      @click="handleStockBtn(item,itemStore,2)">出库</span>
                     <span class="opr green"
                       @click="goLogEl(item)">日志</span>
                   </div>
@@ -138,143 +136,6 @@
                 </div>
               </div>
             </div>
-          </div>
-        </div>
-        <div class="editCtn"
-          id="stockEditEl">
-          <div class="editContainer"
-            v-show="storeEditInfo.child_data.length>0">
-            <div class="eRow">
-              <div class="eColumn">
-                <span class="label isMust">二级仓库</span>
-                <div class="from">
-                  <el-select v-model="storeEditInfo.second_store_id"
-                    placeholder="请选择二级仓库"
-                    clearable>
-                    <el-option v-for="item in storeDetail.second_data"
-                      :key="item.id"
-                      :label="item.name"
-                      :value="item.id">
-                    </el-option>
-                  </el-select>
-                </div>
-              </div>
-              <div class="eColumn">
-                <span class="label isMust">操作类型</span>
-                <div class="from">
-                  <el-select v-model="storeEditInfo.action_type"
-                    placeholder="请选择操作类型">
-                    <el-option v-for="item in commonInit.typeArr"
-                      :key="item.id"
-                      :label="item.name"
-                      :value="item.id">
-                    </el-option>
-                  </el-select>
-                </div>
-              </div>
-              <div class="eColumn">
-                <span class="label isMust">出入库单位</span>
-                <div class="from">
-                  <el-select v-model="storeEditInfo.client_id"
-                    placeholder="请选择出入库单位"
-                    filterable>
-                    <el-option v-for="item in client_list"
-                      :key="item.id"
-                      :label="item.name"
-                      :value="item.id">
-                    </el-option>
-                  </el-select>
-                </div>
-              </div>
-            </div>
-            <div class="eRowCtn"
-              style="position:relative"
-              v-for="(itemStore,indexStore) in storeEditInfo.child_data"
-              :key="indexStore">
-              <span class="el-icon-circle-close"
-                @click="storeEditInfo.child_data.length===1?$message.error('至少有一种纱线'):$deleteItem(storeEditInfo.child_data,indexStore)"></span>
-              <div class="eRow">
-                <div class="eColumn">
-                  <span class="label isMust">毛条名称</span>
-                  <div class="from">
-                    <el-cascader v-model="itemStore.name"
-                      filterable
-                      :props="{value:'label'}"
-                      placeholder="请选择毛条"
-                      :options="mat_type_list"></el-cascader>
-                  </div>
-                </div>
-                <div class="eColumn">
-                  <span class="label">批号</span>
-                  <div class="from">
-                    <el-input v-model="itemStore.batch_code"
-                      placeholder="请输入批号">
-                    </el-input>
-                  </div>
-                </div>
-                <div class="eColumn">
-                  <span class="label isMust">数量/件数</span>
-                  <div class="from"
-                    style="display: flex;">
-                    <el-input style="margin-right:8px"
-                      v-model="itemStore.action_weight"
-                      placeholder="数量信息">
-                      <template slot="append">kg</template>
-                    </el-input>
-                    <el-input v-model="itemStore.item"
-                      placeholder="件数信息">
-                      <template slot="append">件</template>
-                    </el-input>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="eRow">
-              <div class="eColumn">
-                <span class="label isMust">操作日期</span>
-                <div class="from">
-                  <el-date-picker style="width:100%"
-                    v-model="storeEditInfo.complete_time"
-                    type="date"
-                    value-format="yyyy-MM-dd"
-                    placeholder="选择操作日期">
-                  </el-date-picker>
-                </div>
-              </div>
-              <div class="eColumn">
-                <span class="label isMust">备注信息</span>
-                <div class="from">
-                  <el-input v-model="storeEditInfo.desc"
-                    placeholder="请输入备注信息"></el-input>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="editBtnCtn"
-            v-if="storeEditInfo.child_data.length > 0">
-            <div class="editBtn btnGray"
-              @click="resetData">取消</div>
-            <div class="editBtn btnBluePurple"
-              @click="$addItem(storeEditInfo.child_data,{
-                name:'',
-                item:'',
-                action_weight:'',
-                desc:'',
-                batch_code:''
-              })">继续添加</div>
-            <div class="editBtn btnGreen"
-              @click="saveStoreEditInfo">确认提交</div>
-          </div>
-          <div class="editBtnCtn"
-            v-if="storeEditInfo.child_data.length === 0">
-            <div class="editBtn btnBluePurple"
-              @click="$addItem(storeEditInfo.child_data,{
-                name:'',
-                item:'',
-                action_weight:'',
-                desc:'',
-                batch_code:''
-              })">添加新库存</div>
           </div>
         </div>
       </div>
@@ -312,7 +173,7 @@
               <el-select v-model="storeLogListFilter.type"
                 clearable
                 @change="getStoreLogList(1)"
-                placeholder="选择出库类型">
+                placeholder="选择操作类型">
                 <el-option v-for="item in commonInit.typeArr"
                   :key="item.id"
                   :label="item.name"
@@ -401,20 +262,26 @@
                 :key="item.id">
                 <div class="tcolumn">{{item.code}}</div>
                 <div class="tcolumn"
-                  :class="{'blue':item.action_type===1||item.action_type===3||item.action_type===5,'green':item.action_type===2||item.action_type===4||item.action_type===6||item.action_type===7}">{{item.action_type|stockTypeFilter}}</div>
+                  :class="{'blue':item.action_type===1||item.action_type===3||item.action_type===5||item.action_type===8||item.action_type===11,'green':item.action_type===2||item.action_type===4||item.action_type===6||item.action_type===7||item.action_type===9||item.action_type===10}">{{item.action_type|stockTypeFilter}}</div>
                 <div class="tcolumn"
                   style="flex:2">
-                  <span v-if="item.action_type===1||item.action_type===3||item.action_type===5">
+                  <span v-if="item.action_type===1||item.action_type===3||item.action_type===5||item.action_type===8">
                     <span class="green">{{item.client_name ||'无来源'}}</span>
                     <i class="el-icon-s-unfold orange"
                       style="margin:0 5px;font-size:16px"></i>
                     <span class="blue">{{item.second_store_name}}</span>
                   </span>
-                  <span v-if="item.action_type===2||item.action_type===4||item.action_type===6||item.action_type===7">
+                  <span v-if="item.action_type===2||item.action_type===4||item.action_type===6||item.action_type===7||item.action_type===9">
                     <span class="blue">{{item.second_store_name}}</span>
                     <i class="el-icon-s-unfold orange"
                       style="margin:0 5px;font-size:16px"></i>
                     <span class="green">{{item.client_name}}</span>
+                  </span>
+                  <span v-if="item.action_type===10 || item.action_type===11">
+                    <span class="green">{{item.store_name}}/{{item.second_store_name}}</span>
+                    <i class="el-icon-s-unfold orange"
+                      style="margin:0 5px;font-size:16px"></i>
+                    <span class="blue">{{item.move_store_name}}/{{item.move_second_store_name}}</span>
                   </span>
                 </div>
                 <div class="tcolumn noPad"
@@ -465,6 +332,9 @@
         </div>
       </div>
     </div>
+    <in-and-out-mat :noChange="false"
+      :firstStoreId="$route.params.id"
+      :show.sync="show_store"></in-and-out-mat>
   </div>
 </template>
 
@@ -472,7 +342,6 @@
 import Vue from 'vue'
 import { StoreDetail } from '@/types/common'
 import { store, stock } from '@/assets/js/api'
-import { StoreCreate } from '@/types/store'
 export default Vue.extend({
   data(): {
     storeDetail: StoreDetail
@@ -480,16 +349,12 @@ export default Vue.extend({
       [key: string]: any
     }>
     commonInit: {
-      yarnList: []
-      yarnColorList: Array<{ value: string; id: number }>
       typeArr: Array<{ id: number; name: string }>
-      materialAttrArr: Array<{ id: number; name: string }>
-      remarkList: Array<{ value: string }>
     }
-    storeEditInfo: StoreCreate
     [propName: string]: any
   } {
     return {
+      show_store: false,
       showMore: false,
       loading: {
         page: true,
@@ -517,15 +382,6 @@ export default Vue.extend({
         page: 1,
         total: 1
       },
-      storeEditInfo: {
-        client_id: '',
-        action_type: '',
-        desc: '',
-        complete_time: this.$getDate(new Date()),
-        store_id: this.$route.params.id,
-        second_store_id: '',
-        child_data: []
-      },
       // 日志数据
       storeLogInfo: {
         total_push: 0,
@@ -546,29 +402,44 @@ export default Vue.extend({
       },
       // 初始化公共数据
       commonInit: {
-        yarnList: [],
-        yarnColorList: [],
         typeArr: [
           {
             id: 1,
-            name: '入库'
+            name: '仓库入库'
           },
           {
             id: 2,
-            name: '出库'
-          }
-        ],
-        materialAttrArr: [
-          {
-            id: 1,
-            name: '绞纱'
+            name: '仓库出库'
           },
           {
-            id: 2,
-            name: '筒纱'
+            id: 3,
+            name: '采购入库'
+          },
+          {
+            id: 4,
+            name: '调取出库'
+          },
+          {
+            id: 5,
+            name: '加工回库'
+          },
+          {
+            id: 6,
+            name: '加工出库'
+          },
+          {
+            id: 8,
+            name: '工艺单入库'
+          },
+          {
+            id: 9,
+            name: '订单发货'
+          },
+          {
+            id: 10,
+            name: '仓库移库'
           }
-        ],
-        remarkList: []
+        ]
       }
     }
   },
@@ -631,152 +502,6 @@ export default Vue.extend({
         this.$message.warning('未知重置错误')
       }
     },
-    // 入库出库按钮事件
-    handleStockBtn(item1: any, item2: any, type: 1 | 2) {
-      if (this.storeEditInfo.action_type && this.storeEditInfo.action_type !== type) {
-        this.$message.error('请选择相同操作类型进行出入库')
-        return
-      }
-      if (this.storeEditInfo.second_store_id && this.storeEditInfo.second_store_id !== item1.second_store_id) {
-        this.$message.error('请选择相同二级仓库进行出入库')
-        return
-      }
-      const findName: any = this.commonInit.yarnList.find((itemF: any) =>
-        itemF.children.find((itemFC: any) => itemFC.label === item1.name)
-      )
-      if (this.storeEditInfo.child_data.length > 0) {
-        this.storeEditInfo.child_data.push({
-          name: (findName && [findName.label, item1.name]) || '',
-          color: item1.color,
-          attribute: item1.attribute,
-          color_code: item2.color_code,
-          vat_code: item2.vat_code,
-          batch_code: item2.batch_code,
-          action_weight: '',
-          item: '',
-          desc: ''
-        })
-      } else {
-        this.storeEditInfo = {
-          client_id: '',
-          action_type: type,
-          desc: '',
-          complete_time: this.$getDate(new Date()),
-          store_id: this.$route.params.id,
-          second_store_id: item1.second_store_id,
-          child_data: [
-            {
-              name: (findName && [findName.label, item1.name]) || '',
-              color: item1.color,
-              attribute: item1.attribute,
-              color_code: item2.color_code,
-              vat_code: item2.vat_code,
-              batch_code: item2.batch_code,
-              action_weight: '',
-              item: '',
-              desc: ''
-            }
-          ]
-        }
-      }
-    },
-    querySearchColor(queryString: string, cb: (params: any) => void) {
-      const returnData = queryString
-        ? this.commonInit.yarnColorList.filter((itemF) => itemF.value.indexOf(queryString) !== -1)
-        : this.commonInit.yarnColorList
-      cb(returnData)
-    },
-    querySearchColorCode(queryString: string, cb: (params: any) => void) {
-      const colorCodeList = this.$unique(
-        this.storeList.map((itemM: any) => {
-          return {
-            value: itemM.color_code
-          }
-        }),
-        'value'
-      )
-      const returnData = queryString
-        ? colorCodeList.filter((itemF: { value: string }) => itemF.value && itemF.value.indexOf(queryString) !== -1)
-        : colorCodeList
-      cb(returnData)
-    },
-    querySearchVatCode(queryString: string, cb: (params: any) => void) {
-      const vatCodeList = this.$unique(
-        this.storeList.map((itemM: any) => {
-          return {
-            value: itemM.vat_code
-          }
-        }),
-        'value'
-      )
-      const returnData = queryString
-        ? vatCodeList.filter((itemF: { value: string }) => itemF.value && itemF.value.indexOf(queryString) !== -1)
-        : vatCodeList
-      cb(returnData)
-    },
-    querySearchRemark(queryString: string, cb: (params: any) => void) {
-      const returnData = queryString
-        ? this.commonInit.remarkList.filter((itemF) => itemF.value.indexOf(queryString) !== -1)
-        : this.commonInit.remarkList
-      cb(returnData)
-    },
-    resetData() {
-      this.storeEditInfo = {
-        client_id: '',
-        action_type: '',
-        desc: '',
-        complete_time: this.$getDate(new Date()),
-        store_id: this.$route.params.id,
-        second_store_id: '',
-        child_data: []
-      }
-    },
-    saveStoreEditInfo() {
-      if (
-        this.$formCheck(this.storeEditInfo, [
-          {
-            key: 'second_store_id',
-            errMsg: '请选择二级仓库'
-          },
-          {
-            key: 'action_type',
-            errMsg: '请选择出入库类型'
-          }
-        ])
-      ) {
-        return
-      }
-      if (
-        this.storeEditInfo.child_data.some((item: any) => {
-          return this.$formCheck(item, [
-            {
-              key: 'name',
-              errMsg: '请选择毛条名称'
-            },
-            {
-              key: 'action_weight',
-              errMsg: '请填写数量',
-              regNormal: 'isNum'
-            }
-          ])
-        })
-      ) {
-        return
-      }
-      this.loading.page = true
-      this.storeEditInfo.child_data.forEach((item) => {
-        item.name = item.name[1]
-      })
-      stock.materialCreate({ data: [this.storeEditInfo] }).then((res) => {
-        if (res.data.status !== false) {
-          this.$message.success('添加成功')
-          this.resetData()
-          this.loading.page = false
-          this.getStoreInfoList()
-          this.getStoreLogList()
-        }
-      })
-    },
     // 获取出入库日志
     getStoreLogList(pages: number = 1) {
       this.loading.log = true
@@ -821,6 +546,9 @@ export default Vue.extend({
       this.storeLogListFilter.attr = item.attribute
       this.$goElView('stockLogEl')
       this.getStoreLogList()
+    },
+    openStore() {
+      this.show_store = true
     }
   },
   mounted() {

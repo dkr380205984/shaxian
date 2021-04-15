@@ -9,6 +9,16 @@ const login = (params:
   }) => http.post(`${baseUrl}/auth/login`, params, 'application/json')
 // token
 const getToken = () => http.get(`${baseUrl}/upload/token`)
+
+// 首页杂七杂八接口
+const index = {
+  searchAll: (params?: ListParam) => http.get(`${baseUrl}/index/search`, params)
+}
+// 修改密码
+const changeUserPasd = {
+  updated: (params: { sms_code: string, new_pass: string }) => http.post(`${baseUrl}/user/password/change`, params, 'application/json'),
+  sendVerificationCode: () => http.post(`${baseUrl}/user/password/change/send/code`, {}, 'application/json')
+}
 // 用户信息
 const authInfo = (params: any) => http.post(`${baseUrl}/auth/info`, params, 'application/json')
 import {
@@ -166,10 +176,13 @@ const check = {
 const allList = {
   forSeachId: (params: ListParam) => http.get(`${baseUrl}/order/document/code/lists`, params)
 }
+
 export {
   login,
   authInfo,
   getToken,
+  index,
+  changeUserPasd,
   yarnType,
   yarnColor,
   product,

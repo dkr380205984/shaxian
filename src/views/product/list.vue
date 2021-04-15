@@ -230,7 +230,7 @@ export default Vue.extend({
       this.name = params.name
       this.color = params.color
       this.attribute = params.attribute
-      this.yarn_type = params.yarn_type ? (params.yarn_type as string).split(',').map((item) => Number(item)) : ''
+      this.yarn_type = params.yarn_type ? (params.yarn_type as string).split(',').map((item) => Number(item)) : []
     },
     getList() {
       this.loading = true

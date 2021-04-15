@@ -92,17 +92,9 @@ const routes: RouteConfig[] = [
         name: '订单列表',
         component: () => import('../views/order/list.vue')
       }, {
-        path: '/orderProcessYarn/list',
-        name: '订购调取列表',
-        component: () => import('../views/orderProcessYarn/list.vue')
-      }, {
         path: '/orderProcessYarn/detail/:id',
         name: '纱线订购调取',
         component: () => import('../views/orderProcessYarn/detail.vue')
-      }, {
-        path: '/inAndOut/list',
-        name: '纱线出入库',
-        component: () => import('../views/inAndOut/list.vue')
       }, {
         path: '/inAndOut/detail/:id',
         name: '纱线出入库详情',

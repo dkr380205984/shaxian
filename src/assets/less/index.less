@@ -1,5 +1,6 @@
 
 @import './common.less';
+@import './popup.less';
 #index{
   width: 100%;
   height: 100%;
@@ -283,4 +284,17 @@
       min-height: calc(100% - 88px);
     }
   } 
+  .popup{
+    .canHandle{
+      cursor: pointer;
+    }
+    .notHandle{
+      cursor: not-allowed;
+    }
+  }
+}
+.iconTitle{
+  font-size: 18px;
+  color: #fff;
+  margin-right: 6px;
 }

@@ -152,8 +152,8 @@
                       style="flex-direction:column">
                       <div class="row">
                         <div class="column min120">纱线名称</div>
-                        <div class="column min120">订购颜色</div>
-                        <div class="column min120">订购属性</div>
+                        <div class="column min120">纱线颜色</div>
+                        <div class="column min120">纱线属性</div>
                         <div class="column min120">入库数量</div>
                         <div class="column min120">批号</div>
                         <div class="column min120">色号</div>

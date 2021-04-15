@@ -26,31 +26,21 @@
         <div class="remember_psd">
           <el-checkbox v-model="remPsd">记住密码</el-checkbox>
         </div>
-        <div class="forget_psd">忘记密码？</div>
+        <div class="forget_psd"
+          @click="$message.warning('请联系管理员重置密码')">忘记密码？</div>
       </div>
       <div class="login"
         @click="goLogin">登录</div>
-      <div class="buy_account">没有账号？<span class="buy_link">去购买</span></div>
+      <!-- <div class="buy_account">没有账号？<span class="buy_link">去购买</span></div> -->
       <div class="bottomInfo">
         <div class="line">©zwyknit.com版权所有 数据应用服务：浙ICP备 <a target="_blank"
             href="http://www.miit.gov.cn/">19041626号</a></div>
       </div>
     </div>
     <div class="rightCtn">
-      <el-carousel style="height:100%;width:100%"
-        :interval='5000'
-        trigger='click'
-        arrow='never'>
-        <el-carousel-item v-for="(item,index) in imageArr"
-          :key="index"
-          style="display:flex;
-                justify-content: center;
-                align-items: center;">
-          <img :src="item"
-            style="width:511px;height:449px"
-            alt="">
-        </el-carousel-item>
-      </el-carousel>
+      <img :src="require('@/assets/image/login/login_1.jpg')"
+        style="width:100%"
+        alt="">
     </div>
   </div>
 </template>
@@ -70,9 +60,9 @@ export default Vue.extend({
       password: window.localStorage.getItem('zhPassWord'),
       remPsd: !!Number(window.localStorage.getItem('remPsd')),
       imageArr: [
-        require('@/assets/image/login/image_1.png'),
-        require('@/assets/image/login/image_2.png'),
-        require('@/assets/image/login/image_3.png')
+        require('@/assets/image/login/login_1.jpg'),
+        require('@/assets/image/login/login_1.jpg'),
+        require('@/assets/image/login/login_1.jpg')
       ]
     }
   },
@@ -97,7 +87,7 @@ export default Vue.extend({
             if (res2.data.status !== false) {
               window.sessionStorage.setItem('full_name', res2.data.data.company_name)
               window.sessionStorage.setItem('user_name', res2.data.data.name)
-              this.$router.push('/order/list?page=1&order_code=&product_name=&client_id=&user_id=&page_size=10&date=')
+              this.$router.push('/homePage/homePage')
             }
           })
         }

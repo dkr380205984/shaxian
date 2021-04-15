@@ -42,14 +42,14 @@ export interface OrderStoreInfo {
 export interface StoreCreate {
   id?: string | number
   code?: string
-  order_id?: string
+  order_id?: string | number
   related_id?: string | number
   action_type: number | string
   select_id?: number[] | string // 二级仓库选择框
   move_select_id?: number[] | string // 移库时候选择框
   desc: string
   complete_time: string
-  client_id?: number | string
+  client_id?: number | string | any[] // 出入库优化为二级下拉框
   client_name?: string
   store_id?: number | string
   store_name?: string
@@ -66,7 +66,7 @@ export interface StoreCreateChild {
   color?: string
   attribute?: string
   colorAttr?: string // 用于同时选择color和attr的情况
-  colorAttrArr?: any[]
+  colorArr?: any[]
   batch_code?: string
   color_code?: string
   vat_code?: string

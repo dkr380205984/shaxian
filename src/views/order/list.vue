@@ -115,12 +115,12 @@
                 <div class="sortContainer">
                   <div class="sort">
                     <i class="el-icon-caret-top hover"
-                      @click="changeIndex(scope.row,'add')"></i>
+                      @click="changeIndex(scope.row,'delete')"></i>
                     <div class="number">
                       {{(scope.row.index||0)+1}}/{{scope.row.product_info.length}}
                     </div>
                     <i class="el-icon-caret-bottom hover"
-                      @click="changeIndex(scope.row,'delete')"></i>
+                      @click="changeIndex(scope.row,'add')"></i>
                   </div>
                   <span>{{scope.row.product_info[scope.row.index||0].product_name}}</span>
                 </div>
@@ -181,7 +181,9 @@
               label="下单日期"
               width="120">
             </el-table-column>
-            <el-table-column label="补充说明">
+            <el-table-column prop="file_url"
+              label="补充说明"
+              width="120">
               <template slot-scope="scope">
                 <div class="column">
                   <el-image style="width: 50px; height: 50px;line-height:50px;text-align:center;font-size:22px"
@@ -207,8 +209,21 @@
                   @click="$router.push('/order/detail/'+scope.row.id)">详情</span>
                 <span class="orange opr"
                   @click="$router.push('/order/update/'+scope.row.id)">修改</span>
-                <span class="red opr"
-                  @click="deleteOrder(scope.row.id)">删除</span>
+                <el-dropdown>
+                  <span class="green"
+                    style="margin-left:8px;cursor:pointer">更多</span>
+                  <el-dropdown-menu slot="dropdown">
+                    <el-dropdown-item @click.native="$router.push('/orderProcessYarn/detail/'+scope.row.id)">
+                      <span class="blue">订购加工</span>
+                    </el-dropdown-item>
+                    <el-dropdown-item @click.native="$router.push('/inAndOut/detail/'+scope.row.id)">
+                      <span class="blue">出入库</span>
+                    </el-dropdown-item>
+                    <el-dropdown-item @click.native="deleteOrder(scope.row.id)">
+                      <span class="red">删除订单</span>
+                    </el-dropdown-item>
+                  </el-dropdown-menu>
+                </el-dropdown>
               </template>
             </el-table-column>
           </el-table>

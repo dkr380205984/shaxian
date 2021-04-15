@@ -110,7 +110,7 @@
             </div>
           </div>
           <div class="row">
-            <div class="label isMust">主要负责人：</div>
+            <div class="label">主要负责人：</div>
             <div class="info">
               <el-input placeholder="请输入主要负责人"
                 v-model="supplierInfo.user_name"></el-input>
@@ -234,10 +234,10 @@ export default Vue.extend({
         this.$message.warning('请输入客户名称')
         return
       }
-      if (!this.supplierInfo.user_name) {
-        this.$message.warning('请输入主要负责人')
-        return
-      }
+      // if (!this.supplierInfo.user_name) {
+      //   this.$message.warning('请输入主要负责人')
+      //   return
+      // }
       partyB
         .create({
           id: this.supplierInfo.id || null,

@@ -1,7 +1,8 @@
 <template>
   <div class="popup inAndOut"
     v-show="show">
-    <div class="main">
+    <div class="main"
+      v-loading="loading">
       <div class="titleCtn">
         <div class="text">{{inOrOut || '填写'}}信息</div>
         <i class="el-icon-close"
@@ -75,7 +76,43 @@
                   </div>
                 </div>
               </div>
-              <template v-if="selfType[1]!==10">
+              <template v-if="selfType[0]==='无单据'&&selfType[1]!==10">
+                <div class="colCtn flex3">
+                  <div class="label">
+                    <span class="text">单位名称</span>
+                    <span class="explanation">(必选)</span>
+                  </div>
+                  <div class="content">
+                    <div class="elCtn">
+                      <el-cascader :disabled="!!clientId"
+                        filterable
+                        v-model="storeInfo.client_id"
+                        :options="selfClientArr"
+                        :props="{ expandTrigger: 'hover',value:'id',label:'name'}"
+                        no-data-text="暂无加工信息">
+                      </el-cascader>
+                    </div>
+                  </div>
+                </div>
+              </template>
+              <template v-else-if="selfType[1]===10">
+                <div class="colCtn flex3">
+                  <div class="label">
+                    <span class="text">移库仓库</span>
+                    <span class="explanation">(必选)</span>
+                  </div>
+                  <div class="content">
+                    <div class="elCtn">
+                      <el-cascader v-model="storeInfo.move_select_id"
+                        :options="allStoreArr"
+                        :props="{value:'id',label:'name',children:'second_data'}"
+                        placeholder="请选择需要移库的仓库">
+                      </el-cascader>
+                    </div>
+                  </div>
+                </div>
+              </template>
+              <template v-else>
                 <div class="colCtn flex3">
                   <div class="label">
                     <span class="text">单位名称</span>
@@ -96,140 +133,104 @@
                   </div>
                 </div>
               </template>
-              <template v-else>
-                <div class="colCtn flex3">
-                  <div class="label">
-                    <span class="text">移库仓库</span>
-                    <span class="explanation">(必选)</span>
-                  </div>
-                  <div class="content">
-                    <div class="elCtn">
-                      <el-cascader v-model="storeInfo.move_select_id"
-                        :options="allStoreArr"
-                        :props="{value:'id',label:'name',children:'second_data'}"
-                        placeholder="请选择需要移库的仓库">
-                      </el-cascader>
-                    </div>
-                  </div>
-                </div>
-              </template>
             </div>
-            <div class="rowCtnCtn"
-              v-for="(item,index) in storeInfo.child_data"
-              :key="index">
-              <i class="el-icon-circle-close"
-                @click="storeInfo.child_data.length>1?$deleteItem(storeInfo.child_data,index):$message.warning('至少有一项')"></i>
-              <div class="rowCtn">
-                <div class="colCtn">
-                  <div class="label">
-                    <span class="text">纱线名称</span>
-                    <span class="explanation">(必填)</span>
-                  </div>
-                  <div class="content">
-                    <div class="elCtn">
-                      <template v-if="selfType[0]==='采购单' ||selfType[0]==='调取单' || selfType[0]==='工艺单' || selfType[0]==='订单'">
-                        <el-select placeholder="请选择纱线名称"
-                          v-model="item.name"
-                          @change="getColorAttr($event,item)">
-                          <el-option v-for="item in selfYarnArr"
-                            :key="item.name"
-                            :label="item.name"
-                            :value="item.name"></el-option>
-                        </el-select>
-                      </template>
-                      <template v-else>
-                        <el-cascader v-model="item.name"
-                          filterable
-                          placeholder="请选择纱线"
-                          :options="selfYarnArr"></el-cascader>
-                      </template>
-                    </div>
-                  </div>
-                </div>
-                <div class="colCtn">
-                  <div class="label">
-                    <span class="text">颜色/属性</span>
-                    <span class="explanation">(必填)</span>
-                  </div>
-                  <div class="content flexRow">
-                    <template v-if="selfType[0]==='采购单' ||selfType[0]==='调取单' || selfType[0]==='工艺单' || selfType[0]==='订单'">
-                      <div class="elCtn">
-                        <el-select no-data-text="请先选择纱线"
-                          placeholder="颜色/属性"
-                          v-model="item.colorAttr">
-                          <el-option v-for="itemChild in item.colorAttrArr"
-                            :key="itemChild.value"
-                            :label="itemChild.label"
-                            :value="itemChild.value"></el-option>
-                        </el-select>
-                      </div>
-                    </template>
-                    <template v-else>
-                      <div class="elCtn">
-                        <el-input placeholder="颜色"
-                          v-model="item.color"></el-input>
-                      </div>
-                      <div class="elCtn">
-                        <el-select v-model="item.attribute"
-                          placeholder="属性">
-                          <el-option label="绞纱"
-                            value="绞纱"></el-option>
-                          <el-option label="筒纱"
-                            value="筒纱"></el-option>
-                        </el-select>
-                      </div>
-                    </template>
-                  </div>
-                </div>
-                <div class="colCtn">
-                  <div class="label">
-                    <span class="text">数量/件数</span>
-                    <span class="explanation">(必填)</span>
-                  </div>
-                  <div class="content flexRow">
-                    <div class="elCtn">
-                      <el-input v-model="item.action_weight"
-                        placeholder="数量"></el-input>
-                    </div>
-                    <div class="elCtn">
-                      <el-input v-model="item.items"
-                        placeholder="件数"></el-input>
-                    </div>
-                  </div>
+            <div class="tableCtn">
+              <div class="thead">
+                <div class="trow">
+                  <div class="tcolumn"
+                    style="flex:1.5">纱线名称</div>
+                  <div class="tcolumn">纱线颜色</div>
+                  <div class="tcolumn">纱线属性</div>
+                  <div class="tcolumn">批号</div>
+                  <div class="tcolumn">色号</div>
+                  <div class="tcolumn">缸号</div>
+                  <div class="tcolumn">数量(kg)</div>
+                  <div class="tcolumn">件数(件)</div>
+                  <div class="tcolumn">操作</div>
                 </div>
               </div>
-              <div class="rowCtn">
-                <div class="colCtn">
-                  <div class="label">
-                    <span class="text">批号</span>
+              <div class="tbody">
+                <div class="trow"
+                  v-for="(item,index) in storeInfo.child_data"
+                  :key="index">
+                  <div class="tcolumn"
+                    style="flex:1.5">
+                    <template v-if="selfType[0]==='采购单' ||selfType[0]==='调取单' || selfType[0]==='工艺单' || selfType[0]==='订单'">
+                      <el-select class="el"
+                        placeholder="纱线名称"
+                        v-model="item.name"
+                        @change="getColor($event,item)">
+                        <el-option v-for="item in selfYarnArr"
+                          :key="item.name"
+                          :label="item.name"
+                          :value="item.name"></el-option>
+                      </el-select>
+                    </template>
+                    <template v-else>
+                      <el-cascader class="el"
+                        v-model="item.name"
+                        filterable
+                        placeholder="纱线名称"
+                        :show-all-levels="false"
+                        :options="selfYarnArr"></el-cascader>
+                    </template>
                   </div>
-                  <div class="content">
-                    <div class="elCtn">
-                      <el-input v-model="item.batch_code"
-                        placeholder="请输入批号"></el-input>
-                    </div>
+                  <div class="tcolumn">
+                    <template v-if="selfType[0]==='采购单' ||selfType[0]==='调取单' || selfType[0]==='工艺单' || selfType[0]==='订单'">
+                      <el-select class="el"
+                        no-data-text="请先选择纱线"
+                        placeholder="颜色"
+                        v-model="item.color">
+                        <el-option v-for="itemChild in item.colorArr"
+                          :key="itemChild.value"
+                          :label="itemChild.label"
+                          :value="itemChild.value"></el-option>
+                      </el-select>
+                    </template>
+                    <template v-else>
+                      <el-input class="el"
+                        placeholder="颜色"
+                        v-model="item.color"></el-input>
+                    </template>
                   </div>
-                </div>
-                <div class="colCtn">
-                  <div class="label">
-                    <span class="text">色号</span>
+                  <div class="tcolumn">
+                    <el-select class="el"
+                      v-model="item.attribute"
+                      placeholder="属性">
+                      <el-option label="绞纱"
+                        value="绞纱"></el-option>
+                      <el-option label="筒纱"
+                        value="筒纱"></el-option>
+                    </el-select>
                   </div>
-                  <div class="content">
-                    <div class="elCtn">
-                      <el-input v-model="item.color_code"
-                        placeholder="请输入色号"></el-input>
-                    </div>
+                  <div class="tcolumn">
+                    <el-input class="el"
+                      v-model="item.batch_code"
+                      placeholder="批号"></el-input>
                   </div>
-                </div>
-                <div class="colCtn">
-                  <div class="label">
-                    <span class="text">缸号</span>
+                  <div class="tcolumn">
+                    <el-input class="el"
+                      v-model="item.color_code"
+                      placeholder="色号"></el-input>
                   </div>
-                  <div class="content">
-                    <div class="elCtn">
-                      <el-input v-model="item.vat_code"
-                        placeholder="请输入缸号"></el-input>
-                    </div>
+                  <div class="tcolumn">
+                    <el-input class="el"
+                      v-model="item.vat_code"
+                      placeholder="缸号"></el-input>
+                  </div>
+                  <div class="tcolumn">
+                    <el-input class="el"
+                      v-model="item.action_weight"
+                      placeholder="数量"></el-input>
+                  </div>
+                  <div class="tcolumn">
+                    <el-input class="el"
+                      v-model="item.items"
+                      placeholder="件数"></el-input>
+                  </div>
+                  <div class="tcolumn">
+                    <div class="opr red"
+                      @click="storeInfo.child_data.length>1?$deleteItem(storeInfo.child_data,index):$message.warning('至少有一项')">删除</div>
                   </div>
                 </div>
               </div>
@@ -300,11 +301,23 @@
 <script lang="ts">
 import { Component, Prop, Vue, Watch } from 'vue-property-decorator'
 import { StoreCreate } from '@/types/store'
-import { stock, allList, yarnOrder, yarnProcess, store, craft, order } from '@/assets/js/api'
+import { stock, allList, yarnOrder, yarnProcess, store, craft, order, material } from '@/assets/js/api'
 @Component
 export default class InAndOut extends Vue {
   @Prop() show!: boolean
   @Prop() type!: number
+  @Prop() initData?: Array<{
+    second_store_id: number
+    name: string
+    color: string
+    attribute: string
+    store_info: Array<{
+      color_code: string
+      vat_code: string
+      batch_code: string
+      weight: number
+    }>
+  }>
   @Prop() orderId?: string
   @Prop() relatedId?: number | string
   @Prop() clientId?: number | string
@@ -312,16 +325,17 @@ export default class InAndOut extends Vue {
   @Prop() storeId?: any[] // 一级二级仓库
   @Prop() relatedCode?: string
   @Prop() yarnName?: string
-  @Prop() yarnType?: string // 包含颜色和属性
+  @Prop() yarnColor?: string
+  @Prop() yarnAttr?: string
   @Prop({ default: true }) noChange?: boolean // 用于标记是否可修改操作类型，一般订单里得操作都是固定的操作类型不可修改，仓库里的是可修改的
   @Prop() yarnArr?: any[]
   @Prop() outClientArr?: any[] // 订单自带的加工单位
-  inOrOut = ''
+  loading = false
   relatedLoading = false
   relatedArr = []
   storeInfo: StoreCreate = {
     related_id: '',
-    client_id: '',
+    client_id: [],
     select_id: [],
     store_id: '',
     second_store_id: '',
@@ -336,7 +350,6 @@ export default class InAndOut extends Vue {
         action_weight: '',
         color: '',
         attribute: '',
-        colorAttr: '',
         batch_code: '',
         color_code: '',
         vat_code: '',
@@ -435,9 +448,23 @@ export default class InAndOut extends Vue {
     ) {
       return this.outClientArr || this.initClientArr
     } else {
-      return this.$store.state.api.factory.arr
-        .filter((item: any) => (item.status as number) === 1)
-        .concat(this.$store.state.api.supplier.arr.filter((item: any) => (item.status as number) === 1))
+      return [
+        {
+          id: '加工单位',
+          name: '加工单位',
+          children: this.$store.state.api.supplier.arr.filter((item: any) => (item.status as number) === 1)
+        },
+        {
+          id: '客户单位',
+          name: '客户单位',
+          children: this.$store.state.api.client.arr.filter((item: any) => (item.status as number) === 1)
+        },
+        {
+          id: '供货商单位',
+          name: '供货商单位',
+          children: this.$store.state.api.factory.arr.filter((item: any) => (item.status as number) === 1)
+        }
+      ]
     }
   }
   // 纱线
@@ -474,12 +501,30 @@ export default class InAndOut extends Vue {
       return this.$store.state.api.storeHouse.arr.filter((item: any) => item.store_type === 1)
     }
   }
-
   // 移库仓库
   get allStoreArr() {
     return this.$store.state.api.storeHouse.arr.filter(
       (item: any) => item.store_type === 1 && item.id !== Number(this.firstStoreId)
     )
+  }
+  // 出入库类型
+  get inOrOut(): string {
+    console.log(this.selfType)
+    if (
+      this.selfType.length > 0 &&
+      (this.selfType[1] === 1 || this.selfType[1] === 3 || this.selfType[1] === 5 || this.selfType[1] === 8)
+    ) {
+      return '入库'
+    } else if (
+      this.selfType.length > 0 &&
+      (this.selfType[1] === 2 || this.selfType[1] === 4 || this.selfType[1] === 6 || this.selfType[1] === 9)
+    ) {
+      return '出库'
+    } else if (this.selfType.length > 0 && this.selfType[1] === 10) {
+      return '移库'
+    } else {
+      return '填写'
+    }
   }
 
   reset() {
@@ -487,32 +532,43 @@ export default class InAndOut extends Vue {
     this.$emit('update:show', false)
     this.$emit('close')
   }
-  clearData() {
-    this.storeInfo = {
-      related_id: '',
-      client_id: '',
-      select_id: [],
-      store_id: '',
-      second_store_id: '',
-      move_select_id: '',
-      move_store_id: '',
-      move_second_store_id: '',
-      action_type: '',
-      child_data: [
-        {
-          name: '',
-          action_weight: '',
-          color: '',
-          attribute: '',
-          colorAttr: '',
-          batch_code: '',
-          color_code: '',
-          vat_code: '',
-          item: ''
-        }
-      ],
-      desc: '',
-      complete_time: this.$getDate(new Date())
+  clearData(ev?: any) {
+    if (!ev) {
+      this.selfType = []
+    }
+    this.relatedArr = []
+    if (this.initData && this.initData.length > 0) {
+      this.storeInfo.related_id = ''
+      this.storeInfo.client_id = []
+      this.storeInfo.move_select_id = ''
+      this.storeInfo.move_second_store_id = ''
+      this.storeInfo.action_type = ''
+    } else {
+      this.storeInfo = {
+        related_id: '',
+        client_id: '',
+        select_id: [],
+        store_id: '',
+        second_store_id: '',
+        move_select_id: '',
+        move_store_id: '',
+        move_second_store_id: '',
+        action_type: '',
+        child_data: [
+          {
+            name: '',
+            action_weight: '',
+            color: '',
+            attribute: '',
+            batch_code: '',
+            color_code: '',
+            vat_code: '',
+            item: ''
+          }
+        ],
+        desc: '',
+        complete_time: this.$getDate(new Date())
+      }
     }
   }
   searchRlatedId(query: string) {
@@ -540,13 +596,13 @@ export default class InAndOut extends Vue {
   }
   // 根据单据信息初始化列表
   initDetail(id: number) {
+    this.loading = true
     if (this.selfType[0] === '采购单') {
       yarnOrder
         .detail({
           id
         })
         .then((res) => {
-          console.log(res.data.data)
           const data = res.data.data
           this.storeInfo.order_id = data.order_id
           this.initClientArr = [
@@ -558,6 +614,7 @@ export default class InAndOut extends Vue {
           this.initYarnArr = this.$mergeData(data.child_data, {
             mainRule: 'name'
           })
+          this.loading = false
         })
     }
     // 调取单
@@ -568,7 +625,6 @@ export default class InAndOut extends Vue {
         })
         .then((res) => {
           const data = res.data.data
-          console.log(this.firstStoreId, data.store_id)
           if (this.firstStoreId && Number(this.firstStoreId) !== data.store_id) {
             this.$message.error('该调取单来源与仓库不符，请到' + data.store_name + '处理该调取单')
             this.storeInfo.related_id = ''
@@ -588,6 +644,7 @@ export default class InAndOut extends Vue {
               ]
             }
           ]
+          this.loading = false
         })
     }
     // 加工单
@@ -599,12 +656,59 @@ export default class InAndOut extends Vue {
         .then((res) => {
           const data = res.data.data
           this.storeInfo.order_id = data.order_id
+          this.storeInfo.client_id = data.client_id
           this.initClientArr = [
             {
               id: data.client_id,
               name: data.client_name
             }
           ]
+          if (data.order_id) {
+            order
+              .detail({
+                id: data.order_id
+              })
+              .then((res2) => {
+                const orderData = res2.data.data
+                this.initYarnArr = this.$mergeData(orderData.product_info, {
+                  mainRule: 'product_name/name',
+                  childrenRule: {
+                    mainRule: ['color', 'attribute'],
+                    otherRule: [{ name: 'weight', type: 'add' }]
+                  }
+                })
+                this.initClientArr = [
+                  {
+                    id: orderData.client_id,
+                    name: orderData.client_name
+                  }
+                ]
+                if (!this.initData || this.initData.length === 0) {
+                  this.storeInfo.child_data = []
+                  this.initYarnArr.forEach((item) => {
+                    item.childrenMergeInfo.forEach((itemChild: any) => {
+                      this.storeInfo.child_data.push({
+                        name: item.name,
+                        action_weight: itemChild.weight,
+                        color: itemChild.color,
+                        attribute: itemChild.attribute,
+                        batch_code: '',
+                        color_code: '',
+                        vat_code: '',
+                        item: '',
+                        colorArr: item.childrenMergeInfo.map((itemFuck: any) => {
+                          return {
+                            value: itemFuck.color,
+                            label: itemFuck.color
+                          }
+                        })
+                      })
+                    })
+                  })
+                }
+                this.loading = false
+              })
+          }
         })
     }
     // 工艺单
@@ -632,6 +736,7 @@ export default class InAndOut extends Vue {
               name: data.client_name
             }
           ]
+          this.loading = false
         })
     }
     // 订单
@@ -642,7 +747,6 @@ export default class InAndOut extends Vue {
         })
         .then((res) => {
           const data = res.data.data
-          console.log(data)
           this.initYarnArr = this.$mergeData(data.product_info, {
             mainRule: 'product_name/name',
             childrenRule: {
@@ -657,28 +761,30 @@ export default class InAndOut extends Vue {
             }
           ]
           this.storeInfo.client_id = data.client_id
-          this.storeInfo.child_data = []
-          this.initYarnArr.forEach((item) => {
-            item.childrenMergeInfo.forEach((itemChild: any) => {
-              this.storeInfo.child_data.push({
-                name: item.name,
-                action_weight: itemChild.weight,
-                color: '',
-                attribute: '',
-                colorAttr: itemChild.color + 'IamConnector' + itemChild.attribute,
-                batch_code: '',
-                color_code: '',
-                vat_code: '',
-                item: '',
-                colorAttrArr: item.childrenMergeInfo.map((itemFuck: any) => {
-                  return {
-                    value: itemFuck.color + 'IamConnector' + itemFuck.attribute,
-                    label: itemFuck.color + '/' + itemFuck.attribute
-                  }
+          if (!this.initData || this.initData.length === 0) {
+            this.storeInfo.child_data = []
+            this.initYarnArr.forEach((item) => {
+              item.childrenMergeInfo.forEach((itemChild: any) => {
+                this.storeInfo.child_data.push({
+                  name: item.name,
+                  action_weight: itemChild.weight,
+                  color: itemChild.color,
+                  attribute: itemChild.attribute,
+                  batch_code: '',
+                  color_code: '',
+                  vat_code: '',
+                  item: '',
+                  colorArr: item.childrenMergeInfo.map((itemFuck: any) => {
+                    return {
+                      value: itemFuck.color,
+                      label: itemFuck.color
+                    }
+                  })
                 })
               })
             })
-          })
+          }
+          this.loading = false
         })
     }
   }
@@ -686,50 +792,78 @@ export default class InAndOut extends Vue {
   getType() {
     if (this.type === 1) {
       this.selfType = ['无单据', 1]
-      this.inOrOut = '入库'
     } else if (this.type === 2) {
       this.selfType = ['无单据', 2]
-      this.inOrOut = '出库'
     } else if (this.type === 3) {
       this.selfType = ['采购单', 3]
-      this.inOrOut = '入库'
     } else if (this.type === 4) {
       this.selfType = ['调取单', 4]
-      this.inOrOut = '出库'
     } else if (this.type === 5) {
       this.selfType = ['加工单', 5]
-      this.inOrOut = '回库'
+      this.initDetail(this.relatedId as number)
     } else if (this.type === 6) {
       this.selfType = ['加工单', 6]
-      this.inOrOut = '出库'
+      this.initDetail(this.relatedId as number)
     } else if (this.type === 9) {
       this.selfType = ['订单', 9]
-      this.inOrOut = '最终出库'
     } else if (this.type === 10) {
       this.selfType = ['无单据', 10]
-      this.inOrOut = '移库'
     }
   }
   // 根据选中的纱线初始化颜色属性下拉框
-  getColorAttr(yarnName: string, info?: any) {
+  getColor(yarnName: string, info?: any) {
     // 特殊连接符 IamConnector
-    info.colorAttrArr = (this.selfYarnArr as any[])
+    info.colorArr = (this.selfYarnArr as any[])
       .find((item: any) => {
         return item.name === yarnName
       })
       .childrenMergeInfo.map((item: any) => {
         return {
-          value: item.color + 'IamConnector' + item.attribute,
-          label: item.color + '/' + item.attribute
+          value: item.color,
+          label: item.color
         }
       })
     if (info) {
-      info.colorAttr = ''
+      info.color = ''
     }
   }
   saveAll() {
+    if (
+      this.$formCheck(this.storeInfo, [
+        {
+          key: 'select_id',
+          errMsg: '请选择仓库'
+        }
+      ])
+    ) {
+      return
+    }
+    if ((this.storeInfo.action_type as any[][1]) === '移库') {
+      if (!this.storeInfo.move_select_id) {
+        this.$message.error('请选择移库仓库')
+        return
+      }
+    } else {
+      if (!this.storeInfo.client_id) {
+        this.$message.error('请选择单位')
+        return
+      }
+    }
+
+    if (
+      this.storeInfo.child_data.some((item) => {
+        return this.$formCheck(item, [
+          {
+            key: 'name',
+            errMsg: '请选择纱线名称'
+          }
+        ])
+      })
+    ) {
+      return
+    }
     const formData: StoreCreate = {
-      order_id: this.orderId || this.storeInfo.order_id,
+      order_id: this.selfType[1] === 9 ? this.storeInfo.related_id : this.orderId || this.storeInfo.order_id,
       related_id: this.storeInfo.related_id,
       action_type: this.selfType[1],
       complete_time: this.storeInfo.complete_time,
@@ -738,13 +872,13 @@ export default class InAndOut extends Vue {
       second_store_id: (this.storeInfo.select_id as any[])[1],
       move_store_id: this.selfType[1] === 10 ? (this.storeInfo.move_select_id as any[])[0] : '',
       move_second_store_id: this.selfType[1] === 10 ? (this.storeInfo.move_select_id as any[])[1] : '',
-      client_id: this.storeInfo.client_id,
+      client_id: Array.isArray(this.storeInfo.client_id) ? this.storeInfo.client_id[1] : this.storeInfo.client_id,
       child_data: this.storeInfo.child_data.map((item: any) => {
         return {
           name: Array.isArray(item.name) ? item.name[1] : item.name,
           action_weight: item.action_weight,
-          color: item.color || item.colorAttr.split('IamConnector')[0],
-          attribute: item.attribute || item.colorAttr.split('IamConnector')[1],
+          color: item.color,
+          attribute: item.attribute,
           batch_code: item.batch_code || 'NOT_SET',
           color_code: item.color_code || 'NOT_SET',
           vat_code: item.vat_code || 'NOT_SET',
@@ -788,10 +922,36 @@ export default class InAndOut extends Vue {
         this.storeInfo.client_id = this.clientId
         this.storeInfo.select_id = this.storeId
         this.storeInfo.child_data[0].name = this.yarnName || ''
-        this.storeInfo.child_data[0].colorAttr = this.yarnType || ''
+        this.storeInfo.child_data[0].color = this.yarnColor || ''
+        this.storeInfo.child_data[0].attribute = this.yarnAttr || ''
         if (this.yarnName) {
-          this.getColorAttr(this.yarnName)
+          this.getColor(this.yarnName)
         }
+      }
+      if (this.initData && this.initData.length > 0) {
+        console.log(this.initData)
+        this.storeInfo.child_data = []
+        this.storeInfo.select_id = [Number(this.firstStoreId), this.initData[0].second_store_id]
+        this.initData.forEach((item) => {
+          item.store_info.forEach((itemChild) => {
+            this.storeInfo.child_data.push({
+              name: item.name,
+              action_weight: itemChild.weight,
+              color: item.color,
+              attribute: item.attribute,
+              colorArr: [
+                {
+                  value: item.color,
+                  label: item.color
+                }
+              ],
+              batch_code: itemChild.batch_code === 'NOT_SET' ? '' : itemChild.batch_code,
+              color_code: itemChild.color_code === 'NOT_SET' ? '' : itemChild.color_code,
+              vat_code: itemChild.vat_code === 'NOT_SET' ? '' : itemChild.vat_code,
+              item: ''
+            })
+          })
+        })
       }
     }
   }

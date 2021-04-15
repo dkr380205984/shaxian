@@ -98,24 +98,36 @@
         <div class="tableCtn">
           <div class="thead">
             <div class="trow">
-              <div class="tcolumn">纱线名称</div>
-              <div class="tcolumn">纱线颜色</div>
-              <div class="tcolumn">纱线属性</div>
-              <div class="tcolumn">采购单价(元)</div>
-              <div class="tcolumn">采购数量(kg)</div>
+              <div class="tcolumn"
+                style="flex:5">
+                <div class="trow">
+                  <div class="tcolumn">纱线名称</div>
+                  <div class="tcolumn">纱线颜色</div>
+                  <div class="tcolumn">纱线属性</div>
+                  <div class="tcolumn">采购单价(元)</div>
+                  <div class="tcolumn">采购数量(kg)</div>
+                </div>
+              </div>
+              <div class="tcolumn">待入库数量(kg)</div>
               <div class="tcolumn">入库数量(kg)</div>
             </div>
           </div>
           <div class="tbody">
-            <div class="trow"
-              v-for="(item,index) in order_yarn_info.child_data"
-              :key="index">
-              <div class="tcolumn">{{item.name}}</div>
-              <div class="tcolumn">{{item.color}}</div>
-              <div class="tcolumn">{{item.attribute}}</div>
-              <div class="tcolumn">{{item.price}}元</div>
-              <div class="tcolumn blue">{{item.weight}}kg</div>
-              <div class="tcolumn green">{{item.push_weight}}kg</div>
+            <div class="trow">
+              <div class="tcolumn"
+                style="flex:5">
+                <div class="trow"
+                  v-for="(item,index) in order_yarn_info.child_data"
+                  :key="index">
+                  <div class="tcolumn">{{item.name}}</div>
+                  <div class="tcolumn">{{item.color}}</div>
+                  <div class="tcolumn">{{item.attribute}}</div>
+                  <div class="tcolumn">{{item.price}}元</div>
+                  <div class="tcolumn blue">{{item.weight}}kg</div>
+                </div>
+              </div>
+              <div class="tcolumn orange">{{order_yarn_info.total_weight-order_yarn_info.push_weight}}kg</div>
+              <div class="tcolumn green">{{order_yarn_info.push_weight}}kg</div>
             </div>
           </div>
         </div>
@@ -420,21 +432,10 @@ export default Vue.extend({
         this.order_yarn_info.additional_fee = this.order_yarn_info.additional_fee
           ? JSON.parse(this.order_yarn_info.additional_fee as string)
           : []
+        this.order_yarn_info.total_weight = this.order_yarn_info.child_data.reduce((total, current) => {
+          return total + Number(current.weight)
+        }, 0)
         this.order_in_log = res[1].data.data.data.items
-        this.order_yarn_info.child_data.forEach((item) => {
-          item.push_weight = 0
-          this.order_in_log.forEach((itemLog: any) => {
-            itemLog.child_data.forEach((itemChild: any) => {
-              if (
-                itemChild.name === item.name &&
-                itemChild.color === item.color &&
-                itemChild.attribute === item.attribute
-              ) {
-                item.push_weight = Number(itemChild.action_weight) + Number(item.push_weight)
-              }
-            })
-          })
-        })
         this.deduct_list = res[2].data.data
         this.deduct_list.forEach((item: any) => {
           item.deduct_content = JSON.parse(item.deduct_content)

@@ -14,7 +14,7 @@
           </div>
           <div class="colCtn">
             <span class="label">纱线类型：</span>
-            <span class="text">{{product_info.yarn_type_name}}</span>
+            <span class="text">{{product_info.yarn_type|yarnTypeFilter}}</span>
           </div>
           <div class="colCtn">
             <span class="label">创建人：</span>
@@ -206,7 +206,7 @@ export default Vue.extend({
       loading: true,
       product_info: {
         name: '',
-        yarn_type: '',
+        yarn_type: [],
         yarn_type_name: '',
         user_name: '',
         child_data: []

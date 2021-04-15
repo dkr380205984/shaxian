@@ -601,7 +601,8 @@
       :show.sync="store_info.show"
       :type="store_info.type"
       :yarnName="store_info.yarn_name"
-      :yarnType="store_info.yarn_type"
+      :yarnColor="store_info.yarn_color"
+      :yarnAttr="store_info.yarn_attr"
       @close="resetStoreInfo"></in-and-out>
   </div>
 </template>
@@ -624,7 +625,8 @@ export default Vue.extend({
         show: false,
         yarn_arr: [],
         out_client_arr: [],
-        yarn_type: '',
+        yarn_color: '',
+        yarn_attr: '',
         yarn_name: '',
         type: ''
       },
@@ -729,7 +731,8 @@ export default Vue.extend({
         ]
         this.store_info.client_id = this.order_info.client_id
       }
-      this.store_info.yarn_type = info.color + 'IamConnector' + info.attribute
+      this.store_info.yarn_color = info.color
+      this.store_info.yarn_attr = info.attribute
       this.store_info.yarn_name = info.name
       this.store_info.show = true
     },

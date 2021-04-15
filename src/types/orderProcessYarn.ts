@@ -33,6 +33,7 @@ export interface OrderYarn {
   common_attr?: string
   file_url?: string
   total_price?: string | number
+  total_weight?: string | number
   desc: string
 }
 

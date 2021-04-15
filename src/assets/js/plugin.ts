@@ -311,7 +311,7 @@ const plugin = {
         } else {
           if (item.regNormal === 'isNum') {
             console.log(data[item.key])
-            msg = /^[0-9]+$/.test(data[item.key]) ? msg : (item.errMsg || '请输入数字')
+            msg = /^(-?\d+)(\.\d+)?$/.test(data[item.key]) ? msg : (item.errMsg || '请输入数字')
           } else if (item.regNormal === 'isEmail') {
             msg = /^([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+@([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+\.[a-zA-Z]{2,3}$/
               .test(data[item.key]) ? msg : (item.errMsg || '请输入正确邮箱')

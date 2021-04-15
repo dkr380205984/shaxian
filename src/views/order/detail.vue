@@ -269,6 +269,83 @@
         </div>
       </div>
     </div>
+    <div class="module">
+      <div class="titleCtn">
+        <span class="title">财务概览</span>
+      </div>
+      <div style="padding:20px 32px">
+        <div class="tableCtn">
+          <div class="thead">
+            <div class="trow">
+              <div class="tcolumn">费用名称</div>
+              <div class="tcolumn">费用数量</div>
+              <div class="tcolumn">总价(元)</div>
+              <div class="tcolumn">均价</div>
+              <div class="tcolumn">操作</div>
+            </div>
+          </div>
+          <div class="tbody">
+            <div class="trow">
+              <div class="tcolumn">下单纱线</div>
+              <div class="tcolumn">{{order_info.total_weight}}</div>
+              <div class="tcolumn green">{{order_info.total_price}}元</div>
+              <div class="tcolumn">{{(order_info.total_price/order_info.total_weight).toFixed(1)}}元/kg</div>
+              <div class="tcolumn gray">暂无操作</div>
+            </div>
+            <div class="trow">
+              <div class="tcolumn">额外费用</div>
+              <div class="tcolumn gray">暂无</div>
+              <div class="tcolumn green">{{order_info.additional_fee?JSON.parse(order_info.additional_fee).reduce((total,current)=>(total+Number(current.price)),0):0}}元</div>
+              <div class="tcolumn gray">暂无</div>
+              <div class="tcolumn gray">暂无操作</div>
+            </div>
+            <!-- <div class="trow">
+              <div class="tcolumn">纱线成本</div>
+              <div class="tcolumn">费用数量</div>
+              <div class="tcolumn">总价(元)</div>
+              <div class="tcolumn">均价</div>
+              <div class="tcolumn">操作</div>
+            </div> -->
+            <div class="trow">
+              <div class="tcolumn">倒筒加工</div>
+              <div class="tcolumn">{{total.daotong_weight.toFixed(1)}}kg</div>
+              <div class="tcolumn orange">{{total.daotong_price.toFixed(1)}}元</div>
+              <div class="tcolumn">{{total.daotong_weight?(total.daotong_price/total.daotong_weight).toFixed(1):0}}元/kg</div>
+              <div class="tcolumn">
+                <div class="oprCtn">
+                  <div class="opr blue"
+                    @click="window.open('/orderProcessYarn/detail/' + $route.params.id)">倒筒详情</div>
+                </div>
+              </div>
+            </div>
+            <div class="trow">
+              <div class="tcolumn">染色加工</div>
+              <div class="tcolumn">{{total.ranse_weight.toFixed(1)}}kg</div>
+              <div class="tcolumn orange">{{total.ranse_price.toFixed(1)}}元</div>
+              <div class="tcolumn">{{total.ranse_weight?(total.ranse_price/total.ranse_weight).toFixed(1):0}}元/kg</div>
+              <div class="tcolumn">
+                <div class="oprCtn">
+                  <div class="opr blue"
+                    @click="window.open('/orderProcessYarn/detail/' + $route.params.id)">染色详情</div>
+                </div>
+              </div>
+            </div>
+            <div class="trow">
+              <div class="tcolumn">膨纱加工</div>
+              <div class="tcolumn">{{total.pengsha_weight.toFixed(1)}}kg</div>
+              <div class="tcolumn orange">{{total.pengsha_price.toFixed(1)}}元</div>
+              <div class="tcolumn">{{total.pengsha_weight?(total.pengsha_price/total.pengsha_weight).toFixed(1):0}}元/kg</div>
+              <div class="tcolumn">
+                <div class="oprCtn">
+                  <div class="opr blue"
+                    @click="window.open('/orderProcessYarn/detail/' + $route.params.id)">膨纱详情</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
     <div class="bottomFixBar">
       <div class="main">
         <div class="btnCtn">
@@ -348,7 +425,15 @@ export default Vue.extend({
         product_info: []
       },
       check_flag: false,
-      check_detail_flag: false
+      check_detail_flag: false,
+      total: {
+        daotong_weight: 0,
+        daotong_price: 0,
+        ranse_weight: 0,
+        ranse_price: 0,
+        pengsha_weight: 0,
+        pengsha_price: 0
+      }
     }
   },
   methods: {
@@ -397,11 +482,30 @@ export default Vue.extend({
             childrenName: 'child_data'
           })
           processMerge.forEach((itemChild: any) => {
+            itemChild.total_price = itemChild.child_data.reduce((total: number, current: any) => {
+              return total + Number(current.weight) * Number(current.price)
+            }, 0)
             itemChild.total_weight = itemChild.child_data.reduce((total: number, current: any) => {
               return total + Number(current.weight)
             }, 0)
           })
           item.process_info = processMerge
+        })
+        this.order_info.product_info.forEach((item: any) => {
+          item.process_info.forEach((itemChild: any) => {
+            if (itemChild.type === '倒筒') {
+              this.total.daotong_weight += itemChild.total_weight
+              this.total.daotong_price += itemChild.total_price
+            }
+            if (itemChild.type === '染色') {
+              this.total.ranse_weight += itemChild.total_weight
+              this.total.ranse_price += itemChild.total_price
+            }
+            if (itemChild.type === '膨纱') {
+              this.total.pengsha_weight += itemChild.total_weight
+              this.total.pengsha_price += itemChild.total_price
+            }
+          })
         })
         this.deduct_list = res[1].data.data
         this.deduct_list.forEach((item: any) => {
@@ -410,7 +514,7 @@ export default Vue.extend({
         this.final_out_log = res[2].data.data.data.items.filter(
           (item: any) => Number(item.client_id) === Number(this.order_info.client_id)
         )
-        console.log(this.final_out_log)
+        console.log(this.order_info)
         this.loading = false
       })
     },

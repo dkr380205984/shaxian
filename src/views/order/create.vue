@@ -283,7 +283,7 @@
             <div class="label"
               v-if="index===0">
               <span class="text">额外费用备注</span>
-              <span class="explanation">(必选)</span>
+              <span class="explanation">(选填)</span>
             </div>
             <div class="elCtn">
               <el-input v-model="item.desc"
@@ -530,13 +530,14 @@ export default Vue.extend({
       ) {
         return
       }
-      this.order_info.product_info.forEach((item) => (item.product_id = (item.product_id as any[])[1]))
+      const formData = JSON.parse(JSON.stringify(this.order_info))
+      formData.product_info.forEach((item: any) => (item.product_id = (item.product_id as any[])[1]))
       // 额外费用为空时提交空字符串方便后续使用
-      this.order_info.additional_fee =
-        (this.order_info.additional_fee as any[]).filter((itemChild) => itemChild.name && itemChild.price).length > 0
-          ? JSON.stringify(this.order_info.additional_fee)
+      formData.additional_fee =
+        (formData.additional_fee as any[]).filter((itemChild) => itemChild.name && itemChild.price).length > 0
+          ? JSON.stringify(formData.additional_fee)
           : ''
-      order.create(this.order_info).then((res) => {
+      order.create(formData).then((res) => {
         if (res.data.status) {
           this.$message.success('添加成功')
           this.$confirm('继续添加新订单?', '提示', {
@@ -582,6 +583,8 @@ export default Vue.extend({
                 '/order/list?page=1&&order_code=&&product_name=&&client_id=&&user_id=&&page_size=10&&date='
               )
             })
+        } else {
+          this.loading = false
         }
       })
     },

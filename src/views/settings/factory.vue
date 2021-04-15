@@ -117,7 +117,7 @@
             </div>
           </div>
           <div class="row">
-            <div class="label isMust">加工厂简称：</div>
+            <div class="label">加工厂简称：</div>
             <div class="info">
               <el-input placeholder="请输入加工厂简称"
                 v-model="factoryInfo.abbreviation"></el-input>
@@ -139,7 +139,7 @@
             </div>
           </div>
           <div class="row">
-            <div class="label isMust">主要负责人：</div>
+            <div class="label">主要负责人：</div>
             <div class="info">
               <el-input placeholder="请输入主要负责人"
                 v-model="factoryInfo.user_name"></el-input>

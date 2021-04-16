@@ -301,11 +301,11 @@
 <script lang="ts">
 import { Component, Prop, Vue, Watch } from 'vue-property-decorator'
 import { StoreCreate } from '@/types/store'
-import { stock, allList, yarnOrder, yarnProcess, store, craft, order, material } from '@/assets/js/api'
+import { stock, allList, yarnOrder, yarnProcess, store, craft, order } from '@/assets/js/api'
 @Component
 export default class InAndOut extends Vue {
   @Prop() show!: boolean
-  @Prop() type!: number
+  @Prop() type?: number
   @Prop() initData?: Array<{
     second_store_id: number
     name: string
@@ -644,6 +644,24 @@ export default class InAndOut extends Vue {
               ]
             }
           ]
+          this.storeInfo.child_data = [
+            {
+              name: data.name,
+              action_weight: data.total_weight,
+              color: data.color,
+              attribute: data.attribute,
+              batch_code: data.batch_code,
+              color_code: data.color_code,
+              vat_code: data.vat_code,
+              item: data.item,
+              colorArr: [
+                {
+                  color: data.color,
+                  attribute: data.attribute
+                }
+              ]
+            }
+          ]
           this.loading = false
         })
     }
@@ -926,6 +944,9 @@ export default class InAndOut extends Vue {
         this.storeInfo.child_data[0].attribute = this.yarnAttr || ''
         if (this.yarnName) {
           this.getColor(this.yarnName)
+        }
+        if (this.type === 9) {
+          this.initDetail(this.relatedId as number)
         }
       }
       if (this.initData && this.initData.length > 0) {

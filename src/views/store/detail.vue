@@ -520,7 +520,11 @@ export default Vue.extend({
           },
           {
             id: 10,
-            name: '仓库移库'
+            name: '移库出库'
+          },
+          {
+            id: 11,
+            name: '移库入库'
           }
         ],
         materialAttrArr: [

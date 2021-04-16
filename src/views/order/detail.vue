@@ -160,10 +160,11 @@
         </div>
       </div>
     </div>
-    <div class="module"
-      v-show="final_out_log.length>0">
+    <div class="module">
       <div class="titleCtn">
         <span class="title">发货信息</span>
+        <span class="addBtn btn btnMain"
+          @click="store_info.show=true">订单发货</span>
       </div>
       <div style="padding:20px 32px">
         <div class="tableCtn">
@@ -186,6 +187,9 @@
             </div>
           </div>
           <div class="tbody">
+            <div class="trow gray"
+              v-if="final_out_log.length===0"
+              style="line-height:46px">暂无发货信息</div>
             <div class="trow"
               v-for="item in final_out_log"
               :key="item.id">
@@ -302,7 +306,7 @@
             <!-- <div class="trow">
               <div class="tcolumn">纱线成本</div>
               <div class="tcolumn">费用数量</div>
-              <div class="tcolumn">总价(元)</div>
+              <div class="tcolumn orange">{{total.chengben_price.toFixed(1)}}</div>
               <div class="tcolumn">均价</div>
               <div class="tcolumn">操作</div>
             </div> -->
@@ -388,6 +392,11 @@
     <check-detail :show.sync="check_detail_flag"
       :checkType="5"
       :pid="$route.params.id"></check-detail>
+    <in-and-out :type="9"
+      :relatedCode="order_info.order_code"
+      :relatedId="$route.params.id"
+      :show.sync="store_info.show"
+      @close="init"></in-and-out>
   </div>
 </template>
 
@@ -403,6 +412,9 @@ export default Vue.extend({
     return {
       loading: true,
       deduct_show: false,
+      store_info: {
+        show: false
+      },
       deduct_info: {
         yarn: [],
         pid: 1,
@@ -427,6 +439,7 @@ export default Vue.extend({
       check_flag: false,
       check_detail_flag: false,
       total: {
+        chengben_price: 0,
         daotong_weight: 0,
         daotong_price: 0,
         ranse_weight: 0,
@@ -528,9 +541,10 @@ export default Vue.extend({
           }
         }),
         pid: this.$route.params.id,
-        pcode: this.order_info.order_code,
+        pcode: this.order_info.code,
         type: 5
       }
+      console.log(this.deduct_info)
       this.deduct_show = true
     },
     confirm() {

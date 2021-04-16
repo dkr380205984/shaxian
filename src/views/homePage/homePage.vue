@@ -49,6 +49,8 @@
               class="select"
               placeholder="请选择"
               @change="resetAll">
+              <el-option label="所有"
+                value=""></el-option>
               <el-option label="纱线名称"
                 value="1"></el-option>
               <el-option label="毛条名称"
@@ -86,7 +88,7 @@
           <i class="el-icon-circle-close icons"
             @click="showSearch = false"></i>
           <div class="block"
-            v-show="searchType==='1'">
+            v-show="searchType==='1' || !searchType">
             <div class="titled">纱线信息</div>
             <div class="info"
               style="margin:20px 0">
@@ -109,7 +111,7 @@
               class="noMsg">暂无相关纱线</div>
           </div>
           <div class="block"
-            v-show="searchType==='2'">
+            v-show="searchType==='2' || !searchType">
             <div class="titled">毛条信息</div>
             <div class="info"
               style="margin:20px 0">
@@ -129,7 +131,7 @@
               class="noMsg">暂无相关毛条</div>
           </div>
           <div class="block"
-            v-show="searchType==='3'">
+            v-show="searchType==='3' || !searchType">
             <div class="titled">相关订单</div>
             <div class="info"
               style="margin:20px 0">
@@ -158,7 +160,7 @@
               class="noMsg">暂无相关订单</div>
           </div>
           <div class="block"
-            v-show="searchType==='4'">
+            v-show="searchType==='4' || !searchType">
             <div class="titled">相关采购单</div>
             <div class="info"
               style="margin:20px 0">
@@ -187,7 +189,7 @@
               class="noMsg">暂无相关采购单</div>
           </div>
           <div class="block"
-            v-show="searchType==='5'">
+            v-show="searchType==='5' || !searchType">
             <div class="titled">相关调取单</div>
             <div class="info"
               style="margin:20px 0">
@@ -215,7 +217,7 @@
               class="noMsg">暂无相关调取单</div>
           </div>
           <div class="block"
-            v-show="searchType==='6'">
+            v-show="searchType==='6' || !searchType">
             <div class="titled">相关加工单</div>
             <div class="info"
               style="margin:20px 0">
@@ -244,7 +246,7 @@
               class="noMsg">暂无相关加工单</div>
           </div>
           <div class="block"
-            v-show="searchType==='7'">
+            v-show="searchType==='7' || !searchType">
             <div class="titled">相关出入库单</div>
             <div class="info"
               style="margin:20px 0">
@@ -334,28 +336,24 @@
         <div class="titleCtn">
           <span class="title">版本更新公告</span>
         </div>
-        <div class="msgCtn">
-          <div class="msg">
-            <div class="left">版本更新公告版本更新公告</div>
-            <div class="right">2011-11-22</div>
-          </div>
-          <div class="msg">
-            <div class="left">版本更新公告版本更新公告</div>
-            <div class="right">2011-11-22</div>
-          </div>
-          <div class="msg">
-            <div class="left">版本更新公告版本更新公告</div>
-            <div class="right">2011-11-22</div>
-          </div>
-          <div class="msg">
-            <div class="left">版本更新公告版本更新公告</div>
-            <div class="right">2011-11-22</div>
-          </div>
-          <div class="msg">
-            <div class="left">版本更新公告版本更新公告</div>
-            <div class="right">2011-11-22</div>
-          </div>
-        </div>
+        <ul class="client_update_list"
+          :class="{'havePrompt':loading_scroll || clientUpdateList.length === 0 || disabledScroll}"
+          v-infinite-scroll="getList"
+          :infinite-scroll-disabled="disabledScroll">
+          <li v-for="(item,index) in clientUpdateList"
+            class="client_update_item"
+            :key="index"
+            @click="showUpdateMessage = item">
+            <span class="info">{{item.title}}</span>
+            <span class="date">发布于 {{$getTime(item.create_time)}}</span>
+          </li>
+          <p class="prompt"
+            v-if="loading_scroll">加载中...</p>
+          <p class="prompt"
+            v-else-if="clientUpdateList.length === 0">暂无更新公告</p>
+          <p class="prompt"
+            v-else-if="disabledScroll">暂无更多</p>
+        </ul>
       </div>
       <div class="module">
         <div class="titleCtn">
@@ -494,7 +492,13 @@ export default Vue.extend({
       ],
       userEasyOpr: window.localStorage.getItem('userEasyOpr')
         ? JSON.parse(window.localStorage.getItem('userEasyOpr') as string)
-        : []
+        : [],
+      clientUpdateList: [],
+      page: 1, // 现在更新公共没有分页所以没必要
+      total: 1,
+      disabledScroll: false,
+      loading_scroll: false,
+      showUpdateMessage: null
     }
   },
   computed: {
@@ -525,6 +529,29 @@ export default Vue.extend({
     }
   },
   methods: {
+    getList() {
+      if (this.loading_scroll) {
+        return
+      }
+      this.loading_scroll = true
+      // index
+      //   .notifyList({
+      //     limit: 20,
+      //     page: this.page,
+      //     status: null,
+      //     tag: '版本更新公告'
+      //   })
+      //   .then((res) => {
+      //     this.loading_scroll = false
+      //     if (res.data.status !== false) {
+      //       this.clientUpdateList = res.data.data
+      //       this.page += 1
+      //       if (this.page > Math.ceil(this.total / 20)) {
+      //         this.disabledScroll = true
+      //       }
+      //     }
+      //   })
+    },
     resetAll() {
       this.searchList = {
         yarn: [],
@@ -545,37 +572,22 @@ export default Vue.extend({
       // ...
     },
     searchInfo() {
-      if (!this.searchType) {
-        this.$message.warning('请选择搜索类型')
-        return
-      }
       this.searchLoading = true
       index
         .searchAll({
           keyword: this.searchValue,
-          limit: 10,
-          type: this.searchType
+          limit: 10
         })
         .then((res) => {
-          console.log(res)
-          if (res.data.data.length === 0) {
-            this.$message.warning('暂无搜索信息，请重新搜索')
-            return
-          }
-          if (this.searchType === '1') {
-            this.searchList.yarn = res.data.data
-          } else if (this.searchType === '2') {
-            this.searchList.material = res.data.data
-          } else if (this.searchType === '3') {
-            this.searchList.order = res.data.data
-          } else if (this.searchType === '4') {
-            this.searchList.orderYarn = res.data.data
-          } else if (this.searchType === '5') {
-            this.searchList.transferYarn = res.data.data
-          } else if (this.searchType === '6') {
-            this.searchList.processYarn = res.data.data
-          } else if (this.searchType === '7') {
-            this.searchList.storeYarn = res.data.data
+          const data = res.data.data
+          this.searchList = {
+            yarn: data.yarn,
+            material: data.material,
+            order: data.order,
+            orderYarn: data.purchase,
+            transferYarn: data.transfer,
+            processYarn: data.process,
+            storeYarn: data.store
           }
           this.showSearch = true
           this.searchLoading = false

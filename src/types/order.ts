@@ -7,6 +7,7 @@ interface AditionalFee {
 }
 
 export interface Order {
+  code?: string
   order_code: string
   order_time: string
   delivery_time: string

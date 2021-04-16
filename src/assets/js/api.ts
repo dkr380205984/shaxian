@@ -12,8 +12,10 @@ const getToken = () => http.get(`${baseUrl}/upload/token`)
 
 // 首页杂七杂八接口
 const index = {
-  searchAll: (params?: ListParam) => http.get(`${baseUrl}/index/search`, params)
+  searchAll: (params?: ListParam) => http.get(`${baseUrl}/index/search`, params),
+  notifyList: (params?: ListParam) => http.get(`${baseUrl}/notify/all`, params)
 }
+
 // 修改密码
 const changeUserPasd = {
   updated: (params: { sms_code: string, new_pass: string }) => http.post(`${baseUrl}/user/password/change`, params, 'application/json'),

@@ -45,9 +45,9 @@
       <div class="print_row print_remark"
         style="flex-direction:column">
         <div class="print_row noBorder">
-          <div class="row_item center w180">{{$route.params.type === '1' ? '入' : '出'}}库单号</div>
+          <div class="row_item center w180">{{actionName}}单号</div>
           <div class="row_item center">{{stockInfo.code}}</div>
-          <div class="row_item center w180">{{$route.params.type === '1' ? '入' : '出'}}库日期</div>
+          <div class="row_item center w180">{{actionName}}日期</div>
           <div class="row_item center">{{$getDate(stockInfo.create_time)}}</div>
           <div class="row_item center w180">操作人</div>
           <div class="row_item center">{{stockInfo.user_name}}</div>
@@ -55,10 +55,10 @@
         <div class="print_row">
           <div class="row_item center w180">总数量</div>
           <div class="row_item center">{{totalCom}}</div>
-          <div class="row_item center w180">{{$route.params.type === '1' ? '入' : '出'}}库仓库</div>
+          <div class="row_item center w180">{{(actionType === 10 || actionType === 11) ? '来源仓库' : `${actionName}仓库`}}</div>
           <div class="row_item center">{{`${stockInfo.second_store_name}/${stockInfo.store_name}`}}</div>
-          <div class="row_item center w180">{{$route.params.type === '1' ? '入' : '出'}}库单位</div>
-          <div class="row_item center">{{stockInfo.client_name}}</div>
+          <div class="row_item center w180">{{(actionType === 10 || actionType === 11) ? '出库仓库' : `${actionName}仓库`}}</div>
+          <div class="row_item center">{{(actionType === 10 || actionType === 11) ? `${stockInfo.move_second_store_name}/${stockInfo.move_store_name}` : stockInfo.client_name}}</div>
         </div>
         <div class="print_row">
           <div class="row_item center w180">页码</div>
@@ -93,7 +93,7 @@ export default Vue.extend({
       stock.detail({
         id: +this.$route.params.documentId
       }),
-      printList(undefined, this.$route.params.type === '1' ? 4 : 5)
+      printList(undefined, this.actionType === 10 || this.actionType === 1 ? 4 : 5)
     ]).then((res) => {
       this.stockInfo = res[0].data.data
       this.stockYarnArr = this.stockInfo.child_data
@@ -112,6 +112,33 @@ export default Vue.extend({
         })
         .flat(1)
         .reduce((total: number, current: number) => total + current, 0)
+    },
+    actionType(): number {
+      if (this.$route.params.type === '10') {
+        return 10
+      } else if (this.$route.params.type === '11') {
+        return 11
+      } else if (['1', '3', '5', '8'].includes(this.$route.params.type)) {
+        return 1
+      } else if (['2', '4', '6', '7', '9'].includes(this.$route.params.type)) {
+        return 2
+      } else {
+        return NaN
+      }
+    },
+    actionName(): string {
+      switch (this.actionType) {
+        case 1:
+          return '入库'
+        case 2:
+          return '出库'
+        case 10:
+          return '移库入库'
+        case 11:
+          return '移库出库'
+        default:
+          return ''
+      }
     }
   }
 })

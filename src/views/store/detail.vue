@@ -378,7 +378,7 @@
                     <div class="column min120"
                       :style="{'height':50*item.child_data.length + 'px'}">
                       <span class="blue opr"
-                        @click="$openUrl(`/print/store/2/${item.id}?orderId=${$route.params.id}`)">打印</span>
+                        @click="$openUrl(`/print/store/${item.action_type}/${item.id}?orderId=${$route.params.id}`)">打印</span>
                       <span class="red opr"
                         @click="deleteLog(item.id)">删除</span>
                     </div>

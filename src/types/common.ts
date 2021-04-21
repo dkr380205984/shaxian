@@ -88,7 +88,7 @@ export interface CheckInfo {
   id?: number
   pid: number | string // 关联id
   is_check: 1 | 2 // 1审核通过，2驳回
-  check_type: 1 | 2 | 3 | 4 | 5 | 6 | 7 // 1纱线订购 2纱线加工 3毛条订购 4毛条加工 5 订单 6 扣款单 7 调取单
+  check_type: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 // 1纱线订购 2纱线加工 3毛条订购 4毛条加工 5 订单 6 扣款单 7 调取单 8 报价单
   check_desc: string // 常见驳回理由
   desc: string // 备注信息
   user_name?: string

@@ -34,3 +34,8 @@ export const printList = (option?: PrintListParams, type?: 1 | 2 | 3 | 4 | 5 | 6
     })
   })
 }
+export const processArr = [
+  { value: '染色' },
+  { value: '倒纱' },
+  { value: '膨纱' }
+]

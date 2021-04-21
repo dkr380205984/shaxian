@@ -178,8 +178,16 @@ const check = {
 const allList = {
   forSeachId: (params: ListParam) => http.get(`${baseUrl}/order/document/code/lists`, params)
 }
+// 报价单
+const price = {
+  create: (params: any) => http.post(`${baseUrl}/quote/save`, params, 'application/json'),
+  list: (params: any) => http.get(`${baseUrl}/quote/lists`, params),
+  detail: (params: any) => http.get(`${baseUrl}/quote/detail`, params),
+  delete: (params: any) => http.post(`${baseUrl}/quote/delete`, params, 'application/json')
+}
 
 export {
+  price,
   login,
   authInfo,
   getToken,

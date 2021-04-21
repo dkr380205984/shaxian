@@ -1,0 +1,72 @@
+@import '../common.less';
+@import '../list.less';
+#priceList{
+  .sortContainer{
+    display: flex;
+    align-items: center;
+    .sort{
+      display: flex;
+      flex-direction: column;
+      margin-right: 8px;
+      align-items: center;
+      color: #D0D0D0;
+      .hover{
+        font-weight: bold;
+        &:hover{
+          color:@blue;
+          cursor: pointer;
+        }
+      }
+    }
+  }
+  .opr{
+    padding: 0 8px;
+    border-right: 1px solid #E9E9E9;
+    cursor: pointer;
+    &:nth-last-child(1){
+      border-right: 0;
+    }
+    &:nth-child(1){
+      padding-left: 0;
+    }
+  }
+  .flex02{
+    flex: 0.2;
+  }
+  .flex04{
+    flex: 0.4;
+  }
+  .column{
+    &.center{
+      justify-content: center;
+    }
+    &.right{
+      justify-content: flex-end;
+    }
+  }
+  .cutBox{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    .top,.bottom{
+      width: 0px;
+      height: 0px;
+      border-top: 0px solid @gray;
+      border-bottom: 0px solid @gray;
+      border-left: 8px solid transparent;
+      border-right: 8px solid transparent;
+      margin: 4px 0;
+      cursor: pointer;
+      &.disabled{
+        cursor:not-allowed;
+      }
+      &.top{
+        border-bottom-width: 8px;
+      }
+      &.bottom{
+        border-top-width: 8px;
+      }
+    }
+  }
+}

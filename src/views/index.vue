@@ -25,6 +25,7 @@
                 <i class="iconfont iconTitle">&#xe620;</i>毛条列表
               </el-menu-item>
             </el-submenu>
+            <el-menu-item index="/price/list">报价管理</el-menu-item>
             <el-submenu index='2'>
               <template slot="title">订单管理</template>
               <el-menu-item index="/order/list?page=1&order_code=&product_name=&client_id=&user_id=&page_size=10&date=">

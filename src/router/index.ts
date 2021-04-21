@@ -25,6 +25,7 @@ const routes: RouteConfig[] = [
   {
     path: '/index',
     name: 'index',
+    redirect: '/homePage/homePage',
     component: () => import('../views/index.vue'),
     children: [
       {
@@ -188,6 +189,30 @@ const routes: RouteConfig[] = [
         path: '/finance/clientDetail/:id',
         name: '客户财务详情',
         component: () => import('../views/finance/clientDetail.vue')
+      }
+    ]
+  }, {
+    path: '/price',
+    name: '报价单',
+    redirect: '/price/list',
+    component: () => import('@/views/index.vue'),
+    children: [
+      {
+        path: 'list',
+        name: '报价单列表',
+        component: () => import('@/views/price/list.vue')
+      }, {
+        path: 'create',
+        name: '添加报价单',
+        component: () => import('@/views/price/create.vue')
+      }, {
+        path: 'update/:id',
+        name: '修改报价单',
+        component: () => import('@/views/price/update.vue')
+      }, {
+        path: 'detail/:id',
+        name: '报价单详情',
+        component: () => import('@/views/price/detail.vue')
       }
     ]
   },

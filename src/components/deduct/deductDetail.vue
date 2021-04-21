@@ -79,6 +79,7 @@ export default class DeductDetail extends Vue {
       code: '',
       deduct_file: '',
       total_price: '',
+      date: '',
       desc: ''
     }
   ]

@@ -52,7 +52,12 @@
                 <i class="iconfont iconTitle">&#xe618;</i>毛条库存
               </el-menu-item>
             </el-submenu>
-            <!-- <el-menu-item index="4">财务管理</el-menu-item> -->
+            <el-submenu index="4">
+              <template slot="title">财务管理</template>
+              <el-menu-item index="/finance/clientList?page=&page_size=">
+                <i class="iconfont iconTitle">&#xe611;</i>客户财务
+              </el-menu-item>
+            </el-submenu>
             <el-submenu index='5'>
               <template slot="title">系统设置</template>
               <el-menu-item index="/settings/user"><i class="iconfont iconTitle">&#xe615;</i>用户管理</el-menu-item>

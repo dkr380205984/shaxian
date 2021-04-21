@@ -77,11 +77,25 @@ export interface DeductInfo {
   code?: string
   deduct_type: 1 | 2 | 3 | 4 | 5
   pid: string | number
+  client_id?: string | number | undefined
   total_price: string | number
   deduct_content: string
   deduct_file: string
+  date: string
   desc: string
 }
+
+// 开票信息
+export interface BillInfo {
+  code?: string
+  bill_type: 1 | 2 | 3 | 4 | 5
+  pid: string | number | string[]
+  total_price: string | number
+  bill_file: string
+  date: string
+  desc: string
+}
+// 收款信息
 
 // 审核信息
 export interface CheckInfo {

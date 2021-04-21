@@ -180,6 +180,14 @@ const routes: RouteConfig[] = [
         path: '/directProcess/yarnDetail/:id',
         name: '纱线加工详情',
         component: () => import('../views/directProcess/yarnDetail.vue')
+      }, {
+        path: '/finance/clientList',
+        name: '客户财务列表',
+        component: () => import('../views/finance/clientList.vue')
+      }, {
+        path: '/finance/clientDetail/:id',
+        name: '客户财务详情',
+        component: () => import('../views/finance/clientDetail.vue')
       }
     ]
   },

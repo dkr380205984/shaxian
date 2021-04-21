@@ -6,6 +6,8 @@ import check from './check/check.vue'
 import checkDetail from './check/checkDetail.vue'
 import inAndOut from './inAndOut/inAndOut.vue'
 import inAndOutMat from './inAndOut/inAndOutMat.vue'
+import bill from './bill/bill.vue'
+import collection from './collection/collection.vue'
 export default {
   install: (vue: any) => {
     vue.component('sort', sort)
@@ -16,5 +18,7 @@ export default {
     vue.component('checkDetail', checkDetail)
     vue.component('inAndOut', inAndOut)
     vue.component('inAndOutMat', inAndOutMat)
+    vue.component('bill', bill)
+    vue.component('collection', collection)
   }
 }

@@ -1,9 +1,9 @@
 <template>
-  <div class="deductCtn popup"
+  <div class="billCtn popup"
     v-if="show">
     <div class="main">
       <div class="titleCtn">
-        <span class="text">扣款信息</span>
+        <span class="text">账单信息</span>
         <i class="close_icon el-icon-close"
           @click="reset"></i>
       </div>
@@ -21,13 +21,13 @@
           <div class="label">{{typeFilter(data.type)}}单号：</div>
           <div class="info">
             <el-select v-model="code"
+              multiple
               filterable
               remote
               reserve-keyword
               :placeholder="'请输入'+typeFilter(data.type)+'单号搜索'"
               :remote-method="searchCode"
-              :loading="searchLoading"
-              @change="getInfo">
+              :loading="searchLoading">
               <el-option v-for="item in searchList"
                 :key="item.value"
                 :label="item.label"
@@ -36,57 +36,33 @@
             </el-select>
           </div>
         </div>
-        <div class="row"
-          v-for="(item,index) in deductContent"
-          :key="index">
-          <div class="label isMust"
-            :style="{'visibility':index===0?'visible':'hidden'}">扣款项：</div>
-          <div class="info infoFlex">
-            <!-- 注意这里保存的是中文信息，不是id信息，仅用于前端展示 -->
-            <el-select v-if="data.yarn && data.yarn.length>0"
-              style="margin-right:8px"
-              v-model="item.yarn"
-              placeholder="请选择扣款项">
-              <el-option v-for="item in data.yarn"
-                :key="item.value"
-                :value="item.label"
-                :label="item.label"></el-option>
-            </el-select>
-            <el-select v-else
-              style="margin-right:8px"
-              v-model="item.yarn">
-              <el-option v-for="item in deductList"
-                :key="item.value"
-                :value="item.label"
-                :label="item.label"></el-option>
-            </el-select>
-            <el-input v-model="item.price"
-              placeholder="扣款金额"
-              @input="getTotalPrice">
-              <template slot="append">元</template>
-            </el-input>
-            <div v-if="index===0"
-              class="info_btn blue"
-              @click="$addItem(deductContent,{
-              yarn:'',
-              price:''
-            })">添加</div>
-            <div v-if="index>0"
-              class="info_btn red"
-              @click="$deleteItem(deductContent,index)">删除</div>
+        <div class="row">
+          <div class="label isMust">发票号码：</div>
+          <div class="info">
+            <el-input placeholder="请输入发票号码"
+              v-model="number"></el-input>
           </div>
         </div>
         <div class="row">
-          <div class="label isMust">总金额：</div>
-          <div class="info text">
-            <el-input v-model="price"
-              placeholder="总金额">
-              <template slot="append">元</template>
-            </el-input>
+          <div class="label isMust">开票金额：</div>
+          <div class="info">
+            <el-input placeholder="请输入开票金额"
+              v-model="price"></el-input>
           </div>
         </div>
         <div class="row">
-          <div class="label">文件信息：</div>
+          <div class="label">开票日期：</div>
+          <div class="info">
+            <el-date-picker style="width:100%"
+              v-model="date"
+              type="date"
+              value-format="yyyy-MM-dd"
+              placeholder="选择下单日期">
+            </el-date-picker>
+          </div>
+        </div>
+        <div class="row">
+          <div class="label">发票图片：</div>
           <div class="info">
             <el-upload class="upload"
               action="https://upload.qiniup.com/"
@@ -108,21 +84,10 @@
           </div>
         </div>
         <div class="row">
-          <div class="label">扣款日期：</div>
+          <div class="label">开票备注：</div>
           <div class="info">
-            <el-date-picker style="width:100%"
-              v-model="date"
-              type="date"
-              value-format="yyyy-MM-dd"
-              placeholder="选择下单日期">
-            </el-date-picker>
-          </div>
-        </div>
-        <div class="row">
-          <div class="label">扣款原因：</div>
-          <div class="info">
-            <el-input v-model="desc"
-              placeholder="请输入扣款原因"></el-input>
+            <el-input placeholder="请输入备注信息"
+              v-model="desc"></el-input>
           </div>
         </div>
       </div>
@@ -130,7 +95,7 @@
         <div class="opr"
           @click="reset">取消</div>
         <div class="opr blue"
-          @click="saveDeduct">确认扣款</div>
+          @click="saveBill">确认开票</div>
       </div>
     </div>
   </div>
@@ -138,31 +103,24 @@
 
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator'
-import { DeductInfo } from '@/types/common'
-import { deduct, index } from '@/assets/js/api'
+import { index } from '@/assets/js/api'
+import { BillInfo } from '@/types/common'
 @Component
 export default class Deduct extends Vue {
   @Prop() show!: boolean
   @Prop() data!: {
-    client_id?: number
-    yarn?: Array<{ value: number; label: string }>
-    pid?: number
+    client_id?: number // client_id用于标记是哪个客户的开票单据
+    pid?: number // pid一般是关联单据号
     pcode?: string
     type: 1 | 2 | 3 | 4 | 5
   }
-  code: string = ''
-  file: string = ''
+  number: string | number = ''
+  date: string = this.$getDate(new Date()) // 日期
+  code: string[] = [] // 无pcode时候自选code
+  file: string = '' //
   postData = { key: '', token: this.token }
   desc: string = ''
-  price: number | string = 0
-  date: string = this.$getDate(new Date())
-  deductList: Array<{ value: number; label: string }> = []
-  deductContent: Array<{ yarn: string; price: string }> = [
-    {
-      yarn: '',
-      price: ''
-    }
-  ]
+  price: number | string = ''
   searchLoading: boolean = false
   searchList: any[] = []
   get token() {
@@ -192,12 +150,6 @@ export default class Deduct extends Vue {
   }
 
   reset() {
-    this.deductContent = [
-      {
-        yarn: '',
-        price: ''
-      }
-    ]
     this.price = 0
     this.desc = ''
     this.$emit('update:show', false)
@@ -207,37 +159,23 @@ export default class Deduct extends Vue {
     const typeArr = ['', '采购', '加工', '订购', '加工', '订单']
     return typeArr[type]
   }
-  getTotalPrice() {
-    this.price = this.deductContent.reduce((total, current) => {
-      return total + Number(current.price)
-    }, 0)
-  }
-  saveDeduct() {
-    this.$emit('beforeDeduce', {
-      deduct_content: this.deductContent,
-      total_price: this.price
-    })
-    if (!this.price) {
-      this.$message.error('请输入扣款金额')
-      return
-    }
-    const formData: DeductInfo = {
-      deduct_content: JSON.stringify(this.deductContent),
+  saveBill() {
+    this.$emit('beforeDeduce')
+    const formData: BillInfo = {
       total_price: this.price,
-      deduct_type: this.data.type,
+      bill_type: this.data.type,
       pid: this.data.pid || this.code,
       date: this.date,
-      deduct_file: this.file,
-      client_id: this.data.client_id,
+      bill_file: this.file,
       desc: this.desc
     }
-    deduct.create(formData).then((res) => {
-      if (res.data.status) {
-        this.$message.success('添加扣款信息成功')
-        this.$emit('afterDeduce')
-        this.reset()
-      }
-    })
+    // deduct.create(formData).then((res) => {
+    //   if (res.data.status) {
+    //     this.$message.success('添加扣款信息成功')
+    //     this.$emit('afterDeduce')
+    //     this.reset()
+    //   }
+    // })
   }
   searchCode(query: string) {
     if (!query) {
@@ -247,8 +185,7 @@ export default class Deduct extends Vue {
     index
       .searchAll({
         keyword: query,
-        limit: 10,
-        client_id: this.data.client_id
+        limit: 10
       })
       .then((res) => {
         const data = res.data.data
@@ -267,32 +204,11 @@ export default class Deduct extends Vue {
         this.searchList = this.searchList.map((item) => {
           return {
             value: item.id,
-            label: item.code,
-            product_info: item.product_info
+            label: item.code
           }
         })
         this.searchLoading = false
       })
-  }
-  // 把扣款项找出来
-  getInfo(ev: any) {
-    let deductList: any[] = []
-    console.log(this.searchList)
-    this.searchList.forEach((item: any) => {
-      if (ev === item.value) {
-        item.product_info.forEach((itemChild: any) => {
-          deductList.push(itemChild.product_name + '/' + itemChild.color + '/' + itemChild.attribute)
-        })
-      }
-    })
-    deductList = Array.from(new Set(deductList))
-    console.log(deductList)
-    this.deductList = deductList.map((item) => {
-      return {
-        label: item,
-        value: item
-      }
-    })
   }
   mounted() {
     this.$checkCommonInfo([
@@ -306,5 +222,5 @@ export default class Deduct extends Vue {
 }
 </script>
 <style lang="less" scoped>
-@import './deduct.less';
+@import './bill.less';
 </style>

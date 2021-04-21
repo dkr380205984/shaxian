@@ -681,7 +681,9 @@ export default class InAndOut extends Vue {
               name: data.client_name
             }
           ]
+          this.loading = false
           if (data.order_id) {
+            this.loading = true
             order
               .detail({
                 id: data.order_id

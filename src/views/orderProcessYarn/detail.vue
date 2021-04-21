@@ -100,19 +100,20 @@
             <div class="trow"
               v-for="(item) in order_info.product_info"
               :key="item.id">
-              <div class="tcolumn">
+              <div class="tcolumn flexRow">
                 <el-checkbox v-model="item.check"
                   :indeterminate="item.indeterminate"
-                  @change="checkAllSize($event,item)">{{item.product_name}}</el-checkbox>
+                  @change="checkAllSize($event,item)"></el-checkbox>
+                <span style="margin-left:4px">{{item.product_name}}</span>
               </div>
               <div class="tcolumn noPad"
                 style="flex:7">
                 <div class="trow"
                   v-for="itemChild in item.child_data"
                   :key="itemChild.id">
-                  <div class="tcolumn">
+                  <div class="tcolumn flexRow">
                     <el-checkbox v-model="itemChild.check"
-                      @change="checkSize($event,item)">{{itemChild.color}}</el-checkbox>
+                      @change="checkSize($event,item)"></el-checkbox><span style="margin-left:4px">{{itemChild.color}}</span>
                   </div>
                   <div class="tcolumn">{{itemChild.attribute}}</div>
                   <div class="tcolumn">{{itemChild.price}}</div>
@@ -500,6 +501,8 @@
                       @click="$openUrl(`/print/processYarn/${item.id}?orderId=${$route.params.id}`)">打印</span>
                     <span class="green opr"
                       @click="openDeduct(item.id,item.code,item.child_data,2)">扣款</span>
+                    <span class="orange opr"
+                      @click="updateProcess(item)">修改</span>
                     <span class="red opr"
                       @click="deleteProcess(item.id)">删除</span>
                   </div>
@@ -2277,6 +2280,22 @@ export default Vue.extend({
     resetProcess() {
       this.flags.process_flag = false
       this.process_yarn_info = []
+    },
+    updateProcess(info: ProcessYarn) {
+      this.flags.process_flag = info.type
+      this.process_yarn_info = [info]
+      this.process_yarn_info[0].price = info.child_data[0].price
+      if (!this.process_yarn_info[0].additional_fee) {
+        this.process_yarn_info[0].additional_fee = [
+          {
+            name: '',
+            price: '',
+            desc: ''
+          }
+        ]
+      } else {
+        this.process_yarn_info[0].additional_fee = JSON.parse(this.process_yarn_info[0].additional_fee as string)
+      }
     },
     saveProcess() {
       if (

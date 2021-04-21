@@ -1,0 +1,32 @@
+@import '../common.less';
+@import '../detail.less';
+@import '../table.less';
+@import '../bottomBar.less';
+@import '../popup.less';
+#priceDetail{
+  .label{
+    width: 7em;
+  }
+  .flex03{
+    flex: 0.3;
+  }
+  .flex3{
+    flex: 3;
+  }
+  .unit{
+    position: relative;
+    &::after{
+      position: absolute;
+      top: 0;
+      right: 0;
+      content: attr(unit);
+      width: 60px;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 16px;
+      background-color: @gray;
+    }
+  }
+}

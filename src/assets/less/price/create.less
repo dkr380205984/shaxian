@@ -1,0 +1,68 @@
+@import '../common.less';
+@import '../create.less';
+@import '../bottomBar.less';
+@import '../table.less';
+#priceCreate{
+  .yarnBlock{
+    background-color: rgb(238,238,238);
+    position: relative;
+    padding: 24px;
+    flex-direction: column;
+    &>.num{
+      display: block;
+      position: absolute;
+      top: 0;
+      left: 0;
+      background-color: @orange;
+      width: 24px;
+      height: 24px;
+      text-align: center;
+      line-height: 24px;
+      color: white;
+      user-select: none;
+    }
+    &>.el-icon-close{
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      width: 24px;
+      font-size: 22px;
+      height: 24px;
+      text-align: center;
+      line-height: 24px;
+      color: @red;
+      cursor: pointer;
+      transition:  all 0.1s linear;
+      &:hover{
+        border: 1px solid @red;
+        border-radius: 50%;
+        box-sizing: border-box;
+      }
+    }
+    &>.rowCtn{
+      margin: 8px 0;
+      .content{
+        position: relative;
+        .handleBtn{
+          position: absolute;
+          top: 50%;
+          right: -8px;
+          transform: translate(100%,-50%);
+          cursor: pointer;
+          &.add{
+            color: @blue;
+          }
+          &.delete{
+            color: @red;
+          }
+        }
+      }
+    }
+  }
+  .flex03{
+    flex: 0.3;
+  }
+  .flex2{
+    flex: 2;
+  }
+}

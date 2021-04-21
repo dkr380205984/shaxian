@@ -25,6 +25,7 @@ const routes: RouteConfig[] = [
   {
     path: '/index',
     name: 'index',
+    redirect: '/homePage/homePage',
     component: () => import('../views/index.vue'),
     children: [
       {
@@ -180,6 +181,30 @@ const routes: RouteConfig[] = [
         path: '/directProcess/yarnDetail/:id',
         name: '纱线加工详情',
         component: () => import('../views/directProcess/yarnDetail.vue')
+      }
+    ]
+  }, {
+    path: '/price',
+    name: '报价单',
+    redirect: '/price/list',
+    component: () => import('@/views/index.vue'),
+    children: [
+      {
+        path: 'list',
+        name: '报价单列表',
+        component: () => import('@/views/price/list.vue')
+      }, {
+        path: 'create',
+        name: '添加报价单',
+        component: () => import('@/views/price/create.vue')
+      }, {
+        path: 'update/:id',
+        name: '修改报价单',
+        component: () => import('@/views/price/update.vue')
+      }, {
+        path: 'detail/:id',
+        name: '报价单详情',
+        component: () => import('@/views/price/detail.vue')
       }
     ]
   },

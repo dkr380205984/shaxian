@@ -376,6 +376,7 @@ export default Vue.extend({
         is_check: '',
         client_id: '',
         total_price: '',
+        total_additional_fee: 0,
         child_data: [
           {
             name: '',

@@ -388,6 +388,7 @@ export default Vue.extend({
             desc: ''
           }
         ],
+        total_additional_fee: 0,
         product_info: [
           {
             product_id: '',
@@ -418,6 +419,9 @@ export default Vue.extend({
   },
   methods: {
     cmpTotal() {
+      this.order_info.total_additional_fee = (this.order_info.additional_fee as any[]).reduce((total, current) => {
+        return total + Number(current.price)
+      }, 0)
       this.order_info.total_price =
         this.order_info.product_info.reduce((total, current) => {
           return (

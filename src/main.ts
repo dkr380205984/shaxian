@@ -37,6 +37,11 @@ Vue.filter('stockTypeFilter', (val: 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9) => {
   const statusArr = ['未知', '仓库入库', '仓库出库', '订购入库', '调取出库', '加工回库', '加工出库', '订购出库', '工艺单入库', '订单发货', '移库出库', '移库入库']
   return statusArr[val]
 })
+// 票据类型
+Vue.filter('ticketFilter', (val: 1 | 2 | 3 | 4 | 5) => {
+  const statusArr = ['', '纱线订购', '纱线加工', '毛条订购', '毛条加工', '订单票据']
+  return statusArr[val]
+})
 // 纱线类型
 Vue.filter('yarnTypeFilter', (val: any[]) => {
   return val.map((item) => item.type_name).join(',')

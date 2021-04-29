@@ -102,7 +102,7 @@
         <div class="opr"
           @click="reset">取消</div>
         <div class="opr blue"
-          @click="saveBill">确认开票</div>
+          @click="saveCollection">确认收款</div>
       </div>
     </div>
   </div>
@@ -110,13 +110,15 @@
 
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator'
-import { index } from '@/assets/js/api'
+import { index, collection } from '@/assets/js/api'
+import { CollectionInfo } from '@/types/common'
 @Component
 export default class Deduct extends Vue {
+  @Prop() collectType!: number
   @Prop() show!: boolean
   @Prop() data!: {
     client_id?: number // client_id用于标记是哪个客户的开票单据
-    pid?: number // pid一般是关联单据号
+    pid?: string // pid一般是关联单据号
     pcode?: string
     type: 1 | 2 | 3 | 4 | 5
   }
@@ -165,23 +167,26 @@ export default class Deduct extends Vue {
     const typeArr = ['', '采购', '加工', '订购', '加工', '订单']
     return typeArr[type]
   }
-  saveBill() {
-    this.$emit('beforeBill')
-    // const formData: DeductInfo = {
-    //   deduct_content: JSON.stringify(this.deductContent),
-    //   total_price: this.price,
-    //   deduct_type: this.data.type,
-    //   pid: this.data.pid,
-    //   deduct_file: this.file,
-    //   desc: this.desc
-    // }
-    // deduct.create(formData).then((res) => {
-    //   if (res.data.status) {
-    //     this.$message.success('添加扣款信息成功')
-    //     this.$emit('afterDeduce')
-    //     this.reset()
-    //   }
-    // })
+  saveCollection() {
+    this.$emit('beforeCollection')
+    const formData: CollectionInfo = {
+      type: this.type,
+      collect_price: this.price,
+      client_id: this.data.client_id,
+      collect_type: this.data.type,
+      pid: this.data.pid ? [this.data.pid] : this.code,
+      collect_date: this.date,
+      file_url: this.file || null,
+      collect_or_pay: this.collectType,
+      desc: this.desc
+    }
+    collection.create(formData).then((res) => {
+      if (res.data.status) {
+        this.$message.success('添加收款信息成功')
+        this.$emit('afterCollection')
+        this.reset()
+      }
+    })
   }
   searchCode(query: string) {
     if (!query) {
@@ -191,7 +196,8 @@ export default class Deduct extends Vue {
     index
       .searchAll({
         keyword: query,
-        limit: 10
+        limit: 10,
+        client_id: this.data.client_id || null
       })
       .then((res) => {
         const data = res.data.data
@@ -199,7 +205,7 @@ export default class Deduct extends Vue {
         if (this.data.type === 1) {
           this.searchList = data.purchase
         } else if (this.data.type === 2) {
-          this.searchList = data.transfer
+          this.searchList = data.process
         } else if (this.data.type === 3) {
           this.searchList = []
         } else if (this.data.type === 4) {

@@ -103,18 +103,18 @@
 
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator'
-import { index } from '@/assets/js/api'
+import { bill, index } from '@/assets/js/api'
 import { BillInfo } from '@/types/common'
 @Component
 export default class Deduct extends Vue {
   @Prop() show!: boolean
   @Prop() data!: {
-    client_id?: number // client_id用于标记是哪个客户的开票单据
-    pid?: number // pid一般是关联单据号
+    client_id?: number | string // client_id用于标记是哪个客户的开票单据
+    pid?: string // pid一般是关联单据号
     pcode?: string
     type: 1 | 2 | 3 | 4 | 5
   }
-  number: string | number = ''
+  number: string = ''
   date: string = this.$getDate(new Date()) // 日期
   code: string[] = [] // 无pcode时候自选code
   file: string = '' //
@@ -160,22 +160,24 @@ export default class Deduct extends Vue {
     return typeArr[type]
   }
   saveBill() {
-    this.$emit('beforeDeduce')
+    this.$emit('beforeBill')
     const formData: BillInfo = {
-      total_price: this.price,
-      bill_type: this.data.type,
-      pid: this.data.pid || this.code,
-      date: this.date,
-      bill_file: this.file,
+      invoice_code: this.number,
+      invoice_price: this.price,
+      client_id: this.data.client_id,
+      invoice_type: this.data.type,
+      pid: this.data.pid ? [this.data.pid] : this.code,
+      invoice_date: this.date,
+      file_url: this.file || null,
       desc: this.desc
     }
-    // deduct.create(formData).then((res) => {
-    //   if (res.data.status) {
-    //     this.$message.success('添加扣款信息成功')
-    //     this.$emit('afterDeduce')
-    //     this.reset()
-    //   }
-    // })
+    bill.create(formData).then((res) => {
+      if (res.data.status) {
+        this.$message.success('添加发票成功')
+        this.$emit('afterBill')
+        this.reset()
+      }
+    })
   }
   searchCode(query: string) {
     if (!query) {
@@ -185,7 +187,8 @@ export default class Deduct extends Vue {
     index
       .searchAll({
         keyword: query,
-        limit: 10
+        limit: 10,
+        client_id: this.data.client_id
       })
       .then((res) => {
         const data = res.data.data
@@ -193,7 +196,7 @@ export default class Deduct extends Vue {
         if (this.data.type === 1) {
           this.searchList = data.purchase
         } else if (this.data.type === 2) {
-          this.searchList = data.transfer
+          this.searchList = data.process
         } else if (this.data.type === 3) {
           this.searchList = []
         } else if (this.data.type === 4) {

@@ -314,6 +314,7 @@ export default Vue.extend({
         total_price: '',
         file_url: '',
         client_name: '',
+        total_additional_fee: 0,
         additional_fee: [
           {
             name: '',

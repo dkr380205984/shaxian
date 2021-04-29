@@ -18,6 +18,7 @@ export default class Sort extends Vue {
   @Prop({ default: 0 }) value?: number
   changeStatus(status: number): void {
     const realStatus = this.value === status ? 0 : status // 连点两下代表清除排序
+    this.$emit('beforeChange', realStatus) // 触发这个事件主要是为了一个页面有多个排序的时候清除其他的排序条件
     this.$emit('input', realStatus)
   }
 }

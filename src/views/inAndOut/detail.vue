@@ -464,9 +464,9 @@
                   <div class="row">
                     <div class="column min120">单号</div>
                     <div class="column"
-                      style="min-width:80px">操作类型</div>
+                      style="min-width:80px;max-width:80px">操作类型</div>
                     <div class="column"
-                      style="min-width:200px">出入库信息</div>
+                      style="min-width:200px;max-width:200px">出入库信息</div>
                     <div class="column"
                       style="flex:10;flex-direction:column">
                       <div class="row">
@@ -491,9 +491,22 @@
                     :key="item.id">
                     <div class="column min120">{{item.code}}</div>
                     <div class="column"
-                      style="min-width:80px">{{item.action_type}}</div>
+                      style="min-width:80px;max-width:80px">{{item.action_type|stockTypeFilter}}</div>
                     <div class="column"
-                      style="min-width:200px">{{item.client_name}}</div>
+                      style="min-width:200px;max-width:200px">
+                      <span v-if="item.action_type===1||item.action_type===3||item.action_type===5||item.action_type===8">
+                        <span class="green">{{item.client_name ||'无来源'}}</span>
+                        <i class="el-icon-s-unfold orange"
+                          style="margin:0 5px;font-size:16px"></i>
+                        <span class="blue">{{item.store_name}}/{{item.second_store_name}}</span>
+                      </span>
+                      <span v-if="item.action_type===2||item.action_type===4||item.action_type===6||item.action_type===7||item.action_type===9">
+                        <span class="blue">{{item.store_name}}/{{item.second_store_name}}</span>
+                        <i class="el-icon-s-unfold orange"
+                          style="margin:0 5px;font-size:16px"></i>
+                        <span class="green">{{item.client_name}}</span>
+                      </span>
+                    </div>
                     <div class="column"
                       style="flex:10;flex-direction:column">
                       <div class="row"
@@ -523,9 +536,9 @@
                 <div class="row">
                   <div class="column min120">单号</div>
                   <div class="column"
-                    style="min-width:80px">操作类型</div>
+                    style="min-width:80px;max-width:80px">操作类型</div>
                   <div class="column"
-                    style="min-width:200px">出入库信息</div>
+                    style="min-width:200px;max-width:200px">出入库信息</div>
                 </div>
               </div>
               <div class="bodyCtn">
@@ -535,11 +548,11 @@
                   <div class="column min120 blue"
                     :style="{'height':50*item.child_data.length + 'px'}">{{item.code}}</div>
                   <div class="column"
-                    style="min-width:80px"
+                    style="min-width:80px;max-width:80px"
                     :style="{'height':50*item.child_data.length + 'px'}"
                     :class="{'blue':item.action_type===1||item.action_type===3||item.action_type===5||item.action_type===8,'green':item.action_type===2||item.action_type===4||item.action_type===6||item.action_type===7||item.action_type===9}">{{item.action_type|stockTypeFilter}}</div>
                   <div class="column"
-                    style="min-width:200px"
+                    style="min-width:200px;max-width:200px"
                     :style="{'height':50*item.child_data.length + 'px'}">
                     <span v-if="item.action_type===1||item.action_type===3||item.action_type===5||item.action_type===8">
                       <span class="green">{{item.client_name ||'无来源'}}</span>
@@ -640,6 +653,7 @@ export default Vue.extend({
         total_weight: 0,
         desc: '',
         additional_fee: '',
+        total_additional_fee: 0,
         product_info: []
       },
       order_yarn_list: [],

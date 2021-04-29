@@ -17,6 +17,10 @@ const apiState: ApiState = {
     status: false,
     arr: []
   },
+  allClient: {
+    status: false,
+    arr: []
+  },
   client: {
     status: false,
     arr: []
@@ -56,6 +60,8 @@ const apiMutations = {
     state.client.status = true
     state.factory.status = true
     state.supplier.status = true
+    state.allClient.status = true
+    state.allClient.arr = partyBSelf
     state.client.arr = partyBSelf.filter((itemF: PartyB) => itemF.type === 1)
     state.factory.arr = partyBSelf.filter((itemF: PartyB) => itemF.type === 2)
     state.supplier.arr = partyBSelf.filter((itemF: PartyB) => itemF.type === 3)

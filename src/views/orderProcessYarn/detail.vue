@@ -1571,6 +1571,7 @@ export default Vue.extend({
         client_id: '',
         total_price: '',
         total_weight: 0,
+        total_additional_fee: 0,
         desc: '',
         product_info: []
       },
@@ -1587,6 +1588,7 @@ export default Vue.extend({
           client_id: '',
           order_time: '',
           delivery_time: '',
+          total_additional_fee: 0,
           desc: '',
           child_data: []
         }
@@ -1599,6 +1601,7 @@ export default Vue.extend({
         client_id: '',
         child_data: [],
         order_time: '',
+        total_additional_fee: 0,
         delivery_time: '',
         desc: ''
       },
@@ -1816,6 +1819,7 @@ export default Vue.extend({
             desc: '',
             common_price: '',
             common_attr: '',
+            total_additional_fee: 0,
             additional_fee: [
               {
                 name: '',
@@ -1838,6 +1842,7 @@ export default Vue.extend({
             common_price: '',
             common_attr: '',
             file_url: '',
+            total_additional_fee: 0,
             additional_fee: [
               {
                 name: '',
@@ -2012,6 +2017,9 @@ export default Vue.extend({
           (item.additional_fee as any[]).reduce((total, current) => {
             return total + Number(current.price)
           }, 0)
+        item.total_additional_fee = (item.additional_fee as any[]).reduce((total, current) => {
+          return total + Number(current.price)
+        }, 0)
         // 额外费用未填写的情况下提交空字符串
         item.additional_fee =
           (item.additional_fee as any[]).filter((itemChild) => itemChild.name && itemChild.price).length > 0
@@ -2060,6 +2068,7 @@ export default Vue.extend({
           client_id: '',
           order_time: '',
           delivery_time: '',
+          total_additional_fee: 0,
           desc: '',
           child_data: []
         }
@@ -2189,6 +2198,7 @@ export default Vue.extend({
             desc: '',
             order_time: this.$getDate(new Date()),
             delivery_time: '',
+            total_additional_fee: 0,
             additional_fee: [
               {
                 name: '',
@@ -2264,6 +2274,7 @@ export default Vue.extend({
             desc: '',
             order_time: this.$getDate(new Date()),
             delivery_time: '',
+            total_additional_fee: 0,
             additional_fee: [
               {
                 name: '',
@@ -2330,6 +2341,9 @@ export default Vue.extend({
           (item.additional_fee as any[]).reduce((total, current) => {
             return total + Number(current.price)
           }, 0)
+        item.total_additional_fee = (item.additional_fee as any[]).reduce((total, current) => {
+          return total + Number(current.price)
+        }, 0)
         item.additional_fee =
           (item.additional_fee as any[]).filter((itemChild) => itemChild.name && itemChild.price).length > 0
             ? JSON.stringify(item.additional_fee)

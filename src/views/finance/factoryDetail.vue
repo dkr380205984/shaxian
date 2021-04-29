@@ -9,11 +9,11 @@
       <div class="detailCtn">
         <div class="rowCtn">
           <div class="colCtn">
-            <span class="label">客户名称：</span>
+            <span class="label">加工厂名称：</span>
             <span class="text blue">{{client_info.name}}</span>
           </div>
           <div class="colCtn">
-            <span class="label">客户简称：</span>
+            <span class="label">加工厂简称：</span>
             <span class="text">{{client_info.abbreviation||'无'}}</span>
           </div>
           <div class="colCtn">
@@ -60,8 +60,8 @@
         </div>
         <div class="tbody">
           <div class="trow">
-            <div class="tcolumn">{{client_info.financial_data.order_sum_total_weight}}kg</div>
-            <div class="tcolumn">{{client_info.financial_data.order_sum_total_price}}元</div>
+            <div class="tcolumn">{{client_info.financial_data.order_weight}}kg</div>
+            <div class="tcolumn">{{client_info.financial_data.order_price}}元</div>
             <div class="tcolumn">{{client_info.financial_data.total_push_weight}}kg</div>
             <div class="tcolumn">{{client_info.financial_data.wait_push}}kg</div>
             <div class="tcolumn">{{client_info.financial_data.total_push_price}}元</div>
@@ -81,18 +81,18 @@
         </div>
         <div class="tbody">
           <div class="trow">
-            <div class="tcolumn red">{{client_info.financial_data.deduct_sum_total_price}}元</div>
-            <div class="tcolumn">{{client_info.financial_data.collection_sum_collect_price}}元</div>
-            <div class="tcolumn">{{client_info.financial_data.wait_collection}}元</div>
-            <div class="tcolumn">{{client_info.financial_data.invoice_sum_invoice_price}}元</div>
-            <div class="tcolumn red">{{client_info.financial_data.wait_invoice}}元</div>
+            <div class="tcolumn red">{{client_info.financial_data.deduct}}元</div>
+            <div class="tcolumn">{{client_info.financial_data.invoice}}元</div>
+            <div class="tcolumn">{{client_info.financial_data.wait_invoice}}元</div>
+            <div class="tcolumn">{{client_info.financial_data.collection}}元</div>
+            <div class="tcolumn red">{{client_info.financial_data.invoice}}元</div>
           </div>
         </div>
       </div>
     </div>
     <div class="module">
       <div class="titleCtn">
-        <span class="title">下单信息</span>
+        <span class="title">加工单信息</span>
       </div>
       <div class="listCtn">
         <div class="filterCtn">
@@ -100,7 +100,7 @@
             <div class="label">筛选条件：</div>
             <div class="elCtn">
               <el-input v-model="order_code"
-                placeholder="输入订单号按回车键搜索"
+                placeholder="输入加工单号按回车键搜索"
                 @change="getOrderList"></el-input>
             </div>
           </div>
@@ -108,12 +108,11 @@
         <div class="list">
           <div class="headCtn">
             <div class="row">
-              <div class="column">订单号</div>
-              <div class="column">订单状态</div>
-              <div class="column">下单数量</div>
-              <div class="column">发货数量</div>
-              <div class="column">下单金额</div>
-              <div class="column">扣款金额</div>
+              <div class="column">加工单号</div>
+              <div class="column">加工单状态</div>
+              <div class="column">纱线名称</div>
+              <div class="column">加工详情</div>
+              <div class="column">加工数量</div>
               <div class="column">操作</div>
             </div>
           </div>
@@ -123,14 +122,46 @@
               :key="item.id">
               <div class="column">{{item.code}}</div>
               <div class="column"> <span :class="{'orange':item.status===1,'blue':item.status===2,'green':item.status===3}">{{item.status | orderStatusFilter}}</span></div>
-              <div class="column">{{item.total_weight}}kg</div>
-              <div class="column">{{item.reality_push_weight}}kg</div>
-              <div class="column">{{item.total_price}}元</div>
-              <div class="column">{{item.deduct_price}}元</div>
+              <div class="column">
+                <div class="sortContainer">
+                  <div class="sort">
+                    <i class="el-icon-caret-top hover"
+                      @click="changeIndex(item,'add')"></i>
+                    <div class="number">
+                      {{(item.index||0)+1}}/{{item.child_data.length}}
+                    </div>
+                    <i class="el-icon-caret-bottom hover"
+                      @click="changeIndex(item,'delete')"></i>
+                  </div>
+                  <span>{{item.child_data[item.index||0].name}}</span>
+                </div>
+              </div>
+              <div class="column">
+                <span class="green"
+                  style="margin-right:12px">{{item.type}}</span>
+                <span v-if="item.type==='倒筒'">
+                  {{item.child_data[item.index||0].before_attribute}}
+                  <i class="el-icon-d-arrow-right"></i>
+                  {{item.child_data[item.index||0].after_attribute}}
+                </span>
+                <span v-if="item.type==='染色'">
+                  {{item.child_data[item.index||0].before_color}}
+                  <i class="el-icon-d-arrow-right"></i>
+                  {{item.child_data[item.index||0].after_color}}
+                </span>
+                <span v-if="item.type==='膨纱'">
+                  {{item.child_data[item.index||0].color}}
+                  /
+                  {{item.child_data[item.index||0].attribute}}
+                </span>
+              </div>
+              <div class="column">
+                <span>{{item.child_data[item.index||0].weight}}kg</span>
+              </div>
               <div class="column">
                 <div class="oprCtn">
                   <div class="opr blue"
-                    @click="$router.push('/order/detail/' + item.id)">详情</div>
+                    @click="$router.push('/directProcess/yarnDetail/' + item.id)">详情</div>
                 </div>
               </div>
             </div>
@@ -290,6 +321,8 @@
                     :style="{'height':50*item.child_data.length + 'px'}">
                     <span class="blue opr"
                       @click="$openUrl(`/print/store/2/${item.id}?orderId=${$route.params.id}`)">打印</span>
+                    <span class="red opr"
+                      @click="deleteLog(item.id)">删除</span>
                   </div>
                 </div>
               </div>
@@ -388,9 +421,9 @@
     </div>
     <div class="module">
       <div class="titleCtn">
-        <span class="title">收款单据</span>
+        <span class="title">付款单据</span>
         <span class="addBtn btn btnMain"
-          @click="show_collection=true">新增收款</span>
+          @click="show_collection=true">新增付款</span>
       </div>
       <div class="listCtn">
         <div class="filterCtn">
@@ -401,27 +434,15 @@
                 placeholder="输入单号按回车键搜索"
                 @change="getCollectionList"></el-input>
             </div>
-            <div class="elCtn">
-              <el-select @change="getCollectionList"
-                v-model="collection_type"
-                placeholder="请选择收款方式">
-                <el-option label="现金收款"
-                  value="现金收款"></el-option>
-                <el-option label="银行转账"
-                  value="银行转账"></el-option>
-                <el-option label="网银支付"
-                  value="网银支付"></el-option>
-              </el-select>
-            </div>
           </div>
         </div>
         <div class="list">
           <div class="headCtn">
             <div class="row">
-              <div class="column">收款单号</div>
-              <div class="column">收款方式</div>
-              <div class="column">收款金额</div>
-              <div class="column">收款凭据</div>
+              <div class="column">付款单号</div>
+              <div class="column">付款方式</div>
+              <div class="column">付款金额</div>
+              <div class="column">付款凭据</div>
               <div class="column">备注</div>
               <div class="column">日期</div>
               <div class="column">操作人</div>
@@ -451,7 +472,7 @@
               <div class="column">
                 <div class="opr blue">打印</div>
                 <div class="opr red"
-                  @click="deleteLog('收款',item.id)">删除</div>
+                  @click="deleteLog('付款',item.id)">删除</div>
               </div>
             </div>
           </div>
@@ -557,22 +578,22 @@
         </div>
       </div>
     </div>
-    <bill :data="{type:5,client_id:$route.params.id}"
+    <bill :data="{type:2,client_id:$route.params.id}"
       :show.sync="show_bill"
       @afterBill="init"></bill>
-    <deduct :data="{type:5,client_id:$route.params.id}"
+    <deduct :data="{type:2,client_id:$route.params.id}"
       :show.sync="show_deduct"
       @afterDeduct="init"></deduct>
-    <collection :data="{type:5,client_id:$route.params.id}"
+    <collection :data="{type:2,client_id:$route.params.id}"
       :show.sync="show_collection"
-      @afterCollection="init"
-      :collectType="1"></collection>
+      :collectType="2"
+      @afterCollection="init"></collection>
   </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
-import { deduct, bill, collection, order, stock, finance } from '@/assets/js/api'
+import { deduct, bill, collection, partyB, yarnProcess, stock } from '@/assets/js/api'
 import { DeductInfo, BillInfo, CollectionInfo } from '@/types/common'
 export default Vue.extend({
   data(): {
@@ -620,7 +641,6 @@ export default Vue.extend({
       collection_total: 1,
       collection_page: 1,
       collection_code: '',
-      collection_type: '',
       order_list: [],
       order_page: 1,
       order_total: 1,
@@ -654,12 +674,12 @@ export default Vue.extend({
           limit: 5,
           page: this.collection_page
         }),
-        finance.clientDetail({
+        partyB.detail({
           id: Number(this.$route.params.id)
         }),
-        order.list({
+        yarnProcess.list({
           client_id: this.$route.params.id,
-          limit: 5,
+          limit: 2,
           page: this.order_page
         }),
         stock.list({
@@ -668,6 +688,7 @@ export default Vue.extend({
           page: this.stock_page
         })
       ]).then((res) => {
+        console.log(res)
         this.deduct_list = res[0].data.data.items
         this.deduct_list.forEach((item) => {
           item.deduct_content = JSON.parse(item.deduct_content)
@@ -704,7 +725,7 @@ export default Vue.extend({
                 }
                 this.loading = false
               })
-          } else if (type === '收款') {
+          } else if (type === '付款') {
             collection
               .delete({
                 id
@@ -771,7 +792,6 @@ export default Vue.extend({
         .list({
           client_id: this.$route.params.id,
           limit: 5,
-          type: this.collection_type,
           code: this.collection_code,
           page: this.collection_page
         })
@@ -783,7 +803,7 @@ export default Vue.extend({
     },
     getOrderList() {
       this.loading = true
-      order
+      yarnProcess
         .list({
           client_id: this.$route.params.id,
           limit: 5,
@@ -810,26 +830,6 @@ export default Vue.extend({
           this.stock_total = res.data.data.data.total
           this.loading = false
         })
-    },
-    changeIndex(father: any, type: string) {
-      if (!father.index) {
-        father.index = 0
-      }
-      if (type === 'add') {
-        if (father.index < father.child_data.length - 1) {
-          father.index++
-        } else {
-          father.index = 0
-        }
-      }
-      if (type === 'delete') {
-        if (father.index === 0) {
-          father.index = father.child_data.length - 1
-        } else {
-          father.index--
-        }
-      }
-      this.$forceUpdate()
     }
   },
   mounted() {

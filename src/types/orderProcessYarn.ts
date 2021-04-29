@@ -34,6 +34,7 @@ export interface OrderYarn {
   file_url?: string
   total_price?: string | number
   total_weight?: string | number
+  total_additional_fee: number
   desc: string
 }
 
@@ -60,6 +61,7 @@ export interface ProcessYarn {
   delivery_time: string
   total_price?: string | number
   file_url: string
+  total_additional_fee: number
   additional_fee?: string | AditionalFee[]// 额外费用的JSON字符串
   child_data: ProcessYarnChild[]
 }

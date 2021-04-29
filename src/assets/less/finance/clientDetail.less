@@ -4,3 +4,42 @@
 @import '../table.less';
 @import '../popup.less';
 @import '../list.less';
+#clientDetail{
+  .listCtn{
+    .tableCtn{
+      margin: 0;
+    }
+    .row{
+      min-height: 50px;
+      height: auto;
+    }
+    &.smallHeight{
+      padding: 0;
+      .list{
+        margin: 0;
+      }
+      .row{
+        min-height: 32px;
+        margin: 6px 0;
+      }
+    }
+  }
+  .sortContainer{
+    display: flex;
+    align-items: center;
+    .sort{
+      display: flex;
+      flex-direction: column;
+      margin-right: 8px;
+      align-items: center;
+      color: #D0D0D0;
+      .hover{
+        font-weight: bold;
+        &:hover{
+          color:@blue;
+          cursor: pointer;
+        }
+      }
+    }
+  }
+}

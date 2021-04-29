@@ -18,6 +18,7 @@ export interface Order {
   create_time?: string
   is_check?: number
   additional_fee: string | AditionalFee[]
+  total_additional_fee: number
   desc: HTMLElement | string
   process_log?: any[] // 统计加工信息用的加工日志
   product_info: OrderPro[],

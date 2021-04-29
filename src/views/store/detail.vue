@@ -269,6 +269,7 @@
                         style="min-width:80px">操作类型</div>
                       <div class="column"
                         style="min-width:200px">出入库信息</div>
+                      <div class="column min120">绑定单号</div>
                       <div class="column"
                         style="flex:10;flex-direction:column">
                         <div class="row">
@@ -296,6 +297,12 @@
                         style="min-width:80px">{{item.action_type}}</div>
                       <div class="column"
                         style="min-width:200px">{{item.client_name}}</div>
+                      <div class="column min120"
+                        :class="{'blue':item.related_info}"
+                        :style="{'cursor':item.related_info?'pointer':''}"
+                        @click="goFromStore(item.action_type,item.related_info)">
+                        {{item.related_info?item.related_info.code:'无单号'}}
+                      </div>
                       <div class="column"
                         style="flex:10;flex-direction:column">
                         <div class="row"
@@ -379,6 +386,9 @@
                       :style="{'height':50*item.child_data.length + 'px'}">
                       <span class="blue opr"
                         @click="$openUrl(`/print/store/${item.action_type}/${item.id}?orderId=${$route.params.id}`)">打印</span>
+                      <span class="opr"
+                        :class="{'green':item.related_id,'orange':!item.related_id}"
+                        @click="bindCode(item)">{{item.related_id?'已绑':'绑定'}}</span>
                       <span class="red opr"
                         @click="deleteLog(item.id)">删除</span>
                     </div>
@@ -408,6 +418,8 @@
       </div>
     </div>
     <in-and-out :noChange="false"
+      :updateId="updateId"
+      :bindFlag="bindFlag"
       :firstStoreId="$route.params.id"
       :initData="store_info.init_data"
       :show.sync="store_info.show"
@@ -418,6 +430,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import { StoreDetail } from '@/types/common'
+import { StoreCreate } from '@/types/store'
 import { store, stock } from '@/assets/js/api'
 export default Vue.extend({
   data(): {
@@ -565,7 +578,9 @@ export default Vue.extend({
         data: [],
         reality_weight: 0,
         useable_weight: 0
-      }
+      },
+      bindFlag: false,
+      updateId: 0
     }
   },
   methods: {
@@ -678,6 +693,7 @@ export default Vue.extend({
           if (pages !== this.storeLogListFilter.pages) {
             this.storeLogListFilter.pages = pages
           }
+          this.$forceUpdate()
         })
     },
     // 跳转日志
@@ -741,6 +757,31 @@ export default Vue.extend({
             message: '已取消删除'
           })
         })
+    },
+    goFromStore(type: number, stroeInfo: StoreCreate) {
+      console.log(stroeInfo)
+      if (type === 3) {
+        this.$router.push('/directOrder/yarnDetail/' + stroeInfo.id)
+      } else if (type === 4) {
+        this.$message.warning('暂无详情页面')
+      } else if (type === 5 || type === 6) {
+        this.$router.push('/directProcess/yarnDetail/' + stroeInfo.id)
+      } else if (type === 8) {
+        this.$router.push('/material/craftDetail/' + stroeInfo.id)
+      } else if (type === 9) {
+        this.$router.push('/order/detail/' + stroeInfo.id)
+      } else if (type === 10 || type === 11) {
+        this.$message.warning('暂无详情页面')
+      }
+    },
+    bindCode(storeInfo: StoreDetail) {
+      if (storeInfo.related_id) {
+        this.$message.warning('已绑定单据，不能重复绑定')
+        return
+      }
+      this.bindFlag = true
+      this.store_info.show = true
+      this.updateId = storeInfo.id
     }
   },
   mounted() {

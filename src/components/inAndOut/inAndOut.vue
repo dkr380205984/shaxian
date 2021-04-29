@@ -58,7 +58,7 @@
               </div>
             </div>
           </div>
-          <template v-if="selfType&&(selfType[0]==='无单据'||(selfType[0]!=='无单据'&&storeInfo.related_id))">
+          <template v-if="!bindFlag&&selfType&&(selfType[0]==='无单据'||(selfType[0]!=='无单据'&&storeInfo.related_id))">
             <div class="rowCtn">
               <div class="colCtn flex3">
                 <div class="label">
@@ -284,7 +284,8 @@
             </div>
           </template>
           <template v-else>
-            <div class="tips">请绑定需要关联的单号信息！</div>
+            <div class="tips"
+              v-if="!bindFlag">请绑定需要关联的单号信息！</div>
           </template>
         </div>
       </div>
@@ -292,7 +293,11 @@
         <div class="opr"
           @click="reset">取消</div>
         <div class="opr blue"
-          @click="saveAll">确定</div>
+          @click="saveAll"
+          v-if="!bindFlag">确定</div>
+        <div class="opr orange"
+          @click="bindCode"
+          v-if="bindFlag">确认绑定</div>
       </div>
     </div>
   </div>
@@ -330,6 +335,8 @@ export default class InAndOut extends Vue {
   @Prop({ default: true }) noChange?: boolean // 用于标记是否可修改操作类型，一般订单里得操作都是固定的操作类型不可修改，仓库里的是可修改的
   @Prop() yarnArr?: any[]
   @Prop() outClientArr?: any[] // 订单自带的加工单位
+  @Prop() bindFlag?: boolean
+  @Prop() updateId?: string | number
   loading = false
   relatedLoading = false
   relatedArr = []
@@ -914,6 +921,20 @@ export default class InAndOut extends Vue {
         this.reset()
       }
     })
+  }
+  bindCode() {
+    stock
+      .update({
+        action_type: this.selfType[1] as number,
+        id: this.updateId as string,
+        related_id: this.storeInfo.related_id as string
+      })
+      .then((res) => {
+        if (res.data.status) {
+          this.$message.success('操作成功')
+          this.reset()
+        }
+      })
   }
 
   @Watch('show')

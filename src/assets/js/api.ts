@@ -104,6 +104,7 @@ const store = {
 }
 // 出入库
 import { StoreCreate } from '@/types/store'
+interface UpdateCode { id: string, related_id: string, action_type: number }
 const stock = {
   delete: (params: any) => http.post(`${baseUrl}/store/log/delete`, params, 'application/json'),
   list: (params?: any) => http.get(`${baseUrl}/store/log/lists`, params),
@@ -111,6 +112,7 @@ const stock = {
   materialList: (params?: any) => http.get(`${baseUrl}/material/store/log/lists`, params),
   create: (params: { data: StoreCreate[] }) => http.post(`${baseUrl}/store/total/save`, params, 'application/json'),
   materialCreate: (params: { data: StoreCreate[] }) => http.post(`${baseUrl}/material/store/total/save`, params, 'application/json'),
+  update: (params: UpdateCode) => http.post(`${baseUrl}/store/log/update`, params, 'application/json'),
   materialDetail: (params: { id: number }) => http.get(`${baseUrl}/material/store/log/detail`, params)
 }
 
@@ -166,6 +168,22 @@ const deduct = {
   delete: (params: DeleteParam) => http.post(`${baseUrl}/financial/deduct/delete`, params, 'application/json')
 }
 
+// 开票
+import { BillInfo } from '@/types/common'
+const bill = {
+  create: (params: BillInfo) => http.post(`${baseUrl}/financial/invoice/save`, params, 'application/json'),
+  list: (params: ListParam) => http.get(`${baseUrl}/financial/invoice/lists`, params),
+  delete: (params: DeleteParam) => http.post(`${baseUrl}/financial/invoice/delete`, params, 'application/json')
+}
+
+// 收款
+import { CollectionInfo } from '@/types/common'
+const collection = {
+  create: (params: CollectionInfo) => http.post(`${baseUrl}/financial/collection/save`, params, 'application/json'),
+  list: (params: ListParam) => http.get(`${baseUrl}/financial/collection/lists`, params),
+  delete: (params: DeleteParam) => http.post(`${baseUrl}/financial/collection/delete`, params, 'application/json')
+}
+
 // 审核
 import { CheckInfo } from '@/types/common'
 const check = {
@@ -184,6 +202,11 @@ const price = {
   list: (params: any) => http.get(`${baseUrl}/quote/lists`, params),
   detail: (params: any) => http.get(`${baseUrl}/quote/detail`, params),
   delete: (params: any) => http.post(`${baseUrl}/quote/delete`, params, 'application/json')
+}
+
+const finance = {
+  clientList: (params: any) => http.get(`${baseUrl}/financial/client/lists`, params),
+  clientDetail: (params: any) => http.get(`${baseUrl}/financial/client/detail`, params)
 }
 
 export {
@@ -206,7 +229,10 @@ export {
   material,
   craft,
   deduct,
+  bill,
+  collection,
   check,
   print,
-  allList
+  allList,
+  finance
 }

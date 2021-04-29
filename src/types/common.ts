@@ -64,6 +64,7 @@ export interface StoreDetail {
   second_data: Array<{ id: number, store_id?: number, name: string }>
   create_time: Date | null,
   user_name: string
+  related_id?: number
   desc: string | null
 }
 
@@ -87,16 +88,27 @@ export interface DeductInfo {
 
 // 开票信息
 export interface BillInfo {
-  code?: string
-  bill_type: 1 | 2 | 3 | 4 | 5
-  pid: string | number | string[]
-  total_price: string | number
-  bill_file: string
-  date: string
+  invoice_code?: string
+  client_id: string | number | undefined
+  invoice_type: 1 | 2 | 3 | 4 | 5
+  pid: string[]
+  invoice_price: string | number
+  invoice_date: string
+  file_url: string | null
   desc: string
 }
 // 收款信息
-
+export interface CollectionInfo {
+  client_id: string | number | undefined
+  collect_type: 1 | 2 | 3 | 4 | 5
+  pid: string[]
+  collect_price: string | number
+  collect_date: string
+  file_url: string | null
+  collect_or_pay: number
+  type: string // 收款方式
+  desc: string
+}
 // 审核信息
 export interface CheckInfo {
   id?: number

@@ -434,7 +434,8 @@ export default Vue.extend({
         create_time: '',
         additional_fee: '',
         is_check: 0,
-        product_info: []
+        product_info: [],
+        total_additional_fee: 0
       },
       check_flag: false,
       check_detail_flag: false,

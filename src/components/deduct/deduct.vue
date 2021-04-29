@@ -234,7 +234,7 @@ export default class Deduct extends Vue {
     deduct.create(formData).then((res) => {
       if (res.data.status) {
         this.$message.success('添加扣款信息成功')
-        this.$emit('afterDeduce')
+        this.$emit('afterDeduct')
         this.reset()
       }
     })
@@ -256,7 +256,7 @@ export default class Deduct extends Vue {
         if (this.data.type === 1) {
           this.searchList = data.purchase
         } else if (this.data.type === 2) {
-          this.searchList = data.transfer
+          this.searchList = data.process
         } else if (this.data.type === 3) {
           this.searchList = []
         } else if (this.data.type === 4) {
@@ -268,7 +268,7 @@ export default class Deduct extends Vue {
           return {
             value: item.id,
             label: item.code,
-            product_info: item.product_info
+            product_info: item.product_info || item.child_data
           }
         })
         this.searchLoading = false
@@ -277,12 +277,19 @@ export default class Deduct extends Vue {
   // 把扣款项找出来
   getInfo(ev: any) {
     let deductList: any[] = []
-    console.log(this.searchList)
     this.searchList.forEach((item: any) => {
-      if (ev === item.value) {
-        item.product_info.forEach((itemChild: any) => {
-          deductList.push(itemChild.product_name + '/' + itemChild.color + '/' + itemChild.attribute)
-        })
+      if (this.data.type === 5) {
+        if (ev === item.value) {
+          item.product_info.forEach((itemChild: any) => {
+            deductList.push(itemChild.product_name + '/' + itemChild.color + '/' + itemChild.attribute)
+          })
+        }
+      } else {
+        if (ev === item.value) {
+          item.product_info.forEach((itemChild: any) => {
+            deductList.push(itemChild.name)
+          })
+        }
       }
     })
     deductList = Array.from(new Set(deductList))

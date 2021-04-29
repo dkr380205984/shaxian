@@ -1,0 +1,41 @@
+.stsCtn{
+  padding: 20px 0;
+  display: flex;
+  justify-content: space-around;
+  .box{
+    flex: 1;
+    height: 80px;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    justify-content: center;
+    position: relative;
+    .title{
+      font-size: 16px;
+      margin: 12px;
+    }
+    .number{
+      font-size: 22px;
+      .unit{
+        font-size: 14px;
+      }
+    }
+    &::after{
+      content:'';
+      position: absolute;
+      right: 0;
+      top: 0;
+      bottom: 0;
+      height: 50px;
+      width: 2px;
+      margin: auto;
+      background: #f1f1f1;
+    }
+    &:nth-last-child(1){
+      &::after{
+        content:'';
+        width: 0;
+      }
+    }
+  }
+}

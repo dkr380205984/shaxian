@@ -572,6 +572,7 @@ export default Vue.extend({
         delivery_time: '',
         total_price: '',
         file_url: '',
+        total_additional_fee: 0,
         additional_fee: [
           {
             name: '',
@@ -737,6 +738,7 @@ export default Vue.extend({
         delivery_time: '',
         total_price: '',
         file_url: '',
+        total_additional_fee: 0,
         additional_fee: [
           {
             name: '',
@@ -797,6 +799,7 @@ export default Vue.extend({
         return
       }
       this.loading = true
+
       this.process_info.child_data.forEach((item) => {
         item.name = item.name.constructor === Array ? item.name[1] : item.name
       })
@@ -807,6 +810,9 @@ export default Vue.extend({
         (this.process_info.additional_fee as any[]).reduce((total, current) => {
           return total + Number(current.price)
         }, 0)
+      this.process_info.total_additional_fee = (this.process_info.additional_fee as any[]).reduce((total, current) => {
+        return total + Number(current.price)
+      }, 0)
       this.process_info.additional_fee =
         (this.process_info.additional_fee as any[]).filter((itemChild) => itemChild.name && itemChild.price).length > 0
           ? JSON.stringify(this.process_info.additional_fee)

@@ -189,6 +189,38 @@ const routes: RouteConfig[] = [
         path: '/finance/clientDetail/:id',
         name: '客户财务详情',
         component: () => import('../views/finance/clientDetail.vue')
+      }, {
+        path: '/finance/supplierList',
+        name: '供货商财务列表',
+        component: () => import('../views/finance/supplierList.vue')
+      }, {
+        path: '/finance/supplierDetail/:id',
+        name: '供货商财务详情',
+        component: () => import('../views/finance/supplierDetail.vue')
+      }, {
+        path: '/finance/factoryList',
+        name: '加工厂财务列表',
+        component: () => import('../views/finance/factoryList.vue')
+      }, {
+        path: '/finance/factoryDetail/:id',
+        name: '加工厂财务详情',
+        component: () => import('../views/finance/factoryDetail.vue')
+      }, {
+        path: '/finance/billList',
+        name: '发票列表',
+        component: () => import('../views/finance/billList.vue')
+      }, {
+        path: '/finance/collectionList',
+        name: '收款列表',
+        component: () => import('../views/finance/collectionList.vue')
+      }, {
+        path: '/finance/deductList',
+        name: '扣款列表',
+        component: () => import('../views/finance/deductList.vue')
+      }, {
+        path: '/finance/payList',
+        name: '付款列表',
+        component: () => import('../views/finance/payList.vue')
       }
     ]
   }, {

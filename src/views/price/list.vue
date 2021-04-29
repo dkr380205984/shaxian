@@ -99,12 +99,11 @@
               <span class="column">报价单名称</span>
               <span class="column">报价客户</span>
               <span class="column">纱线名称</span>
-              <span class="column right">纱线报价</span>
-              <span class="column flex04"></span>
-              <span class="column center">审核状态</span>
+              <span class="column">纱线报价</span>
+              <span class="column">审核状态</span>
               <span class="column">创建人</span>
-              <span class="column center">创建时间</span>
-              <span class="column center">操作</span>
+              <span class="column">创建时间</span>
+              <span class="column">操作</span>
             </div>
           </div>
           <div class="bodyCtn">
@@ -118,18 +117,24 @@
               <span class="column">{{item.title}}</span>
               <span class="column">{{item.client_name}}</span>
               <span class="column">{{item.child_data[item.showIndex] && item.child_data[item.showIndex].yarn_name}}</span>
-              <span class="column right">{{item.child_data[item.showIndex] && item.child_data[item.showIndex].total_price}} 元/kg</span>
-              <span class="column flex04 cutBox">
-                <span class="top"
-                  @click="changeIndex(item,-1)"></span>
-                <span class="indexInfo">{{`${(item.showIndex + 1) || 1}/${item.child_data.length}`}}</span>
-                <span class="bottom"
-                  @click="changeIndex(item,1)"></span>
+              <span class="column">
+                <div class="sortContainer">
+                  <div class="sort">
+                    <i class="el-icon-caret-top hover"
+                      @click="changeIndex(item,'delete')"></i>
+                    <div class="number">
+                      {{(item.index||0)+1}}/{{item.child_data.length}}
+                    </div>
+                    <i class="el-icon-caret-bottom hover"
+                      @click="changeIndex(item,'add')"></i>
+                  </div>
+                  <span>{{item.child_data[item.index||0].total_price}}元/kg</span>
+                </div>
               </span>
-              <span :class="{'column':true,'center':true,'orange':item.is_check === 0,'green':item.is_check === 1,'red':item.is_check === 2}">{{item.is_check|filterCheck}}</span>
+              <span :class="{'column':true,'orange':item.is_check === 0,'green':item.is_check === 1,'red':item.is_check === 2}">{{item.is_check|filterCheck}}</span>
               <span class="column">{{item.user_name}}</span>
-              <span class="column center">{{$getDate(item.create_time)}}</span>
-              <span class="column center">
+              <span class="column">{{$getDate(item.create_time)}}</span>
+              <span class="column">
                 <span class="opr orange"
                   @click="$router.push(`/price/update/${item.id}`)">修改</span>
                 <span class="opr blue"
@@ -220,13 +225,25 @@ export default Vue.extend({
       }
       this.limit = Number(params.limit) || 10
     },
-    changeIndex(eventItem: any, type: 1 | -1) {
-      if (eventItem.child_data.length <= 1) {
-        return
+    changeIndex(father: any, type: string) {
+      if (!father.index) {
+        father.index = 0
       }
-      const newIndex = Number(eventItem.showIndex || '0') + type
-      eventItem.showIndex = newIndex < 0 ? eventItem.child_data.length - 1 : newIndex % eventItem.child_data.length
-      console.log(eventItem.showIndex)
+      if (type === 'add') {
+        if (father.index < father.child_data.length - 1) {
+          father.index++
+        } else {
+          father.index = 0
+        }
+      }
+      if (type === 'delete') {
+        if (father.index === 0) {
+          father.index = father.child_data.length - 1
+        } else {
+          father.index--
+        }
+      }
+      this.$forceUpdate()
     },
     getList() {
       this.loading = true

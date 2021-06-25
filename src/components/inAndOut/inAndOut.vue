@@ -121,7 +121,7 @@
               <template v-else>
                 <div class="colCtn flex3">
                   <div class="label">
-                    <span class="text">aa单位名称</span>
+                    <span class="text">单位名称</span>
                     <span class="explanation">(必选)</span>
                   </div>
                   <div class="content">
@@ -240,7 +240,8 @@
                     style="flex:1.5">纱线名称</div>
                   <div class="tcolumn"
                     v-if="storeInfo.type!=='染色'">纱线颜色</div>
-                  <div class="tcolumn">纱线属性</div>
+                  <div class="tcolumn"
+                    v-if="storeInfo.type!=='倒筒'">纱线属性</div>
                   <div class="tcolumn"
                     style="flex:1.5"
                     v-if="selfType&&selfType[0]==='无单据'&&(selfType[1]===13)">{{storeInfo.type==='膨纱'?'加工后颜色属性':'加工前/加工后'}}</div>
@@ -299,7 +300,8 @@
                         v-model="item.color"></el-input>
                     </template>
                   </div>
-                  <div class="tcolumn">
+                  <div class="tcolumn"
+                    v-if="storeInfo.type!=='倒筒'">
                     <el-select class="el"
                       v-model="item.attribute"
                       placeholder="属性">
@@ -1333,7 +1335,7 @@ export default class InAndOut extends Vue {
             attribute: item.attribute || '',
             before_attribute: item.before_attribute || '',
             after_attribute: item.after_attribute || '',
-            before_color: item.before_color || '',
+            before_color: '白胚',
             after_color: item.after_color || '',
             price: item.price
           }

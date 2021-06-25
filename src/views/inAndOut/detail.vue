@@ -480,7 +480,8 @@
                       </div>
                     </div>
                     <div class="column min120">备注信息</div>
-                    <div class="column min120">日期</div>
+                    <div class="column min120">创建时间</div>
+                    <div class="column min120">操作日期</div>
                     <div class="column min120">操作人</div>
                     <div class="column min120">操作</div>
                   </div>
@@ -522,6 +523,7 @@
                       </div>
                     </div>
                     <div class="column min120">{{item.desc||'无'}}</div>
+                    <div class="column min120">{{item.create_time.slice(0,10)}}</div>
                     <div class="column min120">{{item.complete_time}}</div>
                     <div class="column min120">{{item.user_name}}</div>
                     <div class="column min120">操作</div>
@@ -550,11 +552,11 @@
                   <div class="column"
                     style="min-width:80px;max-width:80px"
                     :style="{'height':50*item.child_data.length + 'px'}"
-                    :class="{'blue':item.action_type===1||item.action_type===3||item.action_type===5||item.action_type===8,'green':item.action_type===2||item.action_type===4||item.action_type===6||item.action_type===7||item.action_type===9}">{{item.action_type|stockTypeFilter}}</div>
+                    :class="{'blue':item.action_type===1||item.action_type===3||item.action_type===5||item.action_type===8||item.action_type===13,'green':item.action_type===2||item.action_type===4||item.action_type===6||item.action_type===7||item.action_type===9}">{{item.action_type|stockTypeFilter}}</div>
                   <div class="column"
                     style="min-width:200px;max-width:200px"
                     :style="{'height':50*item.child_data.length + 'px'}">
-                    <span v-if="item.action_type===1||item.action_type===3||item.action_type===5||item.action_type===8">
+                    <span v-if="item.action_type===1||item.action_type===3||item.action_type===5||item.action_type===8||item.action_type===13">
                       <span class="green">{{item.client_name ||'无来源'}}</span>
                       <i class="el-icon-s-unfold orange"
                         style="margin:0 5px;font-size:16px"></i>

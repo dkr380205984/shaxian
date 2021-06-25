@@ -183,28 +183,6 @@
                     </div>
                   </div>
                 </div>
-                <!-- <div class="colCtn">
-                  <div class="label">
-                    <span class="text">入库色号</span>
-                  </div>
-                  <div class="content">
-                    <div class="elCtn">
-                      <el-input v-model="item.color_code"
-                        placeholder="请输入入库色号"></el-input>
-                    </div>
-                  </div>
-                </div>
-                <div class="colCtn">
-                  <div class="label">
-                    <span class="text">入库缸号</span>
-                  </div>
-                  <div class="content">
-                    <div class="elCtn">
-                      <el-input v-model="item.vat_code"
-                        placeholder="请输入入库缸号"></el-input>
-                    </div>
-                  </div>
-                </div> -->
               </div>
             </div>
             <div class="rowCtn">

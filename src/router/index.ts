@@ -142,6 +142,10 @@ const routes: RouteConfig[] = [
         name: '毛条仓库列表',
         component: () => import('../views/store/materialList.vue')
       }, {
+        path: '/store/allDetail',
+        name: '纱线仓库',
+        component: () => import('../views/store/allDetail.vue')
+      }, {
         path: '/store/detail/:id',
         name: '纱线仓库详情',
         component: () => import('../views/store/detail.vue')
@@ -149,6 +153,10 @@ const routes: RouteConfig[] = [
         path: '/store/materialDeatail/:id',
         name: '毛条仓库详情',
         component: () => import('../views/store/materialDeatail.vue')
+      }, {
+        path: '/store/allMaterialDetail',
+        name: '毛条仓库',
+        component: () => import('../views/store/allMaterialDetail.vue')
       }, {
         path: '/directOrder/materialList',
         name: '毛条采购列表',

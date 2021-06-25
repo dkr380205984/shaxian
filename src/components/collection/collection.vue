@@ -3,7 +3,7 @@
     v-if="show">
     <div class="main">
       <div class="titleCtn">
-        <span class="text">收据信息</span>
+        <span class="text">{{collectType===1?'收款':'付款'}}信息</span>
         <i class="close_icon el-icon-close"
           @click="reset"></i>
       </div>
@@ -37,10 +37,10 @@
           </div>
         </div>
         <div class="row">
-          <div class="label isMust">收款方式：</div>
+          <div class="label isMust">{{collectType===1?'收款':'付款'}}方式：</div>
           <div class="info">
             <el-select v-model="type"
-              placeholder="请选择收款方式">
+              :placeholder="'请选择'+collectType===1?'收款':'付款'+'方式'">
               <el-option label="现金收款"
                 value="现金收款"></el-option>
               <el-option label="银行转账"
@@ -51,9 +51,9 @@
           </div>
         </div>
         <div class="row">
-          <div class="label isMust">收据金额：</div>
+          <div class="label isMust">{{collectType===1?'收款':'付款'}}金额：</div>
           <div class="info">
-            <el-input placeholder="请输入收据金额"
+            <el-input placeholder="请输入金额"
               v-model="price"></el-input>
           </div>
         </div>
@@ -64,12 +64,12 @@
               v-model="date"
               type="date"
               value-format="yyyy-MM-dd"
-              placeholder="选择下单日期">
+              placeholder="选择开票日期">
             </el-date-picker>
           </div>
         </div>
         <div class="row">
-          <div class="label">收款凭证：</div>
+          <div class="label">{{collectType===1?'收款':'付款'}}凭证：</div>
           <div class="info">
             <el-upload class="upload"
               action="https://upload.qiniup.com/"
@@ -91,7 +91,7 @@
           </div>
         </div>
         <div class="row">
-          <div class="label">收款备注：</div>
+          <div class="label">{{collectType===1?'收款':'付款'}}备注：</div>
           <div class="info">
             <el-input placeholder="请输入备注信息"
               v-model="desc"></el-input>
@@ -102,7 +102,7 @@
         <div class="opr"
           @click="reset">取消</div>
         <div class="opr blue"
-          @click="saveCollection">确认收款</div>
+          @click="saveCollection">确认{{collectType===1?'收款':'付款'}}</div>
       </div>
     </div>
   </div>

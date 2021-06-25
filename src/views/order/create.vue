@@ -106,7 +106,7 @@
                     :key="indexPro">
                     <div class="tcolumn">
                       <div class="el">
-                        <el-cascader v-model="itemPro.product_id"
+                        <el-cascader v-model="itemPro.name"
                           filterable
                           placeholder="请选择纱线"
                           :options="yarn_list"
@@ -131,10 +131,14 @@
                           <div class="el">
                             <el-select v-model="itemChild.attribute"
                               placeholder="请选择纱线属性">
-                              <el-option label="筒纱"
-                                value="筒纱"></el-option>
-                              <el-option label="绞纱"
-                                value="绞纱"></el-option>
+                              <el-option label="胚绞"
+                                value="胚绞"></el-option>
+                              <el-option label="胚筒"
+                                value="胚筒"></el-option>
+                              <el-option label="色绞"
+                                value="色绞"></el-option>
+                              <el-option label="色筒"
+                                value="色筒"></el-option>
                             </el-select>
                           </div>
                         </div>
@@ -205,7 +209,7 @@
           <div class="colCtn flex3">
             <div class="btn btnMain"
               @click="$addItem(order_info.product_info,{
-                product_id: '',
+                name: '',
                 child_data: [
                   {
                     number_attribute: '98纱',
@@ -384,7 +388,7 @@ export default Vue.extend({
         total_additional_fee: 0,
         product_info: [
           {
-            product_id: [],
+            name: [],
             child_data: [
               {
                 number_attribute: '98纱',
@@ -415,7 +419,7 @@ export default Vue.extend({
           label: item.name,
           children: item.yarns.map((itemChild: any) => {
             return {
-              value: itemChild.id,
+              value: itemChild.name,
               label: itemChild.name
             }
           })
@@ -467,7 +471,7 @@ export default Vue.extend({
     getProColor(ev: string[], proInfo: any) {
       product
         .detail({
-          id: ev[1]
+          product_name: ev[1]
         })
         .then((res) => {
           proInfo.color_list = Array.from(
@@ -498,7 +502,7 @@ export default Vue.extend({
         this.order_info.product_info.some((item) => {
           return this.$formCheck(item, [
             {
-              key: 'product_id',
+              key: 'name',
               errMsg: '请按照提示输入产品名称选择产品'
             }
           ])
@@ -535,7 +539,7 @@ export default Vue.extend({
         return
       }
       const formData = JSON.parse(JSON.stringify(this.order_info))
-      formData.product_info.forEach((item: any) => (item.product_id = (item.product_id as any[])[1]))
+      formData.product_info.forEach((item: any) => (item.name = (item.name as any[])[1]))
       // 额外费用为空时提交空字符串方便后续使用
       formData.additional_fee =
         (formData.additional_fee as any[]).filter((itemChild) => itemChild.name && itemChild.price).length > 0
@@ -569,7 +573,7 @@ export default Vue.extend({
                 total_additional_fee: 0,
                 product_info: [
                   {
-                    product_id: '',
+                    name: '',
                     child_data: [
                       {
                         number_attribute: '98纱',

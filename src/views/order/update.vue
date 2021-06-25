@@ -108,7 +108,7 @@
                         <span style="line-height:32px"
                           v-if="itemPro.product_name">{{itemPro.product_name}}</span>
                         <el-select v-if="!itemPro.product_name"
-                          v-model="itemPro.product_id"
+                          v-model="itemPro.name"
                           filterable
                           remote
                           reserve-keyword
@@ -137,10 +137,14 @@
                           <div class="el">
                             <el-select v-model="itemChild.attribute"
                               placeholder="请选择纱线属性">
-                              <el-option label="筒纱"
-                                value="筒纱"></el-option>
-                              <el-option label="绞纱"
-                                value="绞纱"></el-option>
+                              <el-option label="胚绞"
+                                value="胚绞"></el-option>
+                              <el-option label="胚筒"
+                                value="胚筒"></el-option>
+                              <el-option label="色绞"
+                                value="色绞"></el-option>
+                              <el-option label="色筒"
+                                value="色筒"></el-option>
                             </el-select>
                           </div>
                         </div>
@@ -211,7 +215,7 @@
           <div class="colCtn flex3">
             <div class="btn btnMain"
               @click="$addItem(order_info.product_info,{
-                product_id: '',
+                name: '',
                 child_data: [
                   {
                     number_attribute: '',
@@ -391,7 +395,7 @@ export default Vue.extend({
         total_additional_fee: 0,
         product_info: [
           {
-            product_id: '',
+            name: '',
             child_data: [
               {
                 number_attribute: '',
@@ -513,7 +517,7 @@ export default Vue.extend({
         this.order_info.product_info.some((item) => {
           return this.$formCheck(item, [
             {
-              key: 'product_id',
+              key: 'name',
               errMsg: '请按照提示输入产品名称选择产品'
             }
           ])
@@ -635,9 +639,9 @@ export default Vue.extend({
         this.editor.txt.html(this.order_info.desc)
         this.order_info.product_info = this.$mergeData(this.order_info.product_info, {
           mainRule: 'product_name',
-          childrenName: 'child_data',
-          otherRule: [{ name: 'product_id' }]
+          childrenName: 'child_data'
         })
+        this.order_info.product_info.forEach((item) => (item.name = item.product_name))
         this.order_info.additional_fee = this.order_info.additional_fee
           ? JSON.parse(this.order_info.additional_fee as string)
           : [

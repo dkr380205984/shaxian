@@ -18,7 +18,7 @@ export interface StoreListParams {
   type: number | null
 }
 export interface StoreDetailYarnListParams {
-  store_id: string,
+  store_id: string | null,
   second_store_id: string | null,
   name: string | null,
   color: string | null,
@@ -40,6 +40,8 @@ export interface OrderStoreInfo {
 
 // 出入库
 export interface StoreCreate {
+  type?: string // 加工单附加信息，工序
+  order_code?: string // 订单附加信息，客户单号
   id?: string | number
   code?: string
   order_id?: string | number
@@ -57,10 +59,17 @@ export interface StoreCreate {
   second_store_name?: string
   move_store_id?: number | string // 移库id
   move_second_store_id?: number | string
-  child_data: StoreCreateChild[]
+  child_data: StoreCreateChild[],
+  additional_fee?: Array<{
+    name: string
+    price: string | number
+    desc: string
+  }> | string// 订单附加信息，额外费用
+  total_additional_fee?: number | string
 }
 
 export interface StoreCreateChild {
+  product_name?: string
   name: string | any[]
   action_weight: string | number
   color?: string
@@ -73,4 +82,10 @@ export interface StoreCreateChild {
   item: string // 件数
   related_info_id?: string
   desc?: string
+  number_attribute?: string // 订单附加信息，数量属性
+  price?: string // 订单附加信息，价格
+  before_attribute?: string
+  after_attribute?: string
+  before_color?: string
+  after_color?: string
 }

@@ -113,7 +113,11 @@ const stock = {
   create: (params: { data: StoreCreate[] }) => http.post(`${baseUrl}/store/total/save`, params, 'application/json'),
   materialCreate: (params: { data: StoreCreate[] }) => http.post(`${baseUrl}/material/store/total/save`, params, 'application/json'),
   update: (params: UpdateCode) => http.post(`${baseUrl}/store/log/update`, params, 'application/json'),
-  materialDetail: (params: { id: number }) => http.get(`${baseUrl}/material/store/log/detail`, params)
+  materialDetail: (params: { id: number }) => http.get(`${baseUrl}/material/store/log/detail`, params),
+  excelOfLog: () => http.get(`${baseUrl}/store/log/export`, {}),
+  excelOfAll: () => http.get(`${baseUrl}/store/total/export`, {}),
+  materialExcelOfLog: () => http.get(`${baseUrl}/material/store/log/export`, {}),
+  materialExcelOfAll: () => http.get(`${baseUrl}/material/store/total/export`, {})
 }
 
 // 采购
@@ -204,6 +208,7 @@ const price = {
   delete: (params: any) => http.post(`${baseUrl}/quote/delete`, params, 'application/json')
 }
 
+// 统计
 const finance = {
   clientList: (params: any) => http.get(`${baseUrl}/financial/client/lists`, params),
   clientDetail: (params: any) => http.get(`${baseUrl}/financial/client/detail`, params)

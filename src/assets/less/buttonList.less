@@ -1,0 +1,145 @@
+.buttonList{
+  position: relative;
+  display: inline-block;
+  .showButton{
+    height: 32px;
+    line-height: 32px;
+    border:1px solid #d9d9d9;
+    border-radius: 4px;
+    cursor: pointer;
+    padding: 0 23px;
+    line-height: 32px;
+    color: #1E90FF;
+    .el-icon-s-grid{
+      font-size: 18px;
+      vertical-align: middle;
+    }
+    .text{
+      vertical-align: middle;
+      margin-left: 8px;
+    }
+  }
+  &:hover{
+    border-color:#1E90FF;
+    .showButton{
+      background: #1E90FF;
+      color: #fff;
+    }
+    .otherInfoCtn{
+      display: block;
+    }
+  }
+  .otherInfoCtn{
+    position: absolute;
+    bottom: 33px;
+    right: 0;
+    display: none;
+    .otherInfo{
+      padding: 24px 24px 12px 24px;
+      margin-bottom: 6px;
+      background: #fff;
+      border:1px solid #d9d9d9;
+      border-radius: 4px;
+      width: 260px;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      .button{
+        height: 32px;
+        line-height: 32px;
+        border:1px solid #d9d9d9;
+        border-radius: 4px;
+        cursor: pointer;
+        width: 120px;
+        text-align: center;
+        line-height: 32px;
+        font-size: 16px;
+        margin-bottom: 12px;
+        .icon{
+          width: 18px;
+          height: 18px;
+          display: inline-block;
+          background: #fff;
+          vertical-align: middle;
+        }
+        .iconfont{
+          font-size: 18px;
+          vertical-align: middle;
+        }
+        .text{
+          vertical-align: middle;
+          margin-left: 8px;
+        }
+        &.btnMain{
+          background: @main;
+          color: #fff;
+          border-radius: 4px;
+          border: 1px solid @main;
+          &:hover{
+            background: @hoverMain;
+          }
+        }
+        &.btnBlue{
+          background: @blue;
+          color: #fff;
+          border-radius: 4px;
+          border: 1px solid @blue;
+          &:hover{
+            background: @hoverBlue;
+          }
+        }
+        &.btnOrange{
+          background: @orange;
+          color: #fff;
+          border-radius: 4px;
+          border: 1px solid @orange;
+          &:hover{
+            background: @hoverOrange;
+          }
+        }
+        &.btnRed{
+          background: @red;
+          color: #fff;
+          border-radius: 4px;
+          border: 1px solid @red;
+          &:hover{
+            background: @hoverRed;
+          }
+        }
+        &.btnGreen{
+          background: @green;
+          color: #fff;
+          border-radius: 4px;
+          border: 1px solid @green;
+          &:hover{
+            background: @hoverGreen;
+          }
+        }
+        &.btnGray{
+          color: @font65;
+          border: 1px solid #D9D9D9;
+          line-height: 30px;
+          border-radius: 4px;
+        }
+        &.btnWhiteBlue{
+          color: @blue;
+          border: 1px solid @blue;
+          line-height: 30px;
+          border-radius: 4px;
+        }
+        &.btnWhiteGreen{
+          color: @green;
+          border: 1px solid @green;
+          line-height: 30px;
+          border-radius: 4px;
+        }
+        &.btnWhiteRed{
+          color: @red;
+          border: 1px solid @red;
+          line-height: 30px;
+          border-radius: 4px;
+        }
+      }
+    }
+  }
+}

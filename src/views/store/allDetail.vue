@@ -4,54 +4,11 @@
     v-loading='loading.page'>
     <div class="module">
       <div class="titleCtn">
-        <span class="title">基本信息</span>
-      </div>
-      <div class="detailCtn">
-        <div class="rowCtn">
-          <div class="colCtn">
-            <span class="label">仓库名称：</span>
-            <span class="text green">{{storeDetail.name}}</span>
-          </div>
-        </div>
-        <div class="rowCtn">
-          <div class="colCtn">
-            <span class="label">仓库类型：</span>
-            <span class="text">{{storeDetail.type|filterStoreType}}</span>
-          </div>
-          <div class="colCtn">
-            <span class="label">仓库管理员：</span>
-            <span class="text">{{storeDetail.manager_data.map(itemM=>itemM.name).join('、')}}</span>
-          </div>
-          <div class="colCtn">
-            <span class="label">二级仓库名：</span>
-            <span class="text">{{storeDetail.second_data.map(itemM=>itemM.name).join('、')}}</span>
-          </div>
-        </div>
-        <div class="rowCtn">
-          <div class="colCtn flex3">
-            <span class="label">创建人：</span>
-            <span class="text">{{storeDetail.user_name}}</span>
-          </div>
-          <div class="colCtn">
-            <span class="label flex3">创建时间：</span>
-            <span class="text">{{$getDate(storeDetail.create_time)}}</span>
-          </div>
-        </div>
-        <div class="rowCtn">
-          <div class="colCtn">
-            <span class="label">备注信息：</span>
-            <span class="text">{{storeDetail.desc}}</span>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="module">
-      <div class="titleCtn">
         <span class="title">库存信息</span>
         <el-tooltip placement="top"
           content="可勾选纱线进行快捷出入库">
-          <span class="addBtn btn btnMain"
-            @click="openStore">新增出入库</span>
+          <!-- <span class="addBtn btn btnMain"
+            @click="openStore">新增出入库</span> -->
         </el-tooltip>
       </div>
       <div class="listCtn">
@@ -59,16 +16,12 @@
           <div class="leftCtn">
             <div class="label">筛选条件：</div>
             <div class="elCtn">
-              <el-select v-model="storeListFilter.LV2_name"
-                clearable
+              <el-cascader v-model="storeListFilter.LV2_name"
+                :options="store_list"
                 @change="getStoreInfoList"
-                placeholder="请选择二级仓库名称">
-                <el-option v-for="item in storeDetail.second_data"
-                  :key="item.id"
-                  :label="item.name"
-                  :value="item.id">
-                </el-option>
-              </el-select>
+                :props="{value:'id',label:'name',children:'second_data'}"
+                placeholder="请选择仓库">
+              </el-cascader>
             </div>
             <div class="elCtn">
               <el-input v-model="storeListFilter.name"
@@ -95,6 +48,7 @@
           v-loading='!loading.page && loading.info'>
           <div class="thead">
             <div class="trow">
+              <div class="tcolumn">仓库名称</div>
               <div class="tcolumn">二级仓库名称</div>
               <div class="tcolumn">纱线名称</div>
               <div class="tcolumn">纱线颜色</div>
@@ -116,7 +70,8 @@
           <div class="tbody">
             <div class="trow"
               v-for="item in storeListCom.data"
-              :key="item.name + item.second_store_name + item.color + item.attribute">
+              :key="item.store_name + item.second_store_name + item.name + item.second_store_name + item.color + item.attribute">
+              <div class="tcolumn">{{item.store_name || '-'}}</div>
               <div class="tcolumn">{{item.second_store_name || '-'}}</div>
               <div class="tcolumn">{{item.name}}</div>
               <div class="tcolumn">{{item.color}}</div>
@@ -127,9 +82,9 @@
                   v-for="itemStore in item.store_info"
                   :key="itemStore.id">
                   <div class="tcolumn">
-                    <!-- 加个key解决一下页面不更新的问题 -->
-                    <el-checkbox :key="new Date().getMilliseconds()"
-                      v-model="itemStore.check">{{itemStore.batch_code}}</el-checkbox>
+                    {{itemStore.batch_code}}
+                    <!-- <el-checkbox :key="new Date().getMilliseconds()"
+                      v-model="itemStore.check">{{itemStore.batch_code}}</el-checkbox> -->
                   </div>
                   <div class="tcolumn">{{itemStore.color_code}}</div>
                   <div class="tcolumn">{{itemStore.vat_code}}</div>
@@ -138,13 +93,14 @@
                   <div class="tcolumn flexRow"
                     style="min-width:110px">
                     <span class="opr green"
-                      @click="goLogEl(item,itemStore)">日志</span>
+                      @click="goLogEl(item)">日志</span>
                   </div>
                 </div>
               </div>
             </div>
             <div class="trow bgGray noBorder">
               <div class="tcolumn">合计</div>
+              <div class="tcolumn"></div>
               <div class="tcolumn"></div>
               <div class="tcolumn"></div>
               <div class="tcolumn"></div>
@@ -178,30 +134,24 @@
             <div class="showMore"
               @click="showMore=!showMore">{{!showMore?'展示更多':'收起筛选'}}</div>
             <div class="elCtn">
-              <el-select v-model="storeLogListFilter.LV2_name"
-                clearable
+              <el-cascader v-model="storeLogListFilter.LV2_name"
+                :options="store_list"
                 @change="getStoreLogList(1)"
-                placeholder="请选择二级仓库名称">
-                <el-option v-for="item in storeDetail.second_data"
-                  :key="item.id"
-                  :label="item.name"
-                  :value="item.id">
-                </el-option>
-              </el-select>
+                :props="{value:'id',label:'name',children:'second_data'}"
+                placeholder="请选择仓库">
+              </el-cascader>
             </div>
             <div class="elCtn">
               <el-input v-model="storeLogListFilter.name"
                 @change="getStoreLogList(1)"
                 placeholder="输入纱线名称"></el-input>
             </div>
-            <div class="elCtn"
-              style="width:120px">
+            <div class="elCtn">
               <el-input v-model="storeLogListFilter.color"
                 @change="getStoreLogList(1)"
                 placeholder="输入纱线颜色"></el-input>
             </div>
-            <div class="elCtn"
-              style="width:120px">
+            <div class="elCtn">
               <el-select v-model="storeLogListFilter.attr"
                 clearable
                 @change="getStoreLogList(1)"
@@ -215,24 +165,6 @@
                 <el-option label="色筒"
                   value="色筒"></el-option>
               </el-select>
-            </div>
-            <div class="elCtn"
-              style="width:120px">
-              <el-input v-model="storeLogListFilter.batch_code"
-                @change="getStoreLogList(1)"
-                placeholder="批号"></el-input>
-            </div>
-            <div class="elCtn"
-              style="width:120px">
-              <el-input v-model="storeLogListFilter.color_code"
-                @change="getStoreLogList(1)"
-                placeholder="色号"></el-input>
-            </div>
-            <div class="elCtn"
-              style="width:120px">
-              <el-input v-model="storeLogListFilter.vat_code"
-                @change="getStoreLogList(1)"
-                placeholder="缸号"></el-input>
             </div>
             <div class="elCtn">
               <el-select v-model="storeLogListFilter.type"
@@ -304,8 +236,8 @@
                           <div class="column min120">缸号</div>
                         </div>
                       </div>
-                      <div class="column min120">备注信息</div>
                       <div class="column min120">绑定单号</div>
+                      <div class="column min120">备注信息</div>
                       <div class="column min120">日期</div>
                       <div class="column min120">操作人</div>
                       <div class="column min120">操作</div>
@@ -334,13 +266,13 @@
                           <div class="column min120">{{itemChild.vat_code}}</div>
                         </div>
                       </div>
-                      <div class="column min120">{{item.desc||'无'}}</div>
                       <div class="column min120"
                         :class="{'blue':item.related_info}"
                         :style="{'cursor':item.related_info?'pointer':''}"
                         @click="goFromStore(item.action_type,item.related_info)">
                         {{item.related_info?item.related_info.code:'无单号'}}
                       </div>
+                      <div class="column min120">{{item.desc||'无'}}</div>
                       <div class="column min120">{{item.complete_time}}</div>
                       <div class="column min120">{{item.user_name}}</div>
                       <div class="column min120">操作</div>
@@ -379,7 +311,7 @@
                           style="margin:0 5px;font-size:16px"></i>
                         <span class="blue">{{item.store_name}}/{{item.second_store_name}}</span>
                       </span>
-                      <span v-if="item.action_type===2||item.action_type===4||item.action_type===6||item.action_type===7||item.action_type===9 || item.action_type===12">
+                      <span v-if="item.action_type===2||item.action_type===4||item.action_type===6||item.action_type===7||item.action_type===9||item.action_type===12">
                         <span class="blue">{{item.store_name}}/{{item.second_store_name}}</span>
                         <i class="el-icon-s-unfold orange"
                           style="margin:0 5px;font-size:16px"></i>
@@ -409,11 +341,11 @@
                       :style="{'height':50*item.child_data.length + 'px'}">
                       <span class="blue opr"
                         @click="$openUrl(`/print/store/${item.action_type}/${item.id}?orderId=${$route.params.id}`)">打印</span>
-                      <span class="opr"
+                      <!-- <span class="opr"
                         :class="{'green':item.related_id,'orange':!item.related_id}"
                         @click="bindCode(item)">{{item.related_id?'已绑':'绑定'}}</span>
                       <span class="red opr"
-                        @click="deleteLog(item.id)">删除</span>
+                        @click="deleteLog(item.id)">删除</span> -->
                     </div>
                   </div>
                 </div>
@@ -437,6 +369,10 @@
         <div class="btnCtn">
           <div class="btn btnGray"
             @click="$router.go(-1)">返回</div>
+          <div class="btn btnMain"
+            @click="exportExcel(1)">导出库存日志</div>
+          <div class="btn btnMain"
+            @click="exportExcel(2)">导出库存数量</div>
         </div>
       </div>
     </div>
@@ -475,7 +411,7 @@ export default Vue.extend({
         init_data: []
       },
       loading: {
-        page: true,
+        page: false,
         info: true,
         log: true
       },
@@ -516,10 +452,7 @@ export default Vue.extend({
         limit: 5,
         pages: 1,
         total: 1,
-        time: '',
-        vat_code: '',
-        color_code: '',
-        batch_code: ''
+        time: ''
       },
       // 初始化公共数据
       commonInit: {
@@ -598,16 +531,13 @@ export default Vue.extend({
       updateId: 0
     }
   },
+  computed: {
+    store_list() {
+      return this.$store.state.api.storeHouse.arr.filter((item: any) => item.store_type === 1)
+    }
+  },
   methods: {
     init() {
-      Promise.all([
-        store.detail({
-          id: Number(this.$route.params.id)
-        })
-      ]).then((res) => {
-        this.loading.page = false
-        this.storeDetail = res[0].data.data
-      })
       this.getStoreInfoList()
       this.getStoreLogList()
     },
@@ -615,8 +545,8 @@ export default Vue.extend({
       this.loading.info = true
       store
         .detailYarnList({
-          store_id: this.$route.params.id,
-          second_store_id: this.storeListFilter.LV2_name || null,
+          store_id: this.storeListFilter.LV2_name ? this.storeListFilter.LV2_name[0] : '',
+          second_store_id: this.storeListFilter.LV2_name ? this.storeListFilter.LV2_name[1] : '',
           name: this.storeListFilter.name || null,
           color: this.storeListFilter.color || null,
           weight: this.storeListFilter.isFilterZero ? 0 : null
@@ -627,8 +557,8 @@ export default Vue.extend({
             reality_weight: this.storeList.map((itemM) => +itemM.total_weight).reduce((a, b) => a + b, 0),
             useable_weight: this.storeList.map((itemM) => +itemM.use_weight).reduce((a, b) => a + b, 0),
             data: this.$mergeData(this.storeList, {
-              mainRule: ['second_store_id', 'name', 'color', 'attribute'],
-              otherRule: [{ name: 'second_store_name' }],
+              mainRule: ['store_id', 'second_store_id', 'name', 'color', 'attribute'],
+              otherRule: [{ name: 'second_store_name' }, { name: 'store_name' }],
               childrenName: 'store_info',
               childrenRule: {
                 mainRule: ['color_code', 'vat_code', 'batch_code'],
@@ -666,10 +596,7 @@ export default Vue.extend({
           limit: 5,
           pages: 1,
           total: 1,
-          time: '',
-          vat_code: '',
-          color_code: '',
-          batch_code: ''
+          time: ''
         }
         this.getStoreLogList()
       } else {
@@ -681,17 +608,14 @@ export default Vue.extend({
       this.loading.log = true
       stock
         .list({
-          store_id: this.$route.params.id,
           page: pages,
           limit: this.storeLogListFilter.limit || 5,
-          store_second_id: this.storeLogListFilter.LV2_name || null,
+          store_id: this.storeLogListFilter.LV2_name ? this.storeLogListFilter.LV2_name[0] : '',
+          store_second_id: this.storeLogListFilter.LV2_name ? this.storeLogListFilter.LV2_name[1] : '',
           name: this.storeLogListFilter.name || null,
           color: this.storeLogListFilter.color || null,
           attribute: this.storeLogListFilter.attr || null,
           action_type: this.storeLogListFilter.type || [],
-          vat_code: this.storeLogListFilter.vat_code || null,
-          color_code: this.storeLogListFilter.color_code || null,
-          batch_code: this.storeLogListFilter.batch_code || null,
           start_time:
             this.storeLogListFilter.time && this.storeLogListFilter.time.length > 0
               ? this.storeLogListFilter.time[0]
@@ -718,17 +642,11 @@ export default Vue.extend({
         })
     },
     // 跳转日志
-    goLogEl(
-      item: { second_store_id: number; name: string; color: string; attr: string; [key: string]: any },
-      itemStore: { color_code: string; batch_code: string; vat_code: string }
-    ) {
-      this.storeLogListFilter.LV2_name = item.second_store_id
+    goLogEl(item: { second_store_id: number; name: string; color: string; attr: string; [key: string]: any }) {
+      this.storeLogListFilter.LV2_name = [item.store_id, item.second_store_id]
       this.storeLogListFilter.name = item.name
       this.storeLogListFilter.color = item.color
       this.storeLogListFilter.attr = item.attribute
-      this.storeLogListFilter.vat_code = itemStore.vat_code
-      this.storeLogListFilter.batch_code = itemStore.batch_code
-      this.storeLogListFilter.color_code = itemStore.color_code
       this.$goElView('stockLogEl')
       this.getStoreLogList()
     },
@@ -739,31 +657,59 @@ export default Vue.extend({
       }
       this.init()
     },
-    openStore() {
-      const selectData = this.$clone(this.storeListCom.data).filter((item: any) => {
-        return item.store_info.filter((itemChild: any) => itemChild.check).length > 0
-      })
-      let secondStoreId: any
-      let errFlag = false
-      selectData.forEach((item: any) => {
-        item.store_info = item.store_info.filter((itemChild: any) => itemChild.check)
-        if (!secondStoreId) {
-          secondStoreId = item.second_store_id
-        } else {
-          if (secondStoreId !== item.second_store_id) {
-            errFlag = true
-          }
-        }
-      })
-      if (errFlag) {
-        this.$message.error('不能同时选择两个二级仓库的原料进行出入库，请重新选择')
-        return
-      }
-      this.store_info = {
-        show: true,
-        init_data: selectData
+    exportExcel(type: number) {
+      if (type === 1) {
+        stock.excelOfLog().then((res) => {
+          // 创建a标签
+          const link = document.createElement('a')
+          // download属性
+          link.setAttribute('download', '库存日志')
+          // href链接
+          link.setAttribute('href', res.data.data)
+          // 自执行点击事件
+          link.click()
+          document.body.removeChild(link)
+        })
+      } else {
+        stock.excelOfAll().then((res) => {
+          // 创建a标签
+          const link = document.createElement('a')
+          // download属性
+          link.setAttribute('download', '库存数量')
+          // href链接
+          link.setAttribute('href', res.data.data)
+          // 自执行点击事件
+          link.click()
+          document.body.removeChild(link)
+        })
       }
     },
+    // 新增出入库按钮删除，这个函数暂时没用了
+    // openStore() {
+    //   const selectData = this.$clone(this.storeListCom.data).filter((item: any) => {
+    //     return item.store_info.filter((itemChild: any) => itemChild.check).length > 0
+    //   })
+    //   let secondStoreId: any
+    //   let errFlag = false
+    //   selectData.forEach((item: any) => {
+    //     item.store_info = item.store_info.filter((itemChild: any) => itemChild.check)
+    //     if (!secondStoreId) {
+    //       secondStoreId = item.second_store_id
+    //     } else {
+    //       if (secondStoreId !== item.second_store_id) {
+    //         errFlag = true
+    //       }
+    //     }
+    //   })
+    //   if (errFlag) {
+    //     this.$message.error('不能同时选择两个二级仓库的原料进行出入库，请重新选择')
+    //     return
+    //   }
+    //   this.store_info = {
+    //     show: true,
+    //     init_data: selectData
+    //   }
+    // },
     deleteLog(id: number) {
       this.$confirm('是否删除该日志，这可能会导致相关库存变动?', '提示', {
         confirmButtonText: '确定',
@@ -817,6 +763,11 @@ export default Vue.extend({
         checkWhich: 'api/client',
         getInfoMethed: 'dispatch',
         getInfoApi: 'getPartyBAsync'
+      },
+      {
+        checkWhich: 'api/storeHouse',
+        getInfoMethed: 'dispatch',
+        getInfoApi: 'getStoreAsync'
       }
     ])
     this.init()

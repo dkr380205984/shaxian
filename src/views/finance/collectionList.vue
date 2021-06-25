@@ -71,6 +71,7 @@
                     <div class="column min120">收款单位</div>
                     <div class="column min120">收款号码</div>
                     <div class="column min120">收款金额</div>
+                    <div class="column min120">收款方式</div>
                     <div class="column min120">收款备注</div>
                     <div class="column min120">收款日期</div>
                     <div class="column min120">收款凭证</div>
@@ -89,6 +90,7 @@
                     <div class="column min120">{{item.client_name}}</div>
                     <div class="column min120">{{item.code}}</div>
                     <div class="column min120">{{item.collect_price}}元</div>
+                    <div class="column min120">{{item.type}}</div>
                     <div class="column min120">{{item.desc}}</div>
                     <div class="column min120">{{item.collect_date}}</div>
                     <div class="column min120">
@@ -102,7 +104,9 @@
                       </el-image>
                     </div>
                     <div class="column min120"
-                      :class="{'blue':item.related_info,'gray':!item.related_info}">{{item.related_info?'查看':'暂无'}}</div>
+                      :style="{'cursor':item.related_info?'pointer':'not-allowed'}"
+                      :class="{'blue':item.related_info,'gray':!item.related_info}"
+                      @click="readRelatedInfo(item.invoice_type,item.related_info)">{{item.related_info?'查看关联单据':'暂无'}}</div>
                     <div class="column min120">{{item.user_name}}</div>
                     <div class="column min120">{{item.create_time.slice(0,10)}}</div>
                     <div class="column min120">
@@ -160,6 +164,9 @@
         </div>
       </div>
     </div>
+    <related-info :show.sync="related_show"
+      :type="related_type"
+      :data="related_info"></related-info>
   </div>
 </template>
 
@@ -180,7 +187,10 @@ export default Vue.extend({
       code: '',
       collect_type: '',
       client_id: '',
-      list: []
+      list: [],
+      related_info: [],
+      related_type: 1,
+      related_show: false
     }
   },
   computed: {
@@ -259,6 +269,11 @@ export default Vue.extend({
             message: '已取消删除'
           })
         })
+    },
+    readRelatedInfo(type: number, info: Array<{ code: string }>) {
+      this.related_type = type
+      this.related_info = info
+      this.related_show = true
     }
   },
   watch: {

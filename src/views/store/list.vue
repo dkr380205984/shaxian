@@ -7,6 +7,8 @@
         <span class="title hasBorder">纱线仓库列表</span>
         <span class="addBtn btn btnMain"
           @click="changeStore()">新增仓库</span>
+        <span class="addBtn btn btnMain"
+          @click="$router.push('/store/allDetail')">查看所有库存</span>
       </div>
       <div class="listCtn">
         <div class="filterCtn">

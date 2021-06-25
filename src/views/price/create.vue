@@ -109,11 +109,14 @@
                   <div class="content">
                     <el-select v-model="itemYarn.attr"
                       placeholder="请选择外形属性">
-                      <el-option v-for="item in attrArr"
-                        :key="item.name"
-                        :label="item.name"
-                        :value="item.name">
-                      </el-option>
+                      <el-option label="胚绞"
+                        value="胚绞"></el-option>
+                      <el-option label="胚筒"
+                        value="胚筒"></el-option>
+                      <el-option label="色绞"
+                        value="色绞"></el-option>
+                      <el-option label="色筒"
+                        value="色筒"></el-option>
                     </el-select>
                   </div>
                 </div>
@@ -459,7 +462,6 @@ export default Vue.extend({
       ],
       yarnArr: [],
       processArr,
-      attrArr: [{ name: '绞纱' }, { name: '筒纱' }],
       remark: ''
     }
   },

@@ -96,10 +96,6 @@
     <div class="module">
       <div class="titleCtn">
         <span class="title">下单信息</span>
-        <span class="addBtn btn btnMain"
-          @click="$router.push('/orderProcessYarn/detail/' + $route.params.id)">订购加工信息</span>
-        <span class="addBtn btn btnMain"
-          @click="$router.push('/inAndOut/detail/' + $route.params.id)">出入库信息</span>
       </div>
       <div style="padding:20px 32px">
         <div class="tableCtn">
@@ -163,8 +159,6 @@
     <div class="module">
       <div class="titleCtn">
         <span class="title">发货信息</span>
-        <span class="addBtn btn btnMain"
-          @click="store_info.show=true">订单发货</span>
       </div>
       <div style="padding:20px 32px">
         <div class="tableCtn">
@@ -352,16 +346,75 @@
     </div>
     <div class="bottomFixBar">
       <div class="main">
+        <div class="btnCtn"
+          style="float:left">
+          <div class="buttonList">
+            <div class="showButton">
+              <i class="el-icon-s-grid"></i>
+              <span class="text">关联页面</span>
+            </div>
+            <div class="otherInfoCtn"
+              style="left:0">
+              <div class="otherInfo">
+                <div class="button btnMain"
+                  @click="$router.push('/inAndOut/detail/'+$route.params.id)">
+                  <i class="iconfont">&#xe637;</i>
+                  <span class="text">出入库</span>
+                </div>
+                <div class="button btnMain"
+                  @click="$router.push('/directProcess/yarnDetail/'+$route.params.id)">
+                  <i class="iconfont">&#xe63c;</i>
+                  <span class="text">采购加工</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
         <div class="btnCtn">
           <div class="btn btnGray"
             @click="$router.go(-1)">返回</div>
-          <div class="btn btnGreen"
-            @click="openCheck">审核</div>
-          <div class="btn btnRed"
-            @click="openDeduct">扣款</div>
-          <div class="btn btnBlue"
-            @click="confirm"
-            v-if="order_info.status!==3">确认完成</div>
+          <div class="buttonList"
+            style="margin-left:12px">
+            <div class="showButton">
+              <i class="el-icon-s-grid"></i>
+              <span class="text">订单操作</span>
+            </div>
+            <div class="otherInfoCtn">
+              <div class="otherInfo">
+                <div class="button btnGreen"
+                  @click="openCheck">
+                  <i class="iconfont">&#xe638;</i>
+                  <span class="text">订单审核</span>
+                </div>
+                <div class="button btnRed"
+                  @click="openDeduct">
+                  <i class="iconfont">&#xe63b;</i>
+                  <span class="text">订单扣款</span>
+                </div>
+                <div class="button btnOrange"
+                  @click="$router.push('/order/update/'+$route.params.id)">
+                  <i class="iconfont">&#xe63a;</i>
+                  <span class="text">订单修改</span>
+                </div>
+                <div class="button btnRed"
+                  @click="deleteOrder">
+                  <i class="iconfont">&#xe639;</i>
+                  <span class="text">订单删除</span>
+                </div>
+                <div class="button btnMain"
+                  @click="store_info.show=true">
+                  <i class="iconfont">&#xe614;</i>
+                  <span class="text">订单发货</span>
+                </div>
+                <div class="button btnBlue"
+                  @click="confirm"
+                  v-if="order_info.status!==3">
+                  <i class="iconfont">&#xe636;</i>
+                  <span class="text">确认完成</span>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -570,6 +623,30 @@ export default Vue.extend({
           this.$message({
             type: 'info',
             message: '已取消'
+          })
+        })
+    },
+    deleteOrder() {
+      this.$confirm('是否删除该订单?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      })
+        .then(() => {
+          order.delete({ id: this.$route.params.id }).then((res) => {
+            if (res.data.status) {
+              this.$message({
+                type: 'success',
+                message: '删除成功!'
+              })
+              this.$router.push('/order/list?page=1&order_code=&product_name=&client_id=&user_id=&page_size=10&date=')
+            }
+          })
+        })
+        .catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
           })
         })
     }

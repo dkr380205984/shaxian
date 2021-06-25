@@ -329,23 +329,29 @@
                     v-if="process_info.type==='倒筒'">
                     <el-select v-model="item.before_attribute"
                       placeholder="加工前"
-                      style="margin-right:12px"
-                      @change="getAnother($event,item,'before')">
-                      <el-option label="筒纱"
-                        value="筒纱"></el-option>
-                      <el-option label="绞纱"
-                        value="绞纱"></el-option>
+                      style="margin-right:12px">
+                      <el-option label="胚绞"
+                        value="胚绞"></el-option>
+                      <el-option label="胚筒"
+                        value="胚筒"></el-option>
+                      <el-option label="色绞"
+                        value="色绞"></el-option>
+                      <el-option label="色筒"
+                        value="色筒"></el-option>
                     </el-select>
                   </div>
                   <div class="elCtn"
                     v-if="process_info.type==='倒筒'">
                     <el-select v-model="item.after_attribute"
-                      placeholder="加工后"
-                      @change="getAnother($event,item,'after')">
-                      <el-option label="筒纱"
-                        value="筒纱"></el-option>
-                      <el-option label="绞纱"
-                        value="绞纱"></el-option>
+                      placeholder="加工后">
+                      <el-option label="胚绞"
+                        value="胚绞"></el-option>
+                      <el-option label="胚筒"
+                        value="胚筒"></el-option>
+                      <el-option label="色绞"
+                        value="色绞"></el-option>
+                      <el-option label="色筒"
+                        value="色筒"></el-option>
                     </el-select>
                   </div>
                   <div class="elCtn"
@@ -357,10 +363,14 @@
                     v-if="process_info.type==='膨纱'">
                     <el-select placeholder="属性"
                       v-model="item.attribute">
-                      <el-option label="筒纱"
-                        value="筒纱"></el-option>
-                      <el-option label="绞纱"
-                        value="绞纱"></el-option>
+                      <el-option label="胚绞"
+                        value="胚绞"></el-option>
+                      <el-option label="胚筒"
+                        value="胚筒"></el-option>
+                      <el-option label="色绞"
+                        value="色绞"></el-option>
+                      <el-option label="色筒"
+                        value="色筒"></el-option>
                     </el-select>
                   </div>
                   <div class="elCtn"
@@ -715,15 +725,6 @@ export default Vue.extend({
     },
     successFile(response: any) {
       this.process_info.file_url = 'https://file.zwyknit.com/' + response.key
-    },
-    // 倒筒快捷切换
-    getAnother(ev: string, item: any, type: string) {
-      if (type === 'before') {
-        item.after_attribute = ev === '筒纱' ? '绞纱' : '筒纱'
-      }
-      if (type === 'after') {
-        item.before_attribute = ev === '筒纱' ? '绞纱' : '筒纱'
-      }
     },
     resetProcess() {
       this.create_flag = false

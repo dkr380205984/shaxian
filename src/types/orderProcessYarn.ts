@@ -1,3 +1,4 @@
+import { StoreCreateChild } from './store'
 export interface YarnInfo {
   id?: number | string
   name?: string
@@ -36,6 +37,11 @@ export interface OrderYarn {
   total_weight?: string | number
   total_additional_fee: number
   desc: string
+  add_store_data?: Array<{
+    store_id: number | string
+    second_store_id: number | string
+    child_data: StoreCreateChild[]
+  }>
 }
 
 export interface ProcessYarnChild {
@@ -64,4 +70,9 @@ export interface ProcessYarn {
   total_additional_fee: number
   additional_fee?: string | AditionalFee[]// 额外费用的JSON字符串
   child_data: ProcessYarnChild[]
+  add_store_data?: Array<{
+    store_id: number | string
+    second_store_id: number | string
+    child_data: StoreCreateChild[]
+  }>
 }

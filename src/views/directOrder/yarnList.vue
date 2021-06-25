@@ -304,10 +304,14 @@
                   <div class="elCtn">
                     <el-select placeholder="属性"
                       v-model="item.attribute">
-                      <el-option label="筒纱"
-                        value="筒纱"></el-option>
-                      <el-option label="绞纱"
-                        value="绞纱"></el-option>
+                      <el-option label="胚绞"
+                        value="胚绞"></el-option>
+                      <el-option label="胚筒"
+                        value="胚筒"></el-option>
+                      <el-option label="色绞"
+                        value="色绞"></el-option>
+                      <el-option label="色筒"
+                        value="色筒"></el-option>
                     </el-select>
                   </div>
                 </div>
@@ -677,7 +681,7 @@ export default Vue.extend({
         0
       )
       this.order_yarn_info.additional_fee = JSON.stringify(this.order_yarn_info.additional_fee)
-      this.order_yarn_info.child_data.forEach((item) => (item.name = ((item.name as unknown) as any[])[1]))
+      this.order_yarn_info.child_data.forEach((item) => (item.name = (item.name as unknown as any[])[1]))
       yarnOrder
         .create({
           data: [this.order_yarn_info]

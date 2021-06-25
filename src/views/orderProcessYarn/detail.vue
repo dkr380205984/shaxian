@@ -548,10 +548,14 @@
                     <el-select @change="commonInput($event,item,'attribute')"
                       placeholder="选择统一订购属性"
                       v-model="item.common_attr">
-                      <el-option label="筒纱"
-                        value="筒纱"></el-option>
-                      <el-option label="绞纱"
-                        value="绞纱"></el-option>
+                      <el-option label="胚绞"
+                        value="胚绞"></el-option>
+                      <el-option label="胚筒"
+                        value="胚筒"></el-option>
+                      <el-option label="色绞"
+                        value="色绞"></el-option>
+                      <el-option label="色筒"
+                        value="色筒"></el-option>
                     </el-select>
                   </div>
                 </div>
@@ -840,10 +844,14 @@
                     <div class="from">
                       <el-select placeholder="属性"
                         v-model="itemChild.attribute">
-                        <el-option label="筒纱"
-                          value="筒纱"></el-option>
-                        <el-option label="绞纱"
-                          value="绞纱"></el-option>
+                        <el-option label="胚绞"
+                          value="胚绞"></el-option>
+                        <el-option label="胚筒"
+                          value="胚筒"></el-option>
+                        <el-option label="色绞"
+                          value="色绞"></el-option>
+                        <el-option label="色筒"
+                          value="色筒"></el-option>
                       </el-select>
                     </div>
                   </div>
@@ -1295,20 +1303,26 @@
                   <div class="from flex">
                     <el-select v-model="itemChild.before_attribute"
                       placeholder="加工前属性"
-                      style="margin-right:12px"
-                      @change="getAnother($event,itemChild,'before')">
-                      <el-option label="筒纱"
-                        value="筒纱"></el-option>
-                      <el-option label="绞纱"
-                        value="绞纱"></el-option>
+                      style="margin-right:12px">
+                      <el-option label="胚绞"
+                        value="胚绞"></el-option>
+                      <el-option label="胚筒"
+                        value="胚筒"></el-option>
+                      <el-option label="色绞"
+                        value="色绞"></el-option>
+                      <el-option label="色筒"
+                        value="色筒"></el-option>
                     </el-select>
                     <el-select v-model="itemChild.after_attribute"
-                      placeholder="加工后属性"
-                      @change="getAnother($event,itemChild,'after')">
-                      <el-option label="筒纱"
-                        value="筒纱"></el-option>
-                      <el-option label="绞纱"
-                        value="绞纱"></el-option>
+                      placeholder="加工后属性">
+                      <el-option label="胚绞"
+                        value="胚绞"></el-option>
+                      <el-option label="胚筒"
+                        value="胚筒"></el-option>
+                      <el-option label="色绞"
+                        value="色绞"></el-option>
+                      <el-option label="色筒"
+                        value="色筒"></el-option>
                     </el-select>
                   </div>
                 </div>
@@ -1338,10 +1352,14 @@
                     </el-input>
                     <el-select v-model="itemChild.attribute"
                       placeholder="属性">
-                      <el-option label="筒纱"
-                        value="筒纱"></el-option>
-                      <el-option label="绞纱"
-                        value="绞纱"></el-option>
+                      <el-option label="胚绞"
+                        value="胚绞"></el-option>
+                      <el-option label="胚筒"
+                        value="胚筒"></el-option>
+                      <el-option label="色绞"
+                        value="色绞"></el-option>
+                      <el-option label="色筒"
+                        value="色筒"></el-option>
                     </el-select>
                   </div>
                 </div>
@@ -1722,15 +1740,6 @@ export default Vue.extend({
       obj.child_data.forEach((item: any) => {
         item[key] = ev
       })
-    },
-    // 倒筒快捷切换
-    getAnother(ev: string, item: any, type: string) {
-      if (type === 'before') {
-        item.after_attribute = ev === '筒纱' ? '绞纱' : '筒纱'
-      }
-      if (type === 'after') {
-        item.before_attribute = ev === '筒纱' ? '绞纱' : '筒纱'
-      }
     },
     checkAllPro(ev: boolean) {
       this.indeterminate = false

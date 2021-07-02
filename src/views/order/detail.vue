@@ -37,10 +37,16 @@
           </div>
           <div class="colCtn flex3">
             <span class="label">交货日期：</span>
-            <span class="text">{{order_info.delivery_time}}（
-              <span :class="{'red':$diffByDate(order_info.delivery_time)<=0,'green':$diffByDate(order_info.delivery_time)>7,'yellow':$diffByDate(order_info.delivery_time)<=7 &&$diffByDate(order_info.delivery_time)>0 }">
-                {{$diffByDate(order_info.delivery_time)>0?'交货还剩'+$diffByDate(order_info.delivery_time)+'天':'延期发货'+Math.abs($diffByDate(order_info.delivery_time))+'天'}}
-              </span>）
+            <span class="text">{{order_info.delivery_time}}
+              <template v-if="order_info.status!==3 && order_info.status!==4">（
+                <span :class="{'red':$diffByDate(order_info.delivery_time)<=0,'green':$diffByDate(order_info.delivery_time)>7,'yellow':$diffByDate(order_info.delivery_time)<=7 &&$diffByDate(order_info.delivery_time)>0 }">
+                  {{$diffByDate(order_info.delivery_time)>0?'交货还剩'+$diffByDate(order_info.delivery_time)+'天':'延期发货'+Math.abs($diffByDate(order_info.delivery_time))+'天'}}
+                </span>）
+              </template>
+              <template v-else>（<span v-if="order_info.status===3"
+                  class="green">已完成</span>
+                <span v-if="order_info.status===4"
+                  class="gray">订单已取消</span>）</template>
             </span>
           </div>
           <div class="colCtn flex3">
@@ -56,6 +62,11 @@
           <div class="colCtn flex3">
             <span class="label">创建时间：</span>
             <span class="text">{{order_info.create_time.slice(0,10)||'暂无'}}</span>
+          </div>
+          <div class="colCtn flex3">
+            <span class="label">订单状态：</span>
+            <span class="text"
+              :class="{'orange':order_info.status===1,'blue':order_info.status===2,'green':order_info.status===3,'gray':order_info.status===4}">{{order_info.status|orderStatusFilter}}</span>
           </div>
         </div>
         <div class="rowCtn"
@@ -209,6 +220,59 @@
       </div>
     </div>
     <div class="module"
+      v-if="order_info.status===4">
+      <div class="titleCtn">
+        <span class="title">结余入库</span>
+      </div>
+      <div style="padding:20px 32px">
+        <div class="tableCtn">
+          <div class="thead">
+            <div class="trow">
+              <div class="tcolumn">入库单号</div>
+              <div class="tcolumn">入库仓库</div>
+              <div class="tcolumn noPad"
+                style="flex:4;">
+                <div class="trow">
+                  <div class="tcolumn">纱线名称</div>
+                  <div class="tcolumn">入库颜色</div>
+                  <div class="tcolumn">入库属性</div>
+                  <div class="tcolumn">入库数量</div>
+                </div>
+              </div>
+              <div class="tcolumn">备注信息</div>
+              <div class="tcolumn">入库日期</div>
+              <div class="tcolumn">操作人</div>
+            </div>
+          </div>
+          <div class="tbody">
+            <div class="trow gray"
+              v-if="order_cancel_log.length===0"
+              style="line-height:46px">暂无结余入库信息</div>
+            <div class="trow"
+              v-for="item in order_cancel_log"
+              :key="item.id">
+              <div class="tcolumn">{{item.code}}</div>
+              <div class="tcolumn">{{item.store_name}}/{{item.second_store_name}}</div>
+              <div class="tcolumn noPad"
+                style="flex:4;">
+                <div class="trow"
+                  v-for="(itemChild,indexChild) in item.child_data"
+                  :key="indexChild">
+                  <div class="tcolumn">{{itemChild.name}}</div>
+                  <div class="tcolumn">{{itemChild.color}}</div>
+                  <div class="tcolumn">{{itemChild.attribute}}</div>
+                  <div class="tcolumn blue">{{itemChild.action_weight}}kg</div>
+                </div>
+              </div>
+              <div class="tcolumn">{{item.desc||'无'}}</div>
+              <div class="tcolumn">{{item.complete_time}}</div>
+              <div class="tcolumn">{{item.user_name}}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="module"
       v-show="deduct_list.length>0">
       <div class="titleCtn">
         <span class="title">扣款信息</span>
@@ -223,6 +287,8 @@
               <div class="column">图片说明</div>
               <div class="column">扣款总价</div>
               <div class="column">备注信息</div>
+              <div class="column">扣款日期</div>
+              <div class="column">操作人</div>
               <div class="column">操作</div>
             </div>
           </div>
@@ -232,7 +298,8 @@
               :key="item.id">
               <div class="column blue">{{item.code}}</div>
               <div class="column">
-                <div class="sortContainer">
+                <div class="sortContainer"
+                  v-if="item.deduct_content.length>0">
                   <div class="sort">
                     <i class="el-icon-caret-top hover"
                       @click="changeIndex(item,'add')"></i>
@@ -244,8 +311,14 @@
                   </div>
                   <span>{{item.deduct_content[item.index||0].yarn}}</span>
                 </div>
+                <div class="gray"
+                  v-else>暂无纱线</div>
               </div>
-              <div class="column">{{item.deduct_content[item.index||0].price}}元</div>
+              <div class="column">
+                <template v-if="item.deduct_content.length.length>0">{{item.deduct_content[item.index||0].price}}元</template>
+                <div class="gray"
+                  v-else>暂无单价</div>
+              </div>
               <div class="column">
                 <el-image style="width: 50px; height: 50px;line-height:50px;text-align:center;font-size:22px"
                   :src="item.deduct_file"
@@ -258,6 +331,8 @@
               </div>
               <div class="column red">{{item.total_price}}元</div>
               <div class="column">{{item.desc}}</div>
+              <div class="column">{{item.related_info.create_time.slice(0,10)}}</div>
+              <div class="column">{{item.related_info.user_name}}</div>
               <div class="column">
                 <div class="opr blue">打印</div>
                 <div class="opr red">删除</div>
@@ -362,7 +437,7 @@
                   <span class="text">出入库</span>
                 </div>
                 <div class="button btnMain"
-                  @click="$router.push('/directProcess/yarnDetail/'+$route.params.id)">
+                  @click="$router.push('/orderProcessYarn/detail/'+$route.params.id)">
                   <i class="iconfont">&#xe63c;</i>
                   <span class="text">采购加工</span>
                 </div>
@@ -374,7 +449,8 @@
           <div class="btn btnGray"
             @click="$router.go(-1)">返回</div>
           <div class="buttonList"
-            style="margin-left:12px">
+            style="margin-left:12px"
+            v-if="order_info.status!==4">
             <div class="showButton">
               <i class="el-icon-s-grid"></i>
               <span class="text">订单操作</span>
@@ -382,7 +458,8 @@
             <div class="otherInfoCtn">
               <div class="otherInfo">
                 <div class="button btnGreen"
-                  @click="openCheck">
+                  @click="openCheck"
+                  v-if="order_info.status!==3">
                   <i class="iconfont">&#xe638;</i>
                   <span class="text">订单审核</span>
                 </div>
@@ -392,17 +469,20 @@
                   <span class="text">订单扣款</span>
                 </div>
                 <div class="button btnOrange"
-                  @click="$router.push('/order/update/'+$route.params.id)">
+                  @click="$router.push('/order/update/'+$route.params.id)"
+                  v-if="order_info.status!==3">
                   <i class="iconfont">&#xe63a;</i>
                   <span class="text">订单修改</span>
                 </div>
                 <div class="button btnRed"
-                  @click="deleteOrder">
+                  @click="deleteOrder"
+                  v-if="order_info.status!==3">
                   <i class="iconfont">&#xe639;</i>
                   <span class="text">订单删除</span>
                 </div>
                 <div class="button btnMain"
-                  @click="store_info.show=true">
+                  @click="store_info.show=true"
+                  v-if="order_info.status!==3">
                   <i class="iconfont">&#xe614;</i>
                   <span class="text">订单发货</span>
                 </div>
@@ -412,9 +492,31 @@
                   <i class="iconfont">&#xe636;</i>
                   <span class="text">确认完成</span>
                 </div>
+                <div class="button btnBlack"
+                  @click="openCancel">
+                  <i class="el-icon-circle-close"></i>
+                  <span class="text">取消订单</span>
+                </div>
               </div>
             </div>
           </div>
+          <el-tooltip v-if="order_info.status===4"
+            class="item"
+            effect="dark"
+            placement="top">
+            <div slot="content">
+              取消原因：{{cancel_reason}}
+              <br />
+              取消日期：{{cancel_date}}
+              <br />
+              操作人：{{user_name}}
+              <br />
+              对方承担：{{client_fee||0}}元
+            </div>
+            <div class="btn btnWhiteRed">
+              订单已取消
+            </div>
+          </el-tooltip>
         </div>
       </div>
     </div>
@@ -450,21 +552,287 @@
       :relatedId="$route.params.id"
       :show.sync="store_info.show"
       @close="init"></in-and-out>
+    <div class="popup"
+      v-show="cancel_flag">
+      <div class="main">
+        <div class="titleCtn">
+          <div class="text">取消订单</div>
+          <i class="el-icon-close"
+            @click="cancel_flag=false"></i>
+        </div>
+        <div class="contentCtn">
+          <div class="stepCtn">
+            <div class="step"
+              :class="{'now':cancel_step===1,'confirm':cancel_step>1}">
+              <div class="circle">1</div>
+              <div class="info">结余入库</div>
+            </div>
+            <div class="line"></div>
+            <div class="step"
+              :class="{'now':cancel_step===2,'confirm':cancel_step>2}">
+              <div class="circle">2</div>
+              <div class="info">取消原因</div>
+            </div>
+            <div class="line"></div>
+            <div class="step"
+              :class="{'now':cancel_step===3,'confirm':cancel_step>3}">
+              <div class="circle">3</div>
+              <div class="info">确认取消</div>
+            </div>
+          </div>
+          <template v-if="cancel_step===1">
+            <div class="createCtn">
+              <div class="rowCtn">
+                <div class="colCtn flex3">
+                  <div class="label">
+                    <span class="text">仓库信息</span>
+                    <span class="explanation">(必选)</span>
+                  </div>
+                  <div class="content">
+                    <div class="elCtn">
+                      <el-cascader v-model="cancel_order_info.store_data[0].select_id"
+                        :options="store_list"
+                        :props="{value:'id',label:'name',children:'second_data'}"
+                        placeholder="请选择入库仓库">
+                      </el-cascader>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="tableCtn">
+                <div class="thead">
+                  <div class="trow">
+                    <div class="tcolumn"
+                      style="flex:1.5">纱线名称</div>
+                    <div class="tcolumn">纱线颜色</div>
+                    <div class="tcolumn">纱线属性</div>
+                    <div class="tcolumn"
+                      style="flex:2.2">批号/色号/缸号</div>
+                    <div class="tcolumn">
+                      <span>数量(kg)
+                        <el-tooltip class="item"
+                          effect="dark"
+                          content="入库数量为0的不会产生入库日志"
+                          placement="top">
+                          <i class="el-icon-question"></i>
+                        </el-tooltip>
+                      </span>
+                    </div>
+                    <div class="tcolumn">件数(件)</div>
+                  </div>
+                </div>
+                <div class="tbody">
+                  <div class="trow"
+                    v-for="(item,index) in cancel_order_info.store_data[0].child_data"
+                    :key="index">
+                    <div class="tcolumn"
+                      style="flex:1.5">{{item.name}}</div>
+                    <div class="tcolumn">{{item.color}}</div>
+                    <div class="tcolumn">{{item.attribute}}</div>
+                    <div class="tcolumn"
+                      style="flex:2.2;flex-direction: row;align-items: center;">
+                      <el-input class="el"
+                        v-model="item.batch_code"
+                        placeholder="批号"
+                        style="margin-right:4px"></el-input>
+                      <el-input class="el"
+                        v-model="item.color_code"
+                        placeholder="色号"
+                        style="margin-right:4px"></el-input>
+                      <el-input class="el"
+                        v-model="item.vat_code"
+                        placeholder="缸号"
+                        style="margin-right:4px"></el-input>
+                    </div>
+                    <div class="tcolumn">
+                      <el-input class="el"
+                        v-model="item.action_weight"
+                        placeholder="数量"></el-input>
+                    </div>
+                    <div class="tcolumn">
+                      <el-input class="el"
+                        v-model="item.items"
+                        placeholder="件数"></el-input>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="rowCtn">
+                <div class="colCtn flex3">
+                  <div class="label">
+                    <span class="text">操作时间</span>
+                    <span class="explanation">(必填)</span>
+                  </div>
+                  <div class="content">
+                    <div class="elCtn">
+                      <el-date-picker class="el"
+                        v-model="cancel_order_info.cancel_date"
+                        style="width:100%"
+                        type="date"
+                        value-format="yyyy-MM-dd"
+                        placeholder="选择日期">
+                      </el-date-picker>
+                    </div>
+                  </div>
+                </div>
+                <div class="colCtn"
+                  style="margin-right:0">
+                  <div class="label">
+                    <span class="text">备注信息</span>
+                    <span class="explanation">(选填)</span>
+                  </div>
+                  <div class="content">
+                    <div class="elCtn">
+                      <el-input v-model="cancel_order_info.store_data[0].desc"
+                        placeholder="请输入备注信息"></el-input>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </template>
+          <template v-if="cancel_step===2">
+            <div class="createCtn">
+              <div class="rowCtn">
+                <div class="colCtn"
+                  style="margin-right:0">
+                  <div class="label">
+                    <span class="text">取消原因</span>
+                    <span class="explanation">(必选)</span>
+                  </div>
+                  <div class="content">
+                    <div class="elCtn">
+                      <el-input placeholder="请输入取消原因"
+                        v-model="cancel_order_info.cancel_reason"></el-input>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="rowCtn">
+                <div class="colCtn">
+                  <div class="label">
+                    <span class="text">下单金额</span>
+                    <span class="explanation">(必选)</span>
+                  </div>
+                  <div class="content">
+                    <div class="elCtn">
+                      <el-input placeholder="下单总额"
+                        v-model="order_info.total_price"
+                        disabled>
+                        <template slot="append">元</template>
+                      </el-input>
+                    </div>
+                  </div>
+                </div>
+                <div class="colCtn"
+                  style="margin-right:0">
+                  <div class="label">
+                    <span class="text">客户承担金额</span>
+                    <span class="explanation">(必填)</span>
+                  </div>
+                  <div class="content">
+                    <div class="elCtn">
+                      <el-input placeholder="客户承担金额"
+                        v-model="cancel_order_info.client_fee">
+                        <template slot="append">元</template>
+                      </el-input>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="rowCtn">
+                <div class="colCtn">
+                  <div class="label">
+                    <span class="text">文件说明</span>
+                  </div>
+                  <div class="content">
+                    <div class="elCtn">
+                      <div class="info">
+                        <el-upload class="upload"
+                          action="https://upload.qiniup.com/"
+                          accept="image/jpeg,image/gif,image/png,image/bmp"
+                          :before-upload="beforeAvatarUpload"
+                          :multiple="false"
+                          :data="postData"
+                          :limit="1"
+                          :on-success="successFile"
+                          ref="uploada"
+                          list-type="picture">
+                          <div class="uploadBtn">
+                            <i class="el-icon-upload"></i>
+                            <span>上传文件</span>
+                          </div>
+                          <div slot="tip"
+                            class="el-upload__tip">只能上传一张jpg/png图片文件，且不超过10M</div>
+                        </el-upload>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="colCtn"
+                  style="margin-right:0">
+                  <div class="label">
+                    <span class="text">取消日期</span>
+                    <span class="explanation">(必填)</span>
+                  </div>
+                  <div class="content">
+                    <div class="elCtn">
+                      <el-date-picker class="el"
+                        v-model="cancel_order_info.cancel_date"
+                        style="width:100%"
+                        type="date"
+                        value-format="yyyy-MM-dd"
+                        placeholder="选择日期">
+                      </el-date-picker>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </template>
+          <template v-if="cancel_step===3">
+            <div class="msgCtn">
+              <p class="msg">注意：</p>
+              <p class="msg">1. 点击完成后，该订单状态将切换为已取消，且状态不能复原。</p>
+              <p class="msg">2. 相关库存将更新已结余入库的纱线数据。</p>
+              <p class="msg">3. 客户财务统计将扣除客户未承担的部分：{{parseInt(order_info.total_price - cancel_order_info.client_fee)}}元。</p>
+            </div>
+          </template>
+        </div>
+        <div class="oprCtn">
+          <div class="opr"
+            @click="cancel_flag=false">取消</div>
+          <div class="opr orange"
+            @click="cancel_step--"
+            v-if="cancel_step>1">上一步</div>
+          <div class="opr blue"
+            @click="cancel_step===3?cancelOrder():cancel_step++">{{cancel_step===3?'确认取消':'下一步'}}</div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
-import { Order } from '@/types/order'
+import { Order, CancelOrder } from '@/types/order'
+import { StoreCreate } from '@/types/store'
 import { order, deduct, stock, check } from '@/assets/js/api'
+
 export default Vue.extend({
   data(): {
     order_info: Order
+    cancel_order_info: CancelOrder
     [propName: string]: any
   } {
     return {
       loading: true,
       deduct_show: false,
+      cancel_date: '',
+      cancel_reason: '',
+      client_fee: '',
+      user_name: '',
+      postData: { key: '', token: '' },
       store_info: {
         show: false
       },
@@ -474,7 +842,8 @@ export default Vue.extend({
         pcode: '',
         type: 1
       },
-      final_out_log: [],
+      final_out_log: [], // 发货出库信息
+      order_cancel_log: [], // 订单取消结余入库
       deduct_list: [],
       order_info: {
         order_code: '',
@@ -500,10 +869,86 @@ export default Vue.extend({
         ranse_price: 0,
         pengsha_weight: 0,
         pengsha_price: 0
+      },
+      cancel_flag: false,
+      cancel_step: 1,
+      cancel_order_info: {
+        order_id: '',
+        cancel_reason: '',
+        cancel_date: this.$getDate(new Date()),
+        file: '',
+        client_fee: '',
+        document_type: 5,
+        store_data: [
+          {
+            order_code: '',
+            related_id: '',
+            client_id: '',
+            select_id: [],
+            store_id: '',
+            second_store_id: '',
+            action_type: '',
+            child_data: [
+              {
+                name: '',
+                action_weight: '',
+                color: '',
+                attribute: '',
+                batch_code: '',
+                color_code: '',
+                vat_code: '',
+                item: ''
+              }
+            ],
+            desc: '',
+            complete_time: ''
+          }
+        ],
+        deduct_data: {
+          deduct_content: '',
+          total_price: '',
+          deduct_type: 5,
+          pid: '',
+          date: '',
+          deduct_file: '',
+          client_id: '',
+          desc: ''
+        }
       }
     }
   },
+  computed: {
+    token() {
+      return this.$store.state.status.token
+    },
+    store_list() {
+      return this.$store.state.api.storeHouse.arr
+    }
+  },
   methods: {
+    beforeAvatarUpload(file: any) {
+      const fileName = file.name.lastIndexOf('.') // 取到文件名开始到最后一个点的长度
+      const fileNameLength = file.name.length // 取到文件名长度
+      const fileFormat = file.name.substring(fileName + 1, fileNameLength) // 截
+      this.postData.token = this.token
+      this.postData.key = Date.parse(new Date() + '') + '.' + fileFormat
+      const isJPG = file.type === 'image/jpeg'
+      const isPNG = file.type === 'image/png'
+      const isLt2M = file.size / 1024 / 1024 < 10
+      if (!isJPG && !isPNG) {
+        this.$message.error('图片只能是 JPG/PNG 格式!')
+        return false
+      }
+      if (!isLt2M) {
+        this.$message.error('图片大小不能超过 10MB!')
+        return false
+      }
+    },
+
+    successFile(response: any) {
+      this.cancel_order_info.file = 'https://file.zwyknit.com/' + response.key
+    },
+
     openCheck() {
       this.check_flag = true
     },
@@ -526,6 +971,10 @@ export default Vue.extend({
         }),
         stock.list({
           order_id: this.$route.params.id
+        }),
+        order.cancelDetail({
+          pid: this.$route.params.id,
+          document_type: 5
         })
       ]).then((res) => {
         this.order_info = res[0].data.data
@@ -576,12 +1025,23 @@ export default Vue.extend({
         })
         this.deduct_list = res[1].data.data
         this.deduct_list.forEach((item: any) => {
-          item.deduct_content = JSON.parse(item.deduct_content)
+          item.deduct_content = JSON.parse(item.deduct_content) || []
         })
+        //  跟订单相关的有三种数据，一种是普通发货action_type:9,一种是无单据生成的订单，action_type:12,还有订单结余入库action_type:15
         this.final_out_log = res[2].data.data.data.items.filter(
-          (item: any) => Number(item.client_id) === Number(this.order_info.client_id)
+          (item: any) =>
+            Number(item.client_id) === Number(this.order_info.client_id) &&
+            (item.action_type === 9 || item.action_type === 12)
         )
-        console.log(this.order_info)
+        this.order_cancel_log = res[2].data.data.data.items.filter(
+          (item: any) => Number(item.client_id) === Number(this.order_info.client_id) && item.action_type === 15
+        )
+        if (this.order_info.status === 4) {
+          this.cancel_reason = res[3].data.data.cancel_reason
+          this.cancel_date = res[3].data.data.cancel_date
+          this.client_fee = res[3].data.data.client_fee
+          this.user_name = res[3].data.data.user_name
+        }
         this.loading = false
       })
     },
@@ -598,7 +1058,6 @@ export default Vue.extend({
         pcode: this.order_info.code,
         type: 5
       }
-      console.log(this.deduct_info)
       this.deduct_show = true
     },
     confirm() {
@@ -626,6 +1085,84 @@ export default Vue.extend({
           })
         })
     },
+    // 打开取消订单窗口
+    openCancel() {
+      console.log(this.order_info)
+      this.getStoreInPro()
+      this.cancel_flag = true
+    },
+    // 确认取消
+    cancelOrder() {
+      // 结余入库数据过滤
+      let storeData: StoreCreate[] = []
+      let childData = []
+      if ((this.cancel_order_info.store_data![0].select_id as number[]).length !== 0) {
+        childData = this.cancel_order_info.store_data![0].child_data.filter(
+          (item: any) => Number(item.action_weight) > 0
+        )
+        if (childData.length > 0) {
+          storeData = [
+            {
+              order_code: this.order_info.code,
+              order_id: this.$route.params.id,
+              related_id: this.$route.params.id,
+              client_id: this.order_info.client_id,
+              store_id: (this.cancel_order_info.store_data as any)[0].select_id[0],
+              second_store_id: (this.cancel_order_info.store_data as any)[0].select_id[1],
+              action_type: 15,
+              child_data: childData,
+              desc: (this.cancel_order_info.store_data as any)[0].desc || '取消订单结余入库',
+              complete_time: this.cancel_order_info.cancel_date
+            }
+          ]
+        }
+      }
+      const fromData: CancelOrder = {
+        pid: this.$route.params.id,
+        document_type: 5,
+        order_id: this.$route.params.id,
+        cancel_reason: this.cancel_order_info.cancel_reason,
+        cancel_date: this.cancel_order_info.cancel_date,
+        file: this.cancel_order_info.file,
+        client_fee: this.cancel_order_info.client_fee,
+        store_data: storeData,
+        deduct_data: {
+          deduct_content: '',
+          total_price: (Number(this.order_info.total_price) - Number(this.cancel_order_info.client_fee)).toFixed(1),
+          deduct_type: 5,
+          pid: this.$route.params.id,
+          date: this.cancel_order_info.cancel_date,
+          deduct_file: this.cancel_order_info.file,
+          client_id: this.order_info.client_id,
+          desc: this.cancel_order_info.cancel_reason ? this.cancel_order_info.cancel_reason : '取消订单扣款'
+        }
+      }
+      order.cancel(fromData).then((res) => {
+        if (res.data.status) {
+          this.$message.success('订单已取消')
+          this.cancel_flag = false
+          this.init()
+        }
+      })
+    },
+    // 处理订单数据变成回库数据
+    getStoreInPro() {
+      this.cancel_order_info.store_data![0].child_data = []
+      this.order_info.product_info.forEach((item: any) => {
+        item.child_data.forEach((itemChild: any) => {
+          this.cancel_order_info.store_data![0].child_data.push({
+            name: item.product_name as string,
+            action_weight: 0,
+            color: itemChild.color,
+            attribute: itemChild.attribute,
+            batch_code: '',
+            color_code: '',
+            vat_code: '',
+            item: ''
+          })
+        })
+      })
+    },
     deleteOrder() {
       this.$confirm('是否删除该订单?', '提示', {
         confirmButtonText: '确定',
@@ -652,6 +1189,18 @@ export default Vue.extend({
     }
   },
   mounted() {
+    this.$checkCommonInfo([
+      {
+        checkWhich: 'api/storeHouse',
+        getInfoMethed: 'dispatch',
+        getInfoApi: 'getStoreAsync'
+      },
+      {
+        checkWhich: 'status/token',
+        getInfoMethed: 'dispatch',
+        getInfoApi: 'getTokenAsync'
+      }
+    ])
     this.init()
   }
 })

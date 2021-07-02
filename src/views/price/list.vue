@@ -208,7 +208,7 @@ export default Vue.extend({
       )
     },
     reset() {
-      this.$router.push('/price/list')
+      this.$router.push('/price/list?page=1&code=&name=&client=&status=&user=&date=&limit=')
     },
     getFilters() {
       const params = this.$route.query

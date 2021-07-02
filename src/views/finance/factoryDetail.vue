@@ -60,11 +60,11 @@
         </div>
         <div class="tbody">
           <div class="trow">
-            <div class="tcolumn">{{client_info.financial_data.order_weight}}kg</div>
+            <!-- <div class="tcolumn">{{client_info.financial_data.order_weight}}kg</div>
             <div class="tcolumn">{{client_info.financial_data.order_price}}元</div>
             <div class="tcolumn">{{client_info.financial_data.total_push_weight}}kg</div>
             <div class="tcolumn">{{client_info.financial_data.wait_push}}kg</div>
-            <div class="tcolumn">{{client_info.financial_data.total_push_price}}元</div>
+            <div class="tcolumn">{{client_info.financial_data.total_push_price}}元</div> -->
           </div>
         </div>
       </div>
@@ -81,11 +81,11 @@
         </div>
         <div class="tbody">
           <div class="trow">
-            <div class="tcolumn red">{{client_info.financial_data.deduct}}元</div>
+            <!-- <div class="tcolumn red">{{client_info.financial_data.deduct}}元</div>
             <div class="tcolumn">{{client_info.financial_data.invoice}}元</div>
             <div class="tcolumn">{{client_info.financial_data.wait_invoice}}元</div>
             <div class="tcolumn">{{client_info.financial_data.collection}}元</div>
-            <div class="tcolumn red">{{client_info.financial_data.invoice}}元</div>
+            <div class="tcolumn red">{{client_info.financial_data.invoice}}元</div> -->
           </div>
         </div>
       </div>
@@ -287,17 +287,17 @@
                   <div class="column"
                     style="min-width:80px;max-width:80px"
                     :style="{'height':50*item.child_data.length + 'px'}"
-                    :class="{'blue':item.action_type===1||item.action_type===3||item.action_type===5||item.action_type===8,'green':item.action_type===2||item.action_type===4||item.action_type===6||item.action_type===7||item.action_type===9}">{{item.action_type|stockTypeFilter}}</div>
+                    :class="{'blue':item.action_type===1||item.action_type===3||item.action_type===5||item.action_type===8||item.action_type===11||item.action_type===13||item.action_type===14||item.action_type===15,'green':item.action_type===2||item.action_type===4||item.action_type===6||item.action_type===7||item.action_type===9||item.action_type===10||item.action_type===12}">{{item.action_type|stockTypeFilter}}</div>
                   <div class="column"
                     style="min-width:200px;max-width:200px"
                     :style="{'height':50*item.child_data.length + 'px'}">
-                    <span v-if="item.action_type===1||item.action_type===3||item.action_type===5||item.action_type===8">
+                    <span v-if="item.action_type===1||item.action_type===3||item.action_type===5||item.action_type===8||item.action_type===13||item.action_type===14||item.action_type===15">
                       <span class="green">{{item.client_name ||'无来源'}}</span>
                       <i class="el-icon-s-unfold orange"
                         style="margin:0 5px;font-size:16px"></i>
                       <span class="blue">{{item.store_name}}/{{item.second_store_name}}</span>
                     </span>
-                    <span v-if="item.action_type===2||item.action_type===4||item.action_type===6||item.action_type===7||item.action_type===9">
+                    <span v-if="item.action_type===2||item.action_type===4||item.action_type===6||item.action_type===7||item.action_type===9 || item.action_type===12">
                       <span class="blue">{{item.store_name}}/{{item.second_store_name}}</span>
                       <i class="el-icon-s-unfold orange"
                         style="margin:0 5px;font-size:16px"></i>
@@ -321,8 +321,6 @@
                     :style="{'height':50*item.child_data.length + 'px'}">
                     <span class="blue opr"
                       @click="$openUrl(`/print/store/2/${item.id}?orderId=${$route.params.id}`)">打印</span>
-                    <span class="red opr"
-                      @click="deleteLog(item.id)">删除</span>
                   </div>
                 </div>
               </div>

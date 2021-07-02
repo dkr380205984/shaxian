@@ -126,7 +126,7 @@
             <div class="label">可用模块：</div>
             <div class="info">
               <div style="margin-top:4px">
-                <el-tree :data="moduleList"
+                <el-tree :data="selfModuleList"
                   show-checkbox
                   ref="moduleTree"
                   node-key='id'
@@ -151,6 +151,7 @@
 import Vue from 'vue'
 import { user } from '@/assets/js/api'
 import { User } from '@/types/common'
+import { moduleList } from '@/assets/js/settingCommon'
 export default Vue.extend({
   data(): {
     userInfo: User
@@ -158,6 +159,7 @@ export default Vue.extend({
     [propName: string]: any
   } {
     return {
+      selfModuleList: moduleList,
       loading: true,
       addFlag: false,
       userList: [],
@@ -170,52 +172,6 @@ export default Vue.extend({
         is_admin: 1,
         module_info: ''
       },
-      moduleList: [
-        {
-          id: '1-0',
-          label: '产品管理',
-          children: [
-            {
-              id: '1-1',
-              label: '修改产品'
-            },
-            {
-              id: '1-2',
-              label: '添加产品'
-            },
-            {
-              id: '1-3',
-              label: '删除产品'
-            },
-            {
-              id: '1-4',
-              label: '产品详情'
-            }
-          ]
-        },
-        {
-          id: '2-0',
-          label: '订单管理',
-          children: [
-            {
-              id: '2-1',
-              label: '修改订单'
-            },
-            {
-              id: '2-2',
-              label: '添加订单'
-            },
-            {
-              id: '2-3',
-              label: '删除订单'
-            },
-            {
-              id: '2-4',
-              label: '订单详情'
-            }
-          ]
-        }
-      ],
       page: 1,
       total: 1,
       name: '',
@@ -275,6 +231,10 @@ export default Vue.extend({
       }
       if (!this.userInfo.is_admin) {
         this.$message.warning('请选择账号管理权限类型')
+        return
+      }
+      if (this.userInfo.module_info.length === 0) {
+        this.$message.warning('至少选择一个模块进行管理')
         return
       }
       user

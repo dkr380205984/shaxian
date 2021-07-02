@@ -16,82 +16,16 @@
             background-color="#637AA7"
             text-color="#fff"
             active-text-color="#ffd04b">
-            <el-submenu index='0'>
-              <template slot="title">产品管理</template>
-              <el-menu-item index="/product/list?page=1&page_size=10&name=&color=&attribute=&yarn_type=">
-                <i class="iconfont iconTitle">&#xe617;</i>纱线列表
+            <el-submenu v-for="item in module_arr"
+              :key="item.id"
+              :index="item.id">
+              <template slot="title">{{item.label}}</template>
+              <el-menu-item v-for="itemChild in item.children"
+                :key="itemChild.id"
+                :index="itemChild.url">
+                <i class="iconfont iconTitle"
+                  v-html="itemChild.icon"></i>{{itemChild.label}}
               </el-menu-item>
-              <el-menu-item index="/material/list?page=1&type=&name=&page_size=10">
-                <i class="iconfont iconTitle">&#xe620;</i>毛条列表
-              </el-menu-item>
-            </el-submenu>
-            <el-submenu index='1'>
-              <template slot="title">报价管理</template>
-              <el-menu-item index="/price/list?page=1&code=&name=&client=&status=&user=&date=&limit=10">
-                <i class="iconfont iconTitle">&#xe617;</i>报价列表
-              </el-menu-item>
-            </el-submenu>
-            <el-submenu index='2'>
-              <template slot="title">订单管理</template>
-              <el-menu-item index="/order/list?page=1&order_code=&product_name=&client_id=&user_id=&page_size=10&date=">
-                <i class="iconfont iconTitle">&#xe61b;</i>订单列表
-              </el-menu-item>
-              <el-menu-item index="/directOrder/yarnList?page=1&code=&name=&client_id=&user_id=&page_size=10&date=">
-                <i class="iconfont iconTitle">&#xe616;</i>纱线采购列表
-              </el-menu-item>
-              <el-menu-item index="/directProcess/yarnList?page=1&code=&name=&client_id=&user_id=&page_size=10&date=">
-                <i class="iconfont iconTitle">&#xe61a;</i>纱线加工列表
-              </el-menu-item>
-              <el-menu-item index="/directOrder/materialList?page=1&code=&name=&client_id=&user_id=&page_size=10&date=">
-                <i class="iconfont iconTitle">&#xe61e;</i>毛条采购列表
-              </el-menu-item>
-              <el-menu-item index="/material/craftList?page=1&code=&name=&client_id=&user_id=&status=&page_size=10&date=">
-                <i class="iconfont iconTitle">&#xe61f;</i>工艺单列表
-              </el-menu-item>
-            </el-submenu>
-            <el-submenu index='3'>
-              <template slot="title">库存管理</template>
-              <el-menu-item index="/store/list?page=&type=&name=&page_size=">
-                <i class="iconfont iconTitle">&#xe61c;</i>纱线库存
-              </el-menu-item>
-              <el-menu-item index="/store/materialList?page=&type=&name=&page_size=">
-                <i class="iconfont iconTitle">&#xe618;</i>毛条库存
-              </el-menu-item>
-            </el-submenu>
-            <el-submenu index="4">
-              <template slot="title">财务管理</template>
-              <el-menu-item index="/finance/clientList?page=&page_size=&date=&sort_type=&sort_cloum=">
-                <i class="iconfont iconTitle">&#xe611;</i>客户财务
-              </el-menu-item>
-              <el-menu-item index="/finance/supplierList?page=&page_size=&date=&sort_type=&sort_cloum=">
-                <i class="iconfont iconTitle">&#xe611;</i>供货商财务
-              </el-menu-item>
-              <el-menu-item index="/finance/factoryList?page=&page_size=&date=&sort_type=&sort_cloum=">
-                <i class="iconfont iconTitle">&#xe611;</i>加工厂财务
-              </el-menu-item>
-              <el-menu-item index="/finance/billList?page=&page_size=10">
-                <i class="iconfont iconTitle">&#xe611;</i>发票列表
-              </el-menu-item>
-              <el-menu-item index="/finance/collectionList?page=&page_size=10">
-                <i class="iconfont iconTitle">&#xe611;</i>收款列表
-              </el-menu-item>
-              <el-menu-item index="/finance/payList?page=&page_size=10">
-                <i class="iconfont iconTitle">&#xe611;</i>付款列表
-              </el-menu-item>
-              <el-menu-item index="/finance/deductList?page=&page_size=10">
-                <i class="iconfont iconTitle">&#xe611;</i>扣款列表
-              </el-menu-item>
-            </el-submenu>
-            <el-submenu index='5'>
-              <template slot="title">系统设置</template>
-              <el-menu-item index="/settings/user"><i class="iconfont iconTitle">&#xe615;</i>用户管理</el-menu-item>
-              <el-menu-item index="/settings/yarnType"><i class="iconfont iconTitle">&#xe615;</i>纱线类型管理</el-menu-item>
-              <el-menu-item index="/settings/factory"><i class="iconfont iconTitle">&#xe615;</i>加工厂管理</el-menu-item>
-              <el-menu-item index="/settings/supplier"><i class="iconfont iconTitle">&#xe615;</i>供货商管理</el-menu-item>
-              <el-menu-item index="/settings/client"><i class="iconfont iconTitle">&#xe615;</i>客户管理</el-menu-item>
-              <el-menu-item index="/settings/color"><i class="iconfont iconTitle">&#xe615;</i>颜色管理</el-menu-item>
-              <el-menu-item index="/settings/print"><i class="iconfont iconTitle">&#xe615;</i>打印设置</el-menu-item>
-              <el-menu-item index="/settings/material"><i class="iconfont iconTitle">&#xe615;</i>毛条类型管理</el-menu-item>
             </el-submenu>
           </el-menu>
         </div>
@@ -171,6 +105,7 @@
 </template>
 <script lang="ts">
 import Vue from 'vue'
+import { moduleList } from '@/assets/js/settingCommon'
 import { changeUserPasd } from '@/assets/js/api'
 export default Vue.extend({
   data() {
@@ -187,6 +122,20 @@ export default Vue.extend({
   computed: {
     breadUrl() {
       return this.$store.state.status.breadUrl
+    },
+    module_arr() {
+      const userModule = JSON.parse(window.sessionStorage.getItem('module_info') as string)
+      const selfModule = this.$clone(moduleList)
+      return selfModule
+        .map((item) => {
+          item.children = item.children.filter((itemChild) => {
+            return userModule.indexOf(itemChild.id) !== -1
+          })
+          return item
+        })
+        .filter((item) => {
+          return item.children.length > 0
+        })
     }
   },
   methods: {

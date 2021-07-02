@@ -244,7 +244,7 @@
                     v-if="storeInfo.type!=='倒筒'">纱线属性</div>
                   <div class="tcolumn"
                     style="flex:1.5"
-                    v-if="selfType&&selfType[0]==='无单据'&&(selfType[1]===13)">{{storeInfo.type==='膨纱'?'加工后颜色属性':'加工前/加工后'}}</div>
+                    v-if="selfType&&selfType[0]==='无单据'&&(selfType[1]===13)&&storeInfo.type!=='膨纱'">加工前/加工后</div>
                   <div class="tcolumn"
                     v-if="selfType&&selfType[0]==='无单据'&&(selfType[1]===11)">数量属性</div>
                   <div class="tcolumn"
@@ -317,7 +317,7 @@
                   </div>
                   <div class="tcolumn"
                     style="flex:1.5;flex-direction: row;align-items: center;"
-                    v-if="selfType&&selfType[0]==='无单据'&&(selfType[1]===13)">
+                    v-if="selfType&&selfType[0]==='无单据'&&(selfType[1]===13)&&storeInfo.type!=='膨纱'">
                     <div class="el"
                       style="width:100%"
                       v-if="!storeInfo.type">
@@ -344,26 +344,6 @@
                       v-if="storeInfo.type==='倒筒'">
                       <el-select v-model="item.after_attribute"
                         placeholder="加工后">
-                        <el-option label="胚绞"
-                          value="胚绞"></el-option>
-                        <el-option label="胚筒"
-                          value="胚筒"></el-option>
-                        <el-option label="色绞"
-                          value="色绞"></el-option>
-                        <el-option label="色筒"
-                          value="色筒"></el-option>
-                      </el-select>
-                    </div>
-                    <div class="el"
-                      v-if="storeInfo.type==='膨纱'"
-                      style="margin-right:4px">
-                      <el-input placeholder="颜色"
-                        v-model="item.color"></el-input>
-                    </div>
-                    <div class="el"
-                      v-if="storeInfo.type==='膨纱'">
-                      <el-select placeholder="属性"
-                        v-model="item.attribute">
                         <el-option label="胚绞"
                           value="胚绞"></el-option>
                         <el-option label="胚筒"
@@ -461,7 +441,7 @@
                   color_code: '',
                   vat_code: '',
                   item: '',
-                  number_attribute:'',
+                  number_attribute:'98纱',
                   price:'',
                   before_attribute: '',
                   after_attribute: '',
@@ -585,7 +565,7 @@ export default class InAndOut extends Vue {
         vat_code: '',
         item: '',
         price: '',
-        number_attribute: '',
+        number_attribute: '98纱',
         before_attribute: '',
         after_attribute: '',
         before_color: '白胚',
@@ -842,7 +822,7 @@ export default class InAndOut extends Vue {
             vat_code: '',
             item: '',
             price: '',
-            number_attribute: '',
+            number_attribute: '98纱',
             before_attribute: '',
             after_attribute: '',
             before_color: '白胚',
@@ -1173,6 +1153,109 @@ export default class InAndOut extends Vue {
     ) {
       return
     }
+    if (this.selfType[1] === 11 || this.selfType[1] === 12) {
+      if (
+        this.storeInfo.child_data.some((item) => {
+          return this.$formCheck(item, [
+            {
+              key: 'action_weight',
+              errMsg: '请输入数量'
+            },
+            {
+              key: 'price',
+              errMsg: '请输入单价，可填0'
+            },
+            {
+              key: 'color',
+              errMsg: '请输入纱线颜色'
+            },
+            {
+              key: 'attribute',
+              errMsg: '请选择纱线属性'
+            }
+          ])
+        })
+      ) {
+        return
+      }
+    }
+    if (this.selfType[1] === 13) {
+      if (!this.storeInfo.type) {
+        this.$message.error('请选择加工类型')
+        return
+      }
+      if (
+        this.storeInfo.child_data.some((item) => {
+          return this.$formCheck(item, [
+            {
+              key: 'action_weight',
+              errMsg: '请输入数量'
+            },
+            {
+              key: 'price',
+              errMsg: '请输入单价，可填0'
+            }
+          ])
+        })
+      ) {
+        return
+      }
+      if (
+        this.storeInfo.type === '染色' &&
+        this.storeInfo.child_data.some((item) => {
+          return this.$formCheck(item, [
+            {
+              key: 'attribute',
+              errMsg: '请选择属性'
+            },
+            {
+              key: 'after_color',
+              errMsg: '请输入加工后颜色'
+            }
+          ])
+        })
+      ) {
+        return
+      }
+      if (
+        this.storeInfo.type === '倒筒' &&
+        this.storeInfo.child_data.some((item) => {
+          return this.$formCheck(item, [
+            {
+              key: 'color',
+              errMsg: '请输入颜色'
+            },
+            {
+              key: 'before_attribute',
+              errMsg: '请选择加工前属性'
+            },
+            {
+              key: 'after_attribute',
+              errMsg: '请选择加工后属性'
+            }
+          ])
+        })
+      ) {
+        return
+      }
+      if (
+        this.storeInfo.type === '膨纱' &&
+        this.storeInfo.child_data.some((item) => {
+          return this.$formCheck(item, [
+            {
+              key: 'color',
+              errMsg: '请输入颜色'
+            },
+            {
+              key: 'attibute',
+              errMsg: '请选择属性'
+            }
+          ])
+        })
+      ) {
+        return
+      }
+    }
     // 销售出库前端类型是11，实际action_type是12，因为移库包含了10和11
     // 11销售出库 -- 需要创建订单 12订购入库 -- 需要创建采购单 13加工回库 -- 需要创建加工单
     if (this.selfType[1] === 11) {
@@ -1348,7 +1431,7 @@ export default class InAndOut extends Vue {
               return {
                 name: Array.isArray(item.name) ? item.name[1] : item.name,
                 action_weight: item.action_weight,
-                color: item.color,
+                color: this.storeInfo.type === '染色' ? item.after_color : item.color,
                 attribute: item.attribute,
                 batch_code: item.batch_code || 'NOT_SET',
                 color_code: item.color_code || 'NOT_SET',

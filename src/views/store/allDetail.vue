@@ -23,17 +23,38 @@
                 placeholder="请选择仓库">
               </el-cascader>
             </div>
-            <div class="elCtn">
+            <div class="elCtn"
+              style="width:120px">
               <el-input v-model="storeListFilter.name"
                 @change="getStoreInfoList"
-                placeholder="请输入纱线名称"></el-input>
+                placeholder="纱线名称"></el-input>
             </div>
-            <div class="elCtn">
+            <div class="elCtn"
+              style="width:120px">
               <el-input v-model="storeListFilter.color"
                 @change="getStoreInfoList"
-                placeholder="请输入纱线颜色"></el-input>
+                placeholder="纱线颜色"></el-input>
             </div>
-            <div class="elCtn">
+            <div class="elCtn"
+              style="width:120px">
+              <el-input v-model="storeListFilter.batch_code"
+                @change="getStoreInfoList"
+                placeholder="批号"></el-input>
+            </div>
+            <div class="elCtn"
+              style="width:120px">
+              <el-input v-model="storeListFilter.color_code"
+                @change="getStoreInfoList"
+                placeholder="色号"></el-input>
+            </div>
+            <div class="elCtn"
+              style="width:120px">
+              <el-input v-model="storeListFilter.vat_code"
+                @change="getStoreInfoList"
+                placeholder="缸号"></el-input>
+            </div>
+            <div class="elCtn"
+              style="width:20px">
               <el-checkbox v-model="storeListFilter.isFilterZero"
                 @change="getStoreInfoList">过滤库存为0的纱线</el-checkbox>
             </div>
@@ -93,7 +114,7 @@
                   <div class="tcolumn flexRow"
                     style="min-width:110px">
                     <span class="opr green"
-                      @click="goLogEl(item)">日志</span>
+                      @click="goLogEl(item,itemStore)">日志</span>
                   </div>
                 </div>
               </div>
@@ -110,8 +131,8 @@
                   <div class="tcolumn"></div>
                   <div class="tcolumn"></div>
                   <div class="tcolumn"></div>
-                  <div class="tcolumn">{{$formatNum(storeListCom.reality_weight)}}</div>
-                  <div class="tcolumn blue">{{$formatNum(storeListCom.useable_weight)}}</div>
+                  <div class="tcolumn">{{$formatNum($toFixed(storeListCom.reality_weight))}}</div>
+                  <div class="tcolumn blue">{{$formatNum($toFixed(storeListCom.useable_weight))}}</div>
                   <div class="tcolumn"
                     style="min-width:110px"></div>
                 </div>
@@ -122,7 +143,8 @@
       </div>
     </div>
     <div class="module"
-      id="stockLogEl">
+      id="stockLogEl"
+      v-loading="loading.log">
       <div class="titleCtn">
         <span class="title">出入库日志</span>
       </div>
@@ -165,6 +187,24 @@
                 <el-option label="色筒"
                   value="色筒"></el-option>
               </el-select>
+            </div>
+            <div class="elCtn"
+              style="width:120px">
+              <el-input v-model="storeLogListFilter.batch_code"
+                @change="getStoreLogList(1)"
+                placeholder="批号"></el-input>
+            </div>
+            <div class="elCtn"
+              style="width:120px">
+              <el-input v-model="storeLogListFilter.color_code"
+                @change="getStoreLogList(1)"
+                placeholder="色号"></el-input>
+            </div>
+            <div class="elCtn"
+              style="width:120px">
+              <el-input v-model="storeLogListFilter.vat_code"
+                @change="getStoreLogList(1)"
+                placeholder="缸号"></el-input>
             </div>
             <div class="elCtn">
               <el-select v-model="storeLogListFilter.type"
@@ -301,11 +341,11 @@
                     <div class="column"
                       style="min-width:80px"
                       :style="{'height':50*item.child_data.length + 'px'}"
-                      :class="{'blue':item.action_type===1||item.action_type===3||item.action_type===5||item.action_type===8||item.action_type===11||item.action_type===13||item.action_type===14,'green':item.action_type===2||item.action_type===4||item.action_type===6||item.action_type===7||item.action_type===9||item.action_type===10||item.action_type===12}">{{item.action_type|stockTypeFilter}}</div>
+                      :class="{'blue':item.action_type===1||item.action_type===3||item.action_type===5||item.action_type===8||item.action_type===11||item.action_type===13||item.action_type===14||item.action_type===15,'green':item.action_type===2||item.action_type===4||item.action_type===6||item.action_type===7||item.action_type===9||item.action_type===10||item.action_type===12}">{{item.action_type|stockTypeFilter}}</div>
                     <div class="column"
                       style="min-width:200px;max-width:200px"
                       :style="{'height':50*item.child_data.length + 'px'}">
-                      <span v-if="item.action_type===1||item.action_type===3||item.action_type===5||item.action_type===8||item.action_type===13||item.action_type===14">
+                      <span v-if="item.action_type===1||item.action_type===3||item.action_type===5||item.action_type===8||item.action_type===13||item.action_type===14||item.action_type===15">
                         <span class="green">{{item.client_name ||'无来源'}}</span>
                         <i class="el-icon-s-unfold orange"
                           style="margin:0 5px;font-size:16px"></i>
@@ -434,7 +474,10 @@ export default Vue.extend({
         color: '',
         isFilterZero: true,
         page: 1,
-        total: 1
+        total: 1,
+        color_code: '',
+        batch_code: '',
+        vat_code: ''
       },
       // 日志数据
       storeLogInfo: {
@@ -549,7 +592,10 @@ export default Vue.extend({
           second_store_id: this.storeListFilter.LV2_name ? this.storeListFilter.LV2_name[1] : '',
           name: this.storeListFilter.name || null,
           color: this.storeListFilter.color || null,
-          weight: this.storeListFilter.isFilterZero ? 0 : null
+          weight: this.storeListFilter.isFilterZero ? 0 : null,
+          vat_code: this.storeListFilter.vat_code || null,
+          color_code: this.storeListFilter.color_code || null,
+          batch_code: this.storeListFilter.batch_code || null
         })
         .then((res) => {
           this.storeList = res.data.data
@@ -616,6 +662,9 @@ export default Vue.extend({
           color: this.storeLogListFilter.color || null,
           attribute: this.storeLogListFilter.attr || null,
           action_type: this.storeLogListFilter.type || [],
+          vat_code: this.storeLogListFilter.vat_code || null,
+          color_code: this.storeLogListFilter.color_code || null,
+          batch_code: this.storeLogListFilter.batch_code || null,
           start_time:
             this.storeLogListFilter.time && this.storeLogListFilter.time.length > 0
               ? this.storeLogListFilter.time[0]
@@ -642,11 +691,17 @@ export default Vue.extend({
         })
     },
     // 跳转日志
-    goLogEl(item: { second_store_id: number; name: string; color: string; attr: string; [key: string]: any }) {
+    goLogEl(
+      item: { second_store_id: number; name: string; color: string; attr: string; [key: string]: any },
+      itemStore: { color_code: string; batch_code: string; vat_code: string }
+    ) {
       this.storeLogListFilter.LV2_name = [item.store_id, item.second_store_id]
       this.storeLogListFilter.name = item.name
       this.storeLogListFilter.color = item.color
       this.storeLogListFilter.attr = item.attribute
+      this.storeLogListFilter.vat_code = itemStore.vat_code
+      this.storeLogListFilter.batch_code = itemStore.batch_code
+      this.storeLogListFilter.color_code = itemStore.color_code
       this.$goElView('stockLogEl')
       this.getStoreLogList()
     },

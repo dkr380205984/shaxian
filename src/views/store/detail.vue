@@ -70,17 +70,38 @@
                 </el-option>
               </el-select>
             </div>
-            <div class="elCtn">
+            <div class="elCtn"
+              style="width:120px">
               <el-input v-model="storeListFilter.name"
                 @change="getStoreInfoList"
-                placeholder="请输入纱线名称"></el-input>
+                placeholder="纱线名称"></el-input>
             </div>
-            <div class="elCtn">
+            <div class="elCtn"
+              style="width:120px">
               <el-input v-model="storeListFilter.color"
                 @change="getStoreInfoList"
-                placeholder="请输入纱线颜色"></el-input>
+                placeholder="纱线颜色"></el-input>
             </div>
-            <div class="elCtn">
+            <div class="elCtn"
+              style="width:120px">
+              <el-input v-model="storeListFilter.batch_code"
+                @change="getStoreInfoList"
+                placeholder="批号"></el-input>
+            </div>
+            <div class="elCtn"
+              style="width:120px">
+              <el-input v-model="storeListFilter.color_code"
+                @change="getStoreInfoList"
+                placeholder="色号"></el-input>
+            </div>
+            <div class="elCtn"
+              style="width:120px">
+              <el-input v-model="storeListFilter.vat_code"
+                @change="getStoreInfoList"
+                placeholder="缸号"></el-input>
+            </div>
+            <div class="elCtn"
+              style="width:20px">
               <el-checkbox v-model="storeListFilter.isFilterZero"
                 @change="getStoreInfoList">过滤库存为0的纱线</el-checkbox>
             </div>
@@ -154,8 +175,8 @@
                   <div class="tcolumn"></div>
                   <div class="tcolumn"></div>
                   <div class="tcolumn"></div>
-                  <div class="tcolumn">{{$formatNum(storeListCom.reality_weight)}}</div>
-                  <div class="tcolumn blue">{{$formatNum(storeListCom.useable_weight)}}</div>
+                  <div class="tcolumn">{{$formatNum($toFixed(storeListCom.reality_weight))}}</div>
+                  <div class="tcolumn blue">{{$formatNum($toFixed(storeListCom.useable_weight))}}</div>
                   <div class="tcolumn"
                     style="min-width:110px"></div>
                 </div>
@@ -369,11 +390,11 @@
                     <div class="column"
                       style="min-width:80px"
                       :style="{'height':50*item.child_data.length + 'px'}"
-                      :class="{'blue':item.action_type===1||item.action_type===3||item.action_type===5||item.action_type===8||item.action_type===11||item.action_type===13||item.action_type===14,'green':item.action_type===2||item.action_type===4||item.action_type===6||item.action_type===7||item.action_type===9||item.action_type===10||item.action_type===12}">{{item.action_type|stockTypeFilter}}</div>
+                      :class="{'blue':item.action_type===1||item.action_type===3||item.action_type===5||item.action_type===8||item.action_type===11||item.action_type===13||item.action_type===14||item.action_type===15,'green':item.action_type===2||item.action_type===4||item.action_type===6||item.action_type===7||item.action_type===9||item.action_type===10||item.action_type===12}">{{item.action_type|stockTypeFilter}}</div>
                     <div class="column"
                       style="min-width:200px;max-width:200px"
                       :style="{'height':50*item.child_data.length + 'px'}">
-                      <span v-if="item.action_type===1||item.action_type===3||item.action_type===5||item.action_type===8||item.action_type===13||item.action_type===14">
+                      <span v-if="item.action_type===1||item.action_type===3||item.action_type===5||item.action_type===8||item.action_type===13||item.action_type===14||item.action_type===15">
                         <span class="green">{{item.client_name ||'无来源'}}</span>
                         <i class="el-icon-s-unfold orange"
                           style="margin:0 5px;font-size:16px"></i>
@@ -413,7 +434,7 @@
                         :class="{'green':item.related_id,'orange':!item.related_id}"
                         @click="bindCode(item)">{{item.related_id?'已绑':'绑定'}}</span>
                       <span class="red opr"
-                        @click="deleteLog(item.id)">删除</span>
+                        @click="deleteLog(item.id,item.action_type,item.related_id)">删除</span>
                     </div>
                   </div>
                 </div>
@@ -498,7 +519,10 @@ export default Vue.extend({
         color: '',
         isFilterZero: true,
         page: 1,
-        total: 1
+        total: 1,
+        color_code: '',
+        batch_code: '',
+        vat_code: ''
       },
       // 日志数据
       storeLogInfo: {
@@ -619,7 +643,10 @@ export default Vue.extend({
           second_store_id: this.storeListFilter.LV2_name || null,
           name: this.storeListFilter.name || null,
           color: this.storeListFilter.color || null,
-          weight: this.storeListFilter.isFilterZero ? 0 : null
+          weight: this.storeListFilter.isFilterZero ? 0 : null,
+          vat_code: this.storeListFilter.vat_code || null,
+          color_code: this.storeListFilter.color_code || null,
+          batch_code: this.storeListFilter.batch_code || null
         })
         .then((res) => {
           this.storeList = res.data.data
@@ -652,7 +679,10 @@ export default Vue.extend({
           color: '',
           isFilterZero: true,
           page: 1,
-          total: 1
+          total: 1,
+          color_code: '',
+          bat_code: '',
+          vat_code: ''
         }
         this.getStoreInfoList()
       } else if (type === 2) {
@@ -764,26 +794,77 @@ export default Vue.extend({
         init_data: selectData
       }
     },
-    deleteLog(id: number) {
-      this.$confirm('是否删除该日志，这可能会导致相关库存变动?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      })
-        .then(() => {
-          stock.delete({ id }).then((res) => {
-            if (res.data.status) {
-              this.$message.success('删除成功')
-              this.init()
-            }
+    deleteLog(id: number, type?: number, relateId?: number) {
+      if (type && type > 11 && type !== 15) {
+        if (type === 12) {
+          this.$confirm('该日志属于销售出库，删除发货信息会影响订单状态，如需删除可通过取消订单实现', '提示', {
+            confirmButtonText: '去取消订单',
+            cancelButtonText: '取消操作',
+            type: 'warning'
           })
-        })
-        .catch(() => {
-          this.$message({
-            type: 'info',
-            message: '已取消删除'
+            .then(() => {
+              this.$router.push('/order/detail/' + relateId)
+            })
+            .catch(() => {
+              this.$message({
+                type: 'info',
+                message: '已取消操作'
+              })
+            })
+        } else if (type === 13) {
+          this.$confirm('该日志属于订购入库，删除发货信息会影响采购单状态，如需删除可通过取消采购单实现', '提示', {
+            confirmButtonText: '去取消采购单',
+            cancelButtonText: '取消操作',
+            type: 'warning'
           })
+            .then(() => {
+              this.$router.push('/directOrder/yarnDetail/' + relateId)
+            })
+            .catch(() => {
+              this.$message({
+                type: 'info',
+                message: '已取消操作'
+              })
+            })
+        } else if (type === 14) {
+          this.$confirm('该日志属于加工回库，删除发货信息会影响加工单状态，如需删除可通过取消加工单实现', '提示', {
+            confirmButtonText: '去取消加工单',
+            cancelButtonText: '取消操作',
+            type: 'warning'
+          })
+            .then(() => {
+              this.$router.push('/directProcess/yarnDetail/' + relateId)
+            })
+            .catch(() => {
+              this.$message({
+                type: 'info',
+                message: '已取消操作'
+              })
+            })
+        } else {
+          this.$message.error('暂不支持删除该日志类型')
+        }
+      } else {
+        this.$confirm('是否删除该日志，这可能会导致相关库存变动?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
         })
+          .then(() => {
+            stock.delete({ id }).then((res) => {
+              if (res.data.status) {
+                this.$message.success('删除成功')
+                this.init()
+              }
+            })
+          })
+          .catch(() => {
+            this.$message({
+              type: 'info',
+              message: '已取消删除'
+            })
+          })
+      }
     },
     goFromStore(type: number, stroeInfo: StoreCreate) {
       console.log(stroeInfo)

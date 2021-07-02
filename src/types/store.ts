@@ -23,6 +23,9 @@ export interface StoreDetailYarnListParams {
   name: string | null,
   color: string | null,
   weight: 0 | null
+  batch_code?: string
+  color_code?: string
+  vat_code?: string
 }
 
 // 订单调取库存

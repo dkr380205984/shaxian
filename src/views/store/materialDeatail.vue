@@ -130,8 +130,8 @@
               <div class="tcolumn noPad flex5">
                 <div class="trow">
                   <div class="tcolumn"></div>
-                  <div class="tcolumn">{{$formatNum(storeListCom.reality_weight)}}</div>
-                  <div class="tcolumn blue">{{$formatNum(storeListCom.useable_weight)}}</div>
+                  <div class="tcolumn">{{$formatNum($toFixed(storeListCom.reality_weight))}}</div>
+                  <div class="tcolumn blue">{{$formatNum($toFixed(storeListCom.useable_weight))}}</div>
                   <div class="tcolumn"></div>
                 </div>
               </div>

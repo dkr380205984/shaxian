@@ -229,7 +229,7 @@
                           <span class="opr blue"
                             @click="$addItem(item.child_data,{color: '',
                               attribute: '',
-                              price: '',
+                              price: '0',
                               desc: ''})">新增子项</span>
                         </div>
                       </div>
@@ -245,7 +245,7 @@
             <div class="btn btnMain"
               @click="$addItem(submit_form, { yarn_type: input_form.type, name: '', child_data: [{color: '',
                 attribute: '',
-                price: '',
+                price: '0',
                 desc: ''}] })">添加纱线</div>
           </div>
         </div>
@@ -353,7 +353,7 @@ export default Vue.extend({
           proDetail.push({
             color: itemColor.name || '白胚',
             attribute: itemAtr.name,
-            price: '',
+            price: '0',
             desc: ''
           })
         })

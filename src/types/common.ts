@@ -76,7 +76,7 @@ export interface MaterialType {
 // 扣款信息
 export interface DeductInfo {
   code?: string
-  deduct_type: 1 | 2 | 3 | 4 | 5
+  deduct_type: 1 | 2 | 3 | 4 | 5 // 1纱线定够 2沙县加工 3毛条定够 4毛条加工 5订单
   pid: string | number
   client_id?: string | number | undefined
   total_price: string | number

@@ -141,16 +141,17 @@
               :key="item.id">
               <div class="tcolumn">{{item.code}}</div>
               <div class="tcolumn"
-                :class="{'blue':item.action_type===1||item.action_type===3||item.action_type===5||item.action_type===8||item.action_type===11,'green':item.action_type===2||item.action_type===4||item.action_type===6||item.action_type===7||item.action_type===9||item.action_type===10}">{{item.action_type|stockTypeFilter}}</div>
+                :class="{'blue':item.action_type===1||item.action_type===3||item.action_type===5||item.action_type===8||item.action_type===11||item.action_type===13||item.action_type===14||item.action_type===15,'green':item.action_type===2||item.action_type===4||item.action_type===6||item.action_type===7||item.action_type===9||item.action_type===10||item.action_type===12}">{{item.action_type|stockTypeFilter}}</div>
               <div class="tcolumn"
-                style="flex:2">
-                <span v-if="item.action_type===1||item.action_type===3||item.action_type===5||item.action_type===8">
+                style="flex:2"
+                :style="{'height':50*item.child_data.length + 'px'}">
+                <span v-if="item.action_type===1||item.action_type===3||item.action_type===5||item.action_type===8||item.action_type===13||item.action_type===14||item.action_type===15">
                   <span class="green">{{item.client_name ||'无来源'}}</span>
                   <i class="el-icon-s-unfold orange"
                     style="margin:0 5px;font-size:16px"></i>
                   <span class="blue">{{item.store_name}}/{{item.second_store_name}}</span>
                 </span>
-                <span v-if="item.action_type===2||item.action_type===4||item.action_type===6||item.action_type===7||item.action_type===9">
+                <span v-if="item.action_type===2||item.action_type===4||item.action_type===6||item.action_type===7||item.action_type===9 || item.action_type===12">
                   <span class="blue">{{item.store_name}}/{{item.second_store_name}}</span>
                   <i class="el-icon-s-unfold orange"
                     style="margin:0 5px;font-size:16px"></i>
@@ -187,6 +188,16 @@
               <div class="tcolumn"></div>
             </div>
           </div>
+        </div>
+      </div>
+    </div>
+    <div class="bottomFixBar">
+      <div class="main">
+        <div class="btnCtn">
+          <div class="btn btnGray"
+            @click="$router.go(-1)">返回</div>
+          <div class="btn btnOrange"
+            @click="$router.push('/product/update/'+$route.params.id)">修改</div>
         </div>
       </div>
     </div>

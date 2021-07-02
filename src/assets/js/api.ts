@@ -16,6 +16,10 @@ const index = {
   notifyList: (params?: ListParam) => http.get(`${baseUrl}/notify/all`, params)
 }
 
+const cancelOpr = {
+  cancel: (params: CancelOrder) => http.post(`${baseUrl}/document/cancel`, params, 'application/json'),
+  detail: (params: DetailParam) => http.get(`${baseUrl}/document/cancel/log`, params)
+}
 // 修改密码
 const changeUserPasd = {
   updated: (params: { sms_code: string, new_pass: string }) => http.post(`${baseUrl}/user/password/change`, params, 'application/json'),
@@ -79,13 +83,15 @@ const product = {
 }
 
 // 订单
-import { Order } from '@/types/order'
+import { Order, CancelOrder } from '@/types/order'
 const order = {
   create: (params: Order) => http.post(`${baseUrl}/order/save`, params, 'application/json'),
   list: (params: ListParam) => http.get(`${baseUrl}/order/lists`, params),
   detail: (params: DetailParam) => http.get(`${baseUrl}/order/detail`, params),
   delete: (params: DeleteParam) => http.post(`${baseUrl}/order/delete`, params, 'application/json'),
-  deleteChild: (params: DeleteParam) => http.post(`${baseUrl}/order/child/delete`, params, 'application/json')
+  deleteChild: (params: DeleteParam) => http.post(`${baseUrl}/order/child/delete`, params, 'application/json'),
+  cancel: (params: CancelOrder) => http.post(`${baseUrl}/document/cancel`, params, 'application/json'),
+  cancelDetail: (params: DetailParam) => http.get(`${baseUrl}/document/cancel/log`, params)
 }
 import { StoreCreateParams, StoreDetailParams, StoreListParams, StoreDetailYarnListParams, OrderStoreInfo } from '@/types/store'
 // 仓库管理 包含调取
@@ -127,7 +133,9 @@ const yarnOrder = {
   list: (params: ListParam) => http.get(`${baseUrl}/order/purchase/lists`, params),
   delete: (params: DeleteParam) => http.post(`${baseUrl}/order/purchase/delete`, params, 'application/json'),
   update: (params: OrderYarn) => http.post(`${baseUrl}/order/purchase/edit`, params, 'application/json'),
-  detail: (params: DetailParam) => http.get(`${baseUrl}/order/purchase/detail`, params)
+  detail: (params: DetailParam) => http.get(`${baseUrl}/order/purchase/detail`, params),
+  cancel: (params: CancelOrder) => http.post(`${baseUrl}/document/cancel`, params, 'application/json'),
+  cancelDetail: (params: DetailParam) => http.get(`${baseUrl}/document/cancel/log`, params)
 }
 
 // 加工
@@ -136,7 +144,9 @@ const yarnProcess = {
   create: (params: { data: ProcessYarn[], order_id: string }) => http.post(`${baseUrl}/order/process/save`, params, 'application/json'),
   list: (params: ListParam) => http.get(`${baseUrl}/order/process/lists`, params),
   delete: (params: DeleteParam) => http.post(`${baseUrl}/order/process/delete`, params, 'application/json'),
-  detail: (params: DetailParam) => http.get(`${baseUrl}/order/process/detail`, params)
+  detail: (params: DetailParam) => http.get(`${baseUrl}/order/process/detail`, params),
+  cancel: (params: CancelOrder) => http.post(`${baseUrl}/document/cancel`, params, 'application/json'),
+  cancelDetail: (params: DetailParam) => http.get(`${baseUrl}/document/cancel/log`, params)
 }
 
 // 毛条
@@ -215,6 +225,7 @@ const finance = {
 }
 
 export {
+  cancelOpr,
   price,
   login,
   authInfo,

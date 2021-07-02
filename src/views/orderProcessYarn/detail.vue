@@ -38,7 +38,7 @@
           </div>
           <div class="colCtn flex3">
             <span class="label">创建时间：</span>
-            <span class="text">没给</span>
+            <span class="text">{{order_info.create_time.slice(0,10)}}</span>
           </div>
         </div>
         <div class="rowCtn">

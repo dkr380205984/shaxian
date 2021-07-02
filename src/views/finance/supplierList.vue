@@ -62,7 +62,7 @@
     </div>
     <div class="module">
       <div class="titleCtn">
-        <span class="title hasBorder">客户财务列表</span>
+        <span class="title hasBorder">供货商财务列表</span>
       </div>
       <div class="listCtn">
         <div class="filterCtn">
@@ -71,7 +71,7 @@
             <div class="elCtn">
               <el-input v-model="name"
                 @change="changeRouter(1)"
-                placeholder="搜索客户名称"></el-input>
+                placeholder="搜索供货商名称"></el-input>
             </div>
             <div class="elCtn"
               style="width:350px;">

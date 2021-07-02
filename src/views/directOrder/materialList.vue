@@ -494,6 +494,7 @@ export default Vue.extend({
             desc: ''
           }
         ],
+        total_additional_fee: 0,
         desc: ''
       },
       list: [],
@@ -636,8 +637,14 @@ export default Vue.extend({
         return
       }
       this.loading = true
+      this.order_yarn_info.total_additional_fee = (this.order_yarn_info.additional_fee as any[]).reduce(
+        (total, current) => {
+          return total + Number(current.price)
+        },
+        0
+      )
       this.order_yarn_info.additional_fee = JSON.stringify(this.order_yarn_info.additional_fee)
-      this.order_yarn_info.child_data.forEach((item) => (item.name = ((item.name as unknown) as any[])[1]))
+      this.order_yarn_info.child_data.forEach((item) => (item.name = (item.name as unknown as any[])[1]))
       material
         .orderCreate({
           data: [this.order_yarn_info]

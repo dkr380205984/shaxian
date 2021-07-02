@@ -49,10 +49,14 @@
           </div>
         </div>
         <div class="rowCtn">
-          <div class="colCtn"
-            style="min-width:796px">
+          <div class="colCtn">
             <span class="label">备注信息：</span>
             <span class="text">{{order_yarn_info.desc || '无'}}</span>
+          </div>
+          <div class="colCtn">
+            <span class="label">单据状态：</span>
+            <span class="text"
+              :class="{'orange':order_yarn_info.status===1,'blue':order_yarn_info.status===2,'green':order_yarn_info.status===3,'gray':order_yarn_info.status===4}">{{order_yarn_info.status|orderStatusFilter}}</span>
           </div>
           <div class="colCtn">
             <span class="label">入库数量：</span>
@@ -261,7 +265,8 @@
               :key="item.id">
               <div class="column blue">{{item.code}}</div>
               <div class="column">
-                <div class="sortContainer">
+                <div class="sortContainer"
+                  v-if="item.deduct_content.length>0">
                   <div class="sort">
                     <i class="el-icon-caret-top hover"
                       @click="changeIndex(item,'add')"></i>
@@ -273,8 +278,14 @@
                   </div>
                   <span>{{item.deduct_content[item.index||0].yarn}}</span>
                 </div>
+                <div class="gray"
+                  v-else>暂无纱线</div>
               </div>
-              <div class="column">{{item.deduct_content[item.index||0].price}}元</div>
+              <div class="column">
+                <template v-if="item.deduct_content.length.length>0">{{item.deduct_content[item.index||0].price}}元</template>
+                <div class="gray"
+                  v-else>暂无单价</div>
+              </div>
               <div class="column">
                 <el-image style="width: 50px; height: 50px;line-height:50px;text-align:center;font-size:22px"
                   :src="item.deduct_file"
@@ -301,15 +312,58 @@
         <div class="btnCtn">
           <div class="btn btnGray"
             @click="$router.go(-1)">返回</div>
-          <div class="btn btnBlue"
-            @click="$openUrl(`/print/orderYarn/2/${$route.params.id}`)">打印</div>
-          <div class="btn btnGreen"
-            @click="openCheck">审核</div>
-          <div class="btn btnRed"
-            @click="openDeduct">扣款</div>
-          <div class="btn btnBlue"
-            @click="confirm"
-            v-if="order_yarn_info.status!==3">确认完成</div>
+          <div v-if="order_yarn_info.status!==4"
+            class="buttonList"
+            style="margin-left:12px">
+            <div class="showButton">
+              <i class="el-icon-s-grid"></i>
+              <span class="text">采购单操作</span>
+            </div>
+            <div class="otherInfoCtn">
+              <div class="otherInfo">
+                <div class="button btnGreen"
+                  @click="openCheck">
+                  <i class="iconfont">&#xe638;</i>
+                  <span class="text">单据审核</span>
+                </div>
+                <div class="button btnRed"
+                  @click="openDeduct">
+                  <i class="iconfont">&#xe63b;</i>
+                  <span class="text">单据扣款</span>
+                </div>
+                <div class="button btnBlue"
+                  @click="confirm"
+                  v-if="order_yarn_info.status!==3">
+                  <i class="iconfont">&#xe636;</i>
+                  <span class="text">确认完成</span>
+                </div>
+                <div class="button btnBlack"
+                  @click="openCancel">
+                  <i class="el-icon-circle-close"></i>
+                  <span class="text">取消采购</span>
+                </div>
+                <div class="button btnBlue"
+                  @click="$openUrl(`/print/orderYarn/2/${$route.params.id}`)">打印</div>
+              </div>
+            </div>
+          </div>
+          <el-tooltip v-if="order_yarn_info.status===4"
+            class="item"
+            effect="dark"
+            placement="top">
+            <div slot="content">
+              取消原因：{{cancel_reason}}
+              <br />
+              取消日期：{{cancel_date}}
+              <br />
+              操作人：{{user_name}}
+              <br />
+              对方承担：{{client_fee||0}}元
+            </div>
+            <div class="btn btnWhiteRed">
+              采购单已取消
+            </div>
+          </el-tooltip>
         </div>
       </div>
     </div>
@@ -338,7 +392,6 @@
     <check-detail :show.sync="check_detail_flag"
       :checkType="1"
       :pid="$route.params.id"></check-detail>
-
     <in-and-out :relatedCode="order_yarn_info.code"
       :relatedId="$route.params.id"
       :yarnArr="store_info.yarn_arr"
@@ -347,21 +400,189 @@
       :show.sync="store_info.show"
       :type="store_info.type"
       @close="init"></in-and-out>
+    <div class="popup"
+      v-show="cancel_flag">
+      <div class="main">
+        <div class="titleCtn">
+          <div class="text">取消采购单</div>
+          <i class="el-icon-close"
+            @click="cancel_flag=false"></i>
+        </div>
+        <div class="contentCtn">
+          <div class="stepCtn">
+            <div class="step"
+              :class="{'now':cancel_step===2,'confirm':cancel_step>2}">
+              <div class="circle">1</div>
+              <div class="info">取消原因</div>
+            </div>
+            <div class="line"></div>
+            <div class="step"
+              :class="{'now':cancel_step===3,'confirm':cancel_step>3}">
+              <div class="circle">2</div>
+              <div class="info">确认取消</div>
+            </div>
+          </div>
+          <template v-if="cancel_step===2">
+            <div class="createCtn">
+              <div class="rowCtn">
+                <div class="colCtn"
+                  style="margin-right:0">
+                  <div class="label">
+                    <span class="text">取消原因</span>
+                    <span class="explanation">(必选)</span>
+                  </div>
+                  <div class="content">
+                    <div class="elCtn">
+                      <el-input placeholder="请输入取消原因"
+                        v-model="cancel_info.cancel_reason"></el-input>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="rowCtn">
+                <div class="colCtn">
+                  <div class="label">
+                    <span class="text">采购金额</span>
+                    <span class="explanation">(必选)</span>
+                  </div>
+                  <div class="content">
+                    <div class="elCtn">
+                      <el-input placeholder="采购总额"
+                        v-model="order_yarn_info.total_price"
+                        disabled>
+                        <template slot="append">元</template>
+                      </el-input>
+                    </div>
+                  </div>
+                </div>
+                <div class="colCtn"
+                  style="margin-right:0">
+                  <div class="label">
+                    <span class="text">客户承担金额</span>
+                    <span class="explanation">(必填)</span>
+                  </div>
+                  <div class="content">
+                    <div class="elCtn">
+                      <el-input placeholder="客户承担金额"
+                        v-model="cancel_info.client_fee">
+                        <template slot="append">元</template>
+                      </el-input>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="rowCtn">
+                <div class="colCtn">
+                  <div class="label">
+                    <span class="text">文件说明</span>
+                  </div>
+                  <div class="content">
+                    <div class="elCtn">
+                      <div class="info">
+                        <el-upload class="upload"
+                          action="https://upload.qiniup.com/"
+                          accept="image/jpeg,image/gif,image/png,image/bmp"
+                          :before-upload="beforeAvatarUpload"
+                          :multiple="false"
+                          :data="postData"
+                          :limit="1"
+                          :on-success="successFile"
+                          ref="uploada"
+                          list-type="picture">
+                          <div class="uploadBtn">
+                            <i class="el-icon-upload"></i>
+                            <span>上传文件</span>
+                          </div>
+                          <div slot="tip"
+                            class="el-upload__tip">只能上传一张jpg/png图片文件，且不超过10M</div>
+                        </el-upload>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="colCtn"
+                  style="margin-right:0">
+                  <div class="label">
+                    <span class="text">取消日期</span>
+                    <span class="explanation">(必填)</span>
+                  </div>
+                  <div class="content">
+                    <div class="elCtn">
+                      <el-date-picker class="el"
+                        v-model="cancel_info.cancel_date"
+                        style="width:100%"
+                        type="date"
+                        value-format="yyyy-MM-dd"
+                        placeholder="选择日期">
+                      </el-date-picker>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </template>
+          <template v-if="cancel_step===3">
+            <div class="msgCtn">
+              <p class="msg">注意：</p>
+              <p class="msg">1. 点击完成后，该订单状态将切换为已取消，且状态不能复原。</p>
+              <p class="msg">2. 相关库存将更新已结余入库的纱线数据。</p>
+              <p class="msg">3. 客户财务统计将扣除客户未承担的部分：{{parseInt(order_yarn_info.total_price - cancel_info.client_fee)}}元。</p>
+            </div>
+          </template>
+        </div>
+        <div class="oprCtn">
+          <div class="opr"
+            @click="cancel_flag=false">取消</div>
+          <div class="opr orange"
+            @click="cancel_step--"
+            v-if="cancel_step>2">上一步</div>
+          <div class="opr blue"
+            @click="cancel_step===3?cancelOrder():cancel_step++">{{cancel_step===3?'确认取消':'下一步'}}</div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
-import { StoreCreate } from '@/types/store'
+import { CancelOrder } from '@/types/order'
 import { OrderYarn } from '@/types/orderProcessYarn'
 import { yarnOrder, stock, deduct, check } from '@/assets/js/api'
 export default Vue.extend({
   data(): {
+    cancel_info: CancelOrder
     order_yarn_info: OrderYarn
     [propName: string]: any
   } {
     return {
       loading: true,
+      postData: { key: '', token: '' },
+      cancel_date: '',
+      cancel_reason: '',
+      client_fee: '',
+      user_name: '',
+      cancel_flag: false,
+      cancel_info: {
+        order_id: '',
+        cancel_reason: '',
+        cancel_date: this.$getDate(new Date()),
+        file: '',
+        client_fee: '',
+        document_type: 1,
+        deduct_data: {
+          deduct_content: '',
+          total_price: '',
+          deduct_type: 1,
+          pid: '',
+          date: '',
+          deduct_file: '',
+          client_id: '',
+          desc: ''
+        }
+      },
+      store_data: [],
+      cancel_step: 2,
       check_flag: false,
       check_detail_flag: false,
       deduct_show: false,
@@ -369,7 +590,7 @@ export default Vue.extend({
         yarn: [],
         pid: 1,
         pcode: '',
-        type: 1
+        type: 2
       },
       order_yarn_info: {
         code: '',
@@ -411,6 +632,9 @@ export default Vue.extend({
   computed: {
     store_list() {
       return this.$store.state.api.storeHouse.arr.filter((item: any) => item.store_type === 1)
+    },
+    token() {
+      return this.$store.state.status.token
     }
   },
   methods: {
@@ -427,6 +651,10 @@ export default Vue.extend({
         deduct.list({
           pid: this.$route.params.id,
           deduct_type: 1
+        }),
+        yarnOrder.cancelDetail({
+          pid: this.$route.params.id,
+          document_type: 1
         })
       ]).then((res) => {
         this.order_yarn_info = res[0].data.data
@@ -439,8 +667,14 @@ export default Vue.extend({
         this.order_in_log = res[1].data.data.data.items
         this.deduct_list = res[2].data.data
         this.deduct_list.forEach((item: any) => {
-          item.deduct_content = JSON.parse(item.deduct_content)
+          item.deduct_content = JSON.parse(item.deduct_content) || []
         })
+        if (this.order_yarn_info.status === 4) {
+          this.cancel_reason = res[3].data.data.cancel_reason
+          this.cancel_date = res[3].data.data.cancel_date
+          this.client_fee = res[3].data.data.client_fee
+          this.user_name = res[3].data.data.user_name
+        }
         this.loading = false
       })
     },
@@ -494,6 +728,10 @@ export default Vue.extend({
           })
         })
     },
+    // 打开取消订单窗口
+    openCancel() {
+      this.cancel_flag = true
+    },
     openOrderIn() {
       this.store_info.out_client_arr = [
         {
@@ -529,6 +767,57 @@ export default Vue.extend({
             message: '已取消删除'
           })
         })
+    },
+    beforeAvatarUpload(file: any) {
+      const fileName = file.name.lastIndexOf('.') // 取到文件名开始到最后一个点的长度
+      const fileNameLength = file.name.length // 取到文件名长度
+      const fileFormat = file.name.substring(fileName + 1, fileNameLength) // 截
+      this.postData.token = this.token
+      this.postData.key = Date.parse(new Date() + '') + '.' + fileFormat
+      const isJPG = file.type === 'image/jpeg'
+      const isPNG = file.type === 'image/png'
+      const isLt2M = file.size / 1024 / 1024 < 10
+      if (!isJPG && !isPNG) {
+        this.$message.error('图片只能是 JPG/PNG 格式!')
+        return false
+      }
+      if (!isLt2M) {
+        this.$message.error('图片大小不能超过 10MB!')
+        return false
+      }
+    },
+    successFile(response: any) {
+      this.cancel_order_info.file = 'https://file.zwyknit.com/' + response.key
+    },
+    // 取消采购
+    cancelOrder() {
+      const fromData: CancelOrder = {
+        pid: this.$route.params.id,
+        document_type: 1,
+        order_id: this.$route.params.id,
+        cancel_reason: this.cancel_info.cancel_reason,
+        cancel_date: this.cancel_info.cancel_date,
+        file: this.cancel_info.file,
+        client_fee: this.cancel_info.client_fee,
+        store_data: [],
+        deduct_data: {
+          deduct_content: '',
+          total_price: (Number(this.order_yarn_info.total_price) - Number(this.cancel_info.client_fee)).toFixed(1),
+          deduct_type: 1,
+          pid: this.$route.params.id,
+          date: this.cancel_info.cancel_date,
+          deduct_file: this.cancel_info.file,
+          client_id: this.order_yarn_info.client_id,
+          desc: this.cancel_info.cancel_reason ? this.cancel_info.cancel_reason : '取消采购单扣款'
+        }
+      }
+      yarnOrder.cancel(fromData).then((res) => {
+        if (res.data.status) {
+          this.$message.success('采购单已取消')
+          this.cancel_flag = false
+          this.init()
+        }
+      })
     }
   },
   mounted() {
@@ -537,6 +826,11 @@ export default Vue.extend({
         checkWhich: 'api/storeHouse',
         getInfoMethed: 'dispatch',
         getInfoApi: 'getStoreAsync'
+      },
+      {
+        checkWhich: 'status/token',
+        getInfoMethed: 'dispatch',
+        getInfoApi: 'getTokenAsync'
       }
     ])
     this.init()

@@ -26,6 +26,7 @@ export interface OrderYarn {
   client_name?: string
   client_id: number | string
   child_data: YarnInfo[]
+  status?: number
   is_check?: string
   order_time: string
   delivery_time: string
@@ -57,9 +58,11 @@ export interface ProcessYarnChild {
   push_weight?: string | number
 }
 export interface ProcessYarn {
+  code?: string
   order_id: number | string
   client_id: number | string
   client_name?: string
+  status?: number
   type: string // 加工类型
   price?: number | string // 加工单价
   desc: string

@@ -6,6 +6,7 @@
 @import '../edit.less';
 @import '../list.less';
 @import '../buttonList.less';
+@import '../create.less';
 #orderDeatil{
   .sortContainer{
     display: flex;
@@ -67,6 +68,65 @@
        .eRowCtn{
          position: relative;
        }
+    }
+    .contentCtn{
+      .rowCtn{
+        background: transparent;
+        padding: 0;
+      }
+      .stepCtn{
+        display: flex;
+        justify-content: space-around;
+        margin: 18px 32px 12px 32px;
+        align-items: center;
+        .line{
+          height: 1px;
+          background: @black;
+          flex: 1;
+          margin:0 20px 40px 20px;
+        }
+        .step{
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          &.now{
+            .circle{
+              background: @blue;
+            }
+          }
+          &.confirm{
+            .circle{
+              background: @green;
+            }
+          }
+          .circle{
+            background: @main;
+            height: 60px;
+            line-height: 60px;
+            width: 60px;
+            text-align: center;
+            color: #fff;
+            border-radius: 50%;
+            font-size: 26px;
+          }
+          .info{
+            line-height: 40px;
+            color: @font65;
+            font-size: @fontBig;
+          }
+        }
+      }
+    }
+    .createCtn{
+      padding-top: 0in;
+    }
+    .msgCtn{
+      background: #f0f0f0;
+      padding: 16px 32px;
+    }
+    .msg{
+      text-align: center;
+      font-size: @fontBig;
     }
   }
   .listCtn{

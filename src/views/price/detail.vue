@@ -113,12 +113,34 @@
         <div class="btnCtn">
           <div class="btn btnGray"
             @click="$router.go(-1)">返回</div>
-          <div class="btn btnOrange"
-            @click="$router.push(`/price/update/${$route.params.id}`)">修改</div>
-          <div class="btn btnGreen"
-            @click="check_flag = true">审核</div>
-          <div class="btn btnBlue"
-            @click="$message.warning('待开发，敬请期待！！！')">打印</div>
+          <div class="buttonList"
+            style="margin-left:12px">
+            <div class="showButton">
+              <i class="el-icon-s-grid"></i>
+              <span class="text">报价单操作</span>
+            </div>
+            <div class="otherInfoCtn">
+              <div class="otherInfo">
+                <div class="button btnOrange"
+                  @click="$router.push(`/price/update/${$route.params.id}`)">
+                  <i class="iconfont">&#xe63a;</i>
+                  <span class="text">修改</span>
+                </div>
+                <div class="button btnGreen"
+                  @click="check_flag = true">
+                  <i class="iconfont">&#xe638;</i>
+                  <span class="text">审核</span>
+                </div>
+                <div class="button btnRed"
+                  @click="deletePrice">
+                  <i class="iconfont">&#xe639;</i>
+                  <span class="text">删除</span>
+                </div>
+                <div class="button btnBlue"
+                  @click="$message.warning('待开发，敬请期待！！！')">打印</div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -236,6 +258,30 @@ export default Vue.extend({
             })
             this.loading = false
           }
+        })
+    },
+    deletePrice() {
+      this.$confirm('是否删除该报价单?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      })
+        .then(() => {
+          price.delete({ id: this.$route.params.id }).then((res) => {
+            if (res.data.status) {
+              this.$message({
+                type: 'success',
+                message: '删除成功!'
+              })
+              this.$router.push('/price/list?page=1&code=&name=&client=&status=&user=&date=&limit=')
+            }
+          })
+        })
+        .catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          })
         })
     }
   },

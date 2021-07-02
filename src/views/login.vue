@@ -87,6 +87,7 @@ export default Vue.extend({
             if (res2.data.status !== false) {
               window.sessionStorage.setItem('full_name', res2.data.data.company_name)
               window.sessionStorage.setItem('user_name', res2.data.data.name)
+              window.sessionStorage.setItem('module_info', res2.data.data.module_info)
               this.$router.push('/homePage/homePage')
             }
           })

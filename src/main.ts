@@ -23,7 +23,7 @@ Vue.filter('checkFilter', (val: 0 | 1 | 2 | null) => {
 })
 // 订单公共状态
 Vue.filter('orderStatusFilter', (val: 1 | 2 | 3) => {
-  const statusArr = ['未知', '已创建', '进行中', '已完成']
+  const statusArr = ['未知', '已创建', '进行中', '已完成', '已取消']
   return statusArr[val]
 })
 // 审核状态
@@ -34,7 +34,7 @@ Vue.filter('orderCheckFilter', (val: 0 | 1 | 2 | null) => {
 })
 // 出入库操作类型
 Vue.filter('stockTypeFilter', (val: 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9) => {
-  const statusArr = ['未知', '仓库入库', '仓库出库', '订购入库', '调取出库', '加工回库', '加工出库', '订购出库', '工艺单入库', '订单发货', '移库出库', '移库入库', '销售出库', '订购入库', '加工回库']
+  const statusArr = ['未知', '仓库入库', '仓库出库', '订购入库', '调取出库', '加工回库', '加工出库', '订购出库', '工艺单入库', '订单发货', '移库出库', '移库入库', '销售出库', '订购入库', '加工回库', '结余入库']
   return statusArr[val]
 })
 // 票据类型

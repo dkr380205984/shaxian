@@ -18,6 +18,7 @@
             <div class="elCtn">
               <el-select v-model="yarn_type"
                 multiple
+                filterable
                 @change="changeRouter(1)"
                 placeholder="选择纱线类型"
                 clearable>
@@ -85,9 +86,10 @@
                   <i class="el-icon-question elicon"></i>
                 </el-tooltip>
               </div>
-              <div class="column">库存(kg)
-                <sort v-model="sort_store"></sort>
-              </div>
+              <!-- <div class="column">库存(kg)
+                <sort v-model="sort_store"
+                  @change="changeRouter(1)"></sort>
+              </div> -->
               <div class="column">创建人</div>
               <div class="column">操作</div>
             </div>
@@ -101,7 +103,7 @@
               <div class="column">{{item.child_data|fiterColor}}</div>
               <div class="column">{{item.child_data|fiterAttr}}</div>
               <div class="column">{{item.child_data|fiterPrice}}</div>
-              <div class="column">{{item.store||0}}</div>
+              <!-- <div class="column">{{item.store||0}}</div> -->
               <div class="column">{{item.user_name}}</div>
               <div class="column">
                 <div class="opr blue"
@@ -209,7 +211,7 @@ export default Vue.extend({
         })
     },
     reset() {
-      this.$router.push('/product/list?page=1&page_size=10&name=&color=&attribute=&yarn_type=')
+      this.$router.push('/product/list?page=1&page_size=10&name=&color=&attribute=&yarn_type=&sort_store=0')
     },
     changeRouter(page: string) {
       this.$router.push(
@@ -224,7 +226,9 @@ export default Vue.extend({
           '&attribute=' +
           this.attribute +
           '&yarn_type=' +
-          this.yarn_type.join(',')
+          this.yarn_type.join(',') +
+          '&sort_store=' +
+          this.sort_store
       )
     },
     getFilters() {
@@ -235,6 +239,7 @@ export default Vue.extend({
       this.color = params.color
       this.attribute = params.attribute
       this.yarn_type = params.yarn_type ? (params.yarn_type as string).split(',').map((item) => Number(item)) : []
+      this.sort_store = Number(params.sort_store) || 0
     },
     getList() {
       this.loading = true
@@ -245,7 +250,8 @@ export default Vue.extend({
           yarn_type: this.yarn_type,
           name: this.name,
           color: this.color,
-          attribute: this.attribute
+          attribute: this.attribute,
+          sort_store: this.sort_store === 0 ? null : this.sort_store === 1 ? 'ASC' : 'DESC'
         })
         .then((res) => {
           if (res.data.status) {

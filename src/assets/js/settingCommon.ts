@@ -39,3 +39,192 @@ export const processArr = [
   { value: '倒纱' },
   { value: '膨纱' }
 ]
+
+export const moduleList = [
+  {
+    id: '0',
+    label: '产品管理',
+    children: [
+      {
+        id: '0-0',
+        label: '纱线列表',
+        icon: '&#xe617;',
+        url: '/product/list?page=1&page_size=10&name=&color=&attribute=&yarn_type='
+      },
+      {
+        id: '0-1',
+        label: '毛条列表',
+        icon: '&#xe620;',
+        url: '/material/list?page=1&type=&name=&page_size=10'
+      }
+    ]
+  },
+  {
+    id: '1',
+    label: '报价管理',
+    children: [
+      {
+        id: '1-0',
+        label: '报价列表',
+        icon: '&#xe617;',
+        url: '/price/list?page=1&code=&name=&client=&status=&user=&date=&limit=10'
+      }
+    ]
+  },
+  {
+    id: '2',
+    label: '订单管理',
+    children: [
+      {
+        id: '1-0',
+        label: '订单列表',
+        icon: '&#xe61b;',
+        url: '/order/list?page=1&order_code=&product_name=&client_id=&user_id=&page_size=10&date='
+      },
+      {
+        id: '1-1',
+        label: '纱线采购列表',
+        icon: '&#xe616;',
+        url: '/directOrder/yarnList?page=1&code=&name=&client_id=&user_id=&page_size=10&date='
+      },
+      {
+        id: '1-2',
+        label: '纱线加工列表',
+        icon: '&#xe61a;',
+        url: '/directProcess/yarnList?page=1&code=&name=&client_id=&user_id=&page_size=10&date='
+      },
+      {
+        id: '1-3',
+        label: '毛条采购列表',
+        icon: '&#xe61e;',
+        url: '/directOrder/materialList?page=1&code=&name=&client_id=&user_id=&page_size=10&date='
+      },
+      {
+        id: '1-4',
+        label: '工艺单列表',
+        icon: '&#xe61f;',
+        url: '/material/craftList?page=1&code=&name=&client_id=&user_id=&status=&page_size=10&date='
+      }
+    ]
+  },
+  {
+    id: '3',
+    label: '库存管理',
+    children: [
+      {
+        id: '3-0',
+        label: '纱线库存',
+        icon: '&#xe61c;',
+        url: '/store/list?page=&type=&name=&page_size='
+      },
+      {
+        id: '3-1',
+        label: '毛条库存',
+        icon: '&#xe618;',
+        url: '/store/materialList?page=&type=&name=&page_size='
+      }
+    ]
+  },
+  {
+    id: '4',
+    label: '财务管理',
+    children: [
+      {
+        id: '4-0',
+        label: '客户财务',
+        icon: '&#xe611;',
+        url: '/finance/clientList?page=&page_size=&date=&sort_type=&sort_cloum='
+      },
+      {
+        id: '4-1',
+        label: '供货商财务',
+        icon: '&#xe611;',
+        url: '/finance/supplierList?page=&page_size=&date=&sort_type=&sort_cloum='
+      },
+      {
+        id: '4-2',
+        label: '加工厂财务',
+        icon: '&#xe611;',
+        url: '/finance/factoryList?page=&page_size=&date=&sort_type=&sort_cloum='
+      },
+      {
+        id: '4-3',
+        label: '发票列表',
+        icon: '&#xe611;',
+        url: '/finance/billList?page=&page_size=10'
+      },
+      {
+        id: '4-4',
+        label: '收款列表',
+        icon: '&#xe611;',
+        url: '/finance/collectionList?page=&page_size=10'
+      },
+      {
+        id: '4-5',
+        label: '付款列表',
+        icon: '&#xe611;',
+        url: '/finance/payList?page=&page_size=10'
+      },
+      {
+        id: '4-6',
+        label: '扣款列表',
+        icon: '&#xe611;',
+        url: '/finance/deductList?page=&page_size=10'
+      }
+    ]
+  },
+  {
+    id: '5',
+    label: '系统设置',
+    children: [
+      {
+        id: '5-0',
+        label: '用户管理',
+        icon: '&#xe615;',
+        url: '/settings/user'
+      },
+      {
+        id: '5-1',
+        label: '纱线类型管理',
+        icon: '&#xe615;',
+        url: '/settings/yarnType'
+      },
+      {
+        id: '5-2',
+        label: '加工厂管理',
+        icon: '&#xe615;',
+        url: '/settings/factory'
+      },
+      {
+        id: '5-3',
+        label: '供货商管理',
+        icon: '&#xe615;',
+        url: '/settings/supplier'
+      },
+      {
+        id: '5-4',
+        label: '客户管理',
+        icon: '&#xe615;',
+        url: '/settings/client'
+      },
+      {
+        id: '5-5',
+        label: '颜色管理',
+        icon: '&#xe615;',
+        url: '/settings/color'
+      },
+      {
+        id: '5-6',
+        label: '打印设置',
+        icon: '&#xe615;',
+        url: '/settings/print'
+      },
+      {
+        id: '5-7',
+        label: '毛条类型管理',
+        icon: '&#xe615;',
+        url: '/settings/material'
+      }
+    ]
+  }
+]

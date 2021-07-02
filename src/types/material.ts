@@ -69,6 +69,7 @@ export interface OrderMaterialInfo {
   child_data: MaterialInfo[]
   order_time: string
   delivery_time: string
+  total_additional_fee?: string | number
   additional_fee?: string | AditionalFee[]// 额外费用的JSON字符串
   total_price?: string | number
   file_url?: string

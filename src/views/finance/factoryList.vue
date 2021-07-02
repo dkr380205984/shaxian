@@ -2,6 +2,65 @@
   <div class="indexMain"
     v-loading='loading'>
     <div class="module">
+      <div class="stsCtn"
+        style="margin-top:0">
+        <div class="box">
+          <div class="title">加工总量</div>
+          <div class="number">{{(total_sts.process_sum_total_weight/1000).toFixed(2)}}
+            <span class="unit">吨</span>
+          </div>
+        </div>
+        <div class="box">
+          <div class="title">加工总额</div>
+          <div class="number">{{(total_sts.process_sum_total_price/10000).toFixed(2)}}
+            <span class="unit">万元</span>
+          </div>
+        </div>
+        <div class="box">
+          <div class="title">回库总量</div>
+          <div class="number">{{(total_sts.total_push_weight/1000).toFixed(2)}}
+            <span class="unit">吨</span>
+          </div>
+        </div>
+        <div class="box">
+          <div class="title">回库总额</div>
+          <div class="number">{{(total_sts.total_push_price/10000).toFixed(2)}}
+            <span class="unit">万元</span>
+          </div>
+        </div>
+        <div class="box">
+          <div class="title">开票总额</div>
+          <div class="number">{{(total_sts.collection_sum_collect_price/10000).toFixed(2)}}
+            <span class="unit">万元</span>
+          </div>
+        </div>
+        <div class="box">
+          <div class="title">待开票总额</div>
+          <div class="number">{{(total_sts.wait_collection/10000).toFixed(2)}}
+            <span class="unit">万元</span>
+          </div>
+        </div>
+        <div class="box">
+          <div class="title">付款总额</div>
+          <div class="number">{{(total_sts.invoice_sum_invoice_price/10000).toFixed(2)}}
+            <span class="unit">万元</span>
+          </div>
+        </div>
+        <div class="box">
+          <div class="title">扣款总额</div>
+          <div class="number">{{(total_sts.deduct_sum_total_price/10000).toFixed(2)}}
+            <span class="unit">万元</span>
+          </div>
+        </div>
+        <div class="box">
+          <div class="title">欠款总额</div>
+          <div class="number">{{(total_sts.wait_invoice/10000).toFixed(2)}}
+            <span class="unit">万元</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="module">
       <div class="titleCtn">
         <span class="title hasBorder">加工厂财务列表</span>
       </div>
@@ -35,14 +94,29 @@
         <div class="list">
           <div class="headCtn">
             <div class="row">
-              <div class="column">加工厂编码</div>
               <div class="column">加工厂名称</div>
-              <div class="column">工厂简称</div>
-              <div class="column">加工类型</div>
-              <div class="column">主要负责人</div>
-              <div class="column">总加工数</div>
-              <div class="column">总出库数</div>
-              <div class="column">总入库数</div>
+              <div class="column">采购数量
+              </div>
+              <div class="column">采购金额
+                <sort v-model="purchase_sum_total_price"
+                  @beforeChange="getSort($event,'purchase_sum_total_price')"></sort>
+              </div>
+              <div class="column">入库数量</div>
+              <div class="column">入库金额</div>
+              <div class="column">对方已开票
+                <sort v-model="invoice_sum_invoice_price"
+                  @beforeChange="getSort($event,'invoice_sum_invoice_price')"></sort>
+              </div>
+              <div class="column">对方待开票</div>
+              <div class="column">我方已付款
+                <sort v-model="collection_sum_collect_price"
+                  @beforeChange="getSort($event,'collection_sum_collect_price')"></sort>
+              </div>
+              <div class="column">我方扣款
+                <sort v-model="deduct_sum_total_price"
+                  @beforeChange="getSort($event,'deduct_sum_total_price')"></sort>
+              </div>
+              <div class="column">我方欠款</div>
               <div class="column">操作</div>
             </div>
           </div>
@@ -50,14 +124,16 @@
             <div class="row"
               v-for="item in clientList"
               :key="item.id">
-              <div class="column">{{item.id}}</div>
               <div class="column">{{item.name}}</div>
-              <div class="column">{{item.abbreviation}}</div>
-              <div class="column">{{item.client_type}}</div>
-              <div class="column">{{item.user_name}}</div>
-              <div class="column">总加工数</div>
-              <div class="column">总出库数</div>
-              <div class="column">总入库数</div>
+              <div class="column">{{item.financial_data.process_sum_total_weight}}kg</div>
+              <div class="column">{{item.financial_data.process_sum_total_price||0}}元</div>
+              <div class="column">{{item.financial_data.total_push_weight}}kg</div>
+              <div class="column">{{item.financial_data.total_push_price}}元</div>
+              <div class="column">{{item.financial_data.collection_sum_collect_price || 0}}元</div>
+              <div class="column">{{item.financial_data.wait_collection || 0}}元</div>
+              <div class="column">{{item.financial_data.invoice_sum_invoice_price || 0}}元</div>
+              <div class="column">{{item.financial_data.deduct_sum_total_price || 0}}元</div>
+              <div class="column">{{item.financial_data.wait_invoice || 0}}元</div>
               <div class="column">
                 <span class="col_btn blue"
                   @click="$router.push('/finance/factoryDetail/'+item.id)">详情</span>
@@ -81,7 +157,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { partyB } from '@/assets/js/api'
+import { finance } from '@/assets/js/api'
 import { PartyB } from '@/types/common'
 export default Vue.extend({
   data(): {
@@ -91,6 +167,11 @@ export default Vue.extend({
     return {
       loading: true,
       addFlag: false,
+      purchase_sum_total_price: '',
+      purchase_sum_total_weight: '',
+      deduct_sum_total_price: '',
+      invoice_sum_invoice_price: '',
+      collection_sum_collect_price: '',
       clientList: [],
       page: 1,
       total: 1,
@@ -144,12 +225,29 @@ export default Vue.extend({
             }
           }
         ]
+      },
+      total_sts: {
+        collection_sum_collect_price: 0,
+        deduct_sum_total_price: 0,
+        invoice_sum_invoice_price: 0,
+        order_sum_total_price: 0,
+        process_sum_total_weight: 0,
+        purchase_sum_total_price: 0,
+        total_push_price: 0,
+        total_push_weight: 0,
+        wait_collection: 0,
+        wait_invoice: 0,
+        wait_push: 0
       }
     }
   },
   methods: {
     changeRouter(pages: number = 1) {
-      this.$router.replace(`/finance/factoryList?pages=${pages}&name=${this.name || ''}&status=${this.status || ''}`)
+      this.$router.replace(
+        `/finance/factoryList?pages=${pages}&name=${this.name || ''}&sort_type=${this.sort_type || ''}&sort_cloum=${
+          this.sort_cloum || ''
+        }&date=${this.date || ''}`
+      )
     },
     init() {
       this.name = this.$route.query.name || ''
@@ -166,8 +264,8 @@ export default Vue.extend({
     },
     getList(pages: number = 1) {
       this.loading = true
-      partyB
-        .list({
+      finance
+        .clientList({
           type: 3,
           limit: 10,
           page: pages,
@@ -179,6 +277,7 @@ export default Vue.extend({
         .then((res: any) => {
           if (res.data.staus !== false) {
             this.clientList = res.data.data.items
+            this.total_sts = res.data.data.additional
             this.total = res.data.data.total
             this.loading = false
             // 更新页码
@@ -188,7 +287,26 @@ export default Vue.extend({
           }
         })
     },
+    getSort(ev: number, type: string) {
+      const filterArr = ['', 'asc', 'desc']
+      this.sort_cloum = type
+      this.sort_type = filterArr[ev]
+      this.purchase_sum_total_price = ''
+      this.purchase_sum_total_weight = ''
+      this.deduct_sum_total_price = ''
+      this.invoice_sum_invoice_price = ''
+      this.collection_sum_collect_price = ''
+      this[type] = ev
+      this.changeRouter()
+    },
     resetFilter() {
+      this.purchase_sum_total_price = ''
+      this.purchase_sum_total_weight = ''
+      this.deduct_sum_total_price = ''
+      this.invoice_sum_invoice_price = ''
+      this.collection_sum_collect_price = ''
+      this.sort_type = ''
+      this.sort_cloum = ''
       this.name = ''
       this.changeRouter()
     }
@@ -205,5 +323,5 @@ export default Vue.extend({
 </script>
 
 <style lang="less" scoped>
-@import '~@/assets/less/settings/client.less';
+@import '~@/assets/less/finance/clientList.less';
 </style>

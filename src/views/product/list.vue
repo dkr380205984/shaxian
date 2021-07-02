@@ -86,10 +86,10 @@
                   <i class="el-icon-question elicon"></i>
                 </el-tooltip>
               </div>
-              <!-- <div class="column">库存(kg)
+              <div class="column">库存(kg)
                 <sort v-model="sort_store"
                   @change="changeRouter(1)"></sort>
-              </div> -->
+              </div>
               <div class="column">创建人</div>
               <div class="column">操作</div>
             </div>
@@ -103,7 +103,7 @@
               <div class="column">{{item.child_data|fiterColor}}</div>
               <div class="column">{{item.child_data|fiterAttr}}</div>
               <div class="column">{{item.child_data|fiterPrice}}</div>
-              <!-- <div class="column">{{item.store||0}}</div> -->
+              <div class="column">{{item.store||0}}</div>
               <div class="column">{{item.user_name}}</div>
               <div class="column">
                 <div class="opr blue"

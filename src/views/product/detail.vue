@@ -29,7 +29,6 @@
                 <div class="tcolumn">纱线颜色</div>
                 <div class="tcolumn">纱线属性</div>
                 <div class="tcolumn">单价(元)</div>
-                <div class="tcolumn">库存数(kg)</div>
                 <div class="tcolumn">备注信息</div>
               </div>
             </div>
@@ -40,7 +39,6 @@
                 <div class="tcolumn">{{item.color}}</div>
                 <div class="tcolumn">{{item.attribute}}</div>
                 <div class="tcolumn">{{item.price}}元</div>
-                <div class="tcolumn">{{item.store||0}}</div>
                 <div class="tcolumn">{{item.desc||'无备注'}}</div>
               </div>
             </div>

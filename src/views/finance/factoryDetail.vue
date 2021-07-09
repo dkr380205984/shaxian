@@ -9,11 +9,11 @@
       <div class="detailCtn">
         <div class="rowCtn">
           <div class="colCtn">
-            <span class="label">加工厂名称：</span>
+            <span class="label">工厂名称：</span>
             <span class="text blue">{{client_info.name}}</span>
           </div>
           <div class="colCtn">
-            <span class="label">加工厂简称：</span>
+            <span class="label">工厂简称：</span>
             <span class="text">{{client_info.abbreviation||'无'}}</span>
           </div>
           <div class="colCtn">
@@ -522,7 +522,8 @@
               :key="item.id">
               <div class="column blue">{{item.code}}</div>
               <div class="column">
-                <div class="sortContainer">
+                <div class="sortContainer"
+                  v-if="item.deduct_content.length>0">
                   <div class="sort">
                     <i class="el-icon-caret-top hover"
                       @click="changeIndex(item,'add')"></i>
@@ -534,8 +535,14 @@
                   </div>
                   <span>{{item.deduct_content[item.index||0].yarn}}</span>
                 </div>
+                <div class="gray"
+                  v-else>暂无信息</div>
               </div>
-              <div class="column">{{item.deduct_content[item.index||0].price}}元</div>
+              <div class="column">
+                <span v-if="item.deduct_content.length>0">{{item.deduct_content[item.index||0].price}}元</span>
+                <span v-else
+                  class="gray">暂无信息</span>
+              </div>
               <div class="column">
                 <el-image style="width: 50px; height: 50px;line-height:50px;text-align:center;font-size:22px"
                   :src="item.deduct_file"
@@ -573,6 +580,72 @@
         <div class="btnCtn">
           <div class="btn btnGray"
             @click="$router.go(-1)">返回</div>
+          <div class="buttonList"
+            style="margin-left:12px">
+            <div class="showButton">
+              <i class="el-icon-s-grid"></i>
+              <span class="text">导出报表</span>
+            </div>
+            <div class="otherInfoCtn">
+              <div class="otherInfo">
+                <div class="button btnBlue"
+                  @click="exportExcel('process')">
+                  <i class="iconfont">&#xe636;</i>
+                  <span class="text">下单报表</span>
+                </div>
+                <div class="button btnBlue"
+                  @click="exportExcel('store')">
+                  <i class="iconfont">&#xe636;</i>
+                  <span class="text">仓库报表</span>
+                </div>
+                <div class="button btnBlue"
+                  @click="exportExcel('bill')">
+                  <i class="iconfont">&#xe636;</i>
+                  <span class="text">开票报表</span>
+                </div>
+                <div class="button btnBlue"
+                  @click="exportExcel('collection')">
+                  <i class="iconfont">&#xe636;</i>
+                  <span class="text">付款报表</span>
+                </div>
+                <div class="button btnBlue"
+                  @click="exportExcel('deduct')">
+                  <i class="iconfont">&#xe636;</i>
+                  <span class="text">扣款报表</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="popup"
+      v-show="excel_flag">
+      <div class="main">
+        <div class="titleCtn">
+          <span class="text">导出Excel</span>
+          <i class="close_icon el-icon-close"
+            @click="excel_flag = false"></i>
+        </div>
+        <div class="contentCtn">
+          <div class="content">
+            <div class="label">请选择要导出的时间段：</div>
+            <el-date-picker v-model="excel_date"
+              type="daterange"
+              value-format="yyyy-MM-dd"
+              :picker-options="pickerOptions"
+              range-separator="至"
+              start-placeholder="开始日期"
+              end-placeholder="结束日期"
+              align="right">
+            </el-date-picker>
+          </div>
+        </div>
+        <div class="oprCtn">
+          <div class="opr"
+            @click="excel_flag = false">取消</div>
+          <div class="opr blue"
+            @click="getExcel">导出</div>
         </div>
       </div>
     </div>
@@ -591,10 +664,11 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { deduct, bill, collection, partyB, yarnProcess, stock } from '@/assets/js/api'
+import { deduct, bill, collection, partyB, yarnProcess, stock, exportExcel } from '@/assets/js/api'
 import { DeductInfo, BillInfo, CollectionInfo } from '@/types/common'
 export default Vue.extend({
   data(): {
+    excel_type: 'process' | 'deduct' | 'invoice' | 'collection'
     deduct_list: DeductInfo[]
     bill_list: BillInfo[]
     collection_list: CollectionInfo[]
@@ -602,7 +676,40 @@ export default Vue.extend({
   } {
     return {
       loading: true,
-      value: '',
+      excel_flag: false,
+      excel_date: [new Date().getFullYear() + '-01-01', this.$getDate(new Date())],
+      excel_type: 'process',
+      pickerOptions: {
+        shortcuts: [
+          {
+            text: '最近一周',
+            onClick(picker: any) {
+              const end = new Date()
+              const start = new Date()
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 7)
+              picker.$emit('pick', [start, end])
+            }
+          },
+          {
+            text: '最近一个月',
+            onClick(picker: any) {
+              const end = new Date()
+              const start = new Date()
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 30)
+              picker.$emit('pick', [start, end])
+            }
+          },
+          {
+            text: '最近三个月',
+            onClick(picker: any) {
+              const end = new Date()
+              const start = new Date()
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 90)
+              picker.$emit('pick', [start, end])
+            }
+          }
+        ]
+      },
       client_info: {
         name: '',
         abbreviation: '',
@@ -828,6 +935,27 @@ export default Vue.extend({
           this.stock_total = res.data.data.data.total
           this.loading = false
         })
+    },
+    exportExcel(type: 'process' | 'deduct' | 'invoice' | 'collection') {
+      this.excel_flag = true
+      this.excel_type = type
+    },
+    getExcel() {
+      if (this.excel_date.length === 0) {
+        this.$message.error('请选择日期范围')
+        return
+      }
+      this.$message.success('正在导出Excel')
+      exportExcel[this.excel_type]({
+        client_id: this.$route.params.id,
+        start_time: this.excel_date[0],
+        end_time: this.excel_date[1]
+      }).then((res) => {
+        if (res.data.status) {
+          this.excel_flag = false
+          this.$downLoadFile(res.data.data)
+        }
+      })
     }
   },
   mounted() {

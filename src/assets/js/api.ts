@@ -9,11 +9,16 @@ const login = (params:
   }) => http.post(`${baseUrl}/auth/login`, params, 'application/json')
 // token
 const getToken = () => http.get(`${baseUrl}/upload/token`)
+// 公司信息设置
+const clientInfoSetting = (params: { logo: string, alias: string }) => http.post(`${baseUrl}/company/info/save`, params, 'application/json')
+
+// 用户信息
+const authInfo = (params: any) => http.post(`${baseUrl}/auth/info`, params, 'application/json')
 
 // 首页杂七杂八接口
 const index = {
   searchAll: (params?: ListParam) => http.get(`${baseUrl}/index/search`, params),
-  notifyList: (params?: ListParam) => http.get(`${baseUrl}/notify/all`, params)
+  notifyList: (params?: ListParam) => http.get(`${baseUrl}/notify/lists`, params)
 }
 
 const cancelOpr = {
@@ -25,8 +30,7 @@ const changeUserPasd = {
   updated: (params: { sms_code: string, new_pass: string }) => http.post(`${baseUrl}/user/password/change`, params, 'application/json'),
   sendVerificationCode: () => http.post(`${baseUrl}/user/password/change/send/code`, {}, 'application/json')
 }
-// 用户信息
-const authInfo = (params: any) => http.post(`${baseUrl}/auth/info`, params, 'application/json')
+
 import {
   PartyBCheckParams, PartyBCreateParams, PartyBListParams,
   YarnTypeCreateParams, YarnTypeDetailParams, YarnTypeListParams,
@@ -224,7 +228,26 @@ const finance = {
   clientDetail: (params: any) => http.get(`${baseUrl}/financial/client/detail`, params)
 }
 
+// 导出excel
+const exportExcel = {
+  order: (params: { client_id: string | number, start_time: string, end_time: string }) => http.get(`${baseUrl}/order/log/export`, params),
+  purchase: (params: { client_id: string | number, start_time: string, end_time: string }) => http.get(`${baseUrl}/purchase/log/export`, params),
+  process: (params: { client_id: string | number, start_time: string, end_time: string }) => http.get(`${baseUrl}/process/log/export`, params),
+  deduct: (params: { client_id: string | number, start_time: string, end_time: string }) => http.get(`${baseUrl}/deduct/log/export`, params),
+  invoice: (params: { client_id: string | number, start_time: string, end_time: string }) => http.get(`${baseUrl}/invoice/log/export`, params),
+  collection: (params: { client_id: string | number, start_time: string, end_time: string }) => http.get(`${baseUrl}/collection/log/export`, params),
+  store: (params: { client_id: string | number, start_time: string, end_time: string }) => http.get(`${baseUrl}/store/log/export`, params)
+}
+
+// 操作记录
+const oprHistory = {
+  system: (params: ListParam) => http.get(`${baseUrl}/activity/log/list`, params)
+}
+
 export {
+  clientInfoSetting,
+  exportExcel,
+  oprHistory,
   cancelOpr,
   price,
   login,

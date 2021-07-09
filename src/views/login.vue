@@ -85,6 +85,8 @@ export default Vue.extend({
           const { authInfo } = require('@/assets/js/api')
           authInfo().then((res2: any) => {
             if (res2.data.status !== false) {
+              window.sessionStorage.setItem('logo', res2.data.data.logo)
+              window.sessionStorage.setItem('alias', res2.data.data.alias)
               window.sessionStorage.setItem('full_name', res2.data.data.company_name)
               window.sessionStorage.setItem('user_name', res2.data.data.name)
               window.sessionStorage.setItem('module_info', res2.data.data.module_info)

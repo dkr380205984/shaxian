@@ -259,8 +259,7 @@ export default Vue.extend({
       page_size: 10,
       list: [],
       showMore: false,
-      date: [],
-      value: ''
+      date: []
     }
   },
   watch: {

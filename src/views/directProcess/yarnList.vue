@@ -92,7 +92,7 @@
               label="加工单状态"
               width="120">
               <template slot-scope="scope">
-                <span :class="{'orange':scope.row.status===1,'blue':scope.row.status===2,'green':scope.row.status===3}">{{scope.row.status | orderStatusFilter}}</span>
+                <span :class="{'orange':scope.row.status===1,'blue':scope.row.status===2,'green':scope.row.status===3,'gray':scope.row.status===4}">{{scope.row.status | orderStatusFilter}}</span>
               </template>
             </el-table-column>
             <el-table-column prop="is_check"

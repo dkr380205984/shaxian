@@ -329,6 +329,14 @@ const plugin = {
       }
       return msg
     })
+  },
+  // 下载文件
+  downLoadFile(url: string) {
+    const aLink = document.createElement('a')
+    aLink.href = url
+    aLink.download = url
+    aLink.click()
+    aLink.remove()
   }
 }
 const submitLock = () => {
@@ -420,5 +428,6 @@ export default {
     Vue.prototype.$flatten = plugin.flatten
     Vue.prototype.$toFixed = toFixedAuto
     Vue.prototype.$openUrl = (url: string) => window.open(url)
+    Vue.prototype.$downLoadFile = plugin.downLoadFile
   }
 }

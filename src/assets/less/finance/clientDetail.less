@@ -4,6 +4,7 @@
 @import '../table.less';
 @import '../popup.less';
 @import '../list.less';
+@import '../buttonList.less';
 #clientDetail{
   .listCtn{
     .tableCtn{
@@ -39,6 +40,20 @@
           color:@blue;
           cursor: pointer;
         }
+      }
+    }
+  }
+  .popup{
+    .contentCtn{
+      min-height: 120px;
+    }
+    .content{
+      display: flex;
+      flex-direction: column;
+      margin: 24px 0;
+      .label{
+        color: @font65;
+        margin-bottom: 24px;
       }
     }
   }

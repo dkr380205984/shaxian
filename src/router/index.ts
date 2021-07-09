@@ -134,6 +134,10 @@ const routes: RouteConfig[] = [
         name: '毛条设置',
         component: () => import('../views/settings/material.vue')
       }, {
+        path: '/settings/clientInfo',
+        name: '公司信息设置',
+        component: () => import('../views/settings/clientInfo.vue')
+      }, {
         path: '/store/list',
         name: '纱线仓库列表',
         component: () => import('../views/store/list.vue')
@@ -229,6 +233,10 @@ const routes: RouteConfig[] = [
         path: '/finance/payList',
         name: '付款列表',
         component: () => import('../views/finance/payList.vue')
+      }, {
+        path: '/oprHistory/system',
+        name: '系统操作记录',
+        component: () => import('../views/oprHistory/system.vue')
       }
     ]
   }, {

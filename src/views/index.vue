@@ -5,7 +5,7 @@
         <div class="leftCtn">
           <div class="companyCtn">
             <div class="logo">
-              <img src="https://i.52112.com/icon/jpg/256/20210201/109356/4368449.jpg" />
+              <img :src="window.sessionStorage.getItem('logo')||'https://i.52112.com/icon/jpg/256/20210201/109356/4368449.jpg'" />
             </div>
             <div class="name"
               @click="$router.push('/homePage/homePage')">{{window.sessionStorage.getItem('full_name')}}</div>
@@ -106,7 +106,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import { moduleList } from '@/assets/js/settingCommon'
-import { changeUserPasd } from '@/assets/js/api'
+import { changeUserPasd, index } from '@/assets/js/api'
 export default Vue.extend({
   data() {
     return {
@@ -192,6 +192,11 @@ export default Vue.extend({
           })
       }
     }
+  },
+  mounted() {
+    // Promise.all([index.notifyList()]).then((res) => {
+    //   console.log(res)
+    // })
   }
 })
 </script>

@@ -534,23 +534,23 @@ export default Vue.extend({
         return
       }
       this.loading_scroll = true
-      // index
-      //   .notifyList({
-      //     limit: 20,
-      //     page: this.page,
-      //     status: null,
-      //     tag: '版本更新公告'
-      //   })
-      //   .then((res) => {
-      //     this.loading_scroll = false
-      //     if (res.data.status !== false) {
-      //       this.clientUpdateList = res.data.data
-      //       this.page += 1
-      //       if (this.page > Math.ceil(this.total / 20)) {
-      //         this.disabledScroll = true
-      //       }
-      //     }
-      //   })
+      index
+        .notifyList({
+          limit: 20,
+          page: this.page,
+          status: null,
+          tag: '版本更新公告'
+        })
+        .then((res) => {
+          this.loading_scroll = false
+          if (res.data.status !== false) {
+            this.clientUpdateList = res.data.data
+            this.page += 1
+            if (this.page > Math.ceil(this.total / 20)) {
+              this.disabledScroll = true
+            }
+          }
+        })
     },
     resetAll() {
       this.searchList = {
@@ -632,6 +632,7 @@ export default Vue.extend({
         flag.isChecked = true
       }
     })
+    this.getList()
   }
 })
 </script>

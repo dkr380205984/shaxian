@@ -224,7 +224,22 @@ export const moduleList = [
         label: '毛条类型管理',
         icon: '&#xe615;',
         url: '/settings/material'
+      },
+      {
+        id: '5-8',
+        label: '公司信息设置',
+        icon: '&#xe615;',
+        url: '/settings/clientInfo'
       }
     ]
+  }, {
+    id: '6',
+    label: '操作记录',
+    children: [{
+      id: '6-0',
+      label: '系统操作',
+      icon: '&#xe615;',
+      url: '/oprHistory/system'
+    }]
   }
 ]

@@ -43,7 +43,7 @@ export const processArr = [
 export const moduleList = [
   {
     id: '0',
-    label: '产品管理',
+    label: '纱线管理',
     children: [
       {
         id: '0-0',
@@ -183,12 +183,12 @@ export const moduleList = [
         icon: '&#xe615;',
         url: '/settings/user'
       },
-      {
-        id: '5-1',
-        label: '纱线类型管理',
-        icon: '&#xe615;',
-        url: '/settings/yarnType'
-      },
+      // {
+      //   id: '5-1',
+      //   label: '纱线类型管理',
+      //   icon: '&#xe615;',
+      //   url: '/settings/yarnType'
+      // },
       {
         id: '5-2',
         label: '加工厂管理',
@@ -219,12 +219,12 @@ export const moduleList = [
         icon: '&#xe615;',
         url: '/settings/print'
       },
-      {
-        id: '5-7',
-        label: '毛条类型管理',
-        icon: '&#xe615;',
-        url: '/settings/material'
-      },
+      // {
+      //   id: '5-7',
+      //   label: '毛条类型管理',
+      //   icon: '&#xe615;',
+      //   url: '/settings/material'
+      // },
       {
         id: '5-8',
         label: '公司信息设置',

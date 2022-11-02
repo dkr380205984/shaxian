@@ -16,6 +16,7 @@
               <div class="elCtn">
                 <el-select v-model="input_form.type"
                   placeholder="请选择纱线类型"
+                  @change="render"
                   multiple>
                   <el-option v-for="item in typeArr"
                     :key="item.id"
@@ -24,6 +25,33 @@
                 </el-select>
               </div>
             </div>
+          </div>
+        </div>
+        <div class="rowCtn">
+          <div class="info tagCtn" v-if="typeArr.length > 0">
+            <span
+              class="yarnNameTag"
+              :class="{ active: item.check, unactive: !item.check }"
+              v-for="(item, index) in typeArr"
+              :key="item.value"
+              @click="
+                item.check = !item.check
+                $forceUpdate()
+              "
+            >
+              <span class="name">{{ item.name }}</span>
+              <span class="el-icon-close icon" @click.stop="deleteYarnType(item,index)"></span>
+            </span>
+            <span class="elCtn" v-show="typeFlag">
+              <el-input placeholder="输入新增类型" v-model="yarnTypeInfo.name"></el-input>
+            </span>
+            <span
+              class="yarnNameTag"
+              :class="typeFlag ? 'active' : 'addBtn'"
+              @click="typeFlag ? saveYarnType() : (typeFlag = true)"
+              >{{ typeFlag ? '保存类型' : '新增类型' }}
+              <i :class="typeFlag ? 'el-icon-document-checked' : 'el-icon-plus'"></i>
+            </span>
           </div>
         </div>
         <div class="rowCtn">
@@ -36,10 +64,12 @@
             <div class="content">
               <div class="elCtn">
                 <el-input v-model="input_form.normal_name"
-                  placeholder="请输入"></el-input>
+                  placeholder="请输入"
+                  @input="render"
+                  ></el-input>
               </div>
-              <div class="editBtn addBtn"
-                @click="name_flag='complex'">批量添加</div>
+              <!-- <div class="editBtn addBtn"
+                @click="name_flag='complex'">批量添加</div> -->
             </div>
           </div>
           <div class="colCtn"
@@ -105,13 +135,21 @@
               <div class="elCtn">
                 <el-autocomplete v-model="item.name"
                   :fetch-suggestions="querySearchColor"
-                  placeholder="请输入纱线颜色"></el-autocomplete>
+                  placeholder="请输入纱线颜色"
+                  @change="render"
+                  ></el-autocomplete>
               </div>
               <div class="editBtn addBtn"
-                @click="$addItem(input_form.colorArr,{name:''})"
+                @click="
+                  render()
+                  $addItem(input_form.colorArr,{name:'白胚'})
+                "
                 v-if="index===0">添加颜色</div>
               <div class="editBtn deleteBtn"
-                @click="$deleteItem(input_form.colorArr,index)"
+                @click="
+                  render()
+                  $deleteItem(input_form.colorArr,index)
+                "
                 v-if="index>0">删除颜色</div>
             </div>
           </div>
@@ -120,14 +158,18 @@
           <div class="colCtn flex3">
             <div class="label">
               <span class="text">纱线属性</span>
-              <span class="explanation">(必选)</span>
+              <span class="explanation">(选填)</span>
             </div>
             <div class="content"
               style="margin-bottom:12px"
               v-for="(item,index) in input_form.attributeArr"
               :key="index">
               <div class="elCtn">
-                <el-select v-model="item.name"
+                <el-autocomplete v-model="item.name"
+                  :fetch-suggestions="querySearchAttr"
+                  placeholder="请输入纱线属性"
+                  @change="render"></el-autocomplete>
+                <!-- <el-select v-model="item.name"
                   placeholder="请选择纱线属性">
                   <el-option label="胚绞"
                     value="胚绞"></el-option>
@@ -137,7 +179,7 @@
                     value="色绞"></el-option>
                   <el-option label="色筒"
                     value="色筒"></el-option>
-                </el-select>
+                </el-select> -->
               </div>
               <div class="editBtn addBtn"
                 @click="$addItem(input_form.attributeArr,{name:''})"
@@ -150,12 +192,12 @@
         </div>
         <div class="rowCtn">
           <div class="colCtn">
-            <div class="label">
+            <!-- <div class="label">
               <span class="text">纱线名称预览:</span>
               <span class="blue"
                 style="cursor:pointer;margin-left:12px"
                 @click="renderData">{{submit_form.length===0?'点击加载名称':'重新加载'}}</span>
-            </div>
+            </div> -->
             <div class="content autoHeight">
               <div class="tableCtn">
                 <div class="thead">
@@ -164,9 +206,9 @@
                     <div class="tcolumn noPad"
                       style="flex:5">
                       <div class="trow">
-                        <div class="tcolumn">颜色属性</div>
-                        <div class="tcolumn">外形属性</div>
-                        <div class="tcolumn">纱线价格</div>
+                        <div class="tcolumn">纱线颜色</div>
+                        <div class="tcolumn">纱线属性</div>
+                        <div class="tcolumn">参考价格</div>
                         <div class="tcolumn">备注信息</div>
                         <div class="tcolumn">操作</div>
                       </div>
@@ -197,7 +239,13 @@
                             placeholder="请输入纱线颜色"></el-autocomplete>
                         </div>
                         <div class="tcolumn">
-                          <el-select style="max-height:32px"
+                          <el-autocomplete 
+                            style="max-height:32px"
+                            v-model="itemChild.attribute"
+                            :fetch-suggestions="querySearchAttr"
+                            placeholder="请输入纱线属性"
+                            @change="render"></el-autocomplete>
+                          <!-- <el-select style="max-height:32px"
                             v-model="itemChild.attribute"
                             placeholder="属性">
                             <el-option label="胚绞"
@@ -208,7 +256,7 @@
                               value="色绞"></el-option>
                             <el-option label="色筒"
                               value="色筒"></el-option>
-                          </el-select>
+                          </el-select> -->
                         </div>
                         <div class="tcolumn">
                           <el-input class="el"
@@ -226,11 +274,11 @@
                           <span class="opr red"
                             style="margin-right:12px"
                             @click="deleteOnce(item.child_data,indexChild,index)">删除</span>
-                          <span class="opr blue"
+                          <!-- <span class="opr blue"
                             @click="$addItem(item.child_data,{color: '',
                               attribute: '',
                               price: '0',
-                              desc: ''})">新增子项</span>
+                              desc: ''})">新增子项</span> -->
                         </div>
                       </div>
                     </div>
@@ -240,7 +288,7 @@
             </div>
           </div>
         </div>
-        <div class="rowCtn">
+        <!-- <div class="rowCtn">
           <div class="colCtn flex3">
             <div class="btn btnMain"
               @click="$addItem(submit_form, { yarn_type: input_form.type, name: '', child_data: [{color: '',
@@ -248,7 +296,7 @@
                 price: '0',
                 desc: ''}] })">添加纱线</div>
           </div>
-        </div>
+        </div> -->
       </div>
     </div>
     <div class="bottomFixBar">
@@ -267,7 +315,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import { Product, ProductDetail } from '@/types/product'
-import { product } from '@/assets/js/api'
+import { product,yarnType } from '@/assets/js/api'
 import { YarnType, Color } from '@/types/common'
 export default Vue.extend({
   data(): {
@@ -288,7 +336,7 @@ export default Vue.extend({
         complex_name: '',
         colorArr: [
           {
-            name: ''
+            name: '白胚'
           }
         ],
         attributeArr: [
@@ -297,8 +345,11 @@ export default Vue.extend({
           }
         ]
       },
+      yarnTypeInfo:{name:'',},
+      typeFlag:false,
       submit_form: [],
-      name_flag: 'normal'
+      name_flag: 'normal',
+      attributeArr:[{value:'胚绞'},{value:'胚筒'},{value:'色绞'},{value:'色筒'}]
     }
   },
   computed: {
@@ -310,41 +361,41 @@ export default Vue.extend({
     }
   },
   methods: {
-    renderData() {
-      let msg = ''
-      this.input_form.attributeArr.forEach((item: { name: string }) => {
-        if (!item.name) {
-          msg = '请选择纱线属性'
-        }
-      })
-      if (this.name_flag === 'normal') {
-        msg = this.input_form.normal_name ? '' : '请输入纱线名称'
-      } else {
-        msg = this.input_form.complex_name ? '' : '请输入纱线名称'
-      }
-      if (msg) {
-        this.$message.error(msg)
-        return
-      }
-      if (this.submit_form.length > 0) {
-        this.$confirm('是否要重新加载，这可能会导致已经填写的数据丢失?', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        })
-          .then(() => {
-            this.render()
-          })
-          .catch(() => {
-            this.$message({
-              type: 'info',
-              message: '已取消'
-            })
-          })
-      } else {
-        this.render()
-      }
-    },
+    // renderData() {
+      // let msg = ''
+      // this.input_form.attributeArr.forEach((item: { name: string }) => {
+      //   if (!item.name) {
+      //     msg = '请选择纱线属性'
+      //   }
+      // })
+      // if (this.name_flag === 'normal') {
+      //   msg = this.input_form.normal_name ? '' : '请输入纱线名称'
+      // } else {
+      //   msg = this.input_form.complex_name ? '' : '请输入纱线名称'
+      // }
+      // if (msg) {
+      //   this.$message.error(msg)
+      //   return
+      // }
+      // if (this.submit_form.length > 0) {
+      //   this.$confirm('是否要重新加载，这可能会导致已经填写的数据丢失?', '提示', {
+      //     confirmButtonText: '确定',
+      //     cancelButtonText: '取消',
+      //     type: 'warning'
+      //   })
+      //     .then(() => {
+      //       this.render()
+      //     })
+      //     .catch(() => {
+      //       this.$message({
+      //         type: 'info',
+      //         message: '已取消'
+      //       })
+      //     })
+      // } else {
+        // this.render()
+      // }
+    // },
     render() {
       this.submit_form = []
       const proDetail: ProductDetail[] = []
@@ -419,6 +470,49 @@ export default Vue.extend({
       }
       this.$forceUpdate()
     },
+    deleteYarnType(item: YarnType,index:number) {
+      this.$confirm('此操作将永久删除该纱线类型, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        yarnType
+          .delete({
+            id: item.id
+          })
+          .then((res) => {
+            if (res.data.status !== false) {
+              this.$message({
+                type: 'success',
+                message: '删除成功!'
+              })
+              this.$deleteItem(this.typeArr,index)
+            }
+          })
+      })
+    },
+    saveYarnType() {
+      if (!this.yarnTypeInfo.name) {
+        this.$message.warning('请输入纱线类型名称')
+        return
+      }
+      yarnType
+        .create({
+          id: null,
+          name: this.yarnTypeInfo.name
+        })
+        .then((res) => {
+          if (res.data.status !== false) {
+            this.$message.success('添加成功')
+            this.typeFlag = false
+            this.typeArr.push({
+              id:null,
+              name:this.yarnTypeInfo.name,
+              check: true
+            })
+          }
+        })
+    },
     deleteOnce(father: ProductDetail[], indexChild: number, indexFather: number) {
       if (father.length > 1) {
         father.splice(indexChild, 1)
@@ -438,9 +532,6 @@ export default Vue.extend({
           }
           if (!itemChild.color) {
             msg = '请输入纱线颜色，可填白胚'
-          }
-          if (!itemChild.attribute) {
-            msg = '请输入纱线属性'
           }
         })
       })
@@ -479,7 +570,7 @@ export default Vue.extend({
                 complex_name: '',
                 colorArr: [
                   {
-                    name: ''
+                    name: '白胚'
                   }
                 ],
                 attributeArr: [
@@ -501,9 +592,16 @@ export default Vue.extend({
         ? this.colorArr.filter((itemF) => itemF.value.indexOf(queryString) !== -1)
         : this.colorArr
       cb(returnData)
+    },
+    querySearchAttr(queryString: string, cb: (params: any) => void) {
+      const returnData = queryString
+        ? this.attributeArr.filter((itemF:any) => itemF.value.indexOf(queryString) !== -1)
+        : this.attributeArr
+      cb(returnData)
     }
   },
   mounted() {
+    this.render()
     this.$checkCommonInfo([
       {
         checkWhich: 'api/yarnType',

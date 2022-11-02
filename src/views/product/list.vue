@@ -9,12 +9,11 @@
           @click="$router.push('/product/create')">添加纱线</span>
       </div>
       <div class="listCtn">
-        <div class="filterCtn"
-          :class="{'showMore':showMore}">
-          <div class="leftCtn">
+        <div class="filterCtn showMore">
+          <div class="leftCtn" style="padding:unset;max-width:unset">
             <div class="label">筛选条件：</div>
-            <div class="showMore"
-              @click="showMore=!showMore">{{!showMore?'展示更多':'收起筛选'}}</div>
+            <!-- <div class="showMore"
+              @click="showMore=!showMore">{{!showMore?'展示更多':'收起筛选'}}</div> -->
             <div class="elCtn">
               <el-select v-model="yarn_type"
                 multiple
@@ -66,7 +65,7 @@
               </el-select>
             </div>
           </div>
-          <div class="rightCtn">
+          <div class="rightCtn" style="min-width: 94px">
             <div class="btn btnGray fr"
               @click="reset">重置</div>
           </div>

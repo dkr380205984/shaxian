@@ -215,7 +215,7 @@ export default Vue.extend({
               this.$forceUpdate()
             })
         } else {
-          this.$message.error('请完善颜色属性信息')
+          this.$message.error('请完善纱线颜色信息')
         }
       } else {
         detail.edit = true

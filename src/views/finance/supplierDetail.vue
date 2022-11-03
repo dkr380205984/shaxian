@@ -174,7 +174,7 @@
           </div>
         </div>
         <div class="list">
-          <div class="overflow">
+          <div class="overflow" @mousewheel.prevent="listenWheel" ref="list">
             <div class="tableCtn">
               <div class="table">
                 <div class="headCtn">
@@ -791,6 +791,23 @@ export default Vue.extend({
         this.stock_statistics = res[5].data.data.others_data
         this.loading = false
       })
+    },
+    // 监听一下鼠标滚轮
+    listenWheel(ev: any) {
+      const detail = ev.wheelDelta || ev.detail
+      // 定义滚动方向，其实也可以在赋值的时候写
+      const moveForwardStep = 1
+      const moveBackStep = -1
+      // 定义滚动距离
+      let step = 0
+      // 判断滚动方向,这里的100可以改，代表滚动幅度，也就是说滚动幅度是自定义的
+      if (detail < 0) {
+        step = moveForwardStep * 50
+      } else {
+        step = moveBackStep * 50
+      }
+      // @ts-ignore 对需要滚动的元素进行滚动操作
+      this.$refs.list.scrollLeft += step
     },
     deleteLog(type: string, id: number) {
       this.$confirm('是否删除该日志?', '提示', {

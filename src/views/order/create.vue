@@ -3,7 +3,7 @@
     class="indexMain">
     <div class="module">
       <div class="titleCtn">
-        <span class="title">添加订单</span>
+        <span class="title">添加生产订单</span>
       </div>
       <div class="createCtn">
         <div class="rowCtn">
@@ -13,7 +13,7 @@
             </div>
             <div class="content">
               <div class="elCtn">
-                <el-input placeholder="请输入客户单号"
+                <el-input placeholder="请输入客户单号（选填）"
                   v-model="order_info.order_code"></el-input>
               </div>
             </div>
@@ -31,7 +31,7 @@
                   <el-option v-for="item in clientArr"
                     :key="item.id"
                     :value="item.id"
-                    :label="item.name"></el-option>
+                    :label="(item.code || item.id) + ' - ' +item.name"></el-option>
                 </el-select>
               </div>
             </div>
@@ -87,9 +87,9 @@
                         <div class="tcolumn"
                           style="flex:1.2">纱线颜色</div>
                         <div class="tcolumn">纱线属性</div>
+                        <div class="tcolumn">数量属性</div>
                         <div class="tcolumn">下单价格</div>
                         <div class="tcolumn">下单数量</div>
-                        <div class="tcolumn">数量属性</div>
                         <div class="tcolumn"
                           style="flex:0.5">颜色操作</div>
                       </div>
@@ -109,6 +109,7 @@
                         <el-cascader v-model="itemPro.name"
                           filterable
                           placeholder="请选择纱线"
+                          :show-all-levels='false'
                           :options="yarn_list"
                           @change="getProColor($event,itemPro)"></el-cascader>
                       </div>
@@ -129,34 +130,12 @@
                         </div>
                         <div class="tcolumn">
                           <div class="el">
-                            <el-select v-model="itemChild.attribute"
-                              placeholder="请选择纱线属性">
-                              <el-option label="胚绞"
-                                value="胚绞"></el-option>
-                              <el-option label="胚筒"
-                                value="胚筒"></el-option>
-                              <el-option label="色绞"
-                                value="色绞"></el-option>
-                              <el-option label="色筒"
-                                value="色筒"></el-option>
-                            </el-select>
+                            <el-autocomplete
+                              v-model="itemChild.attribute"
+                              :fetch-suggestions="querySearchAttr"
+                              placeholder="请输入纱线属性"
+                            ></el-autocomplete>
                           </div>
-                        </div>
-                        <div class="tcolumn">
-                          <el-input class="el"
-                            v-model="itemChild.price"
-                            placeholder="下单价格"
-                            @input="cmpTotal">
-                            <template slot="append">元</template>
-                          </el-input>
-                        </div>
-                        <div class="tcolumn">
-                          <el-input class="el"
-                            v-model="itemChild.weight"
-                            placeholder="数量"
-                            @input="cmpTotal">
-                            <template slot="append">kg</template>
-                          </el-input>
                         </div>
                         <div class="tcolumn">
                           <div class="el">
@@ -176,6 +155,22 @@
                             </el-select>
                           </div>
                         </div>
+                        <div class="tcolumn">
+                          <el-input class="el"
+                            v-model="itemChild.price"
+                            placeholder="下单价格"
+                            @input="cmpTotal">
+                            <template slot="append">元</template>
+                          </el-input>
+                        </div>
+                        <div class="tcolumn">
+                          <el-input class="el"
+                            v-model="itemChild.weight"
+                            placeholder="数量"
+                            @input="cmpTotal">
+                            <template slot="append">kg</template>
+                          </el-input>
+                        </div>
                         <div class="tcolumn flexRow"
                           style="flex:0.5">
                           <span class="opr red"
@@ -183,7 +178,7 @@
                             @click="deleteOnce(itemPro.child_data,indexChild,indexPro)">删除</span>
                           <span class="opr blue"
                             @click="$addItem(itemPro.child_data,{
-                              number_attribute: '98纱',
+                              number_attribute: '',
                               weight: itemPro.child_data[0].weight,
                               price: itemPro.child_data[0].price,
                               attribute: itemPro.child_data[0].attribute,
@@ -197,7 +192,7 @@
                       style="flex:0.5">
                       <span class="opr red"
                         style="margin-right:12px"
-                        @click="$deleteItem(order_info.product_info,indexPro)">删除纱线</span>
+                        @click="deletePro(order_info.product_info,indexPro)">删除纱线</span>
                     </div>
                   </div>
                 </div>
@@ -212,7 +207,7 @@
                 name: '',
                 child_data: [
                   {
-                    number_attribute: '98纱',
+                    number_attribute: '',
                     weight: '',
                     price: '',
                     attribute: '',
@@ -335,6 +330,7 @@
             style="z-index:1">
             <div class="label">
               <span class="text">备注信息</span>
+              <span class="explanation">(选填)</span>
             </div>
             <div class="content autoHeight">
               <div ref='editor'></div>
@@ -391,7 +387,7 @@ export default Vue.extend({
             name: [],
             child_data: [
               {
-                number_attribute: '98纱',
+                number_attribute: '',
                 weight: '',
                 price: '',
                 attribute: '',
@@ -402,7 +398,8 @@ export default Vue.extend({
         ]
       },
       editor: '',
-      postData: { key: '', token: '' }
+      postData: { key: '', token: '' },
+      attributeArr: [{ value: '胚绞' }, { value: '胚筒' }, { value: '色绞' }, { value: '色筒' }]
     }
   },
   computed: {
@@ -482,6 +479,30 @@ export default Vue.extend({
             }
           })
         })
+    },
+    querySearchAttr(queryString: string, cb: (params: any) => void) {
+      const returnData = queryString
+        ? this.attributeArr.filter((itemF: any) => itemF.value.indexOf(queryString) !== -1)
+        : this.attributeArr
+      cb(returnData)
+    },
+    deletePro(product_info:any,indexPro:number){
+      this.$confirm('此操作将删除该行纱线, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.$deleteItem(product_info,indexPro)
+        this.$message({
+          type: 'success',
+          message: '删除成功!'
+        });
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        });          
+      });
     },
     saveOrder() {
       if (
@@ -576,7 +597,7 @@ export default Vue.extend({
                     name: '',
                     child_data: [
                       {
-                        number_attribute: '98纱',
+                        number_attribute: '',
                         weight: '',
                         price: '',
                         attribute: '',

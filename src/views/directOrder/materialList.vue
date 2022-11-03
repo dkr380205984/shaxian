@@ -9,12 +9,11 @@
           @click="openOrder">添加采购单</span>
       </div>
       <div class="listCtn">
-        <div class="filterCtn"
-          :class="{'showMore':showMore}">
-          <div class="leftCtn">
+        <div class="filterCtn showMore">
+          <div class="leftCtn" style="padding: unset; max-width: unset">
             <div class="label">筛选条件：</div>
-            <div class="showMore"
-              @click="showMore=!showMore">{{!showMore?'展示更多':'收起筛选'}}</div>
+            <!-- <div class="showMore"
+              @click="showMore=!showMore">{{!showMore?'展示更多':'收起筛选'}}</div> -->
             <div class="elCtn">
               <el-input v-model="code"
                 placeholder="请输入采购单号搜索"
@@ -46,17 +45,7 @@
                   :label="item.name"></el-option>
               </el-select>
             </div>
-            <div class="elCtn middle"
-              style="width:350px;">
-              <el-date-picker v-model="date"
-                type="daterange"
-                range-separator="至"
-                start-placeholder="开始日期"
-                end-placeholder="结束日期"
-                @change="changeRouter(1)">
-              </el-date-picker>
-            </div>
-            <div class="elCtn middle">
+            <div class="elCtn">
               <el-select v-model="page_size"
                 placeholder="选择每页展示的条数"
                 @change="changeRouter(1)">
@@ -68,8 +57,18 @@
                   :value="30"></el-option>
               </el-select>
             </div>
+            <div class="elCtn middle"
+              style="width:350px;">
+              <el-date-picker v-model="date"
+                type="daterange"
+                range-separator="至"
+                start-placeholder="开始日期"
+                end-placeholder="结束日期"
+                @change="changeRouter(1)">
+              </el-date-picker>
+            </div>
           </div>
-          <div class="rightCtn">
+          <div class="rightCtn" style="min-width: 94px">
             <div class="btn btnGray fr"
               @click="reset">重置</div>
           </div>
@@ -657,6 +656,70 @@ export default Vue.extend({
           }
         })
     },
+    // 下面两个函数是让el-table滚动的
+    scrollFunction(obj:any, id:any) {
+      obj = document.getElementById(id)
+      if (obj.attachEvent) {
+        obj.attachEvent('onmousewheel', this.mouseScroll(obj))
+      } else if (obj.addEventListener) {
+        obj.addEventListener('DOMMouseScroll', this.mouseScroll(obj), false)
+      }
+      obj.onmousewheel = obj.onmousewheel = this.mouseScroll(obj)
+    },
+    mouseScroll(obj:any) {
+      return function () {
+        let e = window.event || document.all ? window.event : arguments[0] ? arguments[0] : event
+        let detail, moveForwardStep, moveBackStep
+        let step = 0
+        if (e.wheelDelta) { // google 下滑负数： -120
+          detail = e.wheelDelta
+          moveForwardStep = -1
+          moveBackStep = 1
+        } else if (e.detail) { // firefox 下滑正数：3
+          // @ts-ignore
+          detail = event.detail
+          moveForwardStep = 1
+          moveBackStep = -1
+        }
+        // @ts-ignore
+        step = detail > 0 ? moveForwardStep * 100 : moveBackStep * 100
+        // e.preventDefault()
+        let left = obj.querySelector('table').clientWidth - obj.clientWidth
+        //这里是为了向右滚动后再向下滚动，向左滚动后再向上滚动，如果不需要，只需要写e.preventDefault()
+        //-------------------
+        if (moveForwardStep === -1) {//google
+          if (detail > 0) {//向上
+            if (obj.scrollLeft > 0) {
+              e.preventDefault()
+            } else {
+              return true
+            }
+          } else {
+            if (obj.scrollLeft < left) {
+              e.preventDefault()
+            } else {
+              return true
+            }
+          }
+        } else {//firefox
+          if (detail > 0) {//向下
+            if (obj.scrollLeft < left) {
+              e.preventDefault()
+            } else {
+              return true
+            }
+          } else {
+            if (obj.scrollLeft > 0) {
+              e.preventDefault()
+            } else {
+              return true
+            }
+          }
+        }
+        //--------------------
+        obj.scrollLeft = obj.scrollLeft + step
+      }
+    },
     openUpdate(info: OrderMaterialInfo) {
       const selfInfo = JSON.parse(JSON.stringify(info))
       this.update_flag = true
@@ -789,6 +852,10 @@ export default Vue.extend({
     }
   },
   mounted() {
+    //@ts-ignore id为scoll已经被el-table使用，可以使el-table滚动
+    let domObj = this.$refs.table.bodyWrapper
+    domObj.id = 'scrollBar'
+    this.scrollFunction(domObj, 'scrollBar')
     this.$checkCommonInfo([
       {
         checkWhich: 'api/client',
@@ -819,4 +886,11 @@ export default Vue.extend({
 
 <style lang="less" scoped>
 @import '~@/assets/less/directOrder/yarnList.less';
+</style>
+
+<style>
+/* el-table 自定义滚动条的时候没有白线 */
+.el-table__fixed-right::before, .el-table__fixed::before {
+  content:unset
+}
 </style>

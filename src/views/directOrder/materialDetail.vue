@@ -55,8 +55,8 @@
             <span class="text">{{order_material_info.desc || '无'}}</span>
           </div>
           <div class="colCtn">
-            <span class="label">入库数量：</span>
-            <span class="text green">{{order_material_info.push_weight || 0}}kg</span>
+            <span class="label">已入库数量：</span>
+            <span class="text green" style="padding-left:10px">{{order_material_info.push_weight || 0}}kg</span>
           </div>
         </div>
         <div class="rowCtn"
@@ -101,7 +101,7 @@
               <div class="tcolumn">毛条名称</div>
               <div class="tcolumn">采购单价(元)</div>
               <div class="tcolumn">采购数量(kg)</div>
-              <div class="tcolumn">入库数量(kg)</div>
+              <div class="tcolumn">已入库数量(kg)</div>
             </div>
           </div>
           <div class="tbody">
@@ -137,7 +137,7 @@
                       style="flex:2;flex-direction:column">
                       <div class="row">
                         <div class="column min120">毛条名称</div>
-                        <div class="column min120">入库数量</div>
+                        <div class="column min120">已入库数量</div>
                         <div class="column min120">入库件数</div>
                         <div class="column min120">入库批号</div>
                       </div>

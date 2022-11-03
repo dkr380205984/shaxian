@@ -15,11 +15,18 @@
               <el-input v-model="order_code" placeholder="输入客户单号" @change="changeRouter(1)"></el-input>
             </div>
             <div class="elCtn">
-              <el-input v-model="product_name" placeholder="输入纱线名称" @change="changeRouter(1)"></el-input>
+              <el-cascader v-model="productName"
+                  filterable
+                  clearable
+                  :show-all-levels='false'
+                  placeholder="请选择纱线"
+                  :options="yarn_list"
+                  @change="changeProductName"></el-cascader>
+              <!-- <el-input v-model="product_name" placeholder="输入纱线名称" @change="changeRouter(1)"></el-input> -->
             </div>
             <div class="elCtn">
-              <el-select v-model="client_id" placeholder="选择下单公司" clearable filterable @change="changeRouter(1)">
-                <el-option v-for="item in client_list" :key="item.id" :value="item.id" :label="item.name"></el-option>
+              <el-select v-model="client_id" placeholder="选择下单客户" clearable filterable @change="changeRouter(1)">
+                <el-option v-for="item in client_list" :key="item.id" :value="item.id" :label="(item.code || item.id) + ' - ' + item.name"></el-option>
               </el-select>
             </div>
             <div class="elCtn">
@@ -203,6 +210,7 @@ export default Vue.extend({
     return {
       order_code: '',
       product_name: '',
+      productName: '',
       client_id: '',
       user_id: '',
       loading: true,
@@ -225,6 +233,20 @@ export default Vue.extend({
     }
   },
   computed: {
+    yarn_list() {
+      return this.$store.state.api.yarnType.arr.map((item: any) => {
+        return {
+          value: item.name,
+          label: item.name,
+          children: item.yarns.map((itemChild: any) => {
+            return {
+              value: itemChild.name,
+              label: itemChild.name
+            }
+          })
+        }
+      })
+    },
     client_list() {
       return this.$store.state.api.client.arr
     },
@@ -233,7 +255,7 @@ export default Vue.extend({
     }
   },
   methods: {
-    changeRouter(page: string) {
+    changeRouter(page: string | number) {
       const pages = page || 1
       this.$router.push(
         '/order/list?page=' +
@@ -242,6 +264,8 @@ export default Vue.extend({
           this.order_code +
           '&product_name=' +
           this.product_name +
+          '&productName=' +
+          this.productName +
           '&client_id=' +
           this.client_id +
           '&user_id=' +
@@ -252,8 +276,80 @@ export default Vue.extend({
           this.date
       )
     },
+    changeProductName(str:any){
+      if(str.length === 0){
+        str = ['','']
+      }
+      this.productName = str
+      this.product_name = str[1]
+      this.changeRouter(1)
+    },
+    // 下面两个函数是让el-table滚动的
+    scrollFunction(obj:any, id:any) {
+      obj = document.getElementById(id)
+      if (obj.attachEvent) {
+        obj.attachEvent('onmousewheel', this.mouseScroll(obj))
+      } else if (obj.addEventListener) {
+        obj.addEventListener('DOMMouseScroll', this.mouseScroll(obj), false)
+      }
+      obj.onmousewheel = obj.onmousewheel = this.mouseScroll(obj)
+    },
+    mouseScroll(obj:any) {
+      return function () {
+        let e = window.event || document.all ? window.event : arguments[0] ? arguments[0] : event
+        let detail, moveForwardStep, moveBackStep
+        let step = 0
+        if (e.wheelDelta) { // google 下滑负数： -120
+          detail = e.wheelDelta
+          moveForwardStep = -1
+          moveBackStep = 1
+        } else if (e.detail) { // firefox 下滑正数：3
+          // @ts-ignore
+          detail = event.detail
+          moveForwardStep = 1
+          moveBackStep = -1
+        }
+        // @ts-ignore
+        step = detail > 0 ? moveForwardStep * 100 : moveBackStep * 100
+        // e.preventDefault()
+        let left = obj.querySelector('table').clientWidth - obj.clientWidth
+        //这里是为了向右滚动后再向下滚动，向左滚动后再向上滚动，如果不需要，只需要写e.preventDefault()
+        //-------------------
+        if (moveForwardStep === -1) {//google
+          if (detail > 0) {//向上
+            if (obj.scrollLeft > 0) {
+              e.preventDefault()
+            } else {
+              return true
+            }
+          } else {
+            if (obj.scrollLeft < left) {
+              e.preventDefault()
+            } else {
+              return true
+            }
+          }
+        } else {//firefox
+          if (detail > 0) {//向下
+            if (obj.scrollLeft < left) {
+              e.preventDefault()
+            } else {
+              return true
+            }
+          } else {
+            if (obj.scrollLeft > 0) {
+              e.preventDefault()
+            } else {
+              return true
+            }
+          }
+        }
+        //--------------------
+        obj.scrollLeft = obj.scrollLeft + step
+      }
+    },
     reset() {
-      this.$router.push('/order/list?page=1&order_code=&product_name=&client_id=&user_id=&page_size=10&date=')
+      this.$router.push('/order/list?page=1&order_code=&product_name=&client_id=&user_id=&page_size=10&date=productName=,')
     },
     getFilters() {
       const params = this.$route.query
@@ -262,6 +358,8 @@ export default Vue.extend({
       this.user_id = params.user_id ? Number(params.user_id) : ''
       this.client_id = params.client_id ? Number(params.client_id) : ''
       this.product_name = params.product_name
+      // @ts-ignore
+      this.productName = params.productName?params.productName.split(','):['','']
       this.order_code = params.order_code
       if (params.date !== 'null' && params.date !== '') {
         this.date = (params.date as string).split(',')
@@ -335,6 +433,12 @@ export default Vue.extend({
         })
     }
   },
+  mounted(){
+    //@ts-ignore id为scoll已经被el-table使用，可以使el-table滚动
+    let domObj = this.$refs.table.bodyWrapper
+    domObj.id = 'scrollBar'
+    this.scrollFunction(domObj, 'scrollBar')
+  },
   created() {
     this.$checkCommonInfo([
       {
@@ -346,6 +450,11 @@ export default Vue.extend({
         checkWhich: 'api/user',
         getInfoMethed: 'dispatch',
         getInfoApi: 'getUserAsync'
+      },
+      {
+        checkWhich: 'api/yarnType',
+        getInfoMethed: 'dispatch',
+        getInfoApi: 'getYarnTypeAsync'
       }
     ])
     this.getFilters()
@@ -356,4 +465,11 @@ export default Vue.extend({
 
 <style lang="less" scoped>
 @import '~@/assets/less/order/list.less';
+</style>
+
+<style>
+/* el-table 自定义滚动条的时候没有白线 */
+.el-table__fixed-right::before, .el-table__fixed::before {
+  content:unset
+}
 </style>

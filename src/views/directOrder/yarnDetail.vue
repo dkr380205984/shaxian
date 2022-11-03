@@ -59,8 +59,8 @@
               :class="{'orange':order_yarn_info.status===1,'blue':order_yarn_info.status===2,'green':order_yarn_info.status===3,'gray':order_yarn_info.status===4}">{{order_yarn_info.status|orderStatusFilter}}</span>
           </div>
           <div class="colCtn">
-            <span class="label">入库数量：</span>
-            <span class="text green">{{order_yarn_info.push_weight || 0}}kg</span>
+            <span class="label">已入库数量：</span>
+            <span class="text green" style="padding-left:10px">{{order_yarn_info.push_weight || 0}}kg</span>
           </div>
         </div>
         <div class="rowCtn"
@@ -112,8 +112,8 @@
                   <div class="tcolumn">采购数量(kg)</div>
                 </div>
               </div>
+              <div class="tcolumn">已入库数量(kg)</div>
               <div class="tcolumn">待入库数量(kg)</div>
-              <div class="tcolumn">入库数量(kg)</div>
             </div>
           </div>
           <div class="tbody">
@@ -130,8 +130,8 @@
                   <div class="tcolumn blue">{{item.weight}}kg</div>
                 </div>
               </div>
-              <div class="tcolumn orange">{{order_yarn_info.total_weight-order_yarn_info.push_weight}}kg</div>
               <div class="tcolumn green">{{order_yarn_info.push_weight}}kg</div>
+              <div class="tcolumn red">{{order_yarn_info.total_weight-order_yarn_info.push_weight}}kg</div>
             </div>
           </div>
         </div>
@@ -157,7 +157,7 @@
                         <div class="column min120">纱线名称</div>
                         <div class="column min120">订购颜色</div>
                         <div class="column min120">订购属性</div>
-                        <div class="column min120">入库数量</div>
+                        <div class="column min120">已入库数量</div>
                         <div class="column min120">批号</div>
                         <div class="column min120">色号</div>
                         <div class="column min120">缸号</div>

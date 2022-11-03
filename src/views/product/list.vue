@@ -251,7 +251,7 @@ export default Vue.extend({
           color: ['纱线颜色（必填，默认文本为白胚）', '白胚'],
           attribute: ['纱线属性（选填）', ''],
           price: ['参考价格（选填，元/kg）', '0'],
-          desc: ['备注信息（选填）',''],
+          desc: ['备注信息（选填）', '']
         }
       }
       let submitData = []
@@ -277,30 +277,30 @@ export default Vue.extend({
         return
       }
       if (type === '添加纱线') {
-        let arr = this.$mergeData(submitData,{
+        let arr = this.$mergeData(submitData, {
           mainRule: 'name'
         })
-        arr.forEach((item:any) => {
+        arr.forEach((item: any) => {
           item.yarn_type = []
-          item.childrenMergeInfo.forEach((itemYarn:any) => {
-            let type_arr = itemYarn.yarn_type.replaceAll('，',',').split(',')
-            type_arr.forEach((itemType:any) => {
-              let id:any = this.typeArr.find((itemTypeDetail:any) => {
+          item.childrenMergeInfo.forEach((itemYarn: any) => {
+            let type_arr = itemYarn.yarn_type.replaceAll('，', ',').split(',')
+            type_arr.forEach((itemType: any) => {
+              let id: any = this.typeArr.find((itemTypeDetail: any) => {
                 return itemType === itemTypeDetail.name
               })
-              if(id){
+              if (id) {
                 item.yarn_type.push(id.id)
               }
-            });
+            })
             delete itemYarn.yarn_type
-          });
+          })
           item.yarn_type = [...new Set(item.yarn_type)]
           item.child_data = this.$clone(item.childrenMergeInfo)
           delete item.childrenMergeInfo
-        });
+        })
 
         product.create({ data: arr }).then((res) => {
-          if(res.data.status){
+          if (res.data.status) {
             this.$message.success('导入成功')
             this.getList()
           }

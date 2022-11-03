@@ -1,49 +1,30 @@
 <template>
-  <div class="indexMain"
-    v-loading='loading'>
+  <div class="indexMain" v-loading="loading">
     <div class="module">
       <div class="titleCtn">
         <span class="title hasBorder">加工厂列表</span>
-        <span class="addBtn btn btnMain"
-          @click="changeFactory()">新增加工厂</span>
+        <span class="addBtn btn btnMain" @click="changeFactory()">新增加工厂</span>
       </div>
       <div class="listCtn">
         <div class="filterCtn">
           <div class="leftCtn">
             <div class="label">筛选条件：</div>
             <div class="elCtn">
-              <el-input v-model="name"
-                @change="changeRouter(1)"
-                placeholder="搜索加工厂名称"></el-input>
+              <el-input v-model="name" @change="changeRouter(1)" placeholder="搜索加工厂名称"></el-input>
             </div>
             <div class="elCtn">
-              <el-select v-model="type"
-                clearable
-                @change="changeRouter(1)"
-                placeholder="筛选加工厂类型">
-                <el-option v-for="item in typeArr"
-                  :key="item.id"
-                  :label="item.name"
-                  :value="item.name">
-                </el-option>
+              <el-select v-model="type" clearable @change="changeRouter(1)" placeholder="筛选加工厂类型">
+                <el-option v-for="item in typeArr" :key="item.id" :label="item.name" :value="item.name"> </el-option>
               </el-select>
             </div>
             <div class="elCtn">
-              <el-select v-model="status"
-                clearable
-                @change="changeRouter(1)"
-                placeholder="筛选加工厂状态">
-                <el-option v-for="item in statusArr"
-                  :key="item.id"
-                  :label="item.name"
-                  :value="item.id">
-                </el-option>
+              <el-select v-model="status" clearable @change="changeRouter(1)" placeholder="筛选加工厂状态">
+                <el-option v-for="item in statusArr" :key="item.id" :label="item.name" :value="item.id"> </el-option>
               </el-select>
             </div>
           </div>
           <div class="rightCtn">
-            <div class="btn btnGray fr"
-              @click="resetFilter">重置</div>
+            <div class="btn btnGray fr" @click="resetFilter">重置</div>
           </div>
         </div>
         <div class="list">
@@ -63,84 +44,70 @@
             </div>
           </div>
           <div class="bodyCtn">
-            <div class="row"
-              v-for="item in factoryList"
-              :key="item.id">
-              <div class="column">{{item.code || item.id}}</div>
-              <div class="column">{{item.name}}</div>
-              <div class="column">{{item.abbreviation}}</div>
-              <div class="column">{{item.client_type}}</div>
-              <div class="column">{{item.user_name}}</div>
-              <div class="column">{{item.phone}}</div>
-              <div class="column">{{item.address || '/'}}</div>
-              <div class="column">{{item.contact || '/'}}</div>
-              <div class="column">{{item.contact_phone || '/'}}</div>
-              <div :class="`column ${item.status && 'green' || 'red'}`">{{item.status && '合作中' || '禁用中'}}</div>
+            <div class="row" v-for="item in factoryList" :key="item.id">
+              <div class="column">{{ item.code || item.id }}</div>
+              <div class="column">{{ item.name }}</div>
+              <div class="column">{{ item.abbreviation }}</div>
+              <div class="column">{{ item.client_type }}</div>
+              <div class="column">{{ item.user_name }}</div>
+              <div class="column">{{ item.phone }}</div>
+              <div class="column">{{ item.address || '/' }}</div>
+              <div class="column">{{ item.contact || '/' }}</div>
+              <div class="column">{{ item.contact_phone || '/' }}</div>
+              <div :class="`column ${(item.status && 'green') || 'red'}`">
+                {{ (item.status && '合作中') || '禁用中' }}
+              </div>
               <div class="column">
-                <span class="col_btn orange"
-                  @click="changeFactory(item)">修改</span>
-                <span class="col_btn green"
-                  v-if="!item.status"
-                  @click="disableFactory(item)">启用</span>
-                <span class="col_btn red"
-                  v-else
-                  @click="disableFactory(item)">禁用</span>
+                <span class="col_btn orange" @click="changeFactory(item)">修改</span>
+                <span class="col_btn green" v-if="!item.status" @click="disableFactory(item)">启用</span>
+                <span class="col_btn red" v-else @click="disableFactory(item)">禁用</span>
               </div>
             </div>
           </div>
         </div>
         <div class="pageCtn">
-          <el-pagination background
+          <el-pagination
+            background
             :current-page.sync="page"
             @current-change="getList"
             :page-size="10"
             layout="prev, pager, next"
-            :total="total">
+            :total="total"
+          >
           </el-pagination>
         </div>
       </div>
     </div>
-    <div class="popup"
-      v-show="addFlag">
+    <div class="popup" v-show="addFlag">
       <div class="main">
         <div class="titleCtn">
-          <div class="text">{{factoryInfo.id && '修改' || '新增'}}加工厂</div>
-          <i class="el-icon-close"
-            @click="addFlag=false"></i>
+          <div class="text">{{ (factoryInfo.id && '修改') || '新增' }}加工厂</div>
+          <i class="el-icon-close" @click="addFlag = false"></i>
         </div>
         <div class="contentCtn">
           <div class="row">
             <div class="label">加工厂编码：</div>
             <div class="info">
-              <el-input placeholder="请输入加工厂编码"
-                type="number"
-                v-model="factoryInfo.code"></el-input>
+              <el-input placeholder="请输入加工厂编码" type="number" v-model="factoryInfo.code"></el-input>
             </div>
           </div>
           <div class="row">
             <div class="label isMust">加工厂名称：</div>
             <div class="info">
-              <el-input placeholder="请输入加工厂名称"
-                v-model="factoryInfo.name"></el-input>
+              <el-input placeholder="请输入加工厂名称" v-model="factoryInfo.name"></el-input>
             </div>
           </div>
           <div class="row">
             <div class="label">加工厂简称：</div>
             <div class="info">
-              <el-input placeholder="请输入加工厂简称"
-                v-model="factoryInfo.abbreviation"></el-input>
+              <el-input placeholder="请输入加工厂简称" v-model="factoryInfo.abbreviation"></el-input>
             </div>
           </div>
           <div class="row">
             <div class="label isMust">加工厂类型：</div>
             <div class="info">
-              <el-select v-model="factoryInfo.client_type"
-                placeholder="请选择加工厂类型">
-                <el-option v-for="item in typeArr"
-                  :key="item.id"
-                  :label="item.name"
-                  :value="item.name">
-                </el-option>
+              <el-select v-model="factoryInfo.client_type" placeholder="请选择加工厂类型">
+                <el-option v-for="item in typeArr" :key="item.id" :label="item.name" :value="item.name"> </el-option>
               </el-select>
               <!-- <el-input placeholder="请输入加工厂类型"
                 v-model="factoryInfo.type"></el-input> -->
@@ -149,44 +116,37 @@
           <div class="row">
             <div class="label">主要负责人：</div>
             <div class="info">
-              <el-input placeholder="请输入主要负责人"
-                v-model="factoryInfo.user_name"></el-input>
+              <el-input placeholder="请输入主要负责人" v-model="factoryInfo.user_name"></el-input>
             </div>
           </div>
           <div class="row">
             <div class="label">加工厂电话：</div>
             <div class="info">
-              <el-input placeholder="请输入加工厂电话"
-                v-model="factoryInfo.phone"></el-input>
+              <el-input placeholder="请输入加工厂电话" v-model="factoryInfo.phone"></el-input>
             </div>
           </div>
           <div class="row">
             <div class="label">加工厂地址：</div>
             <div class="info">
-              <el-input placeholder="请输入加工厂地址"
-                v-model="factoryInfo.address"></el-input>
+              <el-input placeholder="请输入加工厂地址" v-model="factoryInfo.address"></el-input>
             </div>
           </div>
           <div class="row">
             <div class="label">联系人：</div>
             <div class="info">
-              <el-input placeholder="请输入联系人"
-                v-model="factoryInfo.contact"></el-input>
+              <el-input placeholder="请输入联系人" v-model="factoryInfo.contact"></el-input>
             </div>
           </div>
           <div class="row">
             <div class="label">联系人电话：</div>
             <div class="info">
-              <el-input placeholder="请输入联系人电话"
-                v-model="factoryInfo.contact_phone"></el-input>
+              <el-input placeholder="请输入联系人电话" v-model="factoryInfo.contact_phone"></el-input>
             </div>
           </div>
         </div>
         <div class="oprCtn">
-          <div class="opr"
-            @click="addFlag=false">取消</div>
-          <div class="opr blue"
-            @click="saveFactory">保存</div>
+          <div class="opr" @click="addFlag = false">取消</div>
+          <div class="opr blue" @click="saveFactory">保存</div>
         </div>
       </div>
     </div>
@@ -237,7 +197,7 @@ export default Vue.extend({
       factoryList: [],
       factoryInfo: {
         id: null,
-        code:'',
+        code: '',
         name: '',
         abbreviation: '',
         client_type: '',
@@ -371,7 +331,7 @@ export default Vue.extend({
         id: (item && item.id) || null,
         name: (item && item.name) || '',
         // @ts-ignore
-        code: (item && item.code) || ((item && item.id) || ''),
+        code: (item && item.code) || (item && item.id) || '',
         abbreviation: (item && item.abbreviation) || '',
         client_type: (item && item.client_type) || '',
         user_name: (item && item.user_name) || '',
@@ -394,7 +354,7 @@ export default Vue.extend({
             { title: '加工厂电话（选填）', key: 'phone' },
             { title: '加工厂地址（选填）', key: 'address' },
             { title: '联系人（选填）', key: 'contact' },
-            { title: '联系人电话（选填）', key: 'contact_phone' },
+            { title: '联系人电话（选填）', key: 'contact_phone' }
           ],
           type
         )
@@ -445,18 +405,18 @@ export default Vue.extend({
       let typeObj: any = {}
       if (type === '添加加工厂') {
         typeObj = {
-          code: ['加工厂编码（选填）',''],
+          code: ['加工厂编码（选填）', ''],
           name: ['加工厂名称（必填）'],
           abbreviation: ['加工厂简称（选填）', ''],
           client_type: ['加工厂类型（必填，选择染色单位、倒筒单位、混纱单位、膨纱单位其中一个）'],
           user_name: ['主要负责人（选填）', ''],
-          phone: ['加工厂电话（选填）',''],
-          address: ['加工厂地址（选填）',''],
-          contact: ['联系人（选填）',''],
-          contact_phone: ['联系人电话（选填）',''],
+          phone: ['加工厂电话（选填）', ''],
+          address: ['加工厂地址（选填）', ''],
+          contact: ['联系人（选填）', ''],
+          contact_phone: ['联系人电话（选填）', '']
         }
       }
-      let submitData:Array<PartyB> = []
+      let submitData: Array<PartyB> = []
       for (const prop in data) {
         for (const key in data[prop]) {
           let obj: any = {}
@@ -472,7 +432,7 @@ export default Vue.extend({
             }
           }
           obj.id = null
-          obj.type= 3
+          obj.type = 3
           submitData.push(obj)
         }
       }
@@ -482,7 +442,7 @@ export default Vue.extend({
       }
       if (type === '添加加工厂') {
         partyB.beachCreate({ data: submitData }).then((res) => {
-          if(res.data.status){
+          if (res.data.status) {
             this.$message.success('导入成功')
             this.getList()
           }

@@ -1,9 +1,11 @@
 <template>
-  <div id="productCreate"
-    class="indexMain">
-    <div class="module">
+  <div class="productCreate popup" v-show="show">
+    <div class="main" style="min-width: 1000px">
       <div class="titleCtn">
-        <span class="title">添加纱线</span>
+        <div class="text">{{ update ? '修改' : '添加' }}纱线</div>
+        <div class="closeCtn" @click="close">
+          <i class="el-icon-close"></i>
+        </div>
       </div>
       <div class="createCtn">
         <div class="rowCtn">
@@ -12,7 +14,7 @@
               <span class="text">纱线类型</span>
               <span class="explanation">(必选)</span>
             </div>
-            <div class="content">
+            <!-- <div class="content">
               <div class="elCtn">
                 <el-select v-model="input_form.type"
                   placeholder="请选择纱线类型"
@@ -24,7 +26,7 @@
                     :value="item.id"></el-option>
                 </el-select>
               </div>
-            </div>
+            </div> -->
           </div>
         </div>
         <div class="rowCtn">
@@ -40,7 +42,7 @@
               "
             >
               <span class="name">{{ item.name }}</span>
-              <span class="el-icon-close icon" @click.stop="deleteYarnType(item,index)"></span>
+              <span class="el-icon-close icon" @click.stop="deleteYarnType(item, index)"></span>
             </span>
             <span class="elCtn" v-show="typeFlag">
               <el-input placeholder="输入新增类型" v-model="yarnTypeInfo.name"></el-input>
@@ -55,70 +57,44 @@
           </div>
         </div>
         <div class="rowCtn">
-          <div class="colCtn flex3"
-            v-if="name_flag === 'normal'">
+          <div class="colCtn flex3" v-if="name_flag === 'normal'">
             <div class="label">
               <span class="text">纱线名称</span>
               <span class="explanation">(必填)</span>
             </div>
             <div class="content">
               <div class="elCtn">
-                <el-input v-model="input_form.normal_name"
-                  placeholder="请输入"
-                  @input="render"
-                  ></el-input>
+                <el-input v-model="input_form.normal_name" placeholder="请输入" @input="render"></el-input>
               </div>
               <!-- <div class="editBtn addBtn"
                 @click="name_flag='complex'">批量添加</div> -->
             </div>
           </div>
-          <div class="colCtn"
-            v-if="name_flag==='complex'">
+          <div class="colCtn" v-if="name_flag === 'complex'">
             <div class="label">
               <span class="text">纱线名称</span>
               <span class="explanation">(批量填写)</span>
             </div>
             <div class="content">
               <div class="complexCtn">
-                <el-input class="el"
-                  v-model="input_form.zs_times"
-                  placeholder="支数间隔值"></el-input>
-                <el-input class="el"
-                  v-model="input_form.zs_min"
-                  placeholder="支数最小值"></el-input>
+                <el-input class="el" v-model="input_form.zs_times" placeholder="支数间隔值"></el-input>
+                <el-input class="el" v-model="input_form.zs_min" placeholder="支数最小值"></el-input>
                 <span class="icon">-</span>
-                <el-input class="el"
-                  v-model="input_form.zs_max"
-                  placeholder="支数最大值"></el-input>
-                <el-select class="el"
-                  v-model="input_form.zs_unit"
-                  placeholder="支数单位">
-                  <el-option label="支"
-                    value="支"></el-option>
-                  <el-option label="cm"
-                    value="cm"></el-option>
-                  <el-option label="公分"
-                    value="公分"></el-option>
-                  <el-option label="S"
-                    value="S"></el-option>
+                <el-input class="el" v-model="input_form.zs_max" placeholder="支数最大值"></el-input>
+                <el-select class="el" v-model="input_form.zs_unit" placeholder="支数单位">
+                  <el-option label="支" value="支"></el-option>
+                  <el-option label="cm" value="cm"></el-option>
+                  <el-option label="公分" value="公分"></el-option>
+                  <el-option label="S" value="S"></el-option>
                 </el-select>
                 <span class="icon">/</span>
-                <el-input class="el"
-                  v-model="input_form.gs_times"
-                  placeholder="股数间隔值"></el-input>
-                <el-input class="el"
-                  v-model="input_form.gs_min"
-                  placeholder="股数最小值"></el-input>
+                <el-input class="el" v-model="input_form.gs_times" placeholder="股数间隔值"></el-input>
+                <el-input class="el" v-model="input_form.gs_min" placeholder="股数最小值"></el-input>
                 <span class="icon">-</span>
-                <el-input class="el"
-                  v-model="input_form.gs_max"
-                  placeholder="股数最大值"></el-input>
-                <el-input class="el big"
-                  v-model="input_form.complex_name"
-                  placeholder="纱线名称"></el-input>
+                <el-input class="el" v-model="input_form.gs_max" placeholder="股数最大值"></el-input>
+                <el-input class="el big" v-model="input_form.complex_name" placeholder="纱线名称"></el-input>
               </div>
-              <div class="editBtn addBtn"
-                @click="name_flag='normal'">单个添加</div>
+              <div class="editBtn addBtn" @click="name_flag = 'normal'">单个添加</div>
             </div>
           </div>
         </div>
@@ -128,29 +104,35 @@
               <span class="text">纱线颜色</span>
               <span class="explanation">(不填则默认为白胚)</span>
             </div>
-            <div class="content"
-              style="margin-bottom:12px"
-              v-for="(item,index) in input_form.colorArr"
-              :key="index">
+            <div class="content" style="margin-bottom: 12px" v-for="(item, index) in input_form.colorArr" :key="index">
               <div class="elCtn">
-                <el-autocomplete v-model="item.name"
+                <el-autocomplete
+                  v-model="item.name"
                   :fetch-suggestions="querySearchColor"
                   placeholder="请输入纱线颜色"
-                  @change="render"
-                  ></el-autocomplete>
+                  @input="render"
+                ></el-autocomplete>
               </div>
-              <div class="editBtn addBtn"
+              <div
+                class="editBtn addBtn"
                 @click="
                   render()
-                  $addItem(input_form.colorArr,{name:'白胚'})
+                  $addItem(input_form.colorArr, { name: '白胚' })
                 "
-                v-if="index===0">添加颜色</div>
-              <div class="editBtn deleteBtn"
+                v-if="index === 0"
+              >
+                添加颜色
+              </div>
+              <div
+                class="editBtn deleteBtn"
                 @click="
                   render()
-                  $deleteItem(input_form.colorArr,index)
+                  $deleteItem(input_form.colorArr, index)
                 "
-                v-if="index>0">删除颜色</div>
+                v-if="index > 0"
+              >
+                删除颜色
+              </div>
             </div>
           </div>
         </div>
@@ -160,15 +142,19 @@
               <span class="text">纱线属性</span>
               <span class="explanation">(选填)</span>
             </div>
-            <div class="content"
-              style="margin-bottom:12px"
-              v-for="(item,index) in input_form.attributeArr"
-              :key="index">
+            <div
+              class="content"
+              style="margin-bottom: 12px"
+              v-for="(item, index) in input_form.attributeArr"
+              :key="index"
+            >
               <div class="elCtn">
-                <el-autocomplete v-model="item.name"
+                <el-autocomplete
+                  v-model="item.name"
                   :fetch-suggestions="querySearchAttr"
                   placeholder="请输入纱线属性"
-                  @change="render"></el-autocomplete>
+                  @input="render"
+                ></el-autocomplete>
                 <!-- <el-select v-model="item.name"
                   placeholder="请选择纱线属性">
                   <el-option label="胚绞"
@@ -181,12 +167,12 @@
                     value="色筒"></el-option>
                 </el-select> -->
               </div>
-              <div class="editBtn addBtn"
-                @click="$addItem(input_form.attributeArr,{name:''})"
-                v-if="index===0">添加属性</div>
-              <div class="editBtn deleteBtn"
-                @click="$deleteItem(input_form.attributeArr,index)"
-                v-if="index>0">删除属性</div>
+              <div class="editBtn addBtn" @click="$addItem(input_form.attributeArr, { name: '' })" v-if="index === 0">
+                添加属性
+              </div>
+              <div class="editBtn deleteBtn" @click="$deleteItem(input_form.attributeArr, index)" v-if="index > 0">
+                删除属性
+              </div>
             </div>
           </div>
         </div>
@@ -203,8 +189,7 @@
                 <div class="thead">
                   <div class="trow">
                     <div class="tcolumn">纱线名称</div>
-                    <div class="tcolumn noPad"
-                      style="flex:5">
+                    <div class="tcolumn noPad" style="flex: 5">
                       <div class="trow">
                         <div class="tcolumn">纱线颜色</div>
                         <div class="tcolumn">纱线属性</div>
@@ -216,35 +201,29 @@
                   </div>
                 </div>
                 <div class="tbody">
-                  <div class="noData"
-                    v-show="submit_form.length===0">暂无预览</div>
-                  <div class="trow"
-                    v-for="(item,index) in submit_form"
-                    :key="index">
+                  <div class="noData" v-show="submit_form.length === 0">暂无预览</div>
+                  <div class="trow" v-for="(item, index) in submit_form" :key="index">
                     <div class="tcolumn">
-                      <el-input class="el"
-                        v-model="item.name"
-                        placeholder="名称">
-                      </el-input>
+                      <el-input class="el" v-model="item.name" placeholder="名称"> </el-input>
                     </div>
-                    <div class="tcolumn noPad"
-                      style="flex:5">
-                      <div class="trow"
-                        v-for="(itemChild,indexChild) in item.child_data"
-                        :key="indexChild">
+                    <div class="tcolumn noPad" style="flex: 5">
+                      <div class="trow" v-for="(itemChild, indexChild) in item.child_data" :key="indexChild">
                         <div class="tcolumn">
-                          <el-autocomplete style="max-height:32px"
+                          <el-autocomplete
+                            style="max-height: 32px"
                             v-model="itemChild.color"
                             :fetch-suggestions="querySearchColor"
-                            placeholder="请输入纱线颜色"></el-autocomplete>
+                            placeholder="请输入纱线颜色"
+                          ></el-autocomplete>
                         </div>
                         <div class="tcolumn">
-                          <el-autocomplete 
-                            style="max-height:32px"
+                          <el-autocomplete
+                            style="max-height: 32px"
                             v-model="itemChild.attribute"
                             :fetch-suggestions="querySearchAttr"
                             placeholder="请输入纱线属性"
-                            @change="render"></el-autocomplete>
+                            @change="render"
+                          ></el-autocomplete>
                           <!-- <el-select style="max-height:32px"
                             v-model="itemChild.attribute"
                             placeholder="属性">
@@ -259,21 +238,20 @@
                           </el-select> -->
                         </div>
                         <div class="tcolumn">
-                          <el-input class="el"
-                            v-model="itemChild.price"
-                            placeholder="单价">
+                          <el-input class="el" v-model="itemChild.price" placeholder="单价">
                             <template slot="append">元</template>
                           </el-input>
                         </div>
                         <div class="tcolumn">
-                          <el-input class="el"
-                            v-model="itemChild.desc"
-                            placeholder="备注"></el-input>
+                          <el-input class="el" v-model="itemChild.desc" placeholder="备注"></el-input>
                         </div>
                         <div class="tcolumn flexRow">
-                          <span class="opr red"
-                            style="margin-right:12px"
-                            @click="deleteOnce(item.child_data,indexChild,index)">删除</span>
+                          <span
+                            class="opr red"
+                            style="margin-right: 12px"
+                            @click="deleteOnce(item.child_data, indexChild, index)"
+                            >删除</span
+                          >
                           <!-- <span class="opr blue"
                             @click="$addItem(item.child_data,{color: '',
                               attribute: '',
@@ -298,26 +276,38 @@
           </div>
         </div> -->
       </div>
-    </div>
-    <div class="bottomFixBar">
-      <div class="main">
-        <div class="btnCtn">
-          <div class="btn btnGray"
-            @click="$router.go(-1)">返回</div>
-          <div class="btn btnBlue"
-            @click="savePro">提交</div>
-        </div>
+      <div class="oprCtn">
+        <span class="btn borderBtn" @click="close">取消</span>
+        <span
+          class="btn"
+          :class="{ backHoverBlue: !update, backHoverOrange: update }"
+          style="margin: 0 20px"
+          @click="savePro"
+          >{{ update ? '修改' : '确认' }}</span
+        >
       </div>
     </div>
   </div>
 </template>
-
 <script lang="ts">
 import Vue from 'vue'
 import { Product, ProductDetail } from '@/types/product'
-import { product,yarnType } from '@/assets/js/api'
+import { product, yarnType } from '@/assets/js/api'
 import { YarnType, Color } from '@/types/common'
 export default Vue.extend({
+  props: {
+    id: {
+      default: ''
+    },
+    show: {
+      type: Boolean,
+      required: true
+    },
+    update: {
+      type: Boolean,
+      default: false
+    }
+  },
   data(): {
     submit_form: Product[]
     [propName: string]: any
@@ -345,11 +335,11 @@ export default Vue.extend({
           }
         ]
       },
-      yarnTypeInfo:{name:'',},
-      typeFlag:false,
+      yarnTypeInfo: { name: '' },
+      typeFlag: false,
       submit_form: [],
       name_flag: 'normal',
-      attributeArr:[{value:'胚绞'},{value:'胚筒'},{value:'色绞'},{value:'色筒'}]
+      attributeArr: [{ value: '胚绞' }, { value: '胚筒' }, { value: '色绞' }, { value: '色筒' }]
     }
   },
   computed: {
@@ -362,40 +352,43 @@ export default Vue.extend({
   },
   methods: {
     // renderData() {
-      // let msg = ''
-      // this.input_form.attributeArr.forEach((item: { name: string }) => {
-      //   if (!item.name) {
-      //     msg = '请选择纱线属性'
-      //   }
-      // })
-      // if (this.name_flag === 'normal') {
-      //   msg = this.input_form.normal_name ? '' : '请输入纱线名称'
-      // } else {
-      //   msg = this.input_form.complex_name ? '' : '请输入纱线名称'
-      // }
-      // if (msg) {
-      //   this.$message.error(msg)
-      //   return
-      // }
-      // if (this.submit_form.length > 0) {
-      //   this.$confirm('是否要重新加载，这可能会导致已经填写的数据丢失?', '提示', {
-      //     confirmButtonText: '确定',
-      //     cancelButtonText: '取消',
-      //     type: 'warning'
-      //   })
-      //     .then(() => {
-      //       this.render()
-      //     })
-      //     .catch(() => {
-      //       this.$message({
-      //         type: 'info',
-      //         message: '已取消'
-      //       })
-      //     })
-      // } else {
-        // this.render()
-      // }
+    // let msg = ''
+    // this.input_form.attributeArr.forEach((item: { name: string }) => {
+    //   if (!item.name) {
+    //     msg = '请选择纱线属性'
+    //   }
+    // })
+    // if (this.name_flag === 'normal') {
+    //   msg = this.input_form.normal_name ? '' : '请输入纱线名称'
+    // } else {
+    //   msg = this.input_form.complex_name ? '' : '请输入纱线名称'
+    // }
+    // if (msg) {
+    //   this.$message.error(msg)
+    //   return
+    // }
+    // if (this.submit_form.length > 0) {
+    //   this.$confirm('是否要重新加载，这可能会导致已经填写的数据丢失?', '提示', {
+    //     confirmButtonText: '确定',
+    //     cancelButtonText: '取消',
+    //     type: 'warning'
+    //   })
+    //     .then(() => {
+    //       this.render()
+    //     })
+    //     .catch(() => {
+    //       this.$message({
+    //         type: 'info',
+    //         message: '已取消'
+    //       })
+    //     })
+    // } else {
+    // this.render()
+    // }
     // },
+    close() {
+      this.$emit('close')
+    },
     render() {
       this.submit_form = []
       const proDetail: ProductDetail[] = []
@@ -470,7 +463,7 @@ export default Vue.extend({
       }
       this.$forceUpdate()
     },
-    deleteYarnType(item: YarnType,index:number) {
+    deleteYarnType(item: YarnType, index: number) {
       this.$confirm('此操作将永久删除该纱线类型, 是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
@@ -486,7 +479,7 @@ export default Vue.extend({
                 type: 'success',
                 message: '删除成功!'
               })
-              this.$deleteItem(this.typeArr,index)
+              this.$deleteItem(this.typeArr, index)
             }
           })
       })
@@ -506,8 +499,8 @@ export default Vue.extend({
             this.$message.success('添加成功')
             this.typeFlag = false
             this.typeArr.push({
-              id:res.data.data.id,
-              name:this.yarnTypeInfo.name,
+              id: res.data.data.id,
+              name: this.yarnTypeInfo.name,
               check: true
             })
           }
@@ -548,42 +541,53 @@ export default Vue.extend({
         this.$message.error(this.checkForm())
         return
       }
+
+      this.submit_form[0].yarn_type = []
+      this.typeArr.forEach((item) => {
+        if (item.check) {
+          // @ts-ignore
+          this.submit_form[0].yarn_type.push(item.id)
+        }
+      })
+
       product.create({ data: this.submit_form }).then((res) => {
         if (res.data.status) {
           this.$message.success('添加成功')
-          this.$confirm('继续添加新产品?', '提示', {
-            confirmButtonText: '继续添加',
-            cancelButtonText: '返回列表',
-            type: 'warning'
-          })
-            .then(() => {
-              this.input_form = {
-                type: [],
-                normal_name: '',
-                zs_times: '', // 支数间隔
-                zs_min: '',
-                zs_max: '',
-                zs_unit: '支',
-                gs_times: '',
-                gs_min: '',
-                gs_max: '',
-                complex_name: '',
-                colorArr: [
-                  {
-                    name: '白胚'
-                  }
-                ],
-                attributeArr: [
-                  {
-                    name: ''
-                  }
-                ]
-              }
-              this.submit_form = []
-            })
-            .catch(() => {
-              this.$router.push('/product/list?page=1&page_size=10&name=&color=&attribute=&yarn_type=')
-            })
+          this.$emit('afterCreate')
+          this.close()
+          //   this.$confirm('继续添加新产品?', '提示', {
+          //     confirmButtonText: '继续添加',
+          //     cancelButtonText: '返回列表',
+          //     type: 'warning'
+          //   })
+          //     .then(() => {
+          //       this.input_form = {
+          //         type: [],
+          //         normal_name: '',
+          //         zs_times: '', // 支数间隔
+          //         zs_min: '',
+          //         zs_max: '',
+          //         zs_unit: '支',
+          //         gs_times: '',
+          //         gs_min: '',
+          //         gs_max: '',
+          //         complex_name: '',
+          //         colorArr: [
+          //           {
+          //             name: '白胚'
+          //           }
+          //         ],
+          //         attributeArr: [
+          //           {
+          //             name: ''
+          //           }
+          //         ]
+          //       }
+          //       this.submit_form = []
+          //     })
+          //     .catch(() => {
+          //       this.$router.push('/product/list?page=1&page_size=10&name=&color=&attribute=&yarn_type=')
+          //     })
         }
       })
     },
@@ -595,7 +599,7 @@ export default Vue.extend({
     },
     querySearchAttr(queryString: string, cb: (params: any) => void) {
       const returnData = queryString
-        ? this.attributeArr.filter((itemF:any) => itemF.value.indexOf(queryString) !== -1)
+        ? this.attributeArr.filter((itemF: any) => itemF.value.indexOf(queryString) !== -1)
         : this.attributeArr
       cb(returnData)
     }
@@ -617,7 +621,6 @@ export default Vue.extend({
   }
 })
 </script>
-
 <style lang="less" scoped>
-@import '~@/assets/less/product/create.less';
+@import './productCreate.less';
 </style>

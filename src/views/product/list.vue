@@ -5,8 +5,10 @@
     <div class="module">
       <div class="titleCtn">
         <span class="title">纱线列表</span>
+        <!-- <span class="addBtn btn btnMain"
+          @click="$router.push('/product/create')">添加纱线</span> -->
         <span class="addBtn btn btnMain"
-          @click="$router.push('/product/create')">添加纱线</span>
+          @click="showAdd = true">添加纱线</span>
       </div>
       <div class="listCtn">
         <div class="filterCtn showMore">
@@ -125,6 +127,7 @@
         </div>
       </div>
     </div>
+    <product-create :show="showAdd" @close="showAdd=false" @afterCreate="getList"></product-create>
   </div>
 </template>
 
@@ -139,6 +142,7 @@ export default Vue.extend({
   } {
     return {
       loadign: true,
+      showAdd: false,
       page: 1,
       total: 1,
       page_size: 10,

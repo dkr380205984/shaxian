@@ -28,7 +28,7 @@
               <div class="trow">
                 <div class="tcolumn">纱线颜色</div>
                 <div class="tcolumn">纱线属性</div>
-                <div class="tcolumn">单价(元)</div>
+                <div class="tcolumn">参考单价(元)</div>
                 <div class="tcolumn">备注信息</div>
               </div>
             </div>
@@ -48,7 +48,7 @@
     </div>
     <div class="module">
       <div class="titleCtn">
-        <span class="title">产品库存</span>
+        <span class="title">库存信息</span>
       </div>
       <div style="padding:20px 32px">
         <div class="tableCtn">
@@ -206,7 +206,9 @@
 import Vue from 'vue'
 import { product, store, stock } from '@/assets/js/api'
 import { Product } from '@/types/product'
+import productCreate from '@/components/productCreate/productCreate.vue'
 export default Vue.extend({
+  components: { productCreate },
   data(): {
     product_info: Product
     [propName: string]: any

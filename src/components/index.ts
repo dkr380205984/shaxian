@@ -9,6 +9,7 @@ import inAndOutMat from './inAndOut/inAndOutMat.vue'
 import bill from './bill/bill.vue'
 import collection from './collection/collection.vue'
 import relatedInfo from './relatedInfo/relatedInfo.vue'
+import productCreate from './productCreate/productCreate.vue'
 export default {
   install: (vue: any) => {
     vue.component('sort', sort)
@@ -22,5 +23,6 @@ export default {
     vue.component('bill', bill)
     vue.component('collection', collection)
     vue.component('relatedInfo', relatedInfo)
+    vue.component('productCreate', productCreate)
   }
 }

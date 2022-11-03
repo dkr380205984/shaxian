@@ -1,0 +1,101 @@
+@import '../../assets/less/common.less';
+@import '../../assets/less/popup.less';
+@import '../../assets/less/create.less';
+@import '../../assets/less/bottomBar.less';
+@import '../../assets/less/table.less';
+
+.productCreate {
+    .content {
+        .btn {
+            margin-right: 12px;
+            margin-bottom: 12px;
+        }
+
+        .complexCtn {
+            display: flex;
+            justify-content: space-between;
+
+            .el {
+                width: 130px;
+
+                &.big {
+                    width: 200px;
+                }
+            }
+
+            .icon {
+                line-height: 32px;
+            }
+        }
+    }
+
+    .listCtn {
+        padding: 0;
+    }
+
+    .tagCtn {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        min-height: 32px;
+        height: auto;
+
+        .yarnNameTag {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 2em 0 1.2em;
+            border: 1px solid @blue;
+            border-radius: 4px;
+            line-height: 30px;
+            color: @blue;
+            position: relative;
+            margin: 6px 4px;
+            background-color: rgba(230, 247, 255, 1);
+
+            .icon {
+                position: absolute;
+                top: 50%;
+                right: 0.5em;
+                transform: translateY(-50%);
+                opacity: 0.5;
+                z-index: 1;
+                box-sizing: border-box;
+                transition: opacity 0.1s linear;
+                color: @red;
+
+                &:hover {
+                    opacity: 1;
+                    cursor: pointer;
+                    font-weight: bold;
+                }
+            }
+
+            &.unactive {
+                color: @font45;
+                border-color: @borderColor;
+                background: #fff;
+                cursor: pointer;
+            }
+
+            &.active {
+                background: @green;
+                border-color: @green;
+                color: #fff;
+                cursor: pointer;
+                padding-right: 1.2rem;
+
+                .icon {
+                    display: none;
+                }
+            }
+
+            &.addBtn {
+                padding-right: 1.2rem;
+                border: 1px dotted @blue;
+                color: @blue;
+                cursor: pointer;
+            }
+        }
+    }
+}

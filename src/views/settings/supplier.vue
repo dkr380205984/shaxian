@@ -53,7 +53,7 @@
             <div class="row"
               v-for="item in supplierList"
               :key="item.id">
-              <div class="column">{{item.id}}</div>
+              <div class="column">{{item.code || item.id}}</div>
               <div class="column">{{item.name}}</div>
               <div class="column">{{item.abbreviation}}</div>
               <div class="column">{{item.user_name}}</div>
@@ -95,6 +95,14 @@
             @click="addFlag=false"></i>
         </div>
         <div class="contentCtn">
+          <div class="row">
+            <div class="label">供货商编码：</div>
+            <div class="info">
+              <el-input placeholder="请输入供货商编码"
+                type="number"
+                v-model="supplierInfo.code"></el-input>
+            </div>
+          </div>
           <div class="row">
             <div class="label isMust">供货商名称：</div>
             <div class="info">
@@ -150,6 +158,34 @@
             @click="addFlag=false">取消</div>
           <div class="opr blue"
             @click="saveSupplier">保存</div>
+        </div>
+      </div>
+    </div>
+    <div class="bottomFixBar">
+      <div class="main">
+        <div class="btnCtn" style="float: left">
+          <div class="buttonList">
+            <div class="btn backHoverBlue" @click="importExcelData('添加供货商')">
+              <i class="el-icon-s-grid"></i>
+              <span class="text">批量导入单据</span>
+            </div>
+          </div>
+          <div class="buttonList">
+            <div class="btn backHoverBlue" @click="downloadExcel('供货商添加模板')">
+              <i class="el-icon-s-grid"></i>
+              <span class="text">下载导入模板</span>
+            </div>
+          </div>
+          <span class="btn hoverBlue">
+            <el-tooltip class="item" effect="dark" placement="top">
+              <div slot="content">
+                第一步：下载导入模板。<br />
+                第二步：填写模板信息。注意：编码为数字，请勿其它类型。<br />
+                第三步：导入模板，完成导入
+              </div>
+              <span>导入教程</span>
+            </el-tooltip>
+          </span>
         </div>
       </div>
     </div>
@@ -223,7 +259,7 @@ export default Vue.extend({
     },
     resetFilter() {
       this.name = ''
-      this.status = 1
+      this.status = '1'
       this.changeRouter()
     },
     saveSupplier() {
@@ -242,6 +278,7 @@ export default Vue.extend({
         .create({
           id: this.supplierInfo.id || null,
           name: this.supplierInfo.name,
+          code: this.supplierInfo.code,
           abbreviation: this.supplierInfo.abbreviation,
           user_name: this.supplierInfo.user_name,
           phone: this.supplierInfo.phone,
@@ -254,22 +291,131 @@ export default Vue.extend({
           if (res.data.status !== false) {
             this.$message.success(`${(this.supplierInfo.id && '修改') || '添加'}成功`)
             this.addFlag = false
-            this.changeRouter()
+            this.getList()
           }
         })
     },
     changeSupplier(item: PartyB) {
-      console.log(item)
+      // console.log(item)
       this.addFlag = true
       this.supplierInfo = {
         id: (item && item.id) || null,
         name: (item && item.name) || '',
+        // @ts-ignore
+        code: (item && item.code) || ((item && item.id) || ''),
         abbreviation: (item && item.abbreviation) || '',
         user_name: (item && item.user_name) || '',
         phone: (item && item.phone) || '',
         contact: (item && item.contact) || '',
         contact_phone: (item && item.contact_phone) || '',
         address: (item && item.address) || ''
+      }
+    },
+    downloadExcel(type: string) {
+      if (type === '供货商添加模板') {
+        this.$downloadExcel(
+          [],
+          [
+            { title: '供货商编码（选填）', key: 'code' },
+            { title: '供货商名称（必填）', key: 'name' },
+            { title: '供货商简称（选填）', key: 'abbreviation' },
+            { title: '主要负责人（选填）', key: 'user_name' },
+            { title: '供货商电话（选填）', key: 'phone' },
+            { title: '供货商地址（选填）', key: 'address' },
+            { title: '联系人（选填）', key: 'contact' },
+            { title: '联系人电话（选填）', key: 'contact_phone' },
+          ],
+          type
+        )
+      }
+    },
+    importExcelData(type: string) {
+      const inputFile = document.createElement('input')
+      inputFile.type = 'file'
+      inputFile.accept = '.xlsx,.xls'
+      inputFile.addEventListener('change', (e) => {
+        this.getExcelData(e, this.saveImportData, type)
+      })
+      let click = document.createEvent('MouseEvents')
+      click.initEvent('click', true, true)
+      inputFile.dispatchEvent(click)
+    },
+    getExcelData(file: any, callBack: any, type: string) {
+      const _this = this
+      const XLSX = require('xlsx')
+      const files = file.target.files
+      const fileReader = new FileReader()
+      fileReader.onload = function (e: any) {
+        try {
+          const data = e.target.result
+          const bytes = new Uint8Array(data) // 无符号整型数组
+          const len = bytes.byteLength
+          const binarys = new Array(len) // 创建定长数组，存储文本
+          for (let i = 0; i < len; i++) {
+            binarys[i] = String.fromCharCode(bytes[i])
+          }
+          const workbook = XLSX.read(binarys.join(''), { type: 'binary' })
+          if (!workbook) {
+            return null
+          }
+          const r: any = {}
+          workbook.SheetNames.forEach((name: string) => {
+            // 遍历每张纸数据
+            r[name] = XLSX.utils.sheet_to_json(workbook.Sheets[name])
+          })
+          callBack && callBack(r, type)
+        } catch (e) {
+          _this.$message.error('文件类型不正确')
+        }
+      }
+      fileReader.readAsArrayBuffer(files[0])
+    },
+    saveImportData(data: any, type: string) {
+      let typeObj: any = {}
+      if (type === '添加供货商') {
+        typeObj = {
+          code: ['供货商编码（选填）',''],
+          name: ['供货商名称（必填）'],
+          abbreviation: ['供货商简称（选填）', ''],
+          user_name: ['主要负责人（选填）', ''],
+          phone: ['供货商电话（选填）',''],
+          address: ['供货商地址（选填）',''],
+          contact: ['联系人（选填）',''],
+          contact_phone: ['联系人电话（选填）',''],
+        }
+      }
+      let submitData:Array<PartyB> = []
+      for (const prop in data) {
+        for (const key in data[prop]) {
+          let obj: any = {}
+          for (const indexType in typeObj) {
+            if (typeObj[indexType][0]) {
+              obj[indexType] = data[prop][key][typeObj[indexType][0]] || typeObj[indexType][1]
+              if (obj[indexType] === undefined) {
+                this.$message.error('解析失败，请使用标准模板或检测必填数据是否存在空的情况！！！')
+                return
+              }
+            } else {
+              obj[indexType] = typeObj[indexType][1]
+            }
+          }
+          obj.id = null
+          obj.type = 2
+          obj.client_type = null
+          submitData.push(obj)
+        }
+      }
+      if (submitData.length === 0) {
+        this.$message.warning('未读取到可用参数')
+        return
+      }
+      if (type === '添加供货商') {
+        partyB.beachCreate({ data: submitData }).then((res) => {
+          if(res.data.status){
+            this.$message.success('导入成功')
+            this.getList()
+          }
+        })
       }
     },
     disableSupplier(item: PartyB) {

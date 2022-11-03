@@ -41,6 +41,7 @@ import {
 // 供应商加工厂客户
 const partyB = {
   create: (params: PartyBCreateParams) => http.post(`${baseUrl}/client/save`, params, 'application/json'),
+  beachCreate: (params: any) => http.post(`${baseUrl}/client/batch/save`, params, 'application/json'),
   detail: (params: PartyBCheckParams) => http.get(`${baseUrl}/client/detail`, params),
   check: (params: PartyBCheckParams) => http.post(`${baseUrl}/client/status/check`, params, 'application/json'),
   list: (params?: PartyBListParams) => http.get(`${baseUrl}/client/lists`, params)

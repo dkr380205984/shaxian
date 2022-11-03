@@ -66,7 +66,7 @@
             <div class="row"
               v-for="item in factoryList"
               :key="item.id">
-              <div class="column">{{item.id}}</div>
+              <div class="column">{{item.code || item.id}}</div>
               <div class="column">{{item.name}}</div>
               <div class="column">{{item.abbreviation}}</div>
               <div class="column">{{item.client_type}}</div>
@@ -109,6 +109,14 @@
             @click="addFlag=false"></i>
         </div>
         <div class="contentCtn">
+          <div class="row">
+            <div class="label">加工厂编码：</div>
+            <div class="info">
+              <el-input placeholder="请输入加工厂编码"
+                type="number"
+                v-model="factoryInfo.code"></el-input>
+            </div>
+          </div>
           <div class="row">
             <div class="label isMust">加工厂名称：</div>
             <div class="info">
@@ -182,6 +190,34 @@
         </div>
       </div>
     </div>
+    <div class="bottomFixBar">
+      <div class="main">
+        <div class="btnCtn" style="float: left">
+          <div class="buttonList">
+            <div class="btn backHoverBlue" @click="importExcelData('添加加工厂')">
+              <i class="el-icon-s-grid"></i>
+              <span class="text">批量导入单据</span>
+            </div>
+          </div>
+          <div class="buttonList">
+            <div class="btn backHoverBlue" @click="downloadExcel('加工厂添加模板')">
+              <i class="el-icon-s-grid"></i>
+              <span class="text">下载导入模板</span>
+            </div>
+          </div>
+          <span class="btn hoverBlue">
+            <el-tooltip class="item" effect="dark" placement="top">
+              <div slot="content">
+                第一步：下载导入模板。<br />
+                第二步：填写模板信息。注意：编码为数字，请勿其它类型。<br />
+                第三步：导入模板，完成导入
+              </div>
+              <span>导入教程</span>
+            </el-tooltip>
+          </span>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -201,6 +237,7 @@ export default Vue.extend({
       factoryList: [],
       factoryInfo: {
         id: null,
+        code:'',
         name: '',
         abbreviation: '',
         client_type: '',
@@ -310,6 +347,7 @@ export default Vue.extend({
         .create({
           id: this.factoryInfo.id || null,
           name: this.factoryInfo.name,
+          code: this.factoryInfo.code,
           abbreviation: this.factoryInfo.abbreviation,
           client_type: this.factoryInfo.client_type,
           user_name: this.factoryInfo.user_name,
@@ -332,6 +370,8 @@ export default Vue.extend({
       this.factoryInfo = {
         id: (item && item.id) || null,
         name: (item && item.name) || '',
+        // @ts-ignore
+        code: (item && item.code) || ((item && item.id) || ''),
         abbreviation: (item && item.abbreviation) || '',
         client_type: (item && item.client_type) || '',
         user_name: (item && item.user_name) || '',
@@ -339,6 +379,114 @@ export default Vue.extend({
         contact: (item && item.contact) || '',
         contact_phone: (item && item.contact_phone) || '',
         address: (item && item.address) || ''
+      }
+    },
+    downloadExcel(type: string) {
+      if (type === '加工厂添加模板') {
+        this.$downloadExcel(
+          [],
+          [
+            { title: '加工厂编码（选填）', key: 'code' },
+            { title: '加工厂名称（必填）', key: 'name' },
+            { title: '加工厂简称（选填）', key: 'abbreviation' },
+            { title: '加工厂类型（必填，选择染色单位、倒筒单位、混纱单位、膨纱单位其中一个）', key: 'client_type' },
+            { title: '主要负责人（选填）', key: 'user_name' },
+            { title: '加工厂电话（选填）', key: 'phone' },
+            { title: '加工厂地址（选填）', key: 'address' },
+            { title: '联系人（选填）', key: 'contact' },
+            { title: '联系人电话（选填）', key: 'contact_phone' },
+          ],
+          type
+        )
+      }
+    },
+    importExcelData(type: string) {
+      const inputFile = document.createElement('input')
+      inputFile.type = 'file'
+      inputFile.accept = '.xlsx,.xls'
+      inputFile.addEventListener('change', (e) => {
+        this.getExcelData(e, this.saveImportData, type)
+      })
+      let click = document.createEvent('MouseEvents')
+      click.initEvent('click', true, true)
+      inputFile.dispatchEvent(click)
+    },
+    getExcelData(file: any, callBack: any, type: string) {
+      const _this = this
+      const XLSX = require('xlsx')
+      const files = file.target.files
+      const fileReader = new FileReader()
+      fileReader.onload = function (e: any) {
+        try {
+          const data = e.target.result
+          const bytes = new Uint8Array(data) // 无符号整型数组
+          const len = bytes.byteLength
+          const binarys = new Array(len) // 创建定长数组，存储文本
+          for (let i = 0; i < len; i++) {
+            binarys[i] = String.fromCharCode(bytes[i])
+          }
+          const workbook = XLSX.read(binarys.join(''), { type: 'binary' })
+          if (!workbook) {
+            return null
+          }
+          const r: any = {}
+          workbook.SheetNames.forEach((name: string) => {
+            // 遍历每张纸数据
+            r[name] = XLSX.utils.sheet_to_json(workbook.Sheets[name])
+          })
+          callBack && callBack(r, type)
+        } catch (e) {
+          _this.$message.error('文件类型不正确')
+        }
+      }
+      fileReader.readAsArrayBuffer(files[0])
+    },
+    saveImportData(data: any, type: string) {
+      let typeObj: any = {}
+      if (type === '添加加工厂') {
+        typeObj = {
+          code: ['加工厂编码（选填）',''],
+          name: ['加工厂名称（必填）'],
+          abbreviation: ['加工厂简称（选填）', ''],
+          client_type: ['加工厂类型（必填，选择染色单位、倒筒单位、混纱单位、膨纱单位其中一个）'],
+          user_name: ['主要负责人（选填）', ''],
+          phone: ['加工厂电话（选填）',''],
+          address: ['加工厂地址（选填）',''],
+          contact: ['联系人（选填）',''],
+          contact_phone: ['联系人电话（选填）',''],
+        }
+      }
+      let submitData:Array<PartyB> = []
+      for (const prop in data) {
+        for (const key in data[prop]) {
+          let obj: any = {}
+          for (const indexType in typeObj) {
+            if (typeObj[indexType][0]) {
+              obj[indexType] = data[prop][key][typeObj[indexType][0]] || typeObj[indexType][1]
+              if (obj[indexType] === undefined) {
+                this.$message.error('解析失败，请使用标准模板或检测必填数据是否存在空的情况！！！')
+                return
+              }
+            } else {
+              obj[indexType] = typeObj[indexType][1]
+            }
+          }
+          obj.id = null
+          obj.type= 3
+          submitData.push(obj)
+        }
+      }
+      if (submitData.length === 0) {
+        this.$message.warning('未读取到可用参数')
+        return
+      }
+      if (type === '添加加工厂') {
+        partyB.beachCreate({ data: submitData }).then((res) => {
+          if(res.data.status){
+            this.$message.success('导入成功')
+            this.getList()
+          }
+        })
       }
     },
     disableFactory(item: PartyB) {

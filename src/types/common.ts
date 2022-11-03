@@ -28,6 +28,7 @@ export interface YarnType {
 export interface PartyB {
   id: number | null
   name: string
+  code?: string
   abbreviation: string
   client_type?: string
   user_name: string

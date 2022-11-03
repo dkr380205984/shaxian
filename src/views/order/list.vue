@@ -6,15 +6,14 @@
       <div class="titleCtn">
         <span class="title hasBorder">订单列表</span>
         <span class="addBtn btn btnMain"
-          @click="$router.push('/order/create')">添加订单</span>
+          @click="$router.push('/order/create')">添加生产订单</span>
       </div>
       <div class="listCtn">
-        <div class="filterCtn"
-          :class="{'showMore':showMore}">
-          <div class="leftCtn">
+        <div class="filterCtn showMore">
+          <div class="leftCtn" style="padding: unset; max-width: unset">
             <div class="label">筛选条件：</div>
-            <div class="showMore"
-              @click="showMore=!showMore">{{!showMore?'展示更多':'收起筛选'}}</div>
+            <!-- <div class="showMore"
+              @click="showMore=!showMore">{{!showMore?'展示更多':'收起筛选'}}</div> -->
             <div class="elCtn">
               <el-input v-model="order_code"
                 placeholder="输入客户单号"
@@ -48,18 +47,7 @@
                   :label="item.name"></el-option>
               </el-select>
             </div>
-            <div class="elCtn middle"
-              style="width:350px;">
-              <el-date-picker v-model="date"
-                type="daterange"
-                value-format="yyyy-MM-dd"
-                range-separator="至"
-                start-placeholder="开始日期"
-                end-placeholder="结束日期"
-                @change="changeRouter(1)">
-              </el-date-picker>
-            </div>
-            <div class="elCtn middle">
+            <div class="elCtn">
               <el-select v-model="page_size"
                 placeholder="选择每页展示的条数"
                 @change="changeRouter(1)">
@@ -71,8 +59,19 @@
                   :value="30"></el-option>
               </el-select>
             </div>
+            <div class="elCtn middle"
+              style="width:350px;">
+              <el-date-picker v-model="date"
+                type="daterange"
+                value-format="yyyy-MM-dd"
+                range-separator="至"
+                start-placeholder="开始日期"
+                end-placeholder="结束日期"
+                @change="changeRouter(1)">
+              </el-date-picker>
+            </div>
           </div>
-          <div class="rightCtn">
+          <div class="rightCtn" style="min-width: 94px">
             <div class="btn btnGray fr"
               @click="reset">重置</div>
           </div>

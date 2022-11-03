@@ -1,81 +1,110 @@
 // 字体颜色
-@main:#637AA7;
-@green:#45B492;
-@orange:#E3A45A;
-@red:#FF6B81;
-@blue:#1E90FF;
-@black:#505050;
-@white:#ffffff;
-@gray:#E3E3E3;
-@whiteGray:#F8F8F8;
-@hoverMain:#89A6DE;
-@hoverGreen:#57D3AD;
-@hoverOrange:#EAAB76;
-@hoverRed:#F88C9C;
-@hoverBlue:#70B4F7;
-@border:#CECECE;
+@main: #637AA7;
+@green: #45B492;
+@orange: #E3A45A;
+@red: #FF6B81;
+@blue: #1E90FF;
+@black: #505050;
+@white: #ffffff;
+@gray: #E3E3E3;
+@whiteGray: #F8F8F8;
+@hoverMain: #89A6DE;
+@hoverGreen: #57D3AD;
+@hoverOrange: #EAAB76;
+@hoverRed: #F88C9C;
+@hoverBlue: #70B4F7;
+@border: #CECECE;
 @borderColor: #e9e9e9;
 // 字体设置
-@fontBig:16px;
-@fontMiddle:14px;
-@fontSmall:12px;
-@fontSubtitle:20px;
-@fontTitle:24px;
-@font85:rgba(0,0,0,0.85);
-@font65:rgba(0,0,0,0.65);
-@font45:rgba(0,0,0,0.45);
-@font25:rgba(0,0,0,0.25);
+@fontBig: 16px;
+@fontMiddle: 14px;
+@fontSmall: 12px;
+@fontSubtitle: 20px;
+@fontTitle: 24px;
+@font85: rgba(0, 0, 0, 0.85);
+@font65: rgba(0, 0, 0, 0.65);
+@font45: rgba(0, 0, 0, 0.45);
+@font25: rgba(0, 0, 0, 0.25);
 
 @font-face {
-  font-family: 'iconfont';  /* project id 2313542 */
+  font-family: 'iconfont';
+  /* project id 2313542 */
   src: url('//at.alicdn.com/t/font_2313542_3xh76d6qqhc.woff2?t=1624411616969') format('woff2'),
-       url('//at.alicdn.com/t/font_2313542_3xh76d6qqhc.woff?t=1624411616969') format('woff'),
-       url('//at.alicdn.com/t/font_2313542_3xh76d6qqhc.ttf?t=1624411616969') format('truetype');
+    url('//at.alicdn.com/t/font_2313542_3xh76d6qqhc.woff?t=1624411616969') format('woff'),
+    url('//at.alicdn.com/t/font_2313542_3xh76d6qqhc.ttf?t=1624411616969') format('truetype');
 }
-.iconfont{
-  font-family:"iconfont" !important;
-  font-size:16px;font-style:normal;
+
+.iconfont {
+  font-family: "iconfont" !important;
+  font-size: 16px;
+  font-style: normal;
   -webkit-font-smoothing: antialiased;
   -webkit-text-stroke-width: 0.2px;
   -moz-osx-font-smoothing: grayscale;
 }
-// 文字样式
-.red{
-  color:@red;
+
+.iconFont {
+  width: 1em;
+  height: 1em;
+  vertical-align: -0.15em;
+  fill: currentColor;
+  overflow: hidden;
+  font-size: 16px;
 }
-.hoverRed{
-  color:@red;
-  &:hover{
+
+// 文字样式
+.red {
+  color: @red;
+}
+
+.hoverRed {
+  color: @red;
+
+  &:hover {
     color: @red;
   }
 }
-.green{
-  color:@green;
+
+.green {
+  color: @green;
 }
-.hoverGreen{
-  color:@green;
-  &:hover{
+
+.hoverGreen {
+  color: @green;
+
+  &:hover {
     color: @hoverGreen;
   }
 }
-.blue{
-  color:@blue;
+
+.blue {
+  color: @blue;
 }
-.gray{
+
+.black {
+  color: @font85;
+}
+
+.gray {
   color: @font25;
 }
-.hoverBlue{
-  color:@blue;
-  &:hover{
+
+.hoverBlue {
+  color: @blue;
+
+  &:hover {
     color: @hoverBlue;
   }
 }
-.orange{ 
-  color:@orange;
+
+.orange {
+  color: @orange;
 }
-.hoverOrange{
-  color:@orange;
-  &:hover{
+
+.hoverOrange {
+  color: @orange;
+
+  &:hover {
     color: @hoverOrange;
   }
 }
@@ -113,6 +142,51 @@
   }
 }
 
+.hoverBlue {
+  color: @blue;
+
+  &:hover {
+    color: @hoverBlue;
+  }
+}
+
+.hoverRed {
+  color: @red;
+
+  &:hover {
+    color: @hoverRed;
+  }
+}
+
+.hoverOrange {
+  color: @orange;
+
+  &:hover {
+    color: @hoverOrange;
+  }
+}
+
+.hoverGreen {
+  color: @green;
+
+  &:hover {
+    color: @hoverGreen;
+  }
+}
+
+.fontNormal {
+  color: @font65;
+}
+
+.backBlue {
+  color: #fff;
+  background: @blue;
+}
+
+.backMark {
+  background: #EFF7FF;
+}
+
 .backHoverBlue {
   color: #fff;
   background: @blue;
@@ -122,35 +196,92 @@
   }
 }
 
+.activeBlue {
+  background: #EFF7FF;
+}
+
+.backGray {
+  color: #fff;
+  background: #F4F4F4;
+}
+
+.backRed {
+  color: #fff;
+  background: @red;
+}
+
+.backHoverRed {
+  color: #fff;
+  background: @red;
+
+  &:hover {
+    background: @hoverRed;
+  }
+}
+
+.backGreen {
+  color: #fff;
+  background: @green;
+}
+
+.backHoverGreen {
+  color: #fff;
+  background: @green;
+
+  &:hover {
+    background: @hoverGreen;
+  }
+}
+
+.backOrange {
+  color: #fff;
+  background: @orange;
+}
+
+.backHoverOrange {
+  color: #fff;
+  background: @orange;
+
+  &:hover {
+    background: @hoverOrange;
+  }
+}
+
 // 父级
-.indexMain{
+.indexMain {
   width: 100%;
-  .module{
+
+  .module {
     background: #fff;
     margin-bottom: 24px;
-    .titleCtn{
+
+    .titleCtn {
       height: 55px;
       line-height: 55px;
       padding: 0 32px;
       border-bottom: 1px solid @border;
-      .title{
+
+      .title {
         font-size: @fontSubtitle;
-        color:@font85;
+        color: @font85;
         position: relative;
         font-weight: bold;
       }
-      .addBtn{
+
+      .addBtn {
         float: right;
         margin: 12px 0 11px 8px;
       }
     }
   }
-  .switchCtn{
+
+  .switchCtn {
     display: flex;
     margin-bottom: 24px;
     height: 56px;
     align-items: center;
-    .switch{
+
+    .switch {
       background: #fff;
       flex: 1;
       margin-right: 12px;
@@ -160,18 +291,22 @@
       justify-content: center;
       cursor: pointer;
       color: @font65;
-      &:hover{
+
+      &:hover {
         background: @main;
         color: #fff;
       }
-      &.active{
+
+      &.active {
         background: @main;
         color: #fff;
       }
-      .text{
+
+      .text {
         font-size: @fontBig;
       }
-      &:nth-last-child(1){
+
+      &:nth-last-child(1) {
         margin-right: 0;
       }
     }
@@ -179,85 +314,101 @@
 }
 
 // 按钮
-.btn{
-  height:32px;
+.btn {
+  height: 32px;
   line-height: 32px;
   display: inline-block;
   padding: 0 23px;
   cursor: pointer;
-  &.noBorder{
-    color:@blue;
+
+  &.noBorder {
+    color: @blue;
   }
-  &.btnMain{
+
+  &.btnMain {
     background: @main;
     color: #fff;
     border-radius: 4px;
     border: 1px solid @main;
-    &:hover{
+
+    &:hover {
       background: @hoverMain;
     }
   }
-  &.btnBlue{
+
+  &.btnBlue {
     background: @blue;
     color: #fff;
     border-radius: 4px;
     border: 1px solid @blue;
-    &:hover{
+
+    &:hover {
       background: @hoverBlue;
     }
   }
-  &.btnOrange{
+
+  &.btnOrange {
     background: @orange;
     color: #fff;
     border-radius: 4px;
     border: 1px solid @orange;
-    &:hover{
+
+    &:hover {
       background: @hoverOrange;
     }
   }
-  &.btnRed{
+
+  &.btnRed {
     background: @red;
     color: #fff;
     border-radius: 4px;
     border: 1px solid @red;
-    &:hover{
+
+    &:hover {
       background: @hoverRed;
     }
   }
-  &.btnGreen{
+
+  &.btnGreen {
     background: @green;
     color: #fff;
     border-radius: 4px;
     border: 1px solid @green;
-    &:hover{
+
+    &:hover {
       background: @hoverGreen;
     }
   }
-  &.btnGray{
+
+  &.btnGray {
     color: @font65;
     border: 1px solid #D9D9D9;
     line-height: 30px;
     border-radius: 4px;
   }
-  &.btnWhiteBlue{
+
+  &.btnWhiteBlue {
     color: @blue;
     border: 1px solid @blue;
     line-height: 30px;
     border-radius: 4px;
   }
-  &.btnWhiteGreen{
+
+  &.btnWhiteGreen {
     color: @green;
     border: 1px solid @green;
     line-height: 30px;
     border-radius: 4px;
   }
-  &.btnWhiteRed{
+
+  &.btnWhiteRed {
     color: @red;
     border: 1px solid @red;
     line-height: 30px;
     border-radius: 4px;
   }
-  &.btnDashed{
+
+  &.btnDashed {
     display: flex;
     width: 100%;
     border: 1px dashed #D9D9D9;
@@ -269,11 +420,13 @@
     justify-content: center;
     margin: 0;
     padding: 0;
-    &:hover{
+
+    &:hover {
       color: @blue;
       border-color: @blue;
     }
-    &>.btn{
+
+    &>.btn {
       flex: 1;
       margin: 0;
       text-align: center;
@@ -284,14 +437,16 @@
 }
 
 // 浮动
-.fr{
+.fr {
   float: right;
 }
-.fl{
+
+.fl {
   float: left;
 }
-.clearfix{
-  &::after{
+
+.clearfix {
+  &::after {
     content: '';
     display: block;
     clear: both;

@@ -254,7 +254,7 @@
         </div>
         <div class="listCtn">
           <div class="list">
-            <div class="overflow">
+            <div class="overflow" @mousewheel.prevent="listenWheel" ref="list">
               <div class="tableCtn">
                 <div class="table">
                   <div class="headCtn">
@@ -337,14 +337,14 @@
                     v-for="item in storeLogInfo.list"
                     :key="item.id">
                     <div class="column min120 blue"
-                      :style="{'height':50*item.child_data.length + 'px'}">{{item.code}}</div>
+                      :style="{'height':51*item.child_data.length - 1 + 'px'}">{{item.code}}</div>
                     <div class="column"
                       style="min-width:80px"
-                      :style="{'height':50*item.child_data.length + 'px'}"
+                      :style="{'height':51*item.child_data.length - 1 + 'px'}"
                       :class="{'blue':item.action_type===1||item.action_type===3||item.action_type===5||item.action_type===8||item.action_type===11||item.action_type===13||item.action_type===14||item.action_type===15,'green':item.action_type===2||item.action_type===4||item.action_type===6||item.action_type===7||item.action_type===9||item.action_type===10||item.action_type===12}">{{item.action_type|stockTypeFilter}}</div>
                     <div class="column"
                       style="min-width:200px;max-width:200px"
-                      :style="{'height':50*item.child_data.length + 'px'}">
+                      :style="{'height':51*item.child_data.length - 1 + 'px'}">
                       <span v-if="item.action_type===1||item.action_type===3||item.action_type===5||item.action_type===8||item.action_type===13||item.action_type===14||item.action_type===15">
                         <span class="green">{{item.client_name ||'无来源'}}</span>
                         <i class="el-icon-s-unfold orange"
@@ -378,7 +378,7 @@
                     v-for="item in storeLogInfo.list"
                     :key="item.id">
                     <div class="column min120"
-                      :style="{'height':50*item.child_data.length + 'px'}">
+                      :style="{'height':51*item.child_data.length - 1 + 'px'}">
                       <span class="blue opr"
                         @click="$openUrl(`/print/store/${item.action_type}/${item.id}?orderId=${$route.params.id}`)">打印</span>
                       <!-- <span class="opr"
@@ -704,6 +704,23 @@ export default Vue.extend({
       this.storeLogListFilter.color_code = itemStore.color_code
       this.$goElView('stockLogEl')
       this.getStoreLogList()
+    },
+    // 监听一下鼠标滚轮
+    listenWheel(ev: any) {
+      const detail = ev.wheelDelta || ev.detail
+      // 定义滚动方向，其实也可以在赋值的时候写
+      const moveForwardStep = 1
+      const moveBackStep = -1
+      // 定义滚动距离
+      let step = 0
+      // 判断滚动方向,这里的100可以改，代表滚动幅度，也就是说滚动幅度是自定义的
+      if (detail < 0) {
+        step = moveForwardStep * 50
+      } else {
+        step = moveBackStep * 50
+      }
+      // @ts-ignore 对需要滚动的元素进行滚动操作
+      this.$refs.list.scrollLeft += step
     },
     resetStoreInfo() {
       this.store_info = {

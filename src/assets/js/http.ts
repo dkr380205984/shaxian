@@ -34,7 +34,8 @@ axios.interceptors.response.use(
   },
   // 请求失败回调
   (error) => {
-    router.push({ path: '/index/error/' + error.response.status })
+    // router.push({ path: '/index/error/' + error.response.status })
+    Message.Message.error('网络出错，请稍后重试')
     return Promise.reject(error)
   }
 )

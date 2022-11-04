@@ -116,8 +116,8 @@
               <div
                 class="editBtn addBtn"
                 @click="
-                  render()
                   $addItem(input_form.colorArr, { name: '白胚' })
+                  render()
                 "
                 v-if="index === 0"
               >
@@ -126,8 +126,8 @@
               <div
                 class="editBtn deleteBtn"
                 @click="
-                  render()
                   $deleteItem(input_form.colorArr, index)
+                  render()
                 "
                 v-if="index > 0"
               >
@@ -167,10 +167,24 @@
                     value="色筒"></el-option>
                 </el-select> -->
               </div>
-              <div class="editBtn addBtn" @click="$addItem(input_form.attributeArr, { name: '' })" v-if="index === 0">
+              <div
+                class="editBtn addBtn"
+                @click="
+                  $addItem(input_form.attributeArr, { name: '' })
+                  render()
+                "
+                v-if="index === 0"
+              >
                 添加属性
               </div>
-              <div class="editBtn deleteBtn" @click="$deleteItem(input_form.attributeArr, index)" v-if="index > 0">
+              <div
+                class="editBtn deleteBtn"
+                @click="
+                  $deleteItem(input_form.attributeArr, index)
+                  render()
+                "
+                v-if="index > 0"
+              >
                 删除属性
               </div>
             </div>

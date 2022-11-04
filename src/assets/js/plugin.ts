@@ -8,6 +8,7 @@ interface CheckCommonInfo {
   checkWhich: string // 需要的公告数据
   getInfoMethed?: string // commit or dispatch,api一般都是异步，用dispatch调用，status一般是同步，用commit调用,默认就是dispatch
   getInfoApi: string // 没有公共数据的时候需要调用的函数
+  forceUpdate?: boolean // 强致刷新，默认为false，常用于其他页面需要去设置页面新增设置后强致刷新本页面数据
 }
 
 type regNormal = 'isNum' | 'isEmail' | 'isPhone' | 'isNull'
@@ -278,13 +279,23 @@ const plugin = {
   checkCommonInfo(info: CheckCommonInfo[]) {
     info.forEach((item) => {
       const checkInfo = item.checkWhich.split('/')
-      if (!store.state[checkInfo[0]][checkInfo[1]].status) {
+      // 是否强致刷新
+      if (item.forceUpdate) {
         if (item.getInfoMethed && item.getInfoMethed === 'commit') {
           store.commit(checkInfo[0] + '/' + item.getInfoApi)
         } else {
           store.dispatch(checkInfo[0] + '/' + item.getInfoApi)
         }
+      } else {
+        if (!(store as any).state[checkInfo[0]][checkInfo[1]].status) {
+          if (item.getInfoMethed && item.getInfoMethed === 'commit') {
+            store.commit(checkInfo[0] + '/' + item.getInfoApi)
+          } else {
+            store.dispatch(checkInfo[0] + '/' + item.getInfoApi)
+          }
+        }
       }
+
     })
   },
   addItem<T>(father: T[], son: T): void {

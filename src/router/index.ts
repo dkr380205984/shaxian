@@ -80,6 +80,10 @@ const routes: RouteConfig[] = [
         path: '/order/create',
         name: '添加订单',
         component: () => import('../views/order/create.vue')
+      },{
+        path: '/order/salesOrderCreate',
+        name: '添加销售订单',
+        component: () => import('../views/order/salesOrderCreate.vue')
       }, {
         path: '/order/update/:id',
         name: '修改订单',

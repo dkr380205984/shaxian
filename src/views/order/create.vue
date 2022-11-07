@@ -94,7 +94,7 @@
                         </el-tooltip>
                       </div>
                     </div>
-                    <div class="tcolumn noPad" style="flex: 4.2">
+                    <div class="tcolumn noPad" style="flex: 3.9">
                       <div class="trow">
                         <div class="tcolumn" style="flex: 1.2">纱线颜色</div>
                         <div class="tcolumn">纱线属性</div>
@@ -122,7 +122,7 @@
                         <div class="tcolumn" style="flex: 0.5">颜色操作</div>
                       </div>
                     </div>
-                    <div class="tcolumn" style="flex: 0.4">纱线操作</div>
+                    <div class="tcolumn" style="flex: 0.3">纱线操作</div>
                   </div>
                 </div>
                 <div class="tbody">
@@ -140,7 +140,7 @@
                         ></el-cascader>
                       </div>
                     </div>
-                    <div class="tcolumn noPad" style="flex: 4.2">
+                    <div class="tcolumn noPad" style="flex: 3.9">
                       <div class="trow" v-for="(itemChild, indexChild) in itemPro.child_data" :key="indexChild">
                         <div class="tcolumn" style="flex: 1.2">
                           <el-autocomplete
@@ -195,57 +195,19 @@
                           >
                           <span
                             class="opr blue"
-                            @click="
-                              $addItem(itemPro.child_data, {
-                                number_attribute: '',
-                                weight: itemPro.child_data[0].weight,
-                                price: itemPro.child_data[0].price,
-                                attribute: itemPro.child_data[0].attribute,
-                                color: ''
-                              })
-                            "
+                            @click="parseThis(indexPro,indexChild)"
                           >
                             复制
                           </span>
                         </div>
                       </div>
                     </div>
-                    <div class="tcolumn" style="flex: 0.4">
-                      <div style="display: flex">
-                        <span
-                          class="opr hoverRed"
-                          style="margin-right: 12px"
-                          @click="deletePro(order_info.product_info, indexPro)"
-                          >删除纱线</span
-                        >
-                        <span
-                          class="opr hoverBlue"
-                          v-if="!isCopy"
-                          style="margin-right: 12px"
-                          @click="
-                            copyLine = indexPro
-                            isCopy = true
-                          "
-                          >复制该行</span
-                        >
-                        <span
-                          class="opr hoverGreen"
-                          v-if="isCopy && copyLine !== indexPro"
-                          style="margin-right: 12px"
-                          @click="parseThis(indexPro)"
-                          >粘贴该行</span
-                        >
-                        <span
-                          class="opr hoverBlue"
-                          v-if="isCopy && copyLine === indexPro"
-                          style="margin-right: 12px"
-                          @click="
-                            copyLine = ''
-                            isCopy = false
-                          "
-                          >取消复制</span
-                        >
-                      </div>
+                    <div class="tcolumn" style="flex: 0.3">
+                      <span
+                        class="opr hoverRed"
+                        style="margin-right: 12px"
+                        @click="deletePro(order_info.product_info, indexPro)"
+                        >删除纱线</span>
                     </div>
                   </div>
                 </div>
@@ -280,14 +242,7 @@
                 <el-button size="small" type="primary" style="padding-top: 7px; padding-bottom: 7px; font-size: 16px">
                   设置复制项<i class="el-icon-arrow-down el-icon--right"></i>
                 </el-button>
-                <el-tooltip class="item" effect="dark" placement="right" style="margin-left: 10px">
-                  <div slot="content">注：设置项仅针对纱线操作的复制粘贴有效</div>
-                  <i class="el-icon-question"></i>
-                </el-tooltip>
                 <el-dropdown-menu slot="dropdown">
-                  <el-dropdown-item>
-                    <el-checkbox label="name">纱线名称</el-checkbox>
-                  </el-dropdown-item>
                   <el-dropdown-item>
                     <el-checkbox label="color">纱线颜色</el-checkbox>
                   </el-dropdown-item>
@@ -474,8 +429,6 @@ export default Vue.extend({
       cvFlag: false,
       showAdd: false,
       dialogVisible: false,
-      isCopy: false,
-      copyLine: '',
       dialogImageUrl: '',
       notify: '',
       order_info: {
@@ -513,7 +466,7 @@ export default Vue.extend({
       editor: '',
       postData: { key: '', token: '' },
       attributeArr: [{ value: '胚绞' }, { value: '胚筒' }, { value: '色绞' }, { value: '色筒' }],
-      copyOption: ['name', 'attribute', 'number_attribute', 'price']
+      copyOption: ['attribute', 'number_attribute', 'price']
     }
   },
   computed: {
@@ -735,47 +688,53 @@ export default Vue.extend({
       })
     },
     // 粘贴该行
-    parseThis(index: number) {
+    parseThis(index: number,indexChild:number) {
       let strCopyOption = this.copyOption.toString()
-      // 复制工序
-      if (strCopyOption.indexOf('name') != -1) {
-        this.order_info.product_info[index].name = this.order_info.product_info[this.copyLine].name
+
+      // $addItem(itemPro.child_data, {
+      //   number_attribute: '',
+      //   weight: itemPro.child_data[0].weight,
+      //   price: itemPro.child_data[0].price,
+      //   attribute: itemPro.child_data[0].attribute,
+      //   color: ''
+      // })
+
+      let itemChild = this.order_info.product_info[index].child_data[indexChild]
+      let obj: any = {
+        number_attribute: '',
+        weight: '',
+        price: '',
+        attribute: '',
+        color: ''
       }
 
-      this.order_info.product_info[index].child_data = []
+      // 复制属性
+      if (strCopyOption.indexOf('attribute') != -1) {
+        obj.attribute = itemChild.attribute
+      }
 
-      this.order_info.product_info[this.copyLine].child_data.forEach((itemChild: any) => {
-        let obj: any = {}
+      // 复制数量属性
+      if (strCopyOption.indexOf('number_attribute') != -1) {
+        obj.number_attribute = itemChild.number_attribute
+      }
 
-        // 复制属性
-        if (strCopyOption.indexOf('attribute') != -1) {
-          obj.attribute = itemChild.attribute
-        }
+      // 复制单价
+      if (strCopyOption.indexOf('price') != -1) {
+        obj.price = itemChild.price
+      }
 
-        // 复制计时方式
-        if (strCopyOption.indexOf('number_attribute') != -1) {
-          obj.number_attribute = itemChild.number_attribute
-        }
+      // 复制纱线颜色
+      if (strCopyOption.indexOf('color') != -1) {
+        obj.color = itemChild.color
+      }
 
-        // 复制单价
-        if (strCopyOption.indexOf('price') != -1) {
-          obj.price = itemChild.price
-        }
+      // 复制下单数量
+      if (strCopyOption.indexOf('weight') != -1) {
+        obj.weight = itemChild.weight
+      }
 
-        // 复制时长
-        if (strCopyOption.indexOf('color') != -1) {
-          obj.color = itemChild.color
-        }
+      this.order_info.product_info[index].child_data.push(obj)
 
-        // 复制备注
-        if (strCopyOption.indexOf('weight') != -1) {
-          obj.weight = itemChild.weight
-        }
-
-        this.order_info.product_info[index].child_data.push(obj)
-      })
-
-      this.isCopy = false
       this.$forceUpdate()
     },
     copyInfo(type: string) {

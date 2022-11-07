@@ -7,7 +7,7 @@
           <i class="el-icon-close"></i>
         </div>
       </div>
-      <div class="createCtn">
+      <div class="createCtn" style="max-height:60vh;overflow-y:scroll">
         <div class="rowCtn">
           <div class="colCtn flex3">
             <div class="label">
@@ -116,7 +116,7 @@
               <div
                 class="editBtn addBtn"
                 @click="
-                  $addItem(input_form.colorArr, { name: '白胚' })
+                  $addItem(input_form.colorArr, { name: '' })
                   render()
                 "
                 v-if="index === 0"
@@ -409,7 +409,7 @@ export default Vue.extend({
       this.input_form.colorArr.forEach((itemColor: { name: string }) => {
         this.input_form.attributeArr.forEach((itemAtr: { name: string }) => {
           proDetail.push({
-            color: itemColor.name || '白胚',
+            color: itemColor.name || '',
             attribute: itemAtr.name,
             price: '0',
             desc: ''

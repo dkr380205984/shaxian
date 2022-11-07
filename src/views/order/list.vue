@@ -4,6 +4,7 @@
       <div class="titleCtn">
         <span class="title hasBorder">订单列表</span>
         <span class="addBtn btn btnMain" @click="$router.push('/order/create')">添加生产订单</span>
+        <span class="addBtn btn btnMain" @click="$router.push('/order/salesOrderCreate')">添加销售订单</span>
       </div>
       <div class="listCtn">
         <div class="filterCtn showMore">

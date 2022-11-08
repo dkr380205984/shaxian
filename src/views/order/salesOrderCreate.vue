@@ -419,7 +419,7 @@
 
 <script lang="ts">
 import E from 'wangeditor'
-import Vue, { set } from 'vue'
+import Vue from 'vue'
 import { product, order } from '@/assets/js/api'
 export default Vue.extend({
   data(): {
@@ -1013,7 +1013,12 @@ export default Vue.extend({
           res.data.data.file_list = res.data.data.file_url ? [{ url: res.data.data.file_url }] : []
           this.order_info = res.data.data
           this.editor.txt.html(this.order_info.desc)
-          this.order_info.product_info.forEach((item: any) => (item.name = item.product_name))
+          this.order_info.product_info.forEach((item: any) => {
+            item.name = item.product_name
+          })
+          let arr = this.$clone(this.order_info.product_info)
+          this.order_info.product_info = []
+          this.getYarnSelect(arr)
           this.order_info.additional_fee = this.order_info.additional_fee
             ? JSON.parse(this.order_info.additional_fee as string)
             : [

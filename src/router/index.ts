@@ -284,6 +284,11 @@ const routes: RouteConfig[] = [
         name: 'orderYarnFC',
         component: () => import('@/views/print/orderYarnFC.vue')
       },
+      {// 订单
+        path: 'orderPrint',
+        name: 'orderPrint',
+        component: () => import('@/views/print/orderPrint.vue')
+      },
       {// 加工单
         path: 'processYarn/:documentId',
         name: 'processYarn',

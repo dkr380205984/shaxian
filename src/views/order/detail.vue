@@ -35,7 +35,7 @@
             <span class="label">下单日期：</span>
             <span class="text">{{order_info.order_time}}</span>
           </div>
-          <div class="colCtn flex3">
+          <div class="colCtn flex3" v-if="order_info.type == 1">
             <span class="label">交货日期：</span>
             <span class="text">{{order_info.delivery_time}}
               <template v-if="order_info.status!==3 && order_info.status!==4">（
@@ -49,8 +49,12 @@
                   class="gray">订单已取消</span>）</template>
             </span>
           </div>
+          <div class="colCtn flex3" v-if="order_info.type == 2">
+            <span class="label">销售总数：</span>
+            <span class="text green">{{order_info.total_weight}}kg</span>
+          </div>
           <div class="colCtn flex3">
-            <span class="label">下单总额：</span>
+            <span class="label">销售总额：</span>
             <span class="text green">{{order_info.total_price}}元</span>
           </div>
         </div>
@@ -106,7 +110,7 @@
     </div>
     <div class="module">
       <div class="titleCtn">
-        <span class="title">下单信息</span>
+        <span class="title">{{order_info.type == 1?'下单':'销售'}}信息</span>
       </div>
       <div style="padding:20px 32px" v-if="order_info.type == 1">
         <div class="tableCtn">
@@ -211,7 +215,7 @@
                   <div class="tcolumn">{{itemChild.store}}</div>
                   <div class="tcolumn">{{itemChild.price}}元</div>
                   <div class="tcolumn blue">{{itemChild.weight}}kg</div>
-                  <div class="tcolumn blue">{{itemChild.item||0}}件</div>
+                  <div class="tcolumn">{{itemChild.item||0}}件</div>
                 </div>
               </div>
             </div>
@@ -219,7 +223,7 @@
         </div>
       </div>
     </div>
-    <div class="module">
+    <div class="module" v-if="order_info.type == 1">
       <div class="titleCtn">
         <span class="title">发货信息</span>
       </div>
@@ -394,7 +398,7 @@
         </div>
       </div>
     </div>
-    <div class="module">
+    <div class="module" v-if="order_info.type == 1">
       <div class="titleCtn">
         <span class="title">财务概览</span>
       </div>
@@ -474,6 +478,7 @@
     <div class="bottomFixBar">
       <div class="main">
         <div class="btnCtn"
+        v-if="order_info.type == 1"
           style="float:left">
           <div class="buttonList">
             <div class="showButton">
@@ -518,7 +523,12 @@
                 <div class="button btnRed"
                   @click="openDeduct">
                   <i class="iconfont">&#xe63b;</i>
-                  <span class="text">订单扣款</span>
+                  <span class="text">客户扣款</span>
+                </div>
+                <div class="button btnBlue"
+                  @click="$openUrl('/print/orderPrint?id='+$route.params.id)">
+                  <i class="el-icon-printer"></i>
+                  <span class="text">订单打印</span>
                 </div>
                 <div class="button btnOrange"
                   @click="$router.push('/order/update/'+$route.params.id)"

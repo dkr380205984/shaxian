@@ -2,7 +2,7 @@
   <div id="salesOrderCreate" class="indexMain">
     <div class="module">
       <div class="titleCtn">
-        <span class="title">添加销售订单</span>
+        <span class="title">{{ update ? '修改' : '添加' }}销售订单</span>
       </div>
       <div class="createCtn">
         <div class="rowCtn">
@@ -433,11 +433,12 @@ export default Vue.extend({
       dialogVisible: false,
       showStore: false,
       loadingData: true,
+      update: true,
       copyLine: '',
       dialogImageUrl: '',
       notify: '',
       order_info: {
-        id: null,
+        id: this.$route.query.id || '',
         order_code: '',
         order_time: this.$getDate(new Date()),
         delivery_time: '',
@@ -669,51 +670,56 @@ export default Vue.extend({
         this.orderSave()
       }
     },
-    orderSave(){
-        // 发送请求之前转换一下格式
-        const formData = JSON.parse(JSON.stringify(this.order_info))
-        formData.product_info.forEach((item: any) => (item.name = (item.name as any[])[1]))
-        // 额外费用为空时提交空字符串方便后续使用
-        formData.additional_fee =
-          (formData.additional_fee as any[]).filter((itemChild) => itemChild.name && itemChild.price).length > 0
-            ? JSON.stringify(formData.additional_fee)
-            : ''
-        formData.product_info_back_up = this.$clone(formData.product_info)
-        formData.product_info = this.$mergeData(formData.product_info, {
-          mainRule: 'name',
-          childrenName: 'child_data'
-        })
-        formData.reduce_store_data = this.$mergeData(formData.product_info_back_up, {
-          mainRule: ['store_id', 'second_store_id'],
-          childrenName: 'child_data'
-        })
+    orderSave() {
+      // 发送请求之前转换一下格式
+      const formData = JSON.parse(JSON.stringify(this.order_info))
+      formData.product_info.forEach((item: any) => (item.name = (item.name as any[])[1]))
+      // 额外费用为空时提交空字符串方便后续使用
+      formData.additional_fee =
+        (formData.additional_fee as any[]).filter((itemChild) => itemChild.name && itemChild.price).length > 0
+          ? JSON.stringify(formData.additional_fee)
+          : ''
+      formData.product_info_back_up = this.$clone(formData.product_info)
+      formData.product_info = this.$mergeData(formData.product_info, {
+        mainRule: 'name',
+        childrenName: 'child_data'
+      })
+      formData.reduce_store_data = this.$mergeData(formData.product_info_back_up, {
+        mainRule: ['store_id', 'second_store_id'],
+        childrenName: 'child_data'
+      })
 
-        let index = formData.reduce_store_data.findIndex((item: any) => {
-          return item.store_id === undefined && item.second_store_id === undefined
-        })
+      let index = formData.reduce_store_data.findIndex((item: any) => {
+        return item.store_id === undefined && item.second_store_id === undefined
+      })
 
-        if (index !== -1) {
-          this.$deleteItem(formData.reduce_store_data, index)
-        }
+      if (index !== -1) {
+        this.$deleteItem(formData.reduce_store_data, index)
+      }
 
-        formData.reduce_store_data.forEach((item: any) => {
-          item.child_data.forEach((itemChild: any) => {
-            itemChild.action_weight = itemChild.weight
-            itemChild.item = itemChild.item || ''
-          })
+      formData.reduce_store_data.forEach((item: any) => {
+        item.child_data.forEach((itemChild: any) => {
+          itemChild.action_weight = itemChild.weight
+          itemChild.item = itemChild.item || ''
         })
+      })
+      if (!this.update) {
         formData.product_info.forEach((item: any) => {
           item.child_data.forEach((itemChild: any) => {
             itemChild.id = null
           })
         })
+      }
 
-        delete formData.product_info_back_up
-        console.log(formData)
-        //   return
-        order.create(formData).then((res) => {
-          if (res.data.status) {
-            this.$message.success('添加成功')
+      delete formData.product_info_back_up
+      //   console.log(formData)
+      //   return
+      order.create(formData).then((res) => {
+        if (res.data.status) {
+          this.$message.success(this.update ? '修改成功' : '添加成功')
+          if (this.update) {
+            this.$router.push('/order/detail/' + this.order_info.id)
+          } else {
             this.$confirm('继续添加新订单?', '提示', {
               confirmButtonText: '继续添加',
               cancelButtonText: '返回列表',
@@ -755,10 +761,11 @@ export default Vue.extend({
                   '/order/list?page=1&&order_code=&&product_name=&&client_id=&&user_id=&&page_size=10&&date='
                 )
               })
-          } else {
-            this.loading = false
           }
-        })
+        } else {
+          this.loading = false
+        }
+      })
     },
     copyInfo(type: string) {
       let price = ''
@@ -996,6 +1003,28 @@ export default Vue.extend({
         getInfoApi: 'getYarnTypeAsync'
       }
     ])
+    if (this.$route.query.id) {
+      this.update = true
+      order
+        .detail({
+          id: this.$route.query.id + ''
+        })
+        .then((res) => {
+          res.data.data.file_list = res.data.data.file_url ? [{ url: res.data.data.file_url }] : []
+          this.order_info = res.data.data
+          this.editor.txt.html(this.order_info.desc)
+          this.order_info.product_info.forEach((item: any) => (item.name = item.product_name))
+          this.order_info.additional_fee = this.order_info.additional_fee
+            ? JSON.parse(this.order_info.additional_fee as string)
+            : [
+                {
+                  name: '',
+                  price: '',
+                  desc: ''
+                }
+              ]
+        })
+    }
   }
 })
 </script>

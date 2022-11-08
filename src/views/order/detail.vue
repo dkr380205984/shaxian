@@ -108,7 +108,7 @@
       <div class="titleCtn">
         <span class="title">下单信息</span>
       </div>
-      <div style="padding:20px 32px">
+      <div style="padding:20px 32px" v-if="order_info.type == 1">
         <div class="tableCtn">
           <div class="thead">
             <div class="trow">
@@ -160,6 +160,58 @@
                   <span class="green"
                     style="margin-right:5px">{{item.type}}</span>
                   <span class="blue">{{item.total_weight}}kg</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div style="padding:20px 32px" v-if="order_info.type == 2">
+        <div class="tableCtn">
+          <div class="thead">
+            <div class="trow">
+              <div class="tcolumn">纱线名称</div>
+              <div class="tcolumn noPad"
+                style="flex:7">
+                <div class="trow">
+                  <div class="tcolumn">纱线颜色</div>
+                  <div class="tcolumn">纱线属性</div>
+                  <div class="tcolumn">数量属性</div>
+                  <div class="tcolumn">批号</div>
+                  <div class="tcolumn">缸号</div>
+                  <div class="tcolumn">色号</div>
+                  <div class="tcolumn">销售仓库</div>
+                  <div class="tcolumn">销售单价(元)</div>
+                  <div class="tcolumn">销售数量(kg)</div>
+                  <div class="tcolumn">销售件数(件)</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="tbody">
+            <div class="trow"
+              v-for="(item) in order_info.product_info"
+              :key="item.id">
+              <div class="tcolumn">
+                {{item.product_name}}
+              </div>
+              <div class="tcolumn noPad"
+                style="flex:7">
+                <div class="trow"
+                  v-for="itemChild in item.child_data"
+                  :key="itemChild.id">
+                  <div class="tcolumn">
+                    {{itemChild.color}}
+                  </div>
+                  <div class="tcolumn">{{itemChild.attribute}}</div>
+                  <div class="tcolumn">{{itemChild.number_attribute}}</div>
+                  <div class="tcolumn">{{itemChild.batch_code}}</div>
+                  <div class="tcolumn">{{itemChild.vat_code}}</div>
+                  <div class="tcolumn">{{itemChild.color_code}}</div>
+                  <div class="tcolumn">{{itemChild.store}}</div>
+                  <div class="tcolumn">{{itemChild.price}}元</div>
+                  <div class="tcolumn blue">{{itemChild.weight}}kg</div>
+                  <div class="tcolumn blue">{{itemChild.item||0}}件</div>
                 </div>
               </div>
             </div>

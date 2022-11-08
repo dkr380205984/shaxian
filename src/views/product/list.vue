@@ -6,6 +6,8 @@
         <!-- <span class="addBtn btn btnMain"
           @click="$router.push('/product/create')">添加纱线</span> -->
         <span class="addBtn btn btnMain" @click="showAdd = true">添加纱线</span>
+        <span class="addBtn btn backHoverGreen" @click="downloadExcel('纱线添加模板')">下载导入模板</span>
+        <span class="addBtn btn backHoverOrange" @click="importExcelData('添加纱线')">批量导入单据</span>
       </div>
       <div class="listCtn">
         <div class="filterCtn showMore">
@@ -102,34 +104,6 @@
       </div>
     </div>
     <product-create :show="showAdd" @close="showAdd = false" @afterCreate="getList"></product-create>
-    <div class="bottomFixBar">
-      <div class="main">
-        <div class="btnCtn" style="float: left">
-          <div class="buttonList">
-            <div class="btn backHoverBlue">
-              <i class="el-icon-s-grid"></i>
-              <span class="text" @click="importExcelData('添加纱线')">批量导入单据</span>
-            </div>
-          </div>
-          <div class="buttonList">
-            <div class="btn backHoverBlue">
-              <i class="el-icon-s-grid"></i>
-              <span class="text" @click="downloadExcel('纱线添加模板')">下载导入模板</span>
-            </div>
-          </div>
-          <span class="btn hoverBlue">
-            <el-tooltip class="item" effect="dark" placement="top">
-              <div slot="content">
-                第一步：下载导入模板。<br />
-                第二步：填写模板信息。注意：纱线类型需要提前在系统内添加，否会出现无法匹配类型的情况，导致无法导入类型。<br />
-                第三步：导入模板，完成导入
-              </div>
-              <span>导入教程</span>
-            </el-tooltip>
-          </span>
-        </div>
-      </div>
-    </div>
   </div>
 </template>
 

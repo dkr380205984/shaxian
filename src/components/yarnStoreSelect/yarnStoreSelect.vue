@@ -21,7 +21,16 @@
               </el-cascader>
             </div>
             <div class="elCtn" style="width: 120px">
-              <el-input v-model="filterObj.name" @change="getList" placeholder="纱线名称"></el-input>
+              <el-cascader
+                v-model="filterObj.name"
+                filterable
+                placeholder="纱线名称"
+                :show-all-levels="false"
+                clearable
+                :options="yarn_list"
+                @change="getList"
+              ></el-cascader>
+              <!-- <el-input v-model="filterObj.name" @change="getList" placeholder="纱线名称"></el-input> -->
             </div>
             <div class="elCtn" style="width: 120px">
               <el-input v-model="filterObj.color" @change="getList" placeholder="纱线颜色"></el-input>
@@ -40,7 +49,17 @@
             </div>
           </div>
         </div>
-        <div class="list" style="max-height: 60vh; overflow: scroll">
+        <div class="list" style="max-height: 60vh; overflow: scroll;margin:unset;">
+          <div class="checkCtn">
+            <div class="label">已勾选单据：</div>
+            <div class="elCtn check" v-for="(item, index) in selectList" :key="item.id">
+              <el-input :value="item.id + '-' + item.store_name " disabled>
+                <template slot="append">
+                  <i class="el-icon-close hoverRed" style="cursor: pointer" @click="selectList.splice(index, 1)"></i>
+                </template>
+              </el-input>
+            </div>
+          </div>
           <div class="tableCtn" style="margin: 24px 0" v-loading="loading">
             <div class="thead">
               <div class="trow">
@@ -55,6 +74,9 @@
                     <div class="tcolumn">色号</div>
                     <div class="tcolumn">实际库存(KG)</div>
                     <div class="tcolumn">可用库存(KG)</div>
+                    <div class="tcolumn" style="flex: 0.4">
+                      序号
+                    </div>
                     <div class="tcolumn" style="flex: 0.2">
                       <el-checkbox
                         v-model="allCheck"
@@ -95,6 +117,9 @@
                     <div class="tcolumn blue">
                       {{ (itemStore.useable_weight && $formatNum(itemStore.useable_weight)) || '-' }}
                     </div>
+                    <div class="tcolumn" style="flex:0.4">
+                      {{itemStore.id}}
+                    </div>
                     <div class="tcolumn flexRow" style="flex: 0.2">
                       <el-checkbox
                         v-model="itemStore.isCheck"
@@ -116,6 +141,7 @@
                     <div class="tcolumn"></div>
                     <div class="tcolumn">{{ $formatNum($toFixed(storeListCom.reality_weight)) }}</div>
                     <div class="tcolumn blue">{{ $formatNum($toFixed(storeListCom.useable_weight)) }}</div>
+                    <div class="tcolumn" style="flex: 0.4"></div>
                     <div class="tcolumn" style="flex: 0.2"></div>
                   </div>
                 </div>
@@ -125,6 +151,17 @@
         </div>
       </div>
       <div class="oprCtn">
+        <div class="pageCtn" style="margin-right: 20px">
+          <el-pagination
+            background
+            @current-change="getList"
+            :current-page.sync="filterObj.page"
+            :page-size="10"
+            layout="prev, pager, next"
+            :total="filterObj.total"
+          >
+          </el-pagination>
+        </div>
         <span class="btn borderBtn" @click="close">取消</span>
         <span class="btn backHoverBlue" style="margin: 0 20px" @click="confirm">提交</span>
       </div>
@@ -151,7 +188,9 @@ export default Vue.extend({
         batch_code: '',
         color_code: '',
         vat_code: '',
-        isFilterZero: true
+        isFilterZero: true,
+        page: 1,
+        total: 1,
       },
       isIndeterminate: false,
       allCheck: false,
@@ -163,6 +202,20 @@ export default Vue.extend({
   computed: {
     store_list() {
       return this.$store.state.api.storeHouse.arr.filter((item: any) => item.store_type === 1)
+    },
+    yarn_list() {
+      return this.$store.state.api.yarnType.arr.map((item: any) => {
+        return {
+          value: item.name,
+          label: item.name,
+          children: item.yarns.map((itemChild: any) => {
+            return {
+              value: itemChild.name,
+              label: itemChild.name
+            }
+          })
+        }
+      })
     }
   },
   methods: {
@@ -172,15 +225,17 @@ export default Vue.extend({
         .detailYarnList({
           store_id: this.filterObj.LV2_name ? this.filterObj.LV2_name[0] : '',
           second_store_id: this.filterObj.LV2_name ? this.filterObj.LV2_name[1] : '',
-          name: this.filterObj.name || null,
+          name: this.filterObj.name[1] || null,
           color: this.filterObj.color || null,
           weight: this.filterObj.isFilterZero ? 0 : null,
           vat_code: this.filterObj.vat_code || null,
           color_code: this.filterObj.color_code || null,
-          batch_code: this.filterObj.batch_code || null
+          batch_code: this.filterObj.batch_code || null,
+          page: this.filterObj.page || 1,
+          limit: 10
         })
         .then((res) => {
-          this.list = res.data.data
+          this.list = res.data.data.items
           this.storeListCom = {
             reality_weight: this.list.map((itemM: any) => +itemM.total_weight).reduce((a: any, b: any) => a + b, 0),
             useable_weight: this.list.map((itemM: any) => +itemM.use_weight).reduce((a: any, b: any) => a + b, 0),
@@ -198,6 +253,10 @@ export default Vue.extend({
               }
             })
           }
+          this.filterObj.total = res.data.data.total
+          // this.selectList = []
+          this.allCheck = false
+          this.isIndeterminate = false
           this.loading = false
         })
     },
@@ -285,10 +344,10 @@ export default Vue.extend({
         vat_code: '',
         isFilterZero: true
       }
-      this.selectList = []
-      this.allCheck = false
-      this.isIndeterminate = false
-      this.storeListCom = {}
+      // this.selectList = []
+      // this.allCheck = false
+      // this.isIndeterminate = false
+      // this.storeListCom = {}
     },
     // 凑数的函数，不这样写的话会类型报错
     a(a: number) {}
@@ -312,6 +371,11 @@ export default Vue.extend({
         checkWhich: 'api/storeHouse',
         getInfoMethed: 'dispatch',
         getInfoApi: 'getStoreAsync'
+      },
+      {
+        checkWhich: 'api/yarnType',
+        getInfoMethed: 'dispatch',
+        getInfoApi: 'getYarnTypeAsync'
       }
     ])
   }

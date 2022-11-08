@@ -26,6 +26,8 @@ export interface StoreDetailYarnListParams {
   batch_code?: string
   color_code?: string
   vat_code?: string
+  page?: string | number
+  limit?: string | number
 }
 
 // 订单调取库存

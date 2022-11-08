@@ -16,18 +16,25 @@
               <el-input v-model="order_code" placeholder="输入客户单号" @change="changeRouter(1)"></el-input>
             </div>
             <div class="elCtn">
-              <el-cascader v-model="productName"
-                  filterable
-                  clearable
-                  :show-all-levels='false'
-                  placeholder="请选择纱线"
-                  :options="yarn_list"
-                  @change="changeProductName"></el-cascader>
+              <el-cascader
+                v-model="productName"
+                filterable
+                clearable
+                :show-all-levels="false"
+                placeholder="请选择纱线"
+                :options="yarn_list"
+                @change="changeProductName"
+              ></el-cascader>
               <!-- <el-input v-model="product_name" placeholder="输入纱线名称" @change="changeRouter(1)"></el-input> -->
             </div>
             <div class="elCtn">
               <el-select v-model="client_id" placeholder="选择下单客户" clearable filterable @change="changeRouter(1)">
-                <el-option v-for="item in client_list" :key="item.id" :value="item.id" :label="(item.code || item.id) + ' - ' + item.name"></el-option>
+                <el-option
+                  v-for="item in client_list"
+                  :key="item.id"
+                  :value="item.id"
+                  :label="(item.code || item.id) + ' - ' + item.name"
+                ></el-option>
               </el-select>
             </div>
             <div class="elCtn">
@@ -42,7 +49,13 @@
                 <el-option label="每页30条" :value="30"></el-option>
               </el-select>
             </div>
-            <div class="elCtn middle" style="width: 350px">
+            <div class="elCtn">
+              <el-select v-model="type" placeholder="选择订单类型" clearable @change="changeRouter(1)">
+                <el-option value="1" label="生产单"></el-option>
+                <el-option value="2" label="销售单"></el-option>
+              </el-select>
+            </div>
+            <div class="elCtn" style="width: 350px">
               <el-date-picker
                 v-model="date"
                 type="daterange"
@@ -64,6 +77,11 @@
             <el-table-column fixed prop="code" label="订单号" width="120"> </el-table-column>
             <el-table-column fixed prop="order_code" label="客户单号" width="120"> </el-table-column>
             <el-table-column prop="client_name" label="客户名称" width="140"> </el-table-column>
+            <el-table-column prop="type" label="订单类型" width="120">
+              <template slot-scope="scope">
+                <span>{{ scope.row.type === 1 ? '生产单' : '销售单' }}</span>
+              </template>
+            </el-table-column>
             <el-table-column prop="status" label="订单状态" width="120">
               <template slot-scope="scope">
                 <span
@@ -97,27 +115,27 @@
                     <div class="number">{{ (scope.row.index || 0) + 1 }}/{{ scope.row.product_info.length }}</div>
                     <i class="el-icon-caret-bottom hover" @click="changeIndex(scope.row, 'add')"></i>
                   </div>
-                  <span>{{ scope.row.product_info[scope.row.index || 0].product_name }}</span>
+                  <span>{{ scope.row.product_info[scope.row.index || 0]?.product_name || '无' }}</span>
                 </div>
               </template>
             </el-table-column>
             <el-table-column prop="total_price" label="颜色/属性" width="150">
               <template slot-scope="scope">
                 <span
-                  >{{ scope.row.product_info[scope.row.index || 0].color }}/{{
-                    scope.row.product_info[scope.row.index || 0].attribute
+                  >{{ scope.row.product_info[scope.row.index || 0]?.color || '无' }}/{{
+                    scope.row.product_info[scope.row.index || 0]?.attribute || '无'
                   }}</span
                 >
               </template>
             </el-table-column>
             <el-table-column prop="total_price" label="数量属性" width="120">
               <template slot-scope="scope">
-                <span>{{ scope.row.product_info[scope.row.index || 0].number_attribute }}</span>
+                <span>{{ scope.row.product_info[scope.row.index || 0]?.number_attribute || '无' }}</span>
               </template>
             </el-table-column>
             <el-table-column prop="total_price" label="下单数量" width="120">
               <template slot-scope="scope">
-                <span>{{ scope.row.product_info[scope.row.index || 0].weight }}</span>
+                <span>{{ scope.row.product_info[scope.row.index || 0]?.weight || '无' }}</span>
               </template>
             </el-table-column>
             <el-table-column prop="total_weight" label="下单总数(kg)" width="120"> </el-table-column>
@@ -214,6 +232,7 @@ export default Vue.extend({
       productName: '',
       client_id: '',
       user_id: '',
+      type: '',
       loading: true,
       page: 1,
       total: 100,
@@ -271,22 +290,24 @@ export default Vue.extend({
           this.client_id +
           '&user_id=' +
           this.user_id +
+          '&type=' +
+          this.type +
           '&page_size=' +
           this.page_size +
           '&date=' +
           this.date
       )
     },
-    changeProductName(str:any){
-      if(str.length === 0){
-        str = ['','']
+    changeProductName(str: any) {
+      if (str.length === 0) {
+        str = ['', '']
       }
       this.productName = str
       this.product_name = str[1]
       this.changeRouter(1)
     },
     // 下面两个函数是让el-table滚动的
-    scrollFunction(obj:any, id:any) {
+    scrollFunction(obj: any, id: any) {
       obj = document.getElementById(id)
       if (obj.attachEvent) {
         obj.attachEvent('onmousewheel', this.mouseScroll(obj))
@@ -295,16 +316,18 @@ export default Vue.extend({
       }
       obj.onmousewheel = obj.onmousewheel = this.mouseScroll(obj)
     },
-    mouseScroll(obj:any) {
+    mouseScroll(obj: any) {
       return function () {
         let e = window.event || document.all ? window.event : arguments[0] ? arguments[0] : event
         let detail, moveForwardStep, moveBackStep
         let step = 0
-        if (e.wheelDelta) { // google 下滑负数： -120
+        if (e.wheelDelta) {
+          // google 下滑负数： -120
           detail = e.wheelDelta
           moveForwardStep = -1
           moveBackStep = 1
-        } else if (e.detail) { // firefox 下滑正数：3
+        } else if (e.detail) {
+          // firefox 下滑正数：3
           // @ts-ignore
           detail = event.detail
           moveForwardStep = 1
@@ -316,8 +339,10 @@ export default Vue.extend({
         let left = obj.querySelector('table').clientWidth - obj.clientWidth
         //这里是为了向右滚动后再向下滚动，向左滚动后再向上滚动，如果不需要，只需要写e.preventDefault()
         //-------------------
-        if (moveForwardStep === -1) {//google
-          if (detail > 0) {//向上
+        if (moveForwardStep === -1) {
+          //google
+          if (detail > 0) {
+            //向上
             if (obj.scrollLeft > 0) {
               e.preventDefault()
             } else {
@@ -330,8 +355,10 @@ export default Vue.extend({
               return true
             }
           }
-        } else {//firefox
-          if (detail > 0) {//向下
+        } else {
+          //firefox
+          if (detail > 0) {
+            //向下
             if (obj.scrollLeft < left) {
               e.preventDefault()
             } else {
@@ -350,7 +377,9 @@ export default Vue.extend({
       }
     },
     reset() {
-      this.$router.push('/order/list?page=1&order_code=&product_name=&client_id=&user_id=&page_size=10&date=productName=,')
+      this.$router.push(
+        '/order/list?page=1&order_code=&product_name=&client_id=&user_id=&page_size=10&date=&type=&productName=,'
+      )
     },
     getFilters() {
       const params = this.$route.query
@@ -359,8 +388,9 @@ export default Vue.extend({
       this.user_id = params.user_id ? Number(params.user_id) : ''
       this.client_id = params.client_id ? Number(params.client_id) : ''
       this.product_name = params.product_name
+      this.type = params.type || ''
       // @ts-ignore
-      this.productName = params.productName?params.productName.split(','):['','']
+      this.productName = params.productName ? params.productName.split(',') : ['', '']
       this.order_code = params.order_code
       if (params.date !== 'null' && params.date !== '') {
         this.date = (params.date as string).split(',')
@@ -398,6 +428,7 @@ export default Vue.extend({
           product_name: this.product_name,
           client_id: this.client_id,
           user_id: this.user_id,
+          type: this.type,
           start_time: this.date && this.date.length > 0 ? this.date[0] : '',
           end_time: this.date && this.date.length > 0 ? this.date[1] : '',
           limit: this.page_size,
@@ -434,7 +465,7 @@ export default Vue.extend({
         })
     }
   },
-  mounted(){
+  mounted() {
     //@ts-ignore id为scoll已经被el-table使用，可以使el-table滚动
     let domObj = this.$refs.table.bodyWrapper
     domObj.id = 'scrollBar'
@@ -470,7 +501,8 @@ export default Vue.extend({
 
 <style>
 /* el-table 自定义滚动条的时候没有白线 */
-.el-table__fixed-right::before, .el-table__fixed::before {
-  content:unset
+.el-table__fixed-right::before,
+.el-table__fixed::before {
+  content: unset;
 }
 </style>

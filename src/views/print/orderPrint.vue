@@ -30,9 +30,9 @@
           <div class="row_item center w180">{{ $getDate(orderInfo.create_time) }}</div>
         </div>
         <div class="print_row has_marginBottom">
-          <div class="row_item center bgGray">{{orderInfo.type == 1?'生产':'销售'}}总数</div>
+          <div class="row_item center bgGray">{{ orderInfo.type == 1 ? '生产' : '销售' }}总数</div>
           <div class="row_item center w180">{{ orderInfo.total_weight || 0 }}kg</div>
-          <div class="row_item center bgGray">{{orderInfo.type == 1?'生产':'销售'}}总价</div>
+          <div class="row_item center bgGray">{{ orderInfo.type == 1 ? '生产' : '销售' }}总价</div>
           <div class="row_item center w180">{{ orderInfo.total_price || 0 }}元</div>
           <div class="row_item center bgGray" v-if="orderInfo.type == 2"></div>
           <div class="row_item center w180" v-if="orderInfo.type == 2"></div>
@@ -59,9 +59,9 @@
             <div class="row_item center bgGray" v-if="orderInfo.type == 2">批号</div>
             <div class="row_item center bgGray" v-if="orderInfo.type == 2">缸号</div>
             <div class="row_item center bgGray" v-if="orderInfo.type == 2">色号</div>
-            <div class="row_item center bgGray">{{orderInfo.type == 2?'销售':'下单'}}单价</div>
+            <div class="row_item center bgGray">{{ orderInfo.type == 2 ? '销售' : '下单' }}单价</div>
             <div class="row_item center bgGray" v-if="orderInfo.type == 2">出库仓库</div>
-            <div class="row_item center bgGray">{{orderInfo.type == 2?'销售':'下单'}}数量</div>
+            <div class="row_item center bgGray">{{ orderInfo.type == 2 ? '销售' : '下单' }}数量</div>
             <div class="row_item center bgGray" v-if="orderInfo.type == 2">销售件数</div>
           </div>
           <div class="print_row" v-for="(itemChild, indexChild) in item.child_data" :key="indexChild + 'child_data'">

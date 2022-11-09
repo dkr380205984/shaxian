@@ -30,12 +30,14 @@
           <div class="row_item center w180">{{ $getDate(orderInfo.create_time) }}</div>
         </div>
         <div class="print_row has_marginBottom">
-          <div class="row_item center bgGray">销售总数</div>
+          <div class="row_item center bgGray">{{orderInfo.type == 1?'生产':'销售'}}总数</div>
           <div class="row_item center w180">{{ orderInfo.total_weight || 0 }}kg</div>
-          <div class="row_item center bgGray">销售总价</div>
+          <div class="row_item center bgGray">{{orderInfo.type == 1?'生产':'销售'}}总价</div>
           <div class="row_item center w180">{{ orderInfo.total_price || 0 }}元</div>
-          <div class="row_item center bgGray"></div>
-          <div class="row_item center w180"></div>
+          <div class="row_item center bgGray" v-if="orderInfo.type == 2"></div>
+          <div class="row_item center w180" v-if="orderInfo.type == 2"></div>
+          <div class="row_item center bgGray" v-if="orderInfo.type == 1">交货日期</div>
+          <div class="row_item center w180" v-if="orderInfo.type == 1">{{ orderInfo.delivery_time }}</div>
         </div>
         <div
           v-for="(item, index) in orderInfo.product_info"
@@ -54,25 +56,25 @@
             <div class="row_item center bgGray">纱线颜色</div>
             <div class="row_item center bgGray">纱线属性</div>
             <div class="row_item center bgGray">数量属性</div>
-            <div class="row_item center bgGray">批号</div>
-            <div class="row_item center bgGray">缸号</div>
-            <div class="row_item center bgGray">色号</div>
-            <div class="row_item center bgGray">销售单价</div>
-            <div class="row_item center bgGray">出库仓库</div>
-            <div class="row_item center bgGray">销售数量</div>
-            <div class="row_item center bgGray">销售件数</div>
+            <div class="row_item center bgGray" v-if="orderInfo.type == 2">批号</div>
+            <div class="row_item center bgGray" v-if="orderInfo.type == 2">缸号</div>
+            <div class="row_item center bgGray" v-if="orderInfo.type == 2">色号</div>
+            <div class="row_item center bgGray">{{orderInfo.type == 2?'销售':'下单'}}单价</div>
+            <div class="row_item center bgGray" v-if="orderInfo.type == 2">出库仓库</div>
+            <div class="row_item center bgGray">{{orderInfo.type == 2?'销售':'下单'}}数量</div>
+            <div class="row_item center bgGray" v-if="orderInfo.type == 2">销售件数</div>
           </div>
           <div class="print_row" v-for="(itemChild, indexChild) in item.child_data" :key="indexChild + 'child_data'">
             <div class="row_item center">{{ itemChild.color }}</div>
             <div class="row_item center">{{ itemChild.attribute }}</div>
             <div class="row_item center">{{ itemChild.number_attribute }}</div>
-            <div class="row_item center">{{ itemChild.batch_code }}</div>
-            <div class="row_item center">{{ itemChild.vat_code }}</div>
-            <div class="row_item center">{{ itemChild.color_code }}</div>
+            <div class="row_item center" v-if="orderInfo.type == 2">{{ itemChild.batch_code }}</div>
+            <div class="row_item center" v-if="orderInfo.type == 2">{{ itemChild.vat_code }}</div>
+            <div class="row_item center" v-if="orderInfo.type == 2">{{ itemChild.color_code }}</div>
             <div class="row_item center">{{ itemChild.price }}</div>
-            <div class="row_item center">{{ itemChild.store }}</div>
+            <div class="row_item center" v-if="orderInfo.type == 2">{{ itemChild.store }}</div>
             <div class="row_item center">{{ itemChild.weight }}</div>
-            <div class="row_item center">{{ itemChild.item }}</div>
+            <div class="row_item center" v-if="orderInfo.type == 2">{{ itemChild.item }}</div>
           </div>
         </div>
         <div class="print_row" v-for="(itemFee, indexFee) in orderInfo.additional_fee" :key="'itemFee' + indexFee">
@@ -84,8 +86,8 @@
           <div class="row_item center">{{ itemFee.desc }}</div>
         </div>
         <div class="print_row">
-            <div class="row_item center bgGray">备注信息</div>
-            <div class="row_item center" style="border-right:unset;flex:5" v-html="orderInfo.desc"></div>
+          <div class="row_item center bgGray">备注信息</div>
+          <div class="row_item center" style="border-right: unset; flex: 5" v-html="orderInfo.desc"></div>
         </div>
       </div>
     </div>
@@ -107,7 +109,18 @@ export default Vue.extend({
       stockYarnArr: []
     }
   },
-  methods: {},
+  mounted() {
+    const QRCode = require('qrcode')
+    QRCode.toDataURL(
+      window.location.origin + '/order/detail/' + this.$route.query.id,
+      { errorCorrectionLevel: 'H' },
+      (err: any, url: string) => {
+        if (!err) {
+          this.qrCodeUrl = url
+        }
+      }
+    )
+  },
   created() {
     order
       .detail({
@@ -116,6 +129,8 @@ export default Vue.extend({
       .then((res) => {
         this.id = res.data.data.id
         this.orderInfo = res.data.data
+        this.companyName =
+          window.sessionStorage.getItem('full_name') + (this.orderInfo.type == 2 ? '销售订单' : '生产订单-计划单')
         this.orderInfo.additional_fee = JSON.parse(this.orderInfo.additional_fee)
         this.orderInfo.product_info.forEach((item: any) => (item.priceNumber = (item.price || 0) * (item.weight || 0)))
         this.orderInfo.product_info = this.$mergeData(this.orderInfo.product_info, {

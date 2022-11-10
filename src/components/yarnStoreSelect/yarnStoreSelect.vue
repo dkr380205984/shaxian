@@ -149,8 +149,6 @@
             </div>
           </div>
         </div>
-      </div>
-      <div class="oprCtn">
         <div class="pageCtn" style="margin-right: 20px">
           <el-pagination
             background
@@ -162,6 +160,8 @@
           >
           </el-pagination>
         </div>
+      </div>
+      <div class="oprCtn">
         <span class="btn borderBtn" @click="close">取消</span>
         <span class="btn backHoverBlue" style="margin: 0 20px" @click="confirm">提交</span>
       </div>

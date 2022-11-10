@@ -116,7 +116,7 @@
                   <div class="tcolumn">纱线颜色</div>
                   <div class="tcolumn">纱线属性</div>
                   <div class="tcolumn">采购单价(元)</div>
-                  <div class="tcolumn">采购数量(kg)</div>
+                  <div class="tcolumn">计划采购数量(kg)</div>
                 </div>
               </div>
               <div class="tcolumn">已入库数量(kg)</div>

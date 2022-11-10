@@ -403,7 +403,7 @@
                     v-model="store_info.complete_time"
                     type="date"
                     value-format="yyyy-MM-dd"
-                    placeholder="选择交货日期"
+                    placeholder="选择操作时间"
                   >
                   </el-date-picker>
                 </div>
@@ -473,7 +473,8 @@ export default Vue.extend({
           }
         ],
         order_time: this.$getDate(new Date()),
-        delivery_time: '',
+        // @ts-ignore
+        delivery_time: this.$GetDateStr(5),
         additional_fee: [
           {
             name: '',
@@ -699,7 +700,7 @@ export default Vue.extend({
           }
         ],
         order_time: this.$getDate(new Date()),
-        delivery_time: '',
+        delivery_time: this.$GetDateStr(5),
         additional_fee: [
           {
             name: '',
@@ -972,7 +973,7 @@ export default Vue.extend({
             }
           ],
           order_time: this.$getDate(new Date()),
-          delivery_time: '',
+          delivery_time: this.$GetDateStr(5),
           additional_fee: [
             {
               name: '',

@@ -146,6 +146,17 @@
             </div>
           </div>
         </div>
+        <div class="pageCtn">
+          <el-pagination
+            background
+            @current-change="getStoreInfoList"
+            :current-page.sync="storeListFilter.pages"
+            :page-size="storeListFilter.limit"
+            layout="prev, pager, next"
+            :total="storeListFilter.total"
+          >
+          </el-pagination>
+        </div>
       </div>
     </div>
     <div class="module"
@@ -415,8 +426,72 @@
         </div>
       </div>
     </div>
+    <!-- 仓库列表 -->
+    <div class="popup"
+      v-show="lookListFlag">
+      <div class="main" style="width:1200px">
+        <div class="titleCtn">
+          <span class="text">仓库列表</span>
+          <div class="closeCtn"
+            @click="lookListFlag = false">
+            <span class="el-icon-close"></span>
+          </div>
+        </div>
+        <div class="listCtn">
+          <div class="list"
+            v-loading="storeLoading">
+            <div class="headCtn">
+              <div class="row title">
+                <div class="column">仓库名称</div>
+                <div class="column">当前库存总数量(Kg)</div>
+                <div class="column">仓库管理员</div>
+                <div class="column">仓库备注</div>
+                <div class="column">操作</div>
+              </div>
+            </div>
+            <div class="bodyCtn">
+              <div class="row"
+                v-for="item in storeInfoList"
+                :key="item.id">
+                <div class="column">{{item.name}}</div>
+                <div class="column">{{item.total_weight || 0}}Kg</div>
+                <div class="column">{{item.admins.map(itemM=>itemM.name).join(',')}}</div>
+                <div class="column">{{item.desc}}</div>
+                <div class="column">
+                  <div class="opr hoverBlue"
+                    @click="$router.push(`/store/detail/${item.id}`)">详情</div>
+                  <div class="opr hoverRed"
+                    @click="deleteStore(item)">删除</div>
+                  <div class="opr hoverOrange"
+                    @click="changeStore(item)">修改</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="pageCtn">
+            <el-pagination background
+              :page-size="5"
+              layout="prev, pager, next"
+              :total="storeTotal"
+              :current-page.sync="storePage"
+              @current-change="getStoreList">
+            </el-pagination>
+          </div>
+        </div>
+        <div class="oprCtn">
+          <span class="btn borderBtn" style="margin-right:20px"
+            @click="lookListFlag=false">关闭</span>
+        </div>
+      </div>
+    </div>
     <div class="bottomFixBar">
       <div class="main">
+        <div class="btnCtn" style="float:left">
+          <div class="btn backHoverGreen"
+            @click="getStoreList();lookListFlag=true">仓库列表</div>
+          <div class="btn backHoverBlue"
+            @click="changeStore()">添加仓库</div>
+        </div>
         <div class="btnCtn">
           <div class="btn btnGray"
             @click="$router.go(-1)">返回</div>
@@ -434,12 +509,88 @@
       :initData="store_info.init_data"
       :show.sync="store_info.show"
       @close="resetStoreInfo"></in-and-out>
+    <div class="popup"
+      v-show="addFlag">
+      <div class="main">
+        <div class="titleCtn">
+          <div class="text">{{createOrEditStoreObj.id && '修改' || '新增'}}仓库</div>
+          <i class="close_icon el-icon-close"
+            @click="addFlag=false"></i>
+        </div>
+        <div class="contentCtn">
+          <div class="row">
+            <div class="label isMust">仓库名称：</div>
+            <div class="info">
+              <el-input placeholder="请输入加仓库名称"
+                v-model="createOrEditStoreObj.name"></el-input>
+            </div>
+          </div>
+          <div class="row">
+            <div class="label isMust">仓库类型：</div>
+            <div class="info">
+              <el-select v-model="createOrEditStoreObj.type"
+                placeholder="请选择仓库类型">
+                <el-option v-for="item in typeArr"
+                  :key="item.id"
+                  :label="item.name"
+                  :value="item.id">
+                </el-option>
+              </el-select>
+            </div>
+          </div>
+          <div class="row">
+            <div class="label">仓库管理员：</div>
+            <div class="info">
+              <el-select v-model="createOrEditStoreObj.admins"
+                multiple
+                placeholder="请选择仓库管理员">
+                <el-option v-for="item in user_list"
+                  :key="item.id"
+                  :label="item.name"
+                  :value="item.id">
+                </el-option>
+              </el-select>
+            </div>
+          </div>
+          <div class="row"
+            v-for="(itemLV2,indexLV2) in createOrEditStoreObj.LV2_info"
+            :key="indexLV2">
+            <div :class="`label ${indexLV2 === 0 ? 'isMust' : ''}`">{{indexLV2 === 0 && '二级仓库名：' || ''}}</div>
+            <div class="info">
+              <el-input placeholder="请输入二级仓库名称"
+                v-model="itemLV2.name"></el-input>
+              <span class="info_btn blue"
+                v-if="indexLV2 === 0"
+                @click="$addItem(createOrEditStoreObj.LV2_info,{ name: '', id: null })">添加</span>
+              <span class="info_btn red"
+                v-else
+                @click="itemLV2.id?deleteSecondStore(itemLV2.id,createOrEditStoreObj.LV2_info,indexLV2):$deleteItem(createOrEditStoreObj.LV2_info,indexLV2)">删除</span>
+            </div>
+          </div>
+          <div class="row">
+            <div class="label">仓库备注：</div>
+            <div class="info">
+              <el-input placeholder="请输入仓库备注"
+                type="textarea"
+                :autosize="{ minRows: 2, maxRows: 4}"
+                v-model="createOrEditStoreObj.desc"></el-input>
+            </div>
+          </div>
+        </div>
+        <div class="oprCtn">
+          <div class="opr"
+            @click="addFlag=false">取消</div>
+          <div class="opr blue"
+            @click="saveStore">保存</div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
-import { StoreDetail } from '@/types/common'
+import { Store, StoreDetail } from '@/types/common'
 import { StoreCreate } from '@/types/store'
 import { store, stock } from '@/assets/js/api'
 export default Vue.extend({
@@ -457,10 +608,26 @@ export default Vue.extend({
   } {
     return {
       showMore: false,
+      lookListFlag:false,
+      addFlag:false,
+      storeLoading:false,
+      storeTotal:1,
+      storePage:1,
+      typeArr: [
+        {
+          id: 1,
+          name: '本厂仓库'
+        },
+        {
+          id: 2,
+          name: '染厂仓库'
+        }
+      ],
       store_info: {
         show: false,
         init_data: []
       },
+      storeInfoList:[],
       loading: {
         page: false,
         info: true,
@@ -485,6 +652,7 @@ export default Vue.extend({
         color: '白胚',
         isFilterZero: true,
         page: 1,
+        limit: 20,
         total: 1,
         color_code: '',
         batch_code: '',
@@ -576,6 +744,15 @@ export default Vue.extend({
           }
         ]
       },
+      createOrEditStoreObj:{
+        store_type: 1,
+        id: null,
+        name: '',
+        type: 1,
+        admins: [],
+        LV2_info: [{ name: '', id: null }],
+        desc: ''
+      },
       storeListCom: {
         data: [],
         reality_weight: 0,
@@ -588,6 +765,9 @@ export default Vue.extend({
   computed: {
     store_list() {
       return this.$store.state.api.storeHouse.arr.filter((item: any) => item.store_type === 1)
+    },
+    user_list() {
+      return this.$store.state.api.user.arr
     },
     yarn_list() {
       return this.$store.state.api.yarnType.arr.map((item: any) => {
@@ -609,6 +789,74 @@ export default Vue.extend({
       this.getStoreInfoList()
       this.getStoreLogList()
     },
+    changeStore(item: Store) {
+      this.addFlag = true
+      this.createOrEditStoreObj = {
+        store_type: 1,
+        id: (item && item.id) || null,
+        name: (item && item.name) || '',
+        type: (item && item.type) || 1,
+        admins: (item && item.admins.map((itemM: any) => itemM.user_id)) || [],
+        LV2_info: (item && item.LV2_info) || [{ name: '', id: null }],
+        desc: (item && item.desc) || ''
+      }
+    },
+    deleteStore(item: Store) {
+      this.$confirm('此操作将删除该仓库, 是否继续?（注：已有库存日志将无法删除）', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        store
+          .delete({
+            id: item.id
+          })
+          .then((res: any) => {
+            if (res.data.status !== false) {
+              this.$message({
+                type: 'success',
+                message: `删除成功!`
+              })
+              this.getStoreList()
+            }
+          })
+      })
+    },
+    saveStore() {
+      if (this.$submitLock()) {
+        return
+      }
+      if (!this.createOrEditStoreObj.name) {
+        this.$message.warning('请输入仓库名称')
+        return
+      }
+      if (!this.createOrEditStoreObj.type) {
+        this.$message.warning('请选择仓库类型')
+        return
+      }
+      const LV2Name = this.createOrEditStoreObj.LV2_info.filter((itemF:any) => !itemF.name) // 筛选出名字为false
+      if (LV2Name.length > 0) {
+        this.$message.warning('请输入二级仓库名称')
+        return
+      }
+      store
+        .create({
+          store_type: 1,
+          id: this.createOrEditStoreObj.id || null,
+          name: this.createOrEditStoreObj.name,
+          type: this.createOrEditStoreObj.type,
+          manager_data: this.createOrEditStoreObj.admins,
+          second_data: this.createOrEditStoreObj.LV2_info,
+          desc: this.createOrEditStoreObj.desc
+        })
+        .then((res: any) => {
+          if (res.data.status !== false) {
+            this.$message.success(`${(this.createOrEditStoreObj.id && '修改') || '添加'}成功`)
+            this.addFlag = false
+            this.getStoreList()
+          }
+        })
+    },
     getStoreInfoList() {
       this.loading.info = true
       store
@@ -616,6 +864,8 @@ export default Vue.extend({
           store_id: this.storeListFilter.LV2_name ? this.storeListFilter.LV2_name[0] : '',
           second_store_id: this.storeListFilter.LV2_name ? this.storeListFilter.LV2_name[1] : '',
           name: this.storeListFilter.name ? this.storeListFilter.name[1] : '',
+          page: this.storeListFilter.page || 1,
+          limit: this.storeListFilter.limit || 20,
           color: this.storeListFilter.color || null,
           weight: this.storeListFilter.isFilterZero ? 0 : null,
           vat_code: this.storeListFilter.vat_code || null,
@@ -623,7 +873,8 @@ export default Vue.extend({
           batch_code: this.storeListFilter.batch_code || null
         })
         .then((res) => {
-          this.storeList = res.data.data
+          this.storeList = res.data.data.items
+          this.storeListFilter.total = res.data.data.total
           this.storeListCom = {
             reality_weight: this.storeList.map((itemM) => +itemM.total_weight).reduce((a, b) => a + b, 0),
             useable_weight: this.storeList.map((itemM) => +itemM.use_weight).reduce((a, b) => a + b, 0),
@@ -641,6 +892,17 @@ export default Vue.extend({
               }
             })
           }
+
+          this.storeListCom.data.forEach((item:any) => {
+            item.totalReality = item.store_info.reduce((a:any,b:any) => {
+              return a + (b.reality_weight || 0)
+            },0)
+          });
+
+          this.storeListCom.data.sort((a:any,b:any) => {
+            return (b.totalReality - a.totalReality)
+          })
+
           this.loading.info = false
         })
     },
@@ -653,6 +915,7 @@ export default Vue.extend({
           color: '',
           isFilterZero: true,
           page: 1,
+          limit: 20,
           total: 1
         }
         this.getStoreInfoList()
@@ -673,6 +936,34 @@ export default Vue.extend({
       } else {
         this.$message.warning('未知重置错误')
       }
+    },
+    getStoreList(){
+      this.storeLoading = true
+      store
+        .list({
+          store_type: 1,
+          limit: 5,
+          page: this.storePage,
+          name: null,
+          type: null,
+        })
+        .then((res: any) => {
+          if (res.data.status !== false) {
+            this.storeInfoList = res.data.data.items.map((itemM: any) => {
+              return {
+                id: itemM.id,
+                name: itemM.name,
+                type: itemM.type,
+                admins: itemM.manager_data,
+                LV2_info: itemM.second_data.map((itemS: any) => ({ id: itemS.id, name: itemS.name })),
+                total_weight: itemM.store,
+                desc: itemM.desc
+              }
+            })
+            this.storeTotal = res.data.data.total
+            this.storeLoading = false
+          }
+        })
     },
     // 获取出入库日志
     getStoreLogList(pages: number = 1) {
@@ -870,6 +1161,11 @@ export default Vue.extend({
         checkWhich: 'api/storeHouse',
         getInfoMethed: 'dispatch',
         getInfoApi: 'getStoreAsync'
+      },
+      {
+        checkWhich: 'api/user',
+        getInfoMethed: 'dispatch',
+        getInfoApi: 'getUserAsync'
       }
     ])
     this.init()

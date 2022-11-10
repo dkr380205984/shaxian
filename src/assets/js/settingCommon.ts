@@ -115,7 +115,8 @@ export const moduleList = [
         id: '3-0',
         label: '纱线库存',
         icon: '&#xe61c;',
-        url: '/store/list?page=&type=&name=&page_size='
+        // url: '/store/list?page=&type=&name=&page_size='
+        url: '/store/allDetail'
       },
       {
         id: '3-1',

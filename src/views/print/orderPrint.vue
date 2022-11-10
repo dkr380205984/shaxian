@@ -1,14 +1,14 @@
 <template>
-  <div id="orderPrint" class="printHtml">
+  <div id="orderPrint" class="printHtml" style="font-size: 16px">
     <div class="printTable">
       <div class="print_head">
         <div class="left">
-          <span class="title">{{ companyName }}</span>
-          <span class="item">
+          <span class="title" style="font-size: 31px">{{ companyName }}</span>
+          <span class="item" style="font-size: 17px">
             <span class="label">订单编号：</span>
             {{ orderInfo.code }}
           </span>
-          <span class="item">
+          <span class="item" style="font-size: 17px">
             <span class="label">订单创建信息：</span>
             {{ `${orderInfo.user_name},${$getDate(orderInfo.create_time)}` }}
           </span>
@@ -22,22 +22,22 @@
       </div>
       <div class="print_body">
         <div class="print_row">
-          <div class="row_item center bgGray">客户单号</div>
-          <div class="row_item center w180">{{ orderInfo.order_code }}</div>
-          <div class="row_item center bgGray">下单客户</div>
-          <div class="row_item center w180">{{ orderInfo.client_name }}</div>
-          <div class="row_item center bgGray">下单日期</div>
-          <div class="row_item center w180">{{ $getDate(orderInfo.create_time) }}</div>
+          <div class="row_item center bgGray flex05">客户单号</div>
+          <div class="row_item center">{{ orderInfo.order_code }}</div>
+          <div class="row_item center bgGray flex05">下单客户</div>
+          <div class="row_item center">{{ orderInfo.client_name }}</div>
+          <div class="row_item center bgGray flex05">下单日期</div>
+          <div class="row_item center">{{ $getDate(orderInfo.create_time) }}</div>
         </div>
         <div class="print_row has_marginBottom">
-          <div class="row_item center bgGray">{{ orderInfo.type == 1 ? '生产' : '销售' }}总数</div>
-          <div class="row_item center w180">{{ orderInfo.total_weight || 0 }}kg</div>
-          <div class="row_item center bgGray">{{ orderInfo.type == 1 ? '生产' : '销售' }}总价</div>
-          <div class="row_item center w180">{{ orderInfo.total_price || 0 }}元</div>
-          <div class="row_item center bgGray" v-if="orderInfo.type == 2"></div>
-          <div class="row_item center w180" v-if="orderInfo.type == 2"></div>
-          <div class="row_item center bgGray" v-if="orderInfo.type == 1">交货日期</div>
-          <div class="row_item center w180" v-if="orderInfo.type == 1">{{ orderInfo.delivery_time }}</div>
+          <div class="row_item center bgGray flex05">{{ orderInfo.type == 1 ? '生产' : '销售' }}总数</div>
+          <div class="row_item center">{{ orderInfo.total_weight || 0 }}kg</div>
+          <div class="row_item center bgGray flex05">{{ orderInfo.type == 1 ? '生产' : '销售' }}总价</div>
+          <div class="row_item center">{{ orderInfo.total_price || 0 }}元</div>
+          <div class="row_item center bgGray flex05" v-if="orderInfo.type == 2"></div>
+          <div class="row_item center" v-if="orderInfo.type == 2"></div>
+          <div class="row_item center bgGray flex05" v-if="orderInfo.type == 1">交货日期</div>
+          <div class="row_item center" v-if="orderInfo.type == 1">{{ orderInfo.delivery_time }}</div>
         </div>
         <div
           v-for="(item, index) in orderInfo.product_info"
@@ -45,49 +45,53 @@
           style="margin-bottom: 16px; border-bottom: 1px solid rgba(0, 0, 0, 0.25)"
         >
           <div class="print_row">
-            <div class="row_item center bgGray">纱线名称</div>
-            <div class="row_item center flex30">{{ item.product_name }}</div>
-            <div class="row_item center bgGray">数量小计</div>
-            <div class="row_item center">{{ item.total_weight }}kg</div>
-            <div class="row_item center bgGray">金额小计</div>
-            <div class="row_item center">{{ item.total_price }}元</div>
+            <div class="row_item center bgGray flex05">纱线名称</div>
+            <div class="row_item flex20" style="padding-left: 20px">{{ item.product_name }}</div>
+            <div class="row_item center bgGray flex05">数量小计</div>
+            <div class="row_item center flex05">{{ item.total_weight }}kg</div>
+            <div class="row_item center bgGray flex05">金额小计</div>
+            <div class="row_item center flex05">{{ item.total_price }}元</div>
           </div>
-          <div class="print_row">
-            <div class="row_item center bgGray">纱线颜色</div>
-            <div class="row_item center bgGray">纱线属性</div>
-            <div class="row_item center bgGray">数量属性</div>
-            <div class="row_item center bgGray" v-if="orderInfo.type == 2">批号</div>
-            <div class="row_item center bgGray" v-if="orderInfo.type == 2">缸号</div>
-            <div class="row_item center bgGray" v-if="orderInfo.type == 2">色号</div>
-            <div class="row_item center bgGray">{{ orderInfo.type == 2 ? '销售' : '下单' }}单价</div>
-            <div class="row_item center bgGray" v-if="orderInfo.type == 2">出库仓库</div>
-            <div class="row_item center bgGray">{{ orderInfo.type == 2 ? '销售' : '下单' }}数量</div>
-            <div class="row_item center bgGray" v-if="orderInfo.type == 2">销售件数</div>
+          <div class="print_row fz14">
+            <div class="row_item center bgGray flex15">纱线颜色</div>
+            <div class="row_item center bgGray flex07">纱线属性</div>
+            <div class="row_item center bgGray flex07">数量属性</div>
+            <div class="row_item center bgGray flex06" v-if="orderInfo.type == 2">批号</div>
+            <div class="row_item center bgGray flex06" v-if="orderInfo.type == 2">缸号</div>
+            <div class="row_item center bgGray flex06" v-if="orderInfo.type == 2">色号</div>
+            <div class="row_item center bgGray flex07">{{ orderInfo.type == 2 ? '销售' : '下单' }}单价</div>
+            <div class="row_item center bgGray flex15" v-if="orderInfo.type == 2">出库仓库</div>
+            <div class="row_item center bgGray flex08">{{ orderInfo.type == 2 ? '销售' : '下单' }}数量</div>
+            <div class="row_item center bgGray flex08" v-if="orderInfo.type == 2">销售件数</div>
           </div>
-          <div class="print_row" v-for="(itemChild, indexChild) in item.child_data" :key="indexChild + 'child_data'">
-            <div class="row_item center">{{ itemChild.color }}</div>
-            <div class="row_item center">{{ itemChild.attribute }}</div>
-            <div class="row_item center">{{ itemChild.number_attribute }}</div>
-            <div class="row_item center" v-if="orderInfo.type == 2">{{ itemChild.batch_code }}</div>
-            <div class="row_item center" v-if="orderInfo.type == 2">{{ itemChild.vat_code }}</div>
-            <div class="row_item center" v-if="orderInfo.type == 2">{{ itemChild.color_code }}</div>
-            <div class="row_item center">{{ itemChild.price }}</div>
-            <div class="row_item center" v-if="orderInfo.type == 2">{{ itemChild.store }}</div>
-            <div class="row_item center">{{ itemChild.weight }}</div>
-            <div class="row_item center" v-if="orderInfo.type == 2">{{ itemChild.item }}</div>
+          <div
+            class="print_row fz14"
+            v-for="(itemChild, indexChild) in item.child_data"
+            :key="indexChild + 'child_data'"
+          >
+            <div class="row_item center flex15">{{ itemChild.color }}</div>
+            <div class="row_item center flex07">{{ itemChild.attribute }}</div>
+            <div class="row_item center flex07">{{ itemChild.number_attribute }}</div>
+            <div class="row_item center flex06" v-if="orderInfo.type == 2">{{ itemChild.batch_code }}</div>
+            <div class="row_item center flex06" v-if="orderInfo.type == 2">{{ itemChild.vat_code }}</div>
+            <div class="row_item center flex06" v-if="orderInfo.type == 2">{{ itemChild.color_code }}</div>
+            <div class="row_item center flex07">{{ itemChild.price }}</div>
+            <div class="row_item center flex15" v-if="orderInfo.type == 2">{{ itemChild.store }}</div>
+            <div class="row_item center flex08">{{ itemChild.weight }}</div>
+            <div class="row_item center flex08" v-if="orderInfo.type == 2">{{ itemChild.item }}</div>
           </div>
         </div>
         <div class="print_row" v-for="(itemFee, indexFee) in orderInfo.additional_fee" :key="'itemFee' + indexFee">
-          <div class="row_item center bgGray">额外费用名称</div>
+          <div class="row_item center bgGray flex05">额外费用名称</div>
           <div class="row_item center">{{ itemFee.name }}</div>
-          <div class="row_item center bgGray">额外费用金额</div>
-          <div class="row_item center">{{ itemFee.price }}元</div>
-          <div class="row_item center bgGray">额外费用备注</div>
+          <div class="row_item center bgGray flex05">额外费用金额</div>
+          <div class="row_item center">{{ itemFee.price ? itemFee.price + '元' : '' }}</div>
+          <div class="row_item center bgGray flex05">额外费用备注</div>
           <div class="row_item center">{{ itemFee.desc }}</div>
         </div>
         <div class="print_row">
-          <div class="row_item center bgGray">备注信息</div>
-          <div class="row_item center" style="border-right: unset; flex: 5" v-html="orderInfo.desc"></div>
+          <div class="row_item center bgGray flex05">备注信息</div>
+          <div class="row_item center" style="border-right: unset; flex: 4.05" v-html="orderInfo.desc"></div>
         </div>
       </div>
     </div>
@@ -131,7 +135,7 @@ export default Vue.extend({
         this.orderInfo = res.data.data
         this.companyName =
           window.sessionStorage.getItem('full_name') + (this.orderInfo.type == 2 ? '销售订单' : '生产订单-计划单')
-        this.orderInfo.additional_fee = JSON.parse(this.orderInfo.additional_fee)
+        this.orderInfo.additional_fee = JSON.parse(this.orderInfo.additional_fee) || ['']
         this.orderInfo.product_info.forEach((item: any) => (item.priceNumber = (item.price || 0) * (item.weight || 0)))
         this.orderInfo.product_info = this.$mergeData(this.orderInfo.product_info, {
           mainRule: 'product_name',

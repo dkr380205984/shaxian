@@ -38,7 +38,7 @@
         <div class="rowCtn">
           <div class="colCtn flex3">
             <div class="label">
-              <span class="text">下单日期</span>
+              <span class="text">销售日期</span>
               <span class="explanation">(必选，默认今日)</span>
             </div>
             <div class="content">
@@ -47,13 +47,13 @@
                   v-model="order_info.order_time"
                   type="date"
                   value-format="yyyy-MM-dd"
-                  placeholder="选择下单日期"
+                  placeholder="选择销售日期"
                 >
                 </el-date-picker>
               </div>
             </div>
           </div>
-          <div class="colCtn flex3">
+          <!-- <div class="colCtn flex3">
             <div class="label">
               <span class="text">交货日期</span>
               <span class="explanation">(必选)</span>
@@ -70,13 +70,13 @@
                 </el-date-picker>
               </div>
             </div>
-          </div>
+          </div> -->
         </div>
         <div class="rowCtn">
           <div class="colCtn" style="margin-right: unset">
             <div class="label">
-              <span class="text">下单信息</span>
-              <span class="explanation">(均为必填项)</span>
+              <span class="text">销售信息</span>
+              <span class="explanation">(纱线名称、颜色、单价、数量为必填，其他均为选填)</span>
             </div>
             <div class="btn backHoverBlue" @click="showStore = true">从库存中销售</div>
             <el-tooltip class="item" effect="dark" placement="top">
@@ -115,16 +115,16 @@
                     </div>
                     <div class="tcolumn" style="flex: 2.2">批号/缸号/色号</div>
                     <div class="tcolumn" style="position: relative">
-                      销售单价
+                      销售单价(元/kg)
                       <el-tooltip class="item" effect="dark" content="统一价格" placement="top">
                         <svg class="iconFont copyIcon hoverBlue" aria-hidden="true" @click="copyInfo('price')">
                           <use xlink:href="#icon-tongbushuju1"></use>
                         </svg>
                       </el-tooltip>
                     </div>
-                    <div class="tcolumn">销售仓库</div>
+                    <div class="tcolumn" style="flex: 1.5">销售仓库</div>
                     <div class="tcolumn">销售数量（kg）</div>
-                    <div class="tcolumn">销售件数（件）</div>
+                    <div class="tcolumn" style="flex: 0.55">件数</div>
                     <div class="tcolumn" style="flex: 0.8">颜色操作</div>
                   </div>
                 </div>
@@ -132,9 +132,11 @@
                   <div class="noData" v-if="order_info.product_info.length === 0">请添加至少一种纱线</div>
                   <div class="trow" v-for="(itemPro, indexPro) in order_info.product_info" :key="indexPro">
                     <div class="tcolumn" style="flex: 1.7">
-                      <div class="el">
+                      <div class="el" style="display:flex;align-items:center">
+                        <span style="width:10%">{{indexPro+1}}</span>
                         <el-cascader
                           v-model="itemPro.name"
+                          style="width:90%"
                           filterable
                           :disabled="itemPro.isCheck"
                           placeholder="请选择纱线"
@@ -200,15 +202,8 @@
                     <div class="tcolumn">
                       <el-input class="el" v-model="itemPro.price" placeholder="销售单价" @input="cmpTotal"> </el-input>
                     </div>
-                    <div class="tcolumn">
-                      <el-input
-                        class="el"
-                        :value="(itemPro.store_name || '') + ' / ' + (itemPro.second_store_name || '')"
-                        disabled
-                        placeholder="仓库"
-                        @input="cmpTotal"
-                      >
-                      </el-input>
+                    <div class="tcolumn" style="flex: 1.5">
+                      <span>{{ (itemPro.store_name || '') }}/ <br/> {{(itemPro.second_store_name || '') }}</span>
                     </div>
                     <div class="tcolumn">
                       <el-input
@@ -219,8 +214,8 @@
                       >
                       </el-input>
                     </div>
-                    <div class="tcolumn">
-                      <el-input class="el" v-model="itemPro.item" placeholder="销售件数" @input="cmpTotal"> </el-input>
+                    <div class="tcolumn" style="flex: 0.55">
+                      <el-input class="el" v-model="itemPro.item" placeholder="件数" @input="cmpTotal"> </el-input>
                     </div>
                     <div class="tcolumn flexRow" style="flex: 0.8">
                       <span class="opr red" style="margin-right: 12px" @click="deleteOnce(indexPro)">删除</span>
@@ -433,7 +428,7 @@ export default Vue.extend({
       dialogVisible: false,
       showStore: false,
       loadingData: true,
-      update: true,
+      update: false,
       copyLine: '',
       dialogImageUrl: '',
       notify: '',
@@ -593,10 +588,6 @@ export default Vue.extend({
           {
             key: 'client_id',
             errMsg: '请选择下单客户'
-          },
-          {
-            key: 'delivery_time',
-            errMsg: '请选择下单日期'
           }
         ])
       ) {
@@ -671,6 +662,7 @@ export default Vue.extend({
       }
     },
     orderSave() {
+      this.order_info.delivery_time = this.order_info.order_time
       // 发送请求之前转换一下格式
       const formData = JSON.parse(JSON.stringify(this.order_info))
       formData.product_info.forEach((item: any) => (item.name = (item.name as any[])[1]))

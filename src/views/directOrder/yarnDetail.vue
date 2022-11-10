@@ -321,7 +321,7 @@
                 </div>
                 <div class="button btnBlue" @click="$openUrl(`/print/orderYarn/2/${$route.params.id}`)">
                   <i class="el-icon-printer"></i>
-                  <span class="text">打印</span>
+                  <span class="text">打印单据</span>
                 </div>
                 <div class="button btnRed" @click="deleteThis">
                   <i class="el-icon-delete"></i>

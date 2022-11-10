@@ -258,7 +258,7 @@
             @click="saveOrder(1)"
             >{{ update ? '确认修改' : '确认采购' }}</span
           >
-          <span class="btn backHoverGreen" style="margin-right: 20px" @click="saveOrder(2)">确认并入库</span>
+          <span v-if="!update" class="btn backHoverGreen" style="margin-right: 20px" @click="saveOrder(2)">确认并入库</span>
         </div>
       </template>
       <template v-if="step === 2">
@@ -684,6 +684,7 @@ export default Vue.extend({
       this.reset()
     },
     reset() {
+      this.cvFlag = false
       this.order_yarn_info = {
         order_id: '',
         client_id: '',
@@ -952,11 +953,9 @@ export default Vue.extend({
           this.close()
         }
       })
-    }
-  },
-  watch: {
-    update: function (val) {
-      if (val) {
+    },
+    getOrderYarnInfo() {
+      if (this.update) {
         this.order_yarn_info = this.info
       } else {
         this.order_yarn_info = {
@@ -986,6 +985,14 @@ export default Vue.extend({
           desc: ''
         }
       }
+    }
+  },
+  watch: {
+    show: function (val) {
+      this.getOrderYarnInfo()
+    },
+    update: function (val) {
+      this.getOrderYarnInfo()
     }
   },
   mounted() {

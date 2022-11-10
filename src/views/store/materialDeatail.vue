@@ -146,12 +146,11 @@
         <span class="title">出入库日志</span>
       </div>
       <div class="listCtn">
-        <div class="filterCtn"
-          :class="{'showMore':showMore}">
-          <div class="leftCtn">
+        <div class="filterCtn showMore">
+          <div class="leftCtn" style="padding-right:unset;">
             <div class="label">筛选条件：</div>
-            <div class="showMore"
-              @click="showMore=!showMore">{{!showMore?'展示更多':'收起筛选'}}</div>
+            <!-- <div class="showMore"
+              @click="showMore=!showMore">{{!showMore?'展示更多':'收起筛选'}}</div> -->
             <div class="elCtn">
               <el-select v-model="storeLogListFilter.LV2_name"
                 clearable
@@ -187,6 +186,17 @@
                 placeholder="输入关联单号"></el-input>
             </div>
             <div class="elCtn">
+              <el-date-picker v-model="storeLogListFilter.time"
+                type="daterange"
+                value-format="yyyy-MM-dd"
+                range-separator="至"
+                start-placeholder="开始日期"
+                end-placeholder="结束日期"
+                @change="getStoreLogList(1)">
+              </el-date-picker>
+              
+            </div>
+            <div class="elCtn">
               <el-select v-model="storeLogListFilter.limit"
                 clearable
                 @change="getStoreLogList(1)"
@@ -219,18 +229,8 @@
                 </el-option>
               </el-select>
             </div>
-            <div class="elCtn">
-              <el-date-picker v-model="storeLogListFilter.time"
-                type="daterange"
-                value-format="yyyy-MM-dd"
-                range-separator="至"
-                start-placeholder="开始日期"
-                end-placeholder="结束日期"
-                @change="getStoreLogList(1)">
-              </el-date-picker>
-            </div>
           </div>
-          <div class="rightCtn">
+          <div class="rightCtn" style="min-width:94px">
             <div class="btn btnGray fr"
               @click="resetFilter(2)">重置</div>
           </div>
@@ -395,7 +395,7 @@ export default Vue.extend({
         attr: '',
         type: '',
         code: '',
-        limit: 5,
+        limit: 10,
         pages: 1,
         total: 1,
         time: ''
@@ -492,7 +492,7 @@ export default Vue.extend({
           attr: '',
           type: '',
           code: '',
-          limit: 5,
+          limit: 10,
           pages: 1,
           total: 1,
           time: ''
@@ -509,7 +509,7 @@ export default Vue.extend({
         .materialList({
           store_id: this.$route.params.id,
           page: pages,
-          limit: this.storeLogListFilter.limit || 5,
+          limit: this.storeLogListFilter.limit || 10,
           store_second_id: this.storeLogListFilter.LV2_name || null,
           name: this.storeLogListFilter.LV2_name || null,
           action_type: this.storeLogListFilter.type || null,

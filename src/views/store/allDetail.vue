@@ -25,9 +25,15 @@
             </div>
             <div class="elCtn"
               style="width:120px">
-              <el-input v-model="storeListFilter.name"
+              <el-cascader
+                v-model="storeListFilter.name"
+                filterable
+                clearable
+                :show-all-levels="false"
+                placeholder="请选择纱线"
+                :options="yarn_list"
                 @change="getStoreInfoList"
-                placeholder="纱线名称"></el-input>
+              ></el-cascader>
             </div>
             <div class="elCtn"
               style="width:120px">
@@ -149,12 +155,11 @@
         <span class="title">出入库日志</span>
       </div>
       <div class="listCtn">
-        <div class="filterCtn"
-          :class="{'showMore':showMore}">
-          <div class="leftCtn">
+        <div class="filterCtn showMore">
+          <div class="leftCtn" style="padding-right:unset;max-width:1210px">
             <div class="label">筛选条件：</div>
-            <div class="showMore"
-              @click="showMore=!showMore">{{!showMore?'展示更多':'收起筛选'}}</div>
+            <!-- <div class="showMore"
+              @click="showMore=!showMore">{{!showMore?'展示更多':'收起筛选'}}</div> -->
             <div class="elCtn">
               <el-cascader v-model="storeLogListFilter.LV2_name"
                 :options="store_list"
@@ -164,9 +169,15 @@
               </el-cascader>
             </div>
             <div class="elCtn">
-              <el-input v-model="storeLogListFilter.name"
+              <el-cascader
+                v-model="storeLogListFilter.name"
+                filterable
+                clearable
+                :show-all-levels="false"
+                placeholder="请选择纱线"
+                :options="yarn_list"
                 @change="getStoreLogList(1)"
-                placeholder="输入纱线名称"></el-input>
+              ></el-cascader>
             </div>
             <div class="elCtn">
               <el-input v-model="storeLogListFilter.color"
@@ -228,7 +239,7 @@
               <el-select v-model="storeLogListFilter.limit"
                 clearable
                 @change="getStoreLogList(1)"
-                placeholder="每页展示条数（默认‘5’）">
+                placeholder="每页展示条数（默认‘10’）">
                 <el-option v-for="item in commonInit.limitArr"
                   :key="item.id"
                   :label="item.name"
@@ -247,7 +258,7 @@
               </el-date-picker>
             </div>
           </div>
-          <div class="rightCtn">
+          <div class="rightCtn" style="min-width:94px">
             <div class="btn btnGray fr"
               @click="resetFilter(2)">重置</div>
           </div>
@@ -471,7 +482,7 @@ export default Vue.extend({
       storeListFilter: {
         LV2_name: '',
         name: '',
-        color: '',
+        color: '白胚',
         isFilterZero: true,
         page: 1,
         total: 1,
@@ -488,11 +499,11 @@ export default Vue.extend({
       storeLogListFilter: {
         LV2_name: '',
         name: '',
-        color: '',
+        color: '白胚',
         attr: '',
         type: '',
         code: '',
-        limit: 5,
+        limit: 10,
         pages: 1,
         total: 1,
         time: ''
@@ -577,7 +588,21 @@ export default Vue.extend({
   computed: {
     store_list() {
       return this.$store.state.api.storeHouse.arr.filter((item: any) => item.store_type === 1)
-    }
+    },
+    yarn_list() {
+      return this.$store.state.api.yarnType.arr.map((item: any) => {
+        return {
+          value: item.name,
+          label: item.name,
+          children: item.yarns.map((itemChild: any) => {
+            return {
+              value: itemChild.name,
+              label: itemChild.name
+            }
+          })
+        }
+      })
+    },
   },
   methods: {
     init() {
@@ -590,7 +615,7 @@ export default Vue.extend({
         .detailYarnList({
           store_id: this.storeListFilter.LV2_name ? this.storeListFilter.LV2_name[0] : '',
           second_store_id: this.storeListFilter.LV2_name ? this.storeListFilter.LV2_name[1] : '',
-          name: this.storeListFilter.name || null,
+          name: this.storeListFilter.name ? this.storeListFilter.name[1] : '',
           color: this.storeListFilter.color || null,
           weight: this.storeListFilter.isFilterZero ? 0 : null,
           vat_code: this.storeListFilter.vat_code || null,
@@ -639,7 +664,7 @@ export default Vue.extend({
           attr: '',
           type: '',
           code: '',
-          limit: 5,
+          limit: 10,
           pages: 1,
           total: 1,
           time: ''
@@ -655,10 +680,10 @@ export default Vue.extend({
       stock
         .list({
           page: pages,
-          limit: this.storeLogListFilter.limit || 5,
+          limit: this.storeLogListFilter.limit || 10,
           store_id: this.storeLogListFilter.LV2_name ? this.storeLogListFilter.LV2_name[0] : '',
           store_second_id: this.storeLogListFilter.LV2_name ? this.storeLogListFilter.LV2_name[1] : '',
-          name: this.storeLogListFilter.name || null,
+          name: this.storeLogListFilter.name ? this.storeLogListFilter.name[1] : "",
           color: this.storeLogListFilter.color || null,
           attribute: this.storeLogListFilter.attr || null,
           action_type: this.storeLogListFilter.type || [],
@@ -835,6 +860,11 @@ export default Vue.extend({
         checkWhich: 'api/client',
         getInfoMethed: 'dispatch',
         getInfoApi: 'getPartyBAsync'
+      },
+      {
+        checkWhich: 'api/yarnType',
+        getInfoMethed: 'dispatch',
+        getInfoApi: 'getYarnTypeAsync'
       },
       {
         checkWhich: 'api/storeHouse',

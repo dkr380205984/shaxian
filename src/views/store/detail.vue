@@ -192,12 +192,11 @@
         <span class="title">出入库日志</span>
       </div>
       <div class="listCtn">
-        <div class="filterCtn"
-          :class="{'showMore':showMore}">
-          <div class="leftCtn">
+        <div class="filterCtn showMore">
+          <div class="leftCtn" style="padding-right:unset;max-width:1210px">
             <div class="label">筛选条件：</div>
-            <div class="showMore"
-              @click="showMore=!showMore">{{!showMore?'展示更多':'收起筛选'}}</div>
+            <!-- <div class="showMore"
+              @click="showMore=!showMore">{{!showMore?'展示更多':'收起筛选'}}</div> -->
             <div class="elCtn">
               <el-select v-model="storeLogListFilter.LV2_name"
                 clearable
@@ -255,6 +254,18 @@
                 @change="getStoreLogList(1)"
                 placeholder="缸号"></el-input>
             </div>
+            <div class="elCtn" style="width:80px">
+              <el-select v-model="storeLogListFilter.limit"
+                clearable
+                @change="getStoreLogList(1)"
+                placeholder="每页展示条数（默认‘5’）">
+                <el-option v-for="item in commonInit.limitArr"
+                  :key="item.id"
+                  :label="item.name"
+                  :value="item.id">
+                </el-option>
+              </el-select>
+            </div>
             <div class="elCtn">
               <el-select v-model="storeLogListFilter.type"
                 clearable
@@ -274,18 +285,6 @@
                 placeholder="输入关联单号"></el-input>
             </div>
             <div class="elCtn">
-              <el-select v-model="storeLogListFilter.limit"
-                clearable
-                @change="getStoreLogList(1)"
-                placeholder="每页展示条数（默认‘5’）">
-                <el-option v-for="item in commonInit.limitArr"
-                  :key="item.id"
-                  :label="item.name"
-                  :value="item.id">
-                </el-option>
-              </el-select>
-            </div>
-            <div class="elCtn">
               <el-date-picker v-model="storeLogListFilter.time"
                 type="daterange"
                 value-format="yyyy-MM-dd"
@@ -296,7 +295,7 @@
               </el-date-picker>
             </div>
           </div>
-          <div class="rightCtn">
+          <div class="rightCtn" style="min-width: 94px">
             <div class="btn btnGray fr"
               @click="resetFilter(2)">重置</div>
           </div>
@@ -537,7 +536,7 @@ export default Vue.extend({
         attr: '',
         type: '',
         code: '',
-        limit: 5,
+        limit: 10,
         pages: 1,
         total: 1,
         time: '',
@@ -693,7 +692,7 @@ export default Vue.extend({
           attr: '',
           type: '',
           code: '',
-          limit: 5,
+          limit: 10,
           pages: 1,
           total: 1,
           time: '',
@@ -713,7 +712,7 @@ export default Vue.extend({
         .list({
           store_id: this.$route.params.id,
           page: pages,
-          limit: this.storeLogListFilter.limit || 5,
+          limit: this.storeLogListFilter.limit || 10,
           store_second_id: this.storeLogListFilter.LV2_name || null,
           name: this.storeLogListFilter.name || null,
           color: this.storeLogListFilter.color || null,

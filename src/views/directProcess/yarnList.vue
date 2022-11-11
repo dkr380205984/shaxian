@@ -1,547 +1,632 @@
 <template>
-  <div id="yarnList"
-    class="indexMain"
-    v-loading="loading">
+  <div id="yarnList" class="indexMain" v-loading="loading">
     <div class="module">
       <div class="titleCtn">
         <span class="title hasBorder">加工单信息</span>
-        <span class="addBtn btn btnMain"
-          @click="resetProcess();create_flag=true">添加加工单</span>
+        <span
+          class="addBtn btn btnMain"
+          @click="
+            getYarnStoreList()
+            resetProcess()
+            create_flag = true
+            step = 0
+          "
+          >添加加工单</span
+        >
       </div>
       <div class="listCtn">
-        <div class="filterCtn"
-          :class="{'showMore':showMore}">
-          <div class="leftCtn">
+        <div class="filterCtn showMore">
+          <div class="leftCtn" style="padding:unset;max-width:unset">
             <div class="label">筛选条件：</div>
-            <div class="showMore"
-              @click="showMore=!showMore">{{!showMore?'展示更多':'收起筛选'}}</div>
+            <!-- <div class="showMore" @click="showMore = !showMore">{{ !showMore ? '展示更多' : '收起筛选' }}</div> -->
             <div class="elCtn">
-              <el-input v-model="code"
-                placeholder="请输入加工单号搜索"
-                @change="changeRouter(1)"></el-input>
+              <el-input v-model="code" placeholder="请输入加工单号搜索" @change="changeRouter(1)"></el-input>
             </div>
             <div class="elCtn">
-              <el-select v-model="client_id"
-                placeholder="选择加工单位"
-                clearable
-                @change="changeRouter(1)">
-                <el-option v-for="item in client_arr"
-                  :key="item.id"
-                  :value="item.id"
-                  :label="item.name"></el-option>
+              <el-select v-model="client_id" placeholder="选择加工单位" clearable @change="changeRouter(1)">
+                <el-option v-for="item in client_arr" :key="item.id" :value="item.id" :label="item.name"></el-option>
               </el-select>
             </div>
             <div class="elCtn">
-              <el-input v-model="name"
-                placeholder="搜索纱线名称"
-                @change="changeRouter(1)"></el-input>
+              <el-input v-model="name" placeholder="搜索纱线名称" @change="changeRouter(1)"></el-input>
             </div>
             <div class="elCtn">
-              <el-select v-model="user_id"
-                clearable
-                placeholder="选择创建人">
-                <el-option v-for="item in user_list"
-                  :key="item.id"
-                  :value="item.id"
-                  :label="item.name"></el-option>
+              <el-select v-model="user_id" clearable placeholder="选择创建人">
+                <el-option v-for="item in user_list" :key="item.id" :value="item.id" :label="item.name"></el-option>
               </el-select>
             </div>
-            <div class="elCtn middle"
-              style="width:350px;">
-              <el-date-picker v-model="date"
+            <div class="elCtn">
+              <el-select v-model="page_size" placeholder="选择每页展示的条数" @change="changeRouter(1)">
+                <el-option label="每页10条" :value="10"></el-option>
+                <el-option label="每页20条" :value="20"></el-option>
+                <el-option label="每页30条" :value="30"></el-option>
+              </el-select>
+            </div>
+            <div class="elCtn middle" style="width: 350px">
+              <el-date-picker
+                v-model="date"
                 type="daterange"
                 range-separator="至"
                 start-placeholder="开始日期"
                 end-placeholder="结束日期"
-                @change="changeRouter(1)">
+                @change="changeRouter(1)"
+              >
               </el-date-picker>
             </div>
-            <div class="elCtn middle">
-              <el-select v-model="page_size"
-                placeholder="选择每页展示的条数"
-                @change="changeRouter(1)">
-                <el-option label="每页10条"
-                  :value="10"></el-option>
-                <el-option label="每页20条"
-                  :value="20"></el-option>
-                <el-option label="每页30条"
-                  :value="30"></el-option>
-              </el-select>
-            </div>
           </div>
-          <div class="rightCtn">
-            <div class="btn btnGray fr"
-              @click="reset">重置</div>
+          <div class="rightCtn" style="min-width:94px">
+            <div class="btn btnGray fr" @click="reset">重置</div>
           </div>
         </div>
         <div class="list">
-          <el-table :data="list"
-            style="width: 100%"
-            ref="table">
-            <el-table-column fixed
-              prop="code"
-              label="加工单号"
-              width="120">
-            </el-table-column>
-            <el-table-column fixed
-              prop="client_name"
-              label="加工单位"
-              width="140">
-            </el-table-column>
-            <el-table-column prop="status"
-              label="加工单状态"
-              width="120">
+          <el-table :data="list" style="width: 100%" ref="table">
+            <el-table-column fixed prop="code" label="加工单号" width="120"> </el-table-column>
+            <el-table-column fixed prop="client_name" label="加工单位" width="140"> </el-table-column>
+            <el-table-column prop="status" label="加工单状态" width="120">
               <template slot-scope="scope">
-                <span :class="{'orange':scope.row.status===1,'blue':scope.row.status===2,'green':scope.row.status===3,'gray':scope.row.status===4}">{{scope.row.status | orderStatusFilter}}</span>
+                <span
+                  :class="{
+                    orange: scope.row.status === 1,
+                    blue: scope.row.status === 2,
+                    green: scope.row.status === 3,
+                    gray: scope.row.status === 4
+                  }"
+                  >{{ scope.row.status | orderStatusFilter }}</span
+                >
               </template>
             </el-table-column>
-            <el-table-column prop="is_check"
-              label="审核信息"
-              width="120">
+            <el-table-column prop="is_check" label="审核信息" width="120">
               <template slot-scope="scope">
-                <span :class="{'orange':!scope.row.is_check,'green':scope.row.is_check===1,'red':scope.row.is_check===2}">{{scope.row.is_check | orderCheckFilter}}</span>
+                <span
+                  :class="{
+                    orange: !scope.row.is_check,
+                    green: scope.row.is_check === 1,
+                    red: scope.row.is_check === 2
+                  }"
+                  >{{ scope.row.is_check | orderCheckFilter }}</span
+                >
               </template>
             </el-table-column>
-            <el-table-column label="纱线名称"
-              width="200">
+            <el-table-column label="纱线名称" width="200">
               <template slot-scope="scope">
                 <div class="sortContainer">
                   <div class="sort">
-                    <i class="el-icon-caret-top hover"
-                      @click="changeIndex(scope.row,'add')"></i>
-                    <div class="number">
-                      {{(scope.row.index||0)+1}}/{{scope.row.child_data.length}}
-                    </div>
-                    <i class="el-icon-caret-bottom hover"
-                      @click="changeIndex(scope.row,'delete')"></i>
+                    <i class="el-icon-caret-top hover" @click="changeIndex(scope.row, 'add')"></i>
+                    <div class="number">{{ (scope.row.index || 0) + 1 }}/{{ scope.row.child_data.length }}</div>
+                    <i class="el-icon-caret-bottom hover" @click="changeIndex(scope.row, 'delete')"></i>
                   </div>
-                  <span>{{scope.row.child_data[scope.row.index||0].name}}</span>
+                  <span>{{ scope.row.child_data[scope.row.index || 0].name }}</span>
                 </div>
               </template>
             </el-table-column>
-            <el-table-column prop="total_price"
-              label="加工详情"
-              width="220">
+            <el-table-column prop="total_price" label="加工详情" width="220">
               <template slot-scope="scope">
-                <span class="green"
-                  style="margin-right:12px">{{scope.row.type}}</span>
-                <span v-if="scope.row.type==='倒筒'">
-                  {{scope.row.child_data[scope.row.index||0].before_attribute}}
+                <span class="green" style="margin-right: 12px">{{ scope.row.type }}</span>
+                <span v-if="scope.row.type === '倒筒'">
+                  {{ scope.row.child_data[scope.row.index || 0].before_attribute }}
                   <i class="el-icon-d-arrow-right"></i>
-                  {{scope.row.child_data[scope.row.index||0].after_attribute}}
+                  {{ scope.row.child_data[scope.row.index || 0].after_attribute }}
                 </span>
-                <span v-if="scope.row.type==='染色'">
-                  {{scope.row.child_data[scope.row.index||0].before_color}}
+                <span v-if="scope.row.type === '染色'">
+                  {{ scope.row.child_data[scope.row.index || 0].before_color }}
                   <i class="el-icon-d-arrow-right"></i>
-                  {{scope.row.child_data[scope.row.index||0].after_color}}
+                  {{ scope.row.child_data[scope.row.index || 0].after_color }}
                 </span>
-                <span v-if="scope.row.type==='膨纱'">
-                  {{scope.row.child_data[scope.row.index||0].color}}
+                <span v-if="scope.row.type === '膨纱'">
+                  {{ scope.row.child_data[scope.row.index || 0].color }}
                   /
-                  {{scope.row.child_data[scope.row.index||0].attribute}}
+                  {{ scope.row.child_data[scope.row.index || 0].attribute }}
                 </span>
               </template>
             </el-table-column>
-            <el-table-column prop="total_price"
-              label="加工数量(kg)"
-              width="120">
+            <el-table-column prop="total_price" label="加工数量(kg)" width="120">
               <template slot-scope="scope">
-                <span>{{scope.row.child_data[scope.row.index||0].weight}}</span>
+                <span>{{ scope.row.child_data[scope.row.index || 0].weight }}</span>
               </template>
             </el-table-column>
-            <el-table-column prop="total_weight"
-              label="加工总数(kg)"
-              width="120">
+            <el-table-column prop="total_weight" label="加工总数(kg)" width="120">
               <template slot-scope="scope">
-                <span class="blue">{{scope.row.total_weight}}</span>
+                <span class="blue">{{ scope.row.total_weight }}</span>
               </template>
             </el-table-column>
-            <el-table-column prop="push_weight"
-              label="入库总数(kg)"
-              width="120">
+            <el-table-column prop="push_weight" label="入库总数(kg)" width="120">
               <template slot-scope="scope">
-                <span class="green">{{scope.row.push_weight}}</span>
+                <span class="green">{{ scope.row.push_weight }}</span>
               </template>
             </el-table-column>
-            <el-table-column prop="total_price"
-              label="下单总价(元)"
-              width="120">
-            </el-table-column>
-            <el-table-column prop="delivery_time"
-              label="交货日期"
-              width="120">
+            <el-table-column prop="total_price" label="下单总价(元)" width="120"> </el-table-column>
+            <el-table-column prop="delivery_time" label="交货日期" width="120">
               <template slot-scope="scope">
-                <div v-if="scope.row.status!==3"
-                  style="display:flex;flex-direction:column">
-                  <span>{{scope.row.delivery_time}}</span>
-                  <span :class="{'red':$diffByDate(scope.row.delivery_time)<=0,'green':$diffByDate(scope.row.delivery_time)>7,'orange':$diffByDate(scope.row.delivery_time)<=7 &&$diffByDate(scope.row.delivery_time)>0 }">
-                    {{$diffByDate(scope.row.delivery_time)>0?'交货还剩'+$diffByDate(scope.row.delivery_time)+'天':'延期发货'+Math.abs($diffByDate(scope.row.delivery_time))+'天'}}
+                <div v-if="scope.row.status !== 3" style="display: flex; flex-direction: column">
+                  <span>{{ scope.row.delivery_time }}</span>
+                  <span
+                    :class="{
+                      red: $diffByDate(scope.row.delivery_time) <= 0,
+                      green: $diffByDate(scope.row.delivery_time) > 7,
+                      orange: $diffByDate(scope.row.delivery_time) <= 7 && $diffByDate(scope.row.delivery_time) > 0
+                    }"
+                  >
+                    {{
+                      $diffByDate(scope.row.delivery_time) > 0
+                        ? '交货还剩' + $diffByDate(scope.row.delivery_time) + '天'
+                        : '延期发货' + Math.abs($diffByDate(scope.row.delivery_time)) + '天'
+                    }}
                   </span>
                 </div>
-                <div v-if="scope.row.status===3"
-                  style="display:flex;flex-direction:column">
-                  <span>{{scope.row.delivery_time}}</span>
+                <div v-if="scope.row.status === 3" style="display: flex; flex-direction: column">
+                  <span>{{ scope.row.delivery_time }}</span>
                   <span class="green">已完成</span>
                 </div>
               </template>
             </el-table-column>
-            <el-table-column prop="order_time"
-              label="下单日期"
-              width="120">
-            </el-table-column>
+            <el-table-column prop="order_time" label="下单日期" width="120"> </el-table-column>
             <el-table-column label="补充说明">
               <template slot-scope="scope">
                 <div class="column">
-                  <el-image style="width: 50px; height: 50px;line-height:50px;text-align:center;font-size:22px"
+                  <el-image
+                    style="width: 50px; height: 50px; line-height: 50px; text-align: center; font-size: 22px"
                     :src="scope.row.file_url"
-                    :preview-src-list="[scope.row.file_url]">
-                    <div slot="error"
-                      class="image-slot">
+                    :preview-src-list="[scope.row.file_url]"
+                  >
+                    <div slot="error" class="image-slot">
                       <i class="el-icon-picture-outline"></i>
                     </div>
                   </el-image>
                 </div>
               </template>
             </el-table-column>
-            <el-table-column prop="user_name"
-              label="操作人"
-              width="120">
-            </el-table-column>
-            <el-table-column fixed="right"
-              label="操作"
-              width="150">
+            <el-table-column prop="user_name" label="操作人" width="120"> </el-table-column>
+            <el-table-column fixed="right" label="操作" width="150">
               <template slot-scope="scope">
-                <span class="opr blue"
-                  @click="$router.push('/directProcess/yarnDetail/' + scope.row.id)">详情</span>
-                <span class="opr orange"
-                  @click="openUpdate(scope.row)">修改</span>
-                <span class="opr red"
-                  @click="openDelete(scope.row.id)">删除</span>
+                <span class="opr blue" @click="$router.push('/directProcess/yarnDetail/' + scope.row.id)">详情</span>
+                <span class="opr orange" @click="openUpdate(scope.row)">修改</span>
+                <span class="opr red" @click="openDelete(scope.row.id)">删除</span>
               </template>
             </el-table-column>
           </el-table>
         </div>
         <div class="pageCtn">
-          <el-pagination background
-            :current-page.sync="page"
-            :page-size="10"
-            layout="prev, pager, next"
-            :total="total">
+          <el-pagination background :current-page.sync="page" :page-size="10" layout="prev, pager, next" :total="total">
           </el-pagination>
         </div>
       </div>
     </div>
-    <div class="popup"
-      v-show="update_flag || create_flag">
-      <div class="main">
+    <div class="popup" v-show="update_flag || create_flag">
+      <div class="main" style="width: 1110px">
         <div class="titleCtn">
           <span class="text">添加加工单</span>
-          <i class="close_icon el-icon-close"
-            @click="resetProcess"></i>
+          <i class="close_icon el-icon-close" @click="resetProcess"></i>
         </div>
-        <div class="contentCtn"
-          style="padding:0">
+        <div class="contentCtn" v-loading="loadingPro" style="padding: 0; max-height: 800px">
           <div class="createCtn">
-            <div class="rowCtn">
-              <div class="colCtn">
-                <div class="label">
-                  <span class="text">加工单位</span>
-                  <span class="explanation">(必选)</span>
+            <el-steps v-if="!update_flag" :active="step" process-status="finish">
+              <el-step title="库存调取"></el-step>
+              <el-step title="填写加工单"></el-step>
+            </el-steps>
+            <template v-if="step === 0">
+              <div class="listCtn" style="padding: unset; margin-top: 20px">
+                <div class="explainCtn" style="margin: 12px 0">
+                  能且只能选择相同仓库和相同二级仓库的下的纱线进行加工操作
+                  <br />
+                  <span style="font-weight: bold; font-size: 18px; color: red"
+                    >选中的调取数量必填，就是后面加工单的加工数量</span
+                  >
                 </div>
-                <div class="content">
-                  <div class="elCtn">
-                    <el-select placeholder="请选择加工单位"
-                      v-model="process_info.client_id">
-                      <el-option v-for="item in client_arr"
-                        :key="item.id"
-                        :value="item.id"
-                        :label="item.name"></el-option>
-                    </el-select>
+                <div class="filterCtn" style="padding-bottom: 30px">
+                  <div class="leftCtn" style="padding-right: unset; max-width: unset">
+                    <div class="elCtn">
+                      <el-cascader
+                        v-model="getYarnStoreObj.LV2_name"
+                        :options="store_list"
+                        @change="getYarnStoreList"
+                        :props="{ value: 'id', label: 'name', children: 'second_data' }"
+                        placeholder="请选择仓库"
+                        clearable
+                      >
+                      </el-cascader>
+                    </div>
+                    <div class="elCtn">
+                      <el-cascader
+                        v-model="getYarnStoreObj.name"
+                        filterable
+                        clearable
+                        :show-all-levels="false"
+                        placeholder="请选择纱线"
+                        :options="yarn_list"
+                        @change="getYarnStoreList"
+                      ></el-cascader>
+                    </div>
+                    <div class="elCtn">
+                      <el-input
+                        v-model="getYarnStoreObj.color"
+                        @change="getYarnStoreList"
+                        placeholder="纱线颜色"
+                      ></el-input>
+                    </div>
+                    <div class="elCtn" style="width: 10%">
+                      <el-input
+                        v-model="getYarnStoreObj.batch_code"
+                        @change="getYarnStoreList"
+                        placeholder="批号"
+                      ></el-input>
+                    </div>
+                    <div class="elCtn" style="width: 10%">
+                      <el-input
+                        v-model="getYarnStoreObj.vat_code"
+                        @change="getYarnStoreList"
+                        placeholder="缸号"
+                      ></el-input>
+                    </div>
+                    <div class="elCtn" style="width: 10%">
+                      <el-input
+                        v-model="getYarnStoreObj.color_code"
+                        @change="getYarnStoreList"
+                        placeholder="色号"
+                      ></el-input>
+                    </div>
+                  </div>
+                </div>
+                <el-table
+                  ref="table"
+                  @selection-change="selectionChange"
+                  :data="storeList"
+                  :row-key="getRowKeys"
+                  style="width: 100%"
+                >
+                  <el-table-column :reserve-selection="true" type="selection" width="45" />
+                  <el-table-column width="220" label="所在仓库">
+                    <template slot-scope="scope">
+                      <span style="margin-left: 10px"
+                        >{{ scope.row.store_name }} / {{ scope.row.second_store_name }}</span
+                      >
+                    </template>
+                  </el-table-column>
+                  <el-table-column prop="name" label="纱线名"> </el-table-column>
+                  <el-table-column prop="attribute" label="纱线属性"> </el-table-column>
+                  <el-table-column prop="color" label="颜色"> </el-table-column>
+                  <el-table-column prop="batch_code" label="批号"> </el-table-column>
+                  <el-table-column prop="vat_code" label="缸号"> </el-table-column>
+                  <el-table-column prop="color_code" label="色号"> </el-table-column>
+                  <el-table-column label="调取数量(必填)" width="120">
+                    <template slot-scope="scope">
+                      <el-input v-model="scope.row.weight" @change="changeInput($event, scope.row)"></el-input>
+                    </template>
+                  </el-table-column>
+                </el-table>
+                <div class="pageCtn" style="margin-top: 20px">
+                  <el-pagination
+                    background
+                    @current-change="getYarnStoreList"
+                    :current-page.sync="getYarnStoreObj.storePage"
+                    :page-size="10"
+                    layout="prev, pager, next"
+                    :total="getYarnStoreObj.storeTotal"
+                  >
+                  </el-pagination>
+                </div>
+              </div>
+            </template>
+            <template v-if="step === 1">
+              <div v-for="(item, index) in process_info" :key="'process_info' + index">
+                <div style="border: 1px solid #e9e9e9" v-if="index !== 0"></div>
+                <div class="rowCtn">
+                  <div class="colCtn">
+                    <div class="label">
+                      <span class="text">加工单位</span>
+                      <span class="explanation">(必选)</span>
+                    </div>
+                    <div class="content">
+                      <div class="elCtn">
+                        <el-select placeholder="请选择加工单位" v-model="item.client_id">
+                          <el-option
+                            v-for="itemClient in client_arr"
+                            :key="itemClient.id"
+                            :value="itemClient.id"
+                            :label="itemClient.name"
+                          ></el-option>
+                        </el-select>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="colCtn">
+                    <div class="label">
+                      <span class="text">加工类型</span>
+                      <span class="explanation">(必选)</span>
+                    </div>
+                    <div class="content">
+                      <div class="elCtn">
+                        <el-select placeholder="请选择加工类型" v-model="item.type">
+                          <el-option label="倒筒" value="倒筒"></el-option>
+                          <el-option label="膨纱" value="膨纱"></el-option>
+                          <el-option label="染色" value="染色"></el-option>
+                        </el-select>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="colCtn">
+                    <div class="label">
+                      <span class="text">下单日期</span>
+                      <span class="explanation">(必选)</span>
+                    </div>
+                    <div class="elCtn">
+                      <el-date-picker
+                        v-model="item.order_time"
+                        type="date"
+                        value-format="yyyy-MM-dd"
+                        placeholder="选择下单日期"
+                      >
+                      </el-date-picker>
+                    </div>
+                    <div
+                      v-if="index === 0"
+                      class="editBtn blue"
+                      @click="
+                        $addItem(process_info, {
+                          transfer_id: '',
+                          client_id: '',
+                          type: '',
+                          price: '',
+                          desc: '',
+                          order_time: $getDate(new Date()),
+                          delivery_time: '',
+                          total_price: '',
+                          file_url: '',
+                          total_additional_fee: 0,
+                          additional_fee: [
+                            {
+                              name: '',
+                              price: '',
+                              desc: ''
+                            }
+                          ],
+                          child_data: [
+                            {
+                              name: '',
+                              transfer_info_id:'',
+                              before_attribute: '',
+                              after_attribute: '',
+                              before_color: '白胚',
+                              after_color: '',
+                              color: '',
+                              attribute: '',
+                              weight: ''
+                            }
+                          ]
+                        })
+                      "
+                    >
+                      添加
+                    </div>
+                    <div v-if="index > 0" class="editBtn red" @click="$deleteItem(process_info, index)">删除</div>
+                  </div>
+                </div>
+                <div
+                  class="rowCtn"
+                  v-for="(itemChild, indexChild) in item.child_data"
+                  :key="'yarn' + index + indexChild"
+                >
+                  <div class="colCtn">
+                    <div class="label" v-if="indexChild === 0">
+                      <span class="text">纱线名称</span>
+                      <span class="explanation">(必选)</span>
+                    </div>
+                    <div class="content">
+                      <div class="elCtn">
+                        <el-cascader
+                          v-model="itemChild.name"
+                          filterable
+                          placeholder="请选择纱线"
+                          :options="yarn_list"
+                        ></el-cascader>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="colCtn">
+                    <div class="label" v-if="indexChild === 0">
+                      <span class="text">{{
+                        item.type ? (item.type === '膨纱' ? '颜色/属性' : '加工前/加工后') : '请选择加工类型'
+                      }}</span>
+                      <span class="explanation">(必填)</span>
+                    </div>
+                    <div class="content flexRow">
+                      <div class="elCtn" style="width: 100%" v-if="!item.type">
+                        <el-input placeholder="请选择加工类型" v-model="itemChild.color" disabled></el-input>
+                      </div>
+                      <div class="elCtn" v-if="item.type === '倒筒'">
+                        <el-select v-model="itemChild.before_attribute" placeholder="加工前" style="margin-right: 12px">
+                          <el-option label="胚绞" value="胚绞"></el-option>
+                          <el-option label="胚筒" value="胚筒"></el-option>
+                          <el-option label="色绞" value="色绞"></el-option>
+                          <el-option label="色筒" value="色筒"></el-option>
+                        </el-select>
+                      </div>
+                      <div class="elCtn" v-if="item.type === '倒筒'">
+                        <el-select v-model="itemChild.after_attribute" placeholder="加工后">
+                          <el-option label="胚绞" value="胚绞"></el-option>
+                          <el-option label="胚筒" value="胚筒"></el-option>
+                          <el-option label="色绞" value="色绞"></el-option>
+                          <el-option label="色筒" value="色筒"></el-option>
+                        </el-select>
+                      </div>
+                      <div class="elCtn" v-if="item.type === '膨纱'">
+                        <el-input placeholder="颜色" v-model="itemChild.color"></el-input>
+                      </div>
+                      <div class="elCtn" v-if="item.type === '膨纱'">
+                        <el-select placeholder="属性" v-model="itemChild.attribute">
+                          <el-option label="胚绞" value="胚绞"></el-option>
+                          <el-option label="胚筒" value="胚筒"></el-option>
+                          <el-option label="色绞" value="色绞"></el-option>
+                          <el-option label="色筒" value="色筒"></el-option>
+                        </el-select>
+                      </div>
+                      <div class="elCtn" v-if="item.type === '染色'">
+                        <el-input
+                          v-model="itemChild.before_color"
+                          placeholder="加工前颜色"
+                          disabled
+                          style="margin-right: 12px"
+                        >
+                        </el-input>
+                      </div>
+                      <div class="elCtn" v-if="item.type === '染色'">
+                        <el-input v-model="itemChild.after_color" placeholder="加工后颜色"> </el-input>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="colCtn">
+                    <div class="label" v-if="indexChild === 0">
+                      <span class="text">单价/数量</span>
+                      <span class="explanation">(必填)</span>
+                    </div>
+                    <div class="content flexRow">
+                      <div class="elCtn">
+                        <el-input placeholder="单价" v-model="itemChild.price"> </el-input>
+                      </div>
+                      <div class="elCtn">
+                        <el-input placeholder="数量" disabled v-model="itemChild.weight"></el-input>
+                      </div>
+                    </div>
+                    <div
+                      v-if="indexChild === 0"
+                      class="editBtn blue"
+                      @click="
+                        $addItem(item.child_data, {
+                          name: '',
+                          transfer_info_id:'',
+                          before_attribute: '',
+                          after_attribute: '',
+                          before_color: '白胚',
+                          after_color: '',
+                          color: '',
+                          attribute: '',
+                          weight: ''
+                        })
+                      "
+                    >
+                      添加
+                    </div>
+                    <div v-if="indexChild > 0" class="editBtn red" @click="$deleteItem(item.child_data, indexChild)">
+                      删除
+                    </div>
+                  </div>
+                </div>
+                <div class="rowCtn" v-for="(itemAdd, indexAdd) in item.additional_fee" :key="'fee' + index + indexAdd">
+                  <div class="colCtn">
+                    <div class="label" v-if="indexAdd === 0">
+                      <span class="text">额外费用名称</span>
+                      <span class="explanation">(选填)</span>
+                    </div>
+                    <div class="content">
+                      <div class="elCtn">
+                        <el-input v-model="itemAdd.name" placeholder="请选择额外费用名称"> </el-input>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="colCtn">
+                    <div class="label" v-if="indexAdd === 0">
+                      <span class="text">额外费用金额</span>
+                      <span class="explanation">(选填)</span>
+                    </div>
+                    <div class="content">
+                      <div class="elCtn">
+                        <el-input v-model="itemAdd.price" placeholder="请输入额外费用金额">
+                          <template slot="append">元</template>
+                        </el-input>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="colCtn">
+                    <div class="label" v-if="indexAdd === 0">
+                      <span class="text">额外费用备注</span>
+                      <span class="explanation">(必选)</span>
+                    </div>
+                    <div class="elCtn">
+                      <el-input v-model="itemAdd.desc" placeholder="请输入额外费用备注"></el-input>
+                    </div>
+                    <div
+                      v-if="indexAdd === 0"
+                      class="editBtn blue"
+                      @click="
+                        $addItem(item.additional_fee, {
+                          name: '',
+                          price: '',
+                          desc: ''
+                        })
+                      "
+                    >
+                      添加
+                    </div>
+                    <div v-if="indexAdd > 0" class="editBtn red" @click="$deleteItem(item.additional_fee, indexAdd)">
+                      删除
+                    </div>
+                  </div>
+                </div>
+                <div class="rowCtn">
+                  <div class="colCtn" style="max-width: 226.72px">
+                    <div class="label">
+                      <span class="text">交货日期</span>
+                      <span class="explanation">(必选)</span>
+                    </div>
+                    <div class="content">
+                      <div class="elCtn">
+                        <el-date-picker
+                          v-model="item.delivery_time"
+                          type="date"
+                          value-format="yyyy-MM-dd"
+                          placeholder="选择交货日期"
+                        >
+                        </el-date-picker>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="colCtn">
+                    <div class="label">
+                      <span class="text">备注信息</span>
+                      <span class="explanation">(选填)</span>
+                    </div>
+                    <div class="content">
+                      <div class="elCtn">
+                        <el-input v-model="item.desc" placeholder="请输入备注信息"></el-input>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="rowCtn">
+                  <div class="colCtn">
+                    <div class="label">
+                      <span class="text">图片补充说明</span>
+                      <span class="explanation">(选填)</span>
+                    </div>
+                    <el-upload
+                      class="upload"
+                      action="https://upload.qiniup.com/"
+                      accept="image/jpeg,image/gif,image/png,image/bmp"
+                      :before-upload="beforeAvatarUpload"
+                      :multiple="false"
+                      :data="postData"
+                      :limit="1"
+                      :file-list="item.file_url ? [{ name: '说明文件', url: item.file_url }] : []"
+                      :on-success="successFile"
+                      ref="uploada"
+                      list-type="picture"
+                    >
+                      <div class="uploadBtn">
+                        <i class="el-icon-upload"></i>
+                        <span>上传文件</span>
+                      </div>
+                      <div slot="tip" class="el-upload__tip">只能上传一张jpg/png图片文件，且不超过10M</div>
+                    </el-upload>
                   </div>
                 </div>
               </div>
-              <div class="colCtn">
-                <div class="label">
-                  <span class="text">加工类型</span>
-                  <span class="explanation">(必选)</span>
-                </div>
-                <div class="content">
-                  <div class="elCtn">
-                    <el-select placeholder="请选择加工类型"
-                      v-model="process_info.type">
-                      <el-option label="倒筒"
-                        value="倒筒"></el-option>
-                      <el-option label="膨纱"
-                        value="膨纱"></el-option>
-                      <el-option label="染色"
-                        value="染色"></el-option>
-                    </el-select>
-                  </div>
-                </div>
-              </div>
-              <div class="colCtn">
-                <div class="label">
-                  <span class="text">下单日期</span>
-                  <span class="explanation">(必选)</span>
-                </div>
-                <div class="elCtn">
-                  <el-date-picker v-model="process_info.order_time"
-                    type="date"
-                    value-format="yyyy-MM-dd"
-                    placeholder="选择下单日期">
-                  </el-date-picker>
-                </div>
-              </div>
-            </div>
-            <div class="rowCtn"
-              v-for="(item,index) in process_info.child_data"
-              :key="'yarn' + index">
-              <div class="colCtn">
-                <div class="label"
-                  v-if="index===0">
-                  <span class="text">纱线名称</span>
-                  <span class="explanation">(必选)</span>
-                </div>
-                <div class="content">
-                  <div class="elCtn">
-                    <el-cascader v-model="item.name"
-                      filterable
-                      placeholder="请选择纱线"
-                      :options="yarn_list"></el-cascader>
-                  </div>
-                </div>
-              </div>
-              <div class="colCtn">
-                <div class="label"
-                  v-if="index===0">
-                  <span class="text">{{process_info.type?process_info.type==='膨纱'?'颜色/属性':'加工前/加工后':'请选择加工类型'}}</span>
-                  <span class="explanation">(必填)</span>
-                </div>
-                <div class="content flexRow">
-                  <div class="elCtn"
-                    style="width:100%"
-                    v-if="!process_info.type">
-                    <el-input placeholder="请选择加工类型"
-                      v-model="item.color"
-                      disabled></el-input>
-                  </div>
-                  <div class="elCtn"
-                    v-if="process_info.type==='倒筒'">
-                    <el-select v-model="item.before_attribute"
-                      placeholder="加工前"
-                      style="margin-right:12px">
-                      <el-option label="胚绞"
-                        value="胚绞"></el-option>
-                      <el-option label="胚筒"
-                        value="胚筒"></el-option>
-                      <el-option label="色绞"
-                        value="色绞"></el-option>
-                      <el-option label="色筒"
-                        value="色筒"></el-option>
-                    </el-select>
-                  </div>
-                  <div class="elCtn"
-                    v-if="process_info.type==='倒筒'">
-                    <el-select v-model="item.after_attribute"
-                      placeholder="加工后">
-                      <el-option label="胚绞"
-                        value="胚绞"></el-option>
-                      <el-option label="胚筒"
-                        value="胚筒"></el-option>
-                      <el-option label="色绞"
-                        value="色绞"></el-option>
-                      <el-option label="色筒"
-                        value="色筒"></el-option>
-                    </el-select>
-                  </div>
-                  <div class="elCtn"
-                    v-if="process_info.type==='膨纱'">
-                    <el-input placeholder="颜色"
-                      v-model="item.color"></el-input>
-                  </div>
-                  <div class="elCtn"
-                    v-if="process_info.type==='膨纱'">
-                    <el-select placeholder="属性"
-                      v-model="item.attribute">
-                      <el-option label="胚绞"
-                        value="胚绞"></el-option>
-                      <el-option label="胚筒"
-                        value="胚筒"></el-option>
-                      <el-option label="色绞"
-                        value="色绞"></el-option>
-                      <el-option label="色筒"
-                        value="色筒"></el-option>
-                    </el-select>
-                  </div>
-                  <div class="elCtn"
-                    v-if="process_info.type==='染色'">
-                    <el-input v-model="item.before_color"
-                      placeholder="加工前颜色"
-                      disabled
-                      style="margin-right:12px">
-                    </el-input>
-                  </div>
-                  <div class="elCtn"
-                    v-if="process_info.type==='染色'">
-                    <el-input v-model="item.after_color"
-                      placeholder="加工后颜色">
-                    </el-input>
-                  </div>
-                </div>
-              </div>
-              <div class="colCtn">
-                <div class="label"
-                  v-if="index===0">
-                  <span class="text">单价/数量</span>
-                  <span class="explanation">(必填)</span>
-                </div>
-                <div class="content flexRow">
-                  <div class="elCtn">
-                    <el-input placeholder="单价"
-                      v-model="item.price">
-                    </el-input>
-                  </div>
-                  <div class="elCtn">
-                    <el-input placeholder="数量"
-                      v-model="item.weight"></el-input>
-                  </div>
-                </div>
-                <div v-if="index===0"
-                  class="editBtn blue"
-                  @click="$addItem(process_info.child_data,{
-                      name: '',
-                      before_attribute: '',
-                      after_attribute: '',
-                      before_color: '白胚',
-                      after_color: '',
-                      color: '',
-                      attribute: '',
-                      weight: ''
-                })">添加</div>
-                <div v-if="index>0"
-                  class="editBtn red"
-                  @click="$deleteItem(process_info.child_data,index)">删除</div>
-              </div>
-            </div>
-            <div class="rowCtn"
-              v-for="(item,index) in process_info.additional_fee"
-              :key="'fee' + index">
-              <div class="colCtn">
-                <div class="label"
-                  v-if="index===0">
-                  <span class="text">额外费用名称</span>
-                  <span class="explanation">(选填)</span>
-                </div>
-                <div class="content">
-                  <div class="elCtn">
-                    <el-input v-model="item.name"
-                      placeholder="请选择额外费用名称">
-                    </el-input>
-                  </div>
-                </div>
-              </div>
-              <div class="colCtn">
-                <div class="label"
-                  v-if="index===0">
-                  <span class="text">额外费用金额</span>
-                  <span class="explanation">(选填)</span>
-                </div>
-                <div class="content">
-                  <div class="elCtn">
-                    <el-input v-model="item.price"
-                      placeholder="请输入额外费用金额">
-                      <template slot="append">元</template>
-                    </el-input>
-                  </div>
-                </div>
-              </div>
-              <div class="colCtn">
-                <div class="label"
-                  v-if="index===0">
-                  <span class="text">额外费用备注</span>
-                  <span class="explanation">(必选)</span>
-                </div>
-                <div class="elCtn">
-                  <el-input v-model="item.desc"
-                    placeholder="请输入额外费用备注"></el-input>
-                </div>
-                <div v-if="index===0"
-                  class="editBtn blue"
-                  @click="$addItem(process_info.additional_fee,{
-                  name: '',
-                  price: '',
-                  desc:''
-                })">添加</div>
-                <div v-if="index>0"
-                  class="editBtn red"
-                  @click="$deleteItem(process_info.additional_fee,index)">删除</div>
-              </div>
-            </div>
-            <div class="rowCtn">
-              <div class="colCtn"
-                style="max-width:226.72px">
-                <div class="label">
-                  <span class="text">交货日期</span>
-                  <span class="explanation">(必选)</span>
-                </div>
-                <div class="content">
-                  <div class="elCtn">
-                    <el-date-picker v-model="process_info.delivery_time"
-                      type="date"
-                      value-format="yyyy-MM-dd"
-                      placeholder="选择交货日期">
-                    </el-date-picker>
-                  </div>
-                </div>
-              </div>
-              <div class="colCtn">
-                <div class="label">
-                  <span class="text">备注信息</span>
-                  <span class="explanation">(选填)</span>
-                </div>
-                <div class="content">
-                  <div class="elCtn">
-                    <el-input v-model="process_info.desc"
-                      placeholder="请输入备注信息"></el-input>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="rowCtn">
-              <div class="colCtn">
-                <div class="label">
-                  <span class="text">图片补充说明</span>
-                  <span class="explanation">(选填)</span>
-                </div>
-                <el-upload class="upload"
-                  action="https://upload.qiniup.com/"
-                  accept="image/jpeg,image/gif,image/png,image/bmp"
-                  :before-upload="beforeAvatarUpload"
-                  :multiple="false"
-                  :data="postData"
-                  :limit="1"
-                  :file-list="process_info.file_url?[{name:'说明文件',url:process_info.file_url}]:[]"
-                  :on-success="successFile"
-                  ref="uploada"
-                  list-type="picture">
-                  <div class="uploadBtn">
-                    <i class="el-icon-upload"></i>
-                    <span>上传文件</span>
-                  </div>
-                  <div slot="tip"
-                    class="el-upload__tip">只能上传一张jpg/png图片文件，且不超过10M</div>
-                </el-upload>
-              </div>
-            </div>
+            </template>
           </div>
         </div>
         <div class="oprCtn">
-          <div class="opr"
-            style="padding-left:8px"
-            @click="resetProcess">取消</div>
-          <div class="opr"
-            :class="{'blue':create_flag,'orange':update_flag}"
-            @click="saveProcess">{{create_flag?'确认添加':'确认修改'}}</div>
+          <div class="opr" style="padding-left: 8px" @click="resetProcess">取消</div>
+          <div class="opr" :class="{ blue: create_flag, orange: update_flag }" @click="saveProcess">
+            {{ create_flag ? '下一步' : '确认修改' }}
+          </div>
         </div>
       </div>
     </div>
@@ -550,17 +635,21 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { yarnProcess } from '@/assets/js/api'
+import { yarnProcess, store } from '@/assets/js/api'
 import { ProcessYarn } from '@/types/orderProcessYarn'
 export default Vue.extend({
   data(): {
-    process_info: ProcessYarn
+    process_info: Array<ProcessYarn>
     [PropName: string]: any
   } {
     return {
       loading: true,
       create_flag: false,
       update_flag: false,
+      loadingPro: false,
+      select_store_id: '',
+      second_select_store_id: '',
+      step: 0,
       page: 1,
       total: 1,
       page_size: 10,
@@ -572,37 +661,54 @@ export default Vue.extend({
       date: [],
       user_id: '',
       list: [],
-      process_info: {
-        order_id: '',
-        client_id: '',
-        type: '',
-        price: '',
-        desc: '',
-        order_time: '',
-        delivery_time: '',
-        total_price: '',
-        file_url: '',
-        total_additional_fee: 0,
-        additional_fee: [
-          {
-            name: '',
-            price: '',
-            desc: ''
-          }
-        ],
-        child_data: [
-          {
-            name: '',
-            before_attribute: '',
-            after_attribute: '',
-            before_color: '白胚',
-            after_color: '',
-            color: '',
-            attribute: '',
-            weight: ''
-          }
-        ]
+      storeList: [],
+      selectList: [],
+      getYarnStoreObj: {
+        store_id: '',
+        second_store_id: '',
+        name: '',
+        LV2_name: '',
+        color: '',
+        batch_code: '',
+        vat_code: '',
+        color_code: '',
+        storePage: 1,
+        storeTotal: 1
       },
+      process_info: [
+        {
+          transfer_id: '',
+          client_id: '',
+          type: '',
+          price: '',
+          desc: '',
+          order_time: this.$getDate(new Date()),
+          delivery_time: '',
+          total_price: '',
+          file_url: '',
+          total_additional_fee: 0,
+          additional_fee: [
+            {
+              name: '',
+              price: '',
+              desc: ''
+            }
+          ],
+          child_data: [
+            {
+              name: '',
+              transfer_info_id:'',
+              before_attribute: '',
+              after_attribute: '',
+              before_color: '白胚',
+              after_color: '',
+              color: '',
+              attribute: '',
+              weight: ''
+            }
+          ]
+        }
+      ],
       postData: { key: '', token: '' }
     }
   },
@@ -639,6 +745,9 @@ export default Vue.extend({
           })
         }
       })
+    },
+    store_list() {
+      return this.$store.state.api.storeHouse.arr.filter((item: any) => item.store_type === 1)
     },
     token() {
       return this.$store.state.status.token
@@ -706,7 +815,7 @@ export default Vue.extend({
         })
     },
     // 下面两个函数是让el-table滚动的
-    scrollFunction(obj:any, id:any) {
+    scrollFunction(obj: any, id: any) {
       obj = document.getElementById(id)
       if (obj.attachEvent) {
         obj.attachEvent('onmousewheel', this.mouseScroll(obj))
@@ -715,16 +824,48 @@ export default Vue.extend({
       }
       obj.onmousewheel = obj.onmousewheel = this.mouseScroll(obj)
     },
-    mouseScroll(obj:any) {
+    changeInput(ev: any, item: any) {
+      item.weight = ev
+    },
+    getYarnStoreList() {
+      this.loadingPro = true
+      store
+        .detailYarnList({
+          store_id: this.getYarnStoreObj.LV2_name ? this.getYarnStoreObj.LV2_name[0] : '',
+          second_store_id: this.getYarnStoreObj.LV2_name ? this.getYarnStoreObj.LV2_name[1] : '',
+          name: this.getYarnStoreObj.name ? this.getYarnStoreObj.name[1] : '',
+          page: this.getYarnStoreObj.storePage || 1,
+          limit: this.getYarnStoreObj.limit || 10,
+          color: this.getYarnStoreObj.color || null,
+          weight: this.getYarnStoreObj.isFilterZero ? 0 : null,
+          vat_code: this.getYarnStoreObj.vat_code || null,
+          color_code: this.getYarnStoreObj.color_code || null,
+          batch_code: this.getYarnStoreObj.batch_code || null
+        })
+        .then((res) => {
+          this.storeList = res.data.data.items
+          this.getYarnStoreObj.storeTotal = res.data.data.total
+          this.loadingPro = false
+        })
+    },
+    selectionChange(val: any) {
+      this.selectList = val
+    },
+    getRowKeys(row: any) {
+      return row.id
+    },
+    mouseScroll(obj: any) {
       return function () {
         let e = window.event || document.all ? window.event : arguments[0] ? arguments[0] : event
         let detail, moveForwardStep, moveBackStep
         let step = 0
-        if (e.wheelDelta) { // google 下滑负数： -120
+        if (e.wheelDelta) {
+          // google 下滑负数： -120
           detail = e.wheelDelta
           moveForwardStep = -1
           moveBackStep = 1
-        } else if (e.detail) { // firefox 下滑正数：3
+        } else if (e.detail) {
+          // firefox 下滑正数：3
           // @ts-ignore
           detail = event.detail
           moveForwardStep = 1
@@ -736,8 +877,10 @@ export default Vue.extend({
         let left = obj.querySelector('table').clientWidth - obj.clientWidth
         //这里是为了向右滚动后再向下滚动，向左滚动后再向上滚动，如果不需要，只需要写e.preventDefault()
         //-------------------
-        if (moveForwardStep === -1) {//google
-          if (detail > 0) {//向上
+        if (moveForwardStep === -1) {
+          //google
+          if (detail > 0) {
+            //向上
             if (obj.scrollLeft > 0) {
               e.preventDefault()
             } else {
@@ -750,8 +893,10 @@ export default Vue.extend({
               return true
             }
           }
-        } else {//firefox
-          if (detail > 0) {//向下
+        } else {
+          //firefox
+          if (detail > 0) {
+            //向下
             if (obj.scrollLeft < left) {
               e.preventDefault()
             } else {
@@ -788,104 +933,149 @@ export default Vue.extend({
       }
     },
     successFile(response: any) {
-      this.process_info.file_url = 'https://file.zwyknit.com/' + response.key
+      // this.process_info[index].file_url = 'https://file.zwyknit.com/' + response.key
     },
     resetProcess() {
       this.create_flag = false
       this.update_flag = false
-      this.process_info = {
-        order_id: '',
-        client_id: '',
-        type: '',
-        price: '',
-        desc: '',
-        order_time: '',
-        delivery_time: '',
-        total_price: '',
-        file_url: '',
-        total_additional_fee: 0,
-        additional_fee: [
-          {
-            name: '',
-            price: '',
-            desc: ''
-          }
-        ],
-        child_data: [
-          {
-            name: '',
-            before_attribute: '',
-            after_attribute: '',
-            before_color: '白胚',
-            after_color: '',
-            color: '',
-            attribute: '',
-            weight: '',
-            price: ''
-          }
-        ]
+      this.process_info = [
+        {
+          transfer_id: '',
+          client_id: '',
+          type: '',
+          price: '',
+          desc: '',
+          order_time: this.$getDate(new Date()),
+          delivery_time: '',
+          total_price: '',
+          file_url: '',
+          total_additional_fee: 0,
+          additional_fee: [
+            {
+              name: '',
+              price: '',
+              desc: ''
+            }
+          ],
+          child_data: [
+            {
+              name: '',
+              transfer_info_id:'',
+              before_attribute: '',
+              after_attribute: '',
+              before_color: '白胚',
+              after_color: '',
+              color: '',
+              attribute: '',
+              weight: '',
+              price: ''
+            }
+          ]
+        }
+      ]
+    },
+    // 选择仓库
+    changeStoreData() {
+      if (this.selectList.length === 0) {
+        this.$message.error('请选择至少一个仓库')
+        return
       }
+
+      let arr = this.$mergeData(this.selectList, {
+        mainRule: ['store_id', 'second_store_id'],
+        childrenName: 'child_data'
+      })
+      if (arr.length > 1) {
+        this.$message.error('只能选择相同仓库和相同二级仓库的下的纱线进行加工操作')
+        return
+      }
+      console.log(arr[0])
+      store
+        .orderSave({
+          store_total_id: arr[0].store_id,
+          order_id: '',
+          total_weight: arr[0].child_data.reduce((a: any, b: any) => {
+            return a + (b.weight || 0)
+          }, 0),
+          desc: '',
+          child_data: arr[0].child_data.map((item: any) => {
+            return {
+              order_info_id: '',
+              weight: item.weight
+            }
+          })
+        })
+        .then((res) => {
+          console.log(res.data.data)
+        })
+      this.step = 1
     },
     saveProcess() {
-      if (
-        this.$formCheck(this.process_info, [
-          {
-            key: 'client_id',
-            errMsg: '请选择加工单位'
-          },
-          {
-            key: 'delivery_time',
-            errMsg: '请选择交货日期'
+      if (this.step === 0) {
+        this.changeStoreData()
+        return
+      }
+
+      let err = false
+      this.process_info.forEach((item) => {
+        // if(!item.name)
+        if (!item.client_id) {
+          this.$message.error('请选择加工单位')
+          err = true
+          throw new Error('未选择必填项')
+        }
+        if (!item.delivery_time) {
+          this.$message.error('请选择交货日期')
+          err = true
+          throw new Error('未选择必填项')
+        }
+        item.child_data.forEach((itemChild) => {
+          if (!itemChild.name) {
+            this.$message.error('请选择纱线名称')
+            err = true
+            throw new Error('未选择必填项')
           }
-        ])
-      ) {
-        return
-      }
-      if (
-        this.process_info.child_data.some((itemChild) => {
-          return this.$formCheck(itemChild, [
-            {
-              key: 'name',
-              errMsg: '请选择纱线'
-            },
-            {
-              key: 'price',
-              errMsg: '请输入单价',
-              regNormal: 'isNum'
-            },
-            {
-              key: 'weight',
-              errMsg: '请输入数量',
-              regNormal: 'isNum'
-            }
-          ])
+
+          if (!(itemChild.price || itemChild.price === 0)) {
+            this.$message.error('请输入单价')
+            err = true
+            throw new Error('未选择必填项')
+          }
+
+          if (!(itemChild.weight || itemChild.weight === 0)) {
+            this.$message.error('请输入数量')
+            err = true
+            throw new Error('未选择必填项')
+          }
         })
-      ) {
-        return
-      }
+      })
+
+      if (err) return
       this.loading = true
 
-      this.process_info.child_data.forEach((item) => {
-        item.name = item.name.constructor === Array ? item.name[1] : item.name
+      this.process_info.forEach((item) => {
+        item.child_data.forEach((itemChild) => {
+          itemChild.name = itemChild.name.constructor === Array ? itemChild.name[1] : itemChild.name
+          item.total_price =
+            item.child_data.reduce((total, current: any) => {
+              return total + current.weight * current.price
+            }, 0) +
+            (item.additional_fee as any[]).reduce((total, current) => {
+              return total + Number(current.price)
+            }, 0)
+          item.total_additional_fee = (item.additional_fee as any[]).reduce((total, current) => {
+            return total + Number(current.price)
+          }, 0)
+          item.additional_fee =
+            (item.additional_fee as any[]).filter((itemChild) => itemChild.name && itemChild.price).length > 0
+              ? JSON.stringify(item.additional_fee)
+              : ''
+        })
       })
-      this.process_info.total_price =
-        this.process_info.child_data.reduce((total, current: any) => {
-          return total + current.weight * current.price
-        }, 0) +
-        (this.process_info.additional_fee as any[]).reduce((total, current) => {
-          return total + Number(current.price)
-        }, 0)
-      this.process_info.total_additional_fee = (this.process_info.additional_fee as any[]).reduce((total, current) => {
-        return total + Number(current.price)
-      }, 0)
-      this.process_info.additional_fee =
-        (this.process_info.additional_fee as any[]).filter((itemChild) => itemChild.name && itemChild.price).length > 0
-          ? JSON.stringify(this.process_info.additional_fee)
-          : ''
       yarnProcess
         .create({
           order_id: '',
-          data: [this.process_info]
+          data: this.process_info
         })
         .then((res) => {
           if (res.data.status) {
@@ -923,6 +1113,7 @@ export default Vue.extend({
     openUpdate(info: ProcessYarn) {
       const selfInfo = JSON.parse(JSON.stringify(info))
       this.update_flag = true
+      this.step = 1
       selfInfo.additional_fee = selfInfo.additional_fee
         ? JSON.parse(info.additional_fee as string)
         : [
@@ -957,6 +1148,11 @@ export default Vue.extend({
         getInfoApi: 'getYarnTypeAsync'
       },
       {
+        checkWhich: 'api/storeHouse',
+        getInfoMethed: 'dispatch',
+        getInfoApi: 'getStoreAsync'
+      },
+      {
         checkWhich: 'status/token',
         getInfoMethed: 'dispatch',
         getInfoApi: 'getTokenAsync'
@@ -974,7 +1170,8 @@ export default Vue.extend({
 
 <style>
 /* el-table 自定义滚动条的时候没有白线 */
-.el-table__fixed-right::before, .el-table__fixed::before {
-  content:unset
+.el-table__fixed-right::before,
+.el-table__fixed::before {
+  content: unset;
 }
 </style>

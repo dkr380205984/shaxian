@@ -1,12 +1,9 @@
 <template>
-  <div class="indexMain"
-    id="storeDetail"
-    v-loading='loading.page'>
+  <div class="indexMain" id="storeDetail" v-loading="loading.page">
     <div class="module">
       <div class="titleCtn">
         <span class="title">库存信息</span>
-        <el-tooltip placement="top"
-          content="可勾选纱线进行快捷出入库">
+        <el-tooltip placement="top" content="可勾选纱线进行快捷出入库">
           <!-- <span class="addBtn btn btnMain"
             @click="openStore">新增出入库</span> -->
         </el-tooltip>
@@ -16,15 +13,16 @@
           <div class="leftCtn">
             <div class="label">筛选条件：</div>
             <div class="elCtn">
-              <el-cascader v-model="storeListFilter.LV2_name"
+              <el-cascader
+                v-model="storeListFilter.LV2_name"
                 :options="store_list"
                 @change="getStoreInfoList"
-                :props="{value:'id',label:'name',children:'second_data'}"
-                placeholder="请选择仓库">
+                :props="{ value: 'id', label: 'name', children: 'second_data' }"
+                placeholder="请选择仓库"
+              >
               </el-cascader>
             </div>
-            <div class="elCtn"
-              style="width:120px">
+            <div class="elCtn" style="width: 120px">
               <el-cascader
                 v-model="storeListFilter.name"
                 filterable
@@ -35,42 +33,29 @@
                 @change="getStoreInfoList"
               ></el-cascader>
             </div>
-            <div class="elCtn"
-              style="width:120px">
-              <el-input v-model="storeListFilter.color"
-                @change="getStoreInfoList"
-                placeholder="纱线颜色"></el-input>
+            <div class="elCtn" style="width: 120px">
+              <el-input v-model="storeListFilter.color" @change="getStoreInfoList" placeholder="纱线颜色"></el-input>
             </div>
-            <div class="elCtn"
-              style="width:120px">
-              <el-input v-model="storeListFilter.batch_code"
-                @change="getStoreInfoList"
-                placeholder="批号"></el-input>
+            <div class="elCtn" style="width: 120px">
+              <el-input v-model="storeListFilter.batch_code" @change="getStoreInfoList" placeholder="批号"></el-input>
             </div>
-            <div class="elCtn"
-              style="width:120px">
-              <el-input v-model="storeListFilter.color_code"
-                @change="getStoreInfoList"
-                placeholder="色号"></el-input>
+            <div class="elCtn" style="width: 120px">
+              <el-input v-model="storeListFilter.color_code" @change="getStoreInfoList" placeholder="色号"></el-input>
             </div>
-            <div class="elCtn"
-              style="width:120px">
-              <el-input v-model="storeListFilter.vat_code"
-                @change="getStoreInfoList"
-                placeholder="缸号"></el-input>
+            <div class="elCtn" style="width: 120px">
+              <el-input v-model="storeListFilter.vat_code" @change="getStoreInfoList" placeholder="缸号"></el-input>
             </div>
-            <div class="elCtn"
-              style="width:20px">
-              <el-checkbox v-model="storeListFilter.isFilterZero"
-                @change="getStoreInfoList">过滤库存为0的纱线</el-checkbox>
+            <div class="elCtn" style="width: 20px">
+              <el-checkbox v-model="storeListFilter.isFilterZero" @change="getStoreInfoList"
+                >过滤库存为0的纱线</el-checkbox
+              >
             </div>
           </div>
           <div class="rightCtn">
-            <div class="btn btnGray fr"
-              @click="resetFilter(1)">重置</div>
+            <div class="btn btnGray fr" @click="resetFilter(1)">重置</div>
           </div>
         </div>
-        <div class="filterCtn" style="margin-top:20px">
+        <div class="filterCtn" style="margin-top: 20px">
           <div class="leftCtn"></div>
           <div class="rightCtn">
             <div class="btnC">
@@ -84,18 +69,16 @@
           </div>
         </div>
         <div class="checkCtn">
-            <div class="label">已勾选单据：</div>
-            <div class="elCtn check" v-for="(item, index) in selectList" :key="item.id">
-              <el-input :value="item.name + '/' + item.color " disabled>
-                <template slot="append">
-                  <i class="el-icon-close hoverRed" style="cursor: pointer" @click="selectList.splice(index, 1)"></i>
-                </template>
-              </el-input>
-            </div>
+          <div class="label">已勾选单据：</div>
+          <div class="elCtn check" v-for="(item, index) in selectList" :key="item.id">
+            <el-input :value="item.name + '/' + item.color" disabled>
+              <template slot="append">
+                <i class="el-icon-close hoverRed" style="cursor: pointer" @click="selectList.splice(index, 1)"></i>
+              </template>
+            </el-input>
           </div>
-        <div class="tableCtn"
-          style="margin:24px 0"
-          v-loading='!loading.page && loading.info'>
+        </div>
+        <div class="tableCtn" style="margin: 24px 0" v-loading="!loading.page && loading.info">
           <div class="thead">
             <div class="trow">
               <div class="tcolumn">仓库名称</div>
@@ -103,58 +86,69 @@
               <div class="tcolumn">纱线名称</div>
               <div class="tcolumn">纱线颜色</div>
               <div class="tcolumn">属性</div>
-              <div class="tcolumn noPad"
-                style="flex:6">
+              <div class="tcolumn noPad" style="flex: 6">
                 <div class="trow">
                   <div class="tcolumn">批号</div>
                   <div class="tcolumn">色号</div>
                   <div class="tcolumn">缸号</div>
                   <div class="tcolumn">实际库存(KG)</div>
                   <div class="tcolumn">可用库存(KG)</div>
-                  <div class="tcolumn"
-                    style="flex:2">操作</div>
+                  <div class="tcolumn" style="flex: 2">操作</div>
                 </div>
               </div>
             </div>
           </div>
           <div class="tbody">
-            <div class="trow"
+            <div
+              class="trow"
               v-for="item in storeListCom.data"
-              :key="item.store_name + item.second_store_name + item.name + item.second_store_name + item.color + item.attribute">
-              <div class="tcolumn">{{item.store_name || '-'}}</div>
-              <div class="tcolumn">{{item.second_store_name || '-'}}</div>
-              <div class="tcolumn" style="cursor:pointer;" @click="item.checked = !item.checked; checkChange(item.checked,item);$forceUpdate()">
+              :key="
+                item.store_name +
+                item.second_store_name +
+                item.name +
+                item.second_store_name +
+                item.color +
+                item.attribute
+              "
+            >
+              <div class="tcolumn">{{ item.store_name || '-' }}</div>
+              <div class="tcolumn">{{ item.second_store_name || '-' }}</div>
+              <div
+                class="tcolumn"
+                style="cursor: pointer"
+                @click="
+                  item.checked = !item.checked
+                  checkChange(item.checked, item)
+                  $forceUpdate()
+                "
+              >
                 <div>
-                  <el-checkbox style="width:15%" v-model="item.checked"></el-checkbox>
-                  <span style="width:85%">{{item.name}}</span>
+                  <el-checkbox style="width: 15%" v-model="item.checked"></el-checkbox>
+                  <span style="width: 85%">{{ item.name }}</span>
                 </div>
               </div>
-              <div class="tcolumn">{{item.color}}</div>
-              <div class="tcolumn">{{item.attribute}}</div>
-              <div class="tcolumn noPad"
-                style="flex:6">
-                <div class="trow"
-                  v-for="itemStore in item.store_info"
-                  :key="'store' + itemStore.id">
+              <div class="tcolumn">{{ item.color }}</div>
+              <div class="tcolumn">{{ item.attribute }}</div>
+              <div class="tcolumn noPad" style="flex: 6">
+                <div class="trow" v-for="itemStore in item.store_info" :key="'store' + itemStore.id">
                   <div class="tcolumn">
-                    {{itemStore.batch_code}}
+                    {{ itemStore.batch_code }}
                     <!-- <el-checkbox :key="new Date().getMilliseconds()"
                       v-model="itemStore.check">{{itemStore.batch_code}}</el-checkbox> -->
                   </div>
-                  <div class="tcolumn">{{itemStore.color_code}}</div>
-                  <div class="tcolumn">{{itemStore.vat_code}}</div>
-                  <div class="tcolumn">{{itemStore.reality_weight && $formatNum(itemStore.reality_weight) || '-'}}</div>
-                  <div class="tcolumn blue">{{itemStore.useable_weight && $formatNum(itemStore.useable_weight) || '-'}}</div>
-                  <div class="tcolumn flexRow"
-                    style="flex:2">
-                    <span class="opr green"
-                      @click="goLogEl(item,itemStore)">日志</span>
-                    <span class="opr green"
-                      @click="openStore(1,item)">入库</span>
-                    <span class="opr red"
-                      @click="openStore(2,item)">出库</span>
-                    <span class="opr blue"
-                      @click="openStore(3,item)">移库</span>
+                  <div class="tcolumn">{{ itemStore.color_code }}</div>
+                  <div class="tcolumn">{{ itemStore.vat_code }}</div>
+                  <div class="tcolumn">
+                    {{ (itemStore.reality_weight && $formatNum(itemStore.reality_weight)) || '-' }}
+                  </div>
+                  <div class="tcolumn blue">
+                    {{ (itemStore.useable_weight && $formatNum(itemStore.useable_weight)) || '-' }}
+                  </div>
+                  <div class="tcolumn flexRow" style="flex: 2">
+                    <span class="opr green" @click="goLogEl(item, itemStore)">日志</span>
+                    <span class="opr green" @click="openStore(1, item)">入库</span>
+                    <span class="opr red" @click="openStore(2, item)">出库</span>
+                    <span class="opr blue" @click="openStore(3, item)">移库</span>
                   </div>
                 </div>
               </div>
@@ -165,16 +159,14 @@
               <div class="tcolumn"></div>
               <div class="tcolumn"></div>
               <div class="tcolumn"></div>
-              <div class="tcolumn noPad"
-                style="flex:6">
+              <div class="tcolumn noPad" style="flex: 6">
                 <div class="trow">
                   <div class="tcolumn"></div>
                   <div class="tcolumn"></div>
                   <div class="tcolumn"></div>
-                  <div class="tcolumn">{{$formatNum($toFixed(storeListCom.reality_weight))}}</div>
-                  <div class="tcolumn blue">{{$formatNum($toFixed(storeListCom.useable_weight))}}</div>
-                  <div class="tcolumn"
-                    style="min-width:110px"></div>
+                  <div class="tcolumn">{{ $formatNum($toFixed(storeListCom.reality_weight)) }}</div>
+                  <div class="tcolumn blue">{{ $formatNum($toFixed(storeListCom.useable_weight)) }}</div>
+                  <div class="tcolumn" style="min-width: 110px"></div>
                 </div>
               </div>
             </div>
@@ -193,24 +185,24 @@
         </div>
       </div>
     </div>
-    <div class="module"
-      id="stockLogEl"
-      v-loading="loading.log">
+    <div class="module" id="stockLogEl" v-loading="loading.log">
       <div class="titleCtn">
         <span class="title">出入库日志</span>
       </div>
       <div class="listCtn">
         <div class="filterCtn showMore">
-          <div class="leftCtn" style="padding-right:unset;max-width:1210px">
+          <div class="leftCtn" style="padding-right: unset; max-width: 1210px">
             <div class="label">筛选条件：</div>
             <!-- <div class="showMore"
               @click="showMore=!showMore">{{!showMore?'展示更多':'收起筛选'}}</div> -->
             <div class="elCtn">
-              <el-cascader v-model="storeLogListFilter.LV2_name"
+              <el-cascader
+                v-model="storeLogListFilter.LV2_name"
                 :options="store_list"
                 @change="getStoreLogList(1)"
-                :props="{value:'id',label:'name',children:'second_data'}"
-                placeholder="请选择仓库">
+                :props="{ value: 'id', label: 'name', children: 'second_data' }"
+                placeholder="请选择仓库"
+              >
               </el-cascader>
             </div>
             <div class="elCtn">
@@ -225,87 +217,101 @@
               ></el-cascader>
             </div>
             <div class="elCtn">
-              <el-input v-model="storeLogListFilter.color"
+              <el-input
+                v-model="storeLogListFilter.color"
                 @change="getStoreLogList(1)"
-                placeholder="输入纱线颜色"></el-input>
+                placeholder="输入纱线颜色"
+              ></el-input>
             </div>
             <div class="elCtn">
-              <el-select v-model="storeLogListFilter.attr"
+              <el-select
+                v-model="storeLogListFilter.attr"
                 clearable
                 @change="getStoreLogList(1)"
-                placeholder="选择纱线属性">
-                <el-option label="胚绞"
-                  value="胚绞"></el-option>
-                <el-option label="胚筒"
-                  value="胚筒"></el-option>
-                <el-option label="色绞"
-                  value="色绞"></el-option>
-                <el-option label="色筒"
-                  value="色筒"></el-option>
+                placeholder="选择纱线属性"
+              >
+                <el-option label="胚绞" value="胚绞"></el-option>
+                <el-option label="胚筒" value="胚筒"></el-option>
+                <el-option label="色绞" value="色绞"></el-option>
+                <el-option label="色筒" value="色筒"></el-option>
               </el-select>
             </div>
-            <div class="elCtn"
-              style="width:120px">
-              <el-input v-model="storeLogListFilter.batch_code"
+            <div class="elCtn" style="width: 120px">
+              <el-input
+                v-model="storeLogListFilter.batch_code"
                 @change="getStoreLogList(1)"
-                placeholder="批号"></el-input>
+                placeholder="批号"
+              ></el-input>
             </div>
-            <div class="elCtn"
-              style="width:120px">
-              <el-input v-model="storeLogListFilter.color_code"
+            <div class="elCtn" style="width: 120px">
+              <el-input
+                v-model="storeLogListFilter.color_code"
                 @change="getStoreLogList(1)"
-                placeholder="色号"></el-input>
+                placeholder="色号"
+              ></el-input>
             </div>
-            <div class="elCtn"
-              style="width:120px">
-              <el-input v-model="storeLogListFilter.vat_code"
+            <div class="elCtn" style="width: 120px">
+              <el-input
+                v-model="storeLogListFilter.vat_code"
                 @change="getStoreLogList(1)"
-                placeholder="缸号"></el-input>
+                placeholder="缸号"
+              ></el-input>
             </div>
             <div class="elCtn">
-              <el-select v-model="storeLogListFilter.type"
+              <el-select
+                v-model="storeLogListFilter.type"
                 clearable
                 multiple
                 @change="getStoreLogList(1)"
-                placeholder="选择操作类型">
-                <el-option v-for="item in commonInit.typeArr"
+                placeholder="选择操作类型"
+              >
+                <el-option
+                  v-for="item in commonInit.typeArr"
                   :key="item.id + item.name"
                   :label="item.name"
-                  :value="item.id">
+                  :value="item.id"
+                >
                 </el-option>
               </el-select>
             </div>
             <div class="elCtn">
-              <el-input v-model="storeLogListFilter.code"
+              <el-input
+                v-model="storeLogListFilter.code"
                 @change="getStoreLogList(1)"
-                placeholder="输入关联单号"></el-input>
+                placeholder="输入关联单号"
+              ></el-input>
             </div>
             <div class="elCtn">
-              <el-select v-model="storeLogListFilter.limit"
+              <el-select
+                v-model="storeLogListFilter.limit"
                 clearable
                 @change="getStoreLogList(1)"
-                placeholder="每页展示条数（默认‘10’）">
-                <el-option v-for="item in commonInit.limitArr"
+                placeholder="每页展示条数（默认‘10’）"
+              >
+                <el-option
+                  v-for="item in commonInit.limitArr"
                   :key="item.id + item.name"
                   :label="item.name"
-                  :value="item.id">
+                  :value="item.id"
+                >
                 </el-option>
               </el-select>
             </div>
             <div class="elCtn">
-              <el-date-picker v-model="storeLogListFilter.time"
+              <el-date-picker
+                v-model="storeLogListFilter.time"
                 type="daterange"
                 value-format="yyyy-MM-dd"
                 range-separator="至"
                 start-placeholder="开始日期"
                 end-placeholder="结束日期"
-                @change="getStoreLogList(1)">
+                @change="getStoreLogList(1)"
+              >
               </el-date-picker>
             </div>
           </div>
-          <div class="rightCtn" style="min-width:94px">
-            <div class="btn btnGray fr"
-              @click="resetFilter(2)">重置</div>
+          <div class="rightCtn" style="min-width: 94px">
+            <div class="btn btnGray fr" @click="resetFilter(2)">重置</div>
           </div>
         </div>
         <div class="listCtn">
@@ -316,12 +322,9 @@
                   <div class="headCtn">
                     <div class="row">
                       <div class="column min120">单号</div>
-                      <div class="column"
-                        style="min-width:80px">操作类型</div>
-                      <div class="column"
-                        style="min-width:200px">出入库信息</div>
-                      <div class="column"
-                        style="flex:10;flex-direction:column">
+                      <div class="column" style="min-width: 80px">操作类型</div>
+                      <div class="column" style="min-width: 200px">出入库信息</div>
+                      <div class="column" style="flex: 10; flex-direction: column">
                         <div class="row">
                           <div class="column min120">纱线名称</div>
                           <div class="column min120">颜色</div>
@@ -340,37 +343,36 @@
                     </div>
                   </div>
                   <div class="bodyCtn">
-                    <div class="row"
-                      v-for="item in storeLogInfo.list"
-                      :key="item.id + item.code">
-                      <div class="column min120">{{item.code}}</div>
-                      <div class="column"
-                        style="min-width:80px">{{item.action_type}}</div>
-                      <div class="column"
-                        style="min-width:200px">{{item.client_name}}</div>
-                      <div class="column"
-                        style="flex:10;flex-direction:column">
-                        <div class="row"
-                          v-for="(itemChild,indexChild) in item.child_data"
-                          :key="indexChild + itemChild.name">
-                          <div class="column min120">{{itemChild.name}}</div>
-                          <div class="column min120">{{itemChild.color}}</div>
-                          <div class="column min120">{{itemChild.attribute}}</div>
-                          <div class="column min120 blue">{{itemChild.action_weight}}</div>
-                          <div class="column min120">{{itemChild.batch_code}}</div>
-                          <div class="column min120">{{itemChild.color_code}}</div>
-                          <div class="column min120">{{itemChild.vat_code}}</div>
+                    <div class="row" v-for="item in storeLogInfo.list" :key="item.id + item.code">
+                      <div class="column min120">{{ item.code }}</div>
+                      <div class="column" style="min-width: 80px">{{ item.action_type }}</div>
+                      <div class="column" style="min-width: 200px">{{ item.client_name }}</div>
+                      <div class="column" style="flex: 10; flex-direction: column">
+                        <div
+                          class="row"
+                          v-for="(itemChild, indexChild) in item.child_data"
+                          :key="indexChild + itemChild.name"
+                        >
+                          <div class="column min120">{{ itemChild.name }}</div>
+                          <div class="column min120">{{ itemChild.color }}</div>
+                          <div class="column min120">{{ itemChild.attribute }}</div>
+                          <div class="column min120 blue">{{ itemChild.action_weight }}</div>
+                          <div class="column min120">{{ itemChild.batch_code }}</div>
+                          <div class="column min120">{{ itemChild.color_code }}</div>
+                          <div class="column min120">{{ itemChild.vat_code }}</div>
                         </div>
                       </div>
-                      <div class="column min120"
-                        :class="{'blue':item.related_info}"
-                        :style="{'cursor':item.related_info?'pointer':''}"
-                        @click="goFromStore(item.action_type,item.related_info)">
-                        {{item.related_info?item.related_info.code:'无单号'}}
+                      <div
+                        class="column min120"
+                        :class="{ blue: item.related_info }"
+                        :style="{ cursor: item.related_info ? 'pointer' : '' }"
+                        @click="goFromStore(item.action_type, item.related_info)"
+                      >
+                        {{ item.related_info ? item.related_info.code : '无单号' }}
                       </div>
-                      <div class="column min120">{{item.desc||'无'}}</div>
-                      <div class="column min120">{{item.complete_time}}</div>
-                      <div class="column min120">{{item.user_name}}</div>
+                      <div class="column min120">{{ item.desc || '无' }}</div>
+                      <div class="column min120">{{ item.complete_time }}</div>
+                      <div class="column min120">{{ item.user_name }}</div>
                       <div class="column min120">操作</div>
                     </div>
                   </div>
@@ -382,42 +384,79 @@
                 <div class="headCtn">
                   <div class="row">
                     <div class="column min120">单号</div>
-                    <div class="column"
-                      style="min-width:80px">操作类型</div>
-                    <div class="column"
-                      style="min-width:200px;max-width:200px">出入库信息</div>
+                    <div class="column" style="min-width: 80px">操作类型</div>
+                    <div class="column" style="min-width: 200px; max-width: 200px">出入库信息</div>
                   </div>
                 </div>
                 <div class="bodyCtn">
-                  <div class="row"
-                    v-for="item in storeLogInfo.list"
-                    :key="item.id + 'storeLogInfoList'">
-                    <div class="column min120 blue"
-                      :style="{'height':51*item.child_data.length - 1 + 'px'}">{{item.code}}</div>
-                    <div class="column"
-                      style="min-width:80px"
-                      :style="{'height':51*item.child_data.length - 1 + 'px'}"
-                      :class="{'blue':item.action_type===1||item.action_type===3||item.action_type===5||item.action_type===8||item.action_type===11||item.action_type===13||item.action_type===14||item.action_type===15,'green':item.action_type===2||item.action_type===4||item.action_type===6||item.action_type===7||item.action_type===9||item.action_type===10||item.action_type===12}">{{item.action_type|stockTypeFilter}}</div>
-                    <div class="column"
-                      style="min-width:200px;max-width:200px"
-                      :style="{'height':51*item.child_data.length - 1 + 'px'}">
-                      <span v-if="item.action_type===1||item.action_type===3||item.action_type===5||item.action_type===8||item.action_type===13||item.action_type===14||item.action_type===15">
-                        <span class="green">{{item.client_name ||'无来源'}}</span>
-                        <i class="el-icon-s-unfold orange"
-                          style="margin:0 5px;font-size:16px"></i>
-                        <span class="blue">{{item.store_name}}/{{item.second_store_name}}</span>
+                  <div class="row" v-for="item in storeLogInfo.list" :key="item.id + 'storeLogInfoList'">
+                    <div class="column min120 blue" :style="{ height: 51 * item.child_data.length - 1 + 'px' }">
+                      {{ item.code }}
+                    </div>
+                    <div
+                      class="column"
+                      style="min-width: 80px"
+                      :style="{ height: 51 * item.child_data.length - 1 + 'px' }"
+                      :class="{
+                        blue:
+                          item.action_type === 1 ||
+                          item.action_type === 3 ||
+                          item.action_type === 5 ||
+                          item.action_type === 8 ||
+                          item.action_type === 11 ||
+                          item.action_type === 13 ||
+                          item.action_type === 14 ||
+                          item.action_type === 15,
+                        green:
+                          item.action_type === 2 ||
+                          item.action_type === 4 ||
+                          item.action_type === 6 ||
+                          item.action_type === 7 ||
+                          item.action_type === 9 ||
+                          item.action_type === 10 ||
+                          item.action_type === 12
+                      }"
+                    >
+                      {{ item.action_type | stockTypeFilter }}
+                    </div>
+                    <div
+                      class="column"
+                      style="min-width: 200px; max-width: 200px"
+                      :style="{ height: 51 * item.child_data.length - 1 + 'px' }"
+                    >
+                      <span
+                        v-if="
+                          item.action_type === 1 ||
+                          item.action_type === 3 ||
+                          item.action_type === 5 ||
+                          item.action_type === 8 ||
+                          item.action_type === 13 ||
+                          item.action_type === 14 ||
+                          item.action_type === 15
+                        "
+                      >
+                        <span class="green">{{ item.client_name || '无来源' }}</span>
+                        <i class="el-icon-s-unfold orange" style="margin: 0 5px; font-size: 16px"></i>
+                        <span class="blue">{{ item.store_name }}/{{ item.second_store_name }}</span>
                       </span>
-                      <span v-if="item.action_type===2||item.action_type===4||item.action_type===6||item.action_type===7||item.action_type===9||item.action_type===12">
-                        <span class="blue">{{item.store_name}}/{{item.second_store_name}}</span>
-                        <i class="el-icon-s-unfold orange"
-                          style="margin:0 5px;font-size:16px"></i>
-                        <span class="green">{{item.client_name}}</span>
+                      <span
+                        v-if="
+                          item.action_type === 2 ||
+                          item.action_type === 4 ||
+                          item.action_type === 6 ||
+                          item.action_type === 7 ||
+                          item.action_type === 9 ||
+                          item.action_type === 12
+                        "
+                      >
+                        <span class="blue">{{ item.store_name }}/{{ item.second_store_name }}</span>
+                        <i class="el-icon-s-unfold orange" style="margin: 0 5px; font-size: 16px"></i>
+                        <span class="green">{{ item.client_name }}</span>
                       </span>
-                      <span v-if="item.action_type===10 || item.action_type===11">
-                        <span class="green">{{item.store_name}}/{{item.second_store_name}}</span>
-                        <i class="el-icon-s-unfold orange"
-                          style="margin:0 5px;font-size:16px"></i>
-                        <span class="blue">{{item.move_store_name}}/{{item.move_second_store_name}}</span>
+                      <span v-if="item.action_type === 10 || item.action_type === 11">
+                        <span class="green">{{ item.store_name }}/{{ item.second_store_name }}</span>
+                        <i class="el-icon-s-unfold orange" style="margin: 0 5px; font-size: 16px"></i>
+                        <span class="blue">{{ item.move_store_name }}/{{ item.move_second_store_name }}</span>
                       </span>
                     </div>
                   </div>
@@ -430,13 +469,13 @@
                   </div>
                 </div>
                 <div class="bodyCtn">
-                  <div class="row"
-                    v-for="item in storeLogInfo.list"
-                    :key="item.id + 'sss'">
-                    <div class="column min120"
-                      :style="{'height':51*item.child_data.length - 1 + 'px'}">
-                      <span class="blue opr"
-                        @click="$openUrl(`/print/store/${item.action_type}/${item.id}?orderId=${$route.params.id}`)">打印</span>
+                  <div class="row" v-for="item in storeLogInfo.list" :key="item.id + 'sss'">
+                    <div class="column min120" :style="{ height: 51 * item.child_data.length - 1 + 'px' }">
+                      <span
+                        class="blue opr"
+                        @click="$openUrl(`/print/store/${item.action_type}/${item.id}?orderId=${$route.params.id}`)"
+                        >打印</span
+                      >
                       <!-- <span class="opr"
                         :class="{'green':item.related_id,'orange':!item.related_id}"
                         @click="bindCode(item)">{{item.related_id?'已绑':'绑定'}}</span>
@@ -450,30 +489,29 @@
           </div>
         </div>
         <div class="pageCtn">
-          <el-pagination background
+          <el-pagination
+            background
             @current-change="getStoreLogList"
             :current-page.sync="storeLogListFilter.pages"
             :page-size="storeLogListFilter.limit"
             layout="prev, pager, next"
-            :total="storeLogListFilter.total">
+            :total="storeLogListFilter.total"
+          >
           </el-pagination>
         </div>
       </div>
     </div>
     <!-- 仓库列表 -->
-    <div class="popup"
-      v-show="lookListFlag">
-      <div class="main" style="width:1200px">
+    <div class="popup" v-show="lookListFlag">
+      <div class="main" style="width: 1200px">
         <div class="titleCtn">
           <span class="text">仓库列表</span>
-          <div class="closeCtn"
-            @click="lookListFlag = false">
+          <div class="closeCtn" @click="lookListFlag = false">
             <span class="el-icon-close"></span>
           </div>
         </div>
         <div class="listCtn">
-          <div class="list"
-            v-loading="storeLoading">
+          <div class="list" v-loading="storeLoading">
             <div class="headCtn">
               <div class="row title">
                 <div class="column">仓库名称</div>
@@ -484,83 +522,80 @@
               </div>
             </div>
             <div class="bodyCtn">
-              <div class="row"
-                v-for="item in storeInfoList"
-                :key="item.id + 'sss' +item.name">
-                <div class="column">{{item.name}}</div>
-                <div class="column">{{item.total_weight || 0}}Kg</div>
-                <div class="column">{{item.admins.map(itemM=>itemM.name).join(',')}}</div>
-                <div class="column">{{item.desc}}</div>
+              <div class="row" v-for="item in storeInfoList" :key="item.id + 'sss' + item.name">
+                <div class="column">{{ item.name }}</div>
+                <div class="column">{{ item.total_weight || 0 }}Kg</div>
+                <div class="column">{{ item.admins.map((itemM) => itemM.name).join(',') }}</div>
+                <div class="column">{{ item.desc }}</div>
                 <div class="column">
-                  <div class="opr hoverBlue"
-                    @click="$router.push(`/store/detail/${item.id}`)">详情</div>
-                  <div class="opr hoverRed"
-                    @click="deleteStore(item)">删除</div>
-                  <div class="opr hoverOrange"
-                    @click="changeStore(item)">修改</div>
+                  <div class="opr hoverBlue" @click="$router.push(`/store/detail/${item.id}`)">详情</div>
+                  <div class="opr hoverRed" @click="deleteStore(item)">删除</div>
+                  <div class="opr hoverOrange" @click="changeStore(item)">修改</div>
                 </div>
               </div>
             </div>
           </div>
           <div class="pageCtn">
-            <el-pagination background
+            <el-pagination
+              background
               :page-size="5"
               layout="prev, pager, next"
               :total="storeTotal"
               :current-page.sync="storePage"
-              @current-change="getStoreList">
+              @current-change="getStoreList"
+            >
             </el-pagination>
           </div>
         </div>
         <div class="oprCtn">
-          <span class="btn borderBtn" style="margin-right:20px"
-            @click="lookListFlag=false">关闭</span>
+          <span class="btn borderBtn" style="margin-right: 20px" @click="lookListFlag = false">关闭</span>
         </div>
       </div>
     </div>
     <div class="bottomFixBar">
       <div class="main">
-        <div class="btnCtn" style="float:left">
-          <div class="btn backHoverGreen"
-            @click="getStoreList();lookListFlag=true">仓库列表</div>
-          <div class="btn backHoverBlue"
-            @click="changeStore()">添加仓库</div>
+        <div class="btnCtn" style="float: left">
+          <div
+            class="btn backHoverGreen"
+            @click="
+              getStoreList()
+              lookListFlag = true
+            "
+          >
+            仓库列表
+          </div>
+          <div class="btn backHoverBlue" @click="changeStore()">添加仓库</div>
         </div>
         <div class="btnCtn">
-          <div class="btn btnGray"
-            @click="$router.go(-1)">返回</div>
-          <div class="btn btnMain"
-            @click="exportExcel(1)">导出库存日志</div>
-          <div class="btn btnMain"
-            @click="exportExcel(2)">导出库存数量</div>
+          <div class="btn btnGray" @click="$router.go(-1)">返回</div>
+          <div class="btn btnMain" @click="exportExcel(1)">导出库存日志</div>
+          <div class="btn btnMain" @click="exportExcel(2)">导出库存数量</div>
         </div>
       </div>
     </div>
-    <div class="popup"
-      v-show="addFlag">
+    <div class="popup" v-show="addFlag">
       <div class="main">
         <div class="titleCtn">
-          <div class="text">{{createOrEditStoreObj.id && '修改' || '新增'}}仓库</div>
-          <i class="close_icon el-icon-close"
-            @click="addFlag=false"></i>
+          <div class="text">{{ (createOrEditStoreObj.id && '修改') || '新增' }}仓库</div>
+          <i class="close_icon el-icon-close" @click="addFlag = false"></i>
         </div>
         <div class="contentCtn">
           <div class="row">
             <div class="label isMust">仓库名称：</div>
             <div class="info">
-              <el-input placeholder="请输入加仓库名称"
-                v-model="createOrEditStoreObj.name"></el-input>
+              <el-input placeholder="请输入加仓库名称" v-model="createOrEditStoreObj.name"></el-input>
             </div>
           </div>
           <div class="row">
             <div class="label isMust">仓库类型：</div>
             <div class="info">
-              <el-select v-model="createOrEditStoreObj.type"
-                placeholder="请选择仓库类型">
-                <el-option v-for="item in typeArr"
+              <el-select v-model="createOrEditStoreObj.type" placeholder="请选择仓库类型">
+                <el-option
+                  v-for="item in typeArr"
                   :key="item.id + 'storeType' + item.name"
                   :label="item.name"
-                  :value="item.id">
+                  :value="item.id"
+                >
                 </el-option>
               </el-select>
             </div>
@@ -568,76 +603,82 @@
           <div class="row">
             <div class="label">仓库管理员：</div>
             <div class="info">
-              <el-select v-model="createOrEditStoreObj.admins"
-                multiple
-                placeholder="请选择仓库管理员">
-                <el-option v-for="item in user_list"
+              <el-select v-model="createOrEditStoreObj.admins" multiple placeholder="请选择仓库管理员">
+                <el-option
+                  v-for="item in user_list"
                   :key="item.id + 'storeAdmin' + item.name"
                   :label="item.name"
-                  :value="item.id">
+                  :value="item.id"
+                >
                 </el-option>
               </el-select>
             </div>
           </div>
-          <div class="row"
-            v-for="(itemLV2,indexLV2) in createOrEditStoreObj.LV2_info"
-            :key="indexLV2 + 'indexLV2'">
-            <div :class="`label ${indexLV2 === 0 ? 'isMust' : ''}`">{{indexLV2 === 0 && '二级仓库名：' || ''}}</div>
+          <div class="row" v-for="(itemLV2, indexLV2) in createOrEditStoreObj.LV2_info" :key="indexLV2 + 'indexLV2'">
+            <div :class="`label ${indexLV2 === 0 ? 'isMust' : ''}`">{{ (indexLV2 === 0 && '二级仓库名：') || '' }}</div>
             <div class="info">
-              <el-input placeholder="请输入二级仓库名称"
-                v-model="itemLV2.name"></el-input>
-              <span class="info_btn blue"
+              <el-input placeholder="请输入二级仓库名称" v-model="itemLV2.name"></el-input>
+              <span
+                class="info_btn blue"
                 v-if="indexLV2 === 0"
-                @click="$addItem(createOrEditStoreObj.LV2_info,{ name: '', id: null })">添加</span>
-              <span class="info_btn red"
+                @click="$addItem(createOrEditStoreObj.LV2_info, { name: '', id: null })"
+                >添加</span
+              >
+              <span
+                class="info_btn red"
                 v-else
-                @click="itemLV2.id?deleteSecondStore(itemLV2.id,createOrEditStoreObj.LV2_info,indexLV2):$deleteItem(createOrEditStoreObj.LV2_info,indexLV2)">删除</span>
+                @click="
+                  itemLV2.id
+                    ? deleteSecondStore(itemLV2.id, createOrEditStoreObj.LV2_info, indexLV2)
+                    : $deleteItem(createOrEditStoreObj.LV2_info, indexLV2)
+                "
+                >删除</span
+              >
             </div>
           </div>
           <div class="row">
             <div class="label">仓库备注：</div>
             <div class="info">
-              <el-input placeholder="请输入仓库备注"
+              <el-input
+                placeholder="请输入仓库备注"
                 type="textarea"
-                :autosize="{ minRows: 2, maxRows: 4}"
-                v-model="createOrEditStoreObj.desc"></el-input>
+                :autosize="{ minRows: 2, maxRows: 4 }"
+                v-model="createOrEditStoreObj.desc"
+              ></el-input>
             </div>
           </div>
         </div>
         <div class="oprCtn">
-          <div class="opr"
-            @click="addFlag=false">取消</div>
-          <div class="opr blue"
-            @click="saveStore">保存</div>
+          <div class="opr" @click="addFlag = false">取消</div>
+          <div class="opr blue" @click="saveStore">保存</div>
         </div>
       </div>
     </div>
-    <div class="popup"
-      v-show="yarnFlag">
-      <div class="main" style="width:1200px">
+    <div class="popup" v-show="yarnFlag">
+      <div class="main" style="width: 1200px">
         <div class="titleCtn">
-          <span class="text">{{mergeStep?'勾选纱线':'合并纱线'}}</span>
-          <div class="closeCtn"
-            @click="yarnFlag = false">
+          <span class="text">{{ mergeStep ? '勾选纱线' : '合并纱线' }}</span>
+          <div class="closeCtn" @click="yarnFlag = false">
             <span class="el-icon-close"></span>
           </div>
         </div>
         <div class="contentCtn">
-          <div class="explainCtn"
-            style="margin:12px 0">搜索并勾选需要合并的纱线，合并后，会将这部分纱线的数量合并到一个纱线上。剩余纱线的数量将被清零。</div>
-          <div v-if="mergeStep===1"
-            class="listCtn"
-            style="padding:32px 0">
+          <div class="explainCtn" style="margin: 12px 0">
+            搜索并勾选需要合并的纱线，合并后，会将这部分纱线的数量合并到一个纱线上。剩余纱线的数量将被清零。
+          </div>
+          <div v-if="mergeStep === 1" class="listCtn" style="padding: 32px 0">
             <div class="filterCtn">
-              <div class="elCtn" style="width:30%">
-                <el-cascader v-model="mergeFilter.store_arr"
+              <div class="elCtn" style="width: 30%">
+                <el-cascader
+                  v-model="mergeFilter.store_arr"
                   :options="store_list"
                   clearable
                   @change="getMergeSearchList"
-                  :props="{value:'id',label:'name',children:'second_data'}"
-                  placeholder="请选择仓库"></el-cascader>
+                  :props="{ value: 'id', label: 'name', children: 'second_data' }"
+                  placeholder="请选择仓库"
+                ></el-cascader>
               </div>
-              <div class="elCtn" style="width:30%">
+              <div class="elCtn" style="width: 30%">
                 <el-cascader
                   v-model="mergeFilter.name"
                   filterable
@@ -648,66 +689,60 @@
                   @change="getMergeSearchList"
                 ></el-cascader>
               </div>
-              <div class="elCtn" style="width:30%">
-                <el-input v-model="mergeFilter.color"
-                  @change="getMergeSearchList"
-                  placeholder="纱线颜色"></el-input>
+              <div class="elCtn" style="width: 30%">
+                <el-input v-model="mergeFilter.color" @change="getMergeSearchList" placeholder="纱线颜色"></el-input>
               </div>
-              <div class="btn backHoverBlue"
-                @click="getMergeSearchList">搜索</div>
+              <div class="btn backHoverBlue" @click="getMergeSearchList">搜索</div>
             </div>
-            <div class="list"
-              v-loading="mergeLoading">
+            <div class="list" v-loading="mergeLoading">
               <div class="headCtn">
-                <div class="row title" style="min-height: 40px;margin:unset">
+                <div class="row title" style="min-height: 40px; margin: unset">
                   <div class="column">仓库名称</div>
                   <div class="column">纱线名称</div>
                   <div class="column">纱线颜色</div>
                   <div class="column">纱线属性</div>
                   <div class="column">批号/缸号/色号</div>
                   <div class="column">库存数量</div>
-                  <div class="column"
-                    style="flex:0.3">勾选</div>
+                  <div class="column" style="flex: 0.3">勾选</div>
                 </div>
               </div>
               <div class="bodyCtn">
-                <div class="row" style="min-height: 40px;margin:unset"
+                <div
+                  class="row"
+                  style="min-height: 40px; margin: unset"
                   v-for="item in mergeList"
-                  :key="item.id + 'mergeList'">
-                  <div class="column">
-                    {{item.store_name}}<br />{{item.second_store_name}}
+                  :key="item.id + 'mergeList'"
+                >
+                  <div class="column">{{ item.store_name }}<br />{{ item.second_store_name }}</div>
+                  <div class="column" style="max-width: 175px; word-break: break-all">{{ item.name }}</div>
+                  <div class="column" style="max-width: 175px; word-break: break-all">{{ item.color }}</div>
+                  <div class="column" style="max-width: 175px; word-break: break-all">{{ item.attribute }}</div>
+                  <div class="column" style="max-width: 175px; word-break: break-all">
+                    {{ item.batch_code }}/{{ item.vat_code }}/{{ item.color_code }}
                   </div>
-                  <div class="column" style="max-width:175px;word-break: break-all;">{{item.name}}</div>
-                  <div class="column" style="max-width:175px;word-break: break-all;">{{item.color}}</div>
-                  <div class="column" style="max-width:175px;word-break: break-all;">{{item.attribute}}</div>
-                  <div class="column" style="max-width:175px;word-break: break-all;">{{item.batch_code}}/{{item.vat_code}}/{{item.color_code}}</div>
-                  <div class="column" style="max-width:175px;word-break: break-all;">{{item.use_weight}}kg</div>
-                  <div class="column"
-                    style="flex:0.3">
-                    <el-checkbox v-model="item.check"
-                      @change="getMergeCheck($event,item)"></el-checkbox>
+                  <div class="column" style="max-width: 175px; word-break: break-all">{{ item.use_weight }}kg</div>
+                  <div class="column" style="flex: 0.3">
+                    <el-checkbox v-model="item.check" @change="getMergeCheck($event, item)"></el-checkbox>
                   </div>
                 </div>
               </div>
             </div>
             <div class="pageCtn">
-              <el-pagination background
+              <el-pagination
+                background
                 :page-size="10"
                 layout="prev, pager, next"
                 :total="mergeTotal"
                 :current-page.sync="mergePage"
-                @current-change="getMergeSearchList">
+                @current-change="getMergeSearchList"
+              >
               </el-pagination>
             </div>
           </div>
-          <div v-if="mergeStep===2"
-            class="listCtn"
-            style="padding:32px 0">
-            <div class="list"
-              v-loading="mergeLoading"
-              style="min-height:100px">
+          <div v-if="mergeStep === 2" class="listCtn" style="padding: 32px 0">
+            <div class="list" v-loading="mergeLoading" style="min-height: 100px">
               <div class="headCtn">
-                <div class="row title" style="min-height: 40px;margin:unset">
+                <div class="row title" style="min-height: 40px; margin: unset">
                   <div class="column">仓库名称</div>
                   <div class="column">待合并纱线</div>
                   <div class="column">待合并颜色</div>
@@ -718,23 +753,31 @@
                 </div>
               </div>
               <div class="bodyCtn">
-                <div class="row"
-                  style="min-height: 40px;margin:unset"
-                  v-for="item,index in mergeCheckList"
-                  :key="item.id + 'mergeCheckList'">
-                  <div class="column" style="max-width:160px;word-break:break-all">
-                    {{item.store_name}}<br />{{item.second_store_name}}
+                <div
+                  class="row"
+                  style="min-height: 40px; margin: unset"
+                  v-for="(item, index) in mergeCheckList"
+                  :key="item.id + 'mergeCheckList'"
+                >
+                  <div class="column" style="max-width: 160px; word-break: break-all">
+                    {{ item.store_name }}<br />{{ item.second_store_name }}
                   </div>
-                  <div class="column" style="max-width:160px;word-break:break-all">{{item.name}}</div>
-                  <div class="column" style="max-width:160px;word-break:break-all">{{item.color}}</div>
-                  <div class="column" style="max-width:160px;word-break:break-all">{{item.attribute}}</div>
-                  <div class="column" style="max-width:160px;word-break:break-all">{{item.batch_code}}/{{item.vat_code}}/{{item.color_code}}</div>
-                  <div class="column" style="max-width:160px;word-break:break-all">{{item.use_weight}}kg</div>
-                  <div class="column" style="max-width:160px;word-break:break-all">
-                    <div class="oprCtn" style="border:unset">
-                      <div class="opr hoverRed"
-                        style="border:unset"
-                        @click="mergeCheckList.length>2?deleteMerge(index):$message.error('至少有两种纱线')">删除</div>
+                  <div class="column" style="max-width: 160px; word-break: break-all">{{ item.name }}</div>
+                  <div class="column" style="max-width: 160px; word-break: break-all">{{ item.color }}</div>
+                  <div class="column" style="max-width: 160px; word-break: break-all">{{ item.attribute }}</div>
+                  <div class="column" style="max-width: 160px; word-break: break-all">
+                    {{ item.batch_code }}/{{ item.vat_code }}/{{ item.color_code }}
+                  </div>
+                  <div class="column" style="max-width: 160px; word-break: break-all">{{ item.use_weight }}kg</div>
+                  <div class="column" style="max-width: 160px; word-break: break-all">
+                    <div class="oprCtn" style="border: unset">
+                      <div
+                        class="opr hoverRed"
+                        style="border: unset"
+                        @click="mergeCheckList.length > 2 ? deleteMerge(index) : $message.error('至少有两种纱线')"
+                      >
+                        删除
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -754,69 +797,62 @@
                 </div>
               </div>
               <div class="row">
-                <div class="column" style="max-width:140px;box-sizing: border-box;">
+                <div class="column" style="max-width: 140px; box-sizing: border-box">
                   <div class="elCtn">
-                    <el-cascader v-model="mergeData.store_arr"
+                    <el-cascader
+                      v-model="mergeData.store_arr"
                       :options="store_list"
                       clearable
-                      :props="{value:'id',label:'name',children:'second_data'}"
-                      placeholder="请选择仓库"></el-cascader>
+                      :props="{ value: 'id', label: 'name', children: 'second_data' }"
+                      placeholder="请选择仓库"
+                    ></el-cascader>
                   </div>
                 </div>
-                <div class="column" style="max-width:140px;box-sizing: border-box;">
+                <div class="column" style="max-width: 140px; box-sizing: border-box">
                   <div class="elCtn">
                     <el-select v-model="mergeData.name">
-                      <el-option v-for="item in mergeMatList"
+                      <el-option
+                        v-for="item in mergeMatList"
                         :key="item.id"
                         :value="item.name"
-                        :label="item.name"></el-option>
+                        :label="item.name"
+                      ></el-option>
                     </el-select>
                   </div>
                 </div>
-                <div class="column" style="max-width:140px;box-sizing: border-box;">
+                <div class="column" style="max-width: 140px; box-sizing: border-box">
                   <div class="elCtn">
-                    <el-input v-model="mergeData.color"
-                    placeholder="纱线颜色"></el-input>
+                    <el-input v-model="mergeData.color" placeholder="纱线颜色"></el-input>
                   </div>
                 </div>
-                <div class="column" style="max-width:140px;box-sizing: border-box;">
+                <div class="column" style="max-width: 140px; box-sizing: border-box">
                   <div class="elCtn">
-                    <el-select v-model="mergeData.attribute"
-                      clearable
-                      placeholder="选择纱线属性">
-                      <el-option label="胚绞"
-                        value="胚绞"></el-option>
-                      <el-option label="胚筒"
-                        value="胚筒"></el-option>
-                      <el-option label="色绞"
-                        value="色绞"></el-option>
-                      <el-option label="色筒"
-                        value="色筒"></el-option>
+                    <el-select v-model="mergeData.attribute" clearable placeholder="选择纱线属性">
+                      <el-option label="胚绞" value="胚绞"></el-option>
+                      <el-option label="胚筒" value="胚筒"></el-option>
+                      <el-option label="色绞" value="色绞"></el-option>
+                      <el-option label="色筒" value="色筒"></el-option>
                     </el-select>
                   </div>
                 </div>
-                <div class="column" style="max-width:140px;box-sizing: border-box;">
+                <div class="column" style="max-width: 140px; box-sizing: border-box">
                   <div class="elCtn">
-                    <el-input placeholder="批号"
-                      v-model="mergeData.batch_code"></el-input>
+                    <el-input placeholder="批号" v-model="mergeData.batch_code"></el-input>
                   </div>
                 </div>
-                <div class="column" style="max-width:140px;box-sizing: border-box;">
+                <div class="column" style="max-width: 140px; box-sizing: border-box">
                   <div class="elCtn">
-                    <el-input placeholder="缸号"
-                      v-model="mergeData.vat_code"></el-input>
+                    <el-input placeholder="缸号" v-model="mergeData.vat_code"></el-input>
                   </div>
                 </div>
-                <div class="column" style="max-width:140px;box-sizing: border-box;">
+                <div class="column" style="max-width: 140px; box-sizing: border-box">
                   <div class="elCtn">
-                    <el-input placeholder="色号"
-                      v-model="mergeData.color_code"></el-input>
+                    <el-input placeholder="色号" v-model="mergeData.color_code"></el-input>
                   </div>
                 </div>
-                <div class="column" style="max-width:140px;box-sizing: border-box;">
+                <div class="column" style="max-width: 140px; box-sizing: border-box">
                   <div class="elCtn">
-                    <el-input placeholder="数量"
-                      v-model="mergeData.weight"></el-input>
+                    <el-input placeholder="数量" v-model="mergeData.weight"></el-input>
                   </div>
                 </div>
               </div>
@@ -824,12 +860,14 @@
           </div>
         </div>
         <div class="oprCtn">
-          <span class="btn borderBtn" style="margin-right:20px"
-            @click="yarnFlag=false">取消</span>
-          <span class="btn backHoverOrange" style="margin-right:20px"
-            @click="mergeStep=1">上一步</span>
-          <span class="btn backHoverBlue" style="margin-right:20px"
-            @click="mergeStep===1?goMergeStep2():saveMergeMat()">{{mergeStep===1?'去合并':'确认合并'}}</span>
+          <span class="btn borderBtn" style="margin-right: 20px" @click="yarnFlag = false">取消</span>
+          <span class="btn backHoverOrange" style="margin-right: 20px" @click="mergeStep = 1">上一步</span>
+          <span
+            class="btn backHoverBlue"
+            style="margin-right: 20px"
+            @click="mergeStep === 1 ? goMergeStep2() : saveMergeMat()"
+            >{{ mergeStep === 1 ? '去合并' : '确认合并' }}</span
+          >
         </div>
       </div>
     </div>
@@ -863,32 +901,41 @@
       :show.sync="showMove"
       @close="init"
     ></in-and-out>
-    <shaxianAddPO :show="showAddPO" :update="false" @close="order_yarn_info = {
-        order_id: '',
-        client_id: '',
-        total_price: '',
-        child_data: [
-          {
-            name: '',
-            weight: '',
-            color: '白胚',
-            attribute: '',
-            price: ''
-          }
-        ],
-        order_time: $getDate(new Date()),
-        delivery_time: '',
-        additional_fee: [
-          {
-            name: '',
-            price: '',
-            desc: ''
-          }
-        ],
-        total_additional_fee: 0,
-        file_url: '',
-        desc: ''
-      };showAddPO = false" :info="order_yarn_info" @afterCreate="init"></shaxianAddPO>
+    <shaxianAddPO
+      :show="showAddPO"
+      :update="false"
+      @close="
+        order_yarn_info = {
+          order_id: '',
+          client_id: '',
+          total_price: '',
+          child_data: [
+            {
+              name: '',
+              weight: '',
+              color: '白胚',
+              attribute: '',
+              price: ''
+            }
+          ],
+          order_time: $getDate(new Date()),
+          delivery_time: '',
+          additional_fee: [
+            {
+              name: '',
+              price: '',
+              desc: ''
+            }
+          ],
+          total_additional_fee: 0,
+          file_url: '',
+          desc: ''
+        }
+        showAddPO = false
+      "
+      :info="order_yarn_info"
+      @afterCreate="init"
+    ></shaxianAddPO>
   </div>
 </template>
 
@@ -912,23 +959,23 @@ export default Vue.extend({
   } {
     return {
       showMore: false,
-      lookListFlag:false,
-      addFlag:false,
-      showIn:false,
-      showOut:false,
-      showMove:false,
-      showAddPO:false,
-      yarnFlag:false,
-      mergeLoading:false,
-      initData:[],
-      selectList:[],
-      firstStoreId:'',
-      storeLoading:false,
-      storeTotal:1,
-      storePage:1,
+      lookListFlag: false,
+      addFlag: false,
+      showIn: false,
+      showOut: false,
+      showMove: false,
+      showAddPO: false,
+      yarnFlag: false,
+      mergeLoading: false,
+      initData: [],
+      selectList: [],
+      firstStoreId: '',
+      storeLoading: false,
+      storeTotal: 1,
+      storePage: 1,
       mergeList: [],
       mergeCheckList: [],
-      mergeMatList:[],
+      mergeMatList: [],
       mergeTotal: 0,
       mergePage: 1,
       mergeData: {
@@ -988,7 +1035,7 @@ export default Vue.extend({
           name: '染厂仓库'
         }
       ],
-      storeInfoList:[],
+      storeInfoList: [],
       loading: {
         page: false,
         info: true,
@@ -1105,7 +1152,7 @@ export default Vue.extend({
           }
         ]
       },
-      createOrEditStoreObj:{
+      createOrEditStoreObj: {
         store_type: 1,
         id: null,
         name: '',
@@ -1121,7 +1168,7 @@ export default Vue.extend({
       },
       bindFlag: false,
       updateId: 0,
-      mergeStep: 1,
+      mergeStep: 1
     }
   },
   computed: {
@@ -1144,7 +1191,7 @@ export default Vue.extend({
           })
         }
       })
-    },
+    }
   },
   methods: {
     init() {
@@ -1200,7 +1247,7 @@ export default Vue.extend({
         this.$message.warning('请选择仓库类型')
         return
       }
-      const LV2Name = this.createOrEditStoreObj.LV2_info.filter((itemF:any) => !itemF.name) // 筛选出名字为false
+      const LV2Name = this.createOrEditStoreObj.LV2_info.filter((itemF: any) => !itemF.name) // 筛选出名字为false
       if (LV2Name.length > 0) {
         this.$message.warning('请输入二级仓库名称')
         return
@@ -1259,14 +1306,14 @@ export default Vue.extend({
             })
           }
 
-          this.storeListCom.data.forEach((item:any) => {
-            item.totalReality = item.store_info.reduce((a:any,b:any) => {
+          this.storeListCom.data.forEach((item: any) => {
+            item.totalReality = item.store_info.reduce((a: any, b: any) => {
               return a + (b.reality_weight || 0)
-            },0)
-          });
+            }, 0)
+          })
 
-          this.storeListCom.data.sort((a:any,b:any) => {
-            return (b.totalReality - a.totalReality)
+          this.storeListCom.data.sort((a: any, b: any) => {
+            return b.totalReality - a.totalReality
           })
 
           this.loading.info = false
@@ -1303,7 +1350,7 @@ export default Vue.extend({
         this.$message.warning('未知重置错误')
       }
     },
-    getStoreList(){
+    getStoreList() {
       this.storeLoading = true
       store
         .list({
@@ -1311,7 +1358,7 @@ export default Vue.extend({
           limit: 5,
           page: this.storePage,
           name: null,
-          type: null,
+          type: null
         })
         .then((res: any) => {
           if (res.data.status !== false) {
@@ -1340,7 +1387,7 @@ export default Vue.extend({
           limit: this.storeLogListFilter.limit || 10,
           store_id: this.storeLogListFilter.LV2_name ? this.storeLogListFilter.LV2_name[0] : '',
           store_second_id: this.storeLogListFilter.LV2_name ? this.storeLogListFilter.LV2_name[1] : '',
-          name: this.storeLogListFilter.name ? this.storeLogListFilter.name[1] : "",
+          name: this.storeLogListFilter.name ? this.storeLogListFilter.name[1] : '',
           color: this.storeLogListFilter.color || null,
           attribute: this.storeLogListFilter.attr || null,
           action_type: this.storeLogListFilter.type || [],
@@ -1432,10 +1479,10 @@ export default Vue.extend({
       }
     },
     saveMergeMat() {
-      console.log(this.mergeData)
-      if(this.mergeData.store_arr.length === 0){
+      // console.log(this.mergeData)
+      if (this.mergeData.store_arr.length === 0) {
         this.$message.error('请选择仓库')
-        return 
+        return
       }
       const formCheck = this.$formCheck(this.mergeData, [
         {
@@ -1462,7 +1509,7 @@ export default Vue.extend({
         this.mergeData.store_id = this.mergeData.store_arr[0]
         this.mergeData.second_store_id = this.mergeData.store_arr[1]
         delete this.mergeData.id
-        console.log(this.mergeData)
+        // console.log(this.mergeData)
         store.combineStore(this.mergeData).then((res) => {
           if (res.data.status) {
             this.$message.success('合并成功')
@@ -1492,7 +1539,7 @@ export default Vue.extend({
       this.$deleteItem(this.mergeCheckList, index)
       this.getMergeMatList()
     },
-     goMergeStep2() {
+    goMergeStep2() {
       if (this.mergeCheckList.length < 2) {
         this.$message.error('至少选择两个纱线进行合并')
         return
@@ -1502,9 +1549,11 @@ export default Vue.extend({
     },
     getMergeMatList() {
       this.mergeCheckList.forEach((item: any) => {
-        if (!this.mergeMatList.find((itemFind: any) => {
-          return itemFind.material_id === item.material_id
-        })) {
+        if (
+          !this.mergeMatList.find((itemFind: any) => {
+            return itemFind.material_id === item.material_id
+          })
+        ) {
           this.mergeMatList.push(item)
         }
       })
@@ -1539,20 +1588,20 @@ export default Vue.extend({
           this.mergeLoading = false
         })
     },
-    openStore(type:number,item:number) {
-      if(type === 1){
+    openStore(type: number, item: number) {
+      if (type === 1) {
         // 入库
         this.initData = [item]
         this.showIn = true
         // @ts-ignore
         this.firstStoreId = item.store_id
-      } else if (type === 2){
+      } else if (type === 2) {
         // 出库
         this.initData = [item]
         this.showOut = true
         // @ts-ignore
         this.firstStoreId = item.store_id
-      } else if (type === 3){
+      } else if (type === 3) {
         // 移库
         this.initData = [item]
         this.showMove = true
@@ -1560,33 +1609,36 @@ export default Vue.extend({
         this.firstStoreId = item.store_id
       }
     },
-    goStore(type:number){
-      let arr = this.$mergeData(this.selectList,{
-        mainRule:['store_id','second_store_id'],
-        childrenName:'store_info'
+    goStore(type: number) {
+      let arr = this.$mergeData(this.selectList, {
+        mainRule: ['store_id', 'second_store_id'],
+        childrenName: 'store_info'
       })
-      if (arr.length > 1) {
-        this.$message.error('不能同时选择两个二级仓库的原料进行出入库，请重新选择')
+      if (arr.length === 0) {
+        this.$message.error('请先选择纱线，在进行出入库操作')
         return
       }
-      
-      
-      arr[0].store_info.forEach((item:any) => {
+      if (arr.length > 1) {
+        this.$message.error('不能同时选择两个二级仓库的纱线进行出入库，请重新选择')
+        return
+      }
+
+      arr[0].store_info.forEach((item: any) => {
         item.store_id = arr[0].store_id
         item.second_store_id = arr[0].second_store_id
-      });
+      })
 
-      if(type === 1){
+      if (type === 1) {
         // 入库
         this.initData = arr[0].store_info
         this.showIn = true
         this.firstStoreId = arr[0].store_id
-      } else if (type === 2){
+      } else if (type === 2) {
         // 出库
         this.initData = arr[0].store_info
         this.showOut = true
         this.firstStoreId = arr[0].store_id
-      } else if (type === 3){
+      } else if (type === 3) {
         // 移库
         this.initData = arr[0].store_info
         this.showMove = true
@@ -1595,7 +1647,8 @@ export default Vue.extend({
     },
     checkChange(val: boolean, itemInfo: any) {
       if (val) {
-        itemInfo.id = '' + itemInfo.store_id + itemInfo.second_store_id + itemInfo.name + itemInfo.color + itemInfo.attribute
+        itemInfo.id =
+          '' + itemInfo.store_id + itemInfo.second_store_id + itemInfo.name + itemInfo.color + itemInfo.attribute
         // console.log(itemInfo)
         const index = this.selectList.map((item: any) => item.id).indexOf(itemInfo.id)
         if (index === -1) {

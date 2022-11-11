@@ -42,10 +42,10 @@
               <div class="content">
                 <div class="elCtn">
                   <el-input disabled
-                    v-show="noChange && noChangeDanJu"
+                    v-show="noChange"
                     v-model="relatedCode"
                     placeholder="单号信息"></el-input>
-                  <el-select v-show="!noChange || !noChangeDanJu"
+                  <el-select v-show="!noChange"
                     v-model="storeInfo.related_id"
                     filterable
                     remote

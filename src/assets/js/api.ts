@@ -111,7 +111,8 @@ const store = {
   orderSave: (params: OrderStoreInfo) => http.post(`${baseUrl}/order/transfer/save`, params, 'application/json'),
   orderList: (params?: { order_id: string }) => http.get(`${baseUrl}/order/transfer/lists`, params),
   orderDelete: (params: DeleteParam) => http.post(`${baseUrl}/order/transfer/delete`, params, 'application/json'),
-  orderDetail: (params: DetailParam) => http.get(`${baseUrl}/order/transfer/detail`, params)
+  orderDetail: (params: DetailParam) => http.get(`${baseUrl}/order/transfer/detail`, params),
+  combineStore: (params: any) => http.post(`${baseUrl}/combine/store/total`, params)
 }
 // 出入库
 import { StoreCreate } from '@/types/store'

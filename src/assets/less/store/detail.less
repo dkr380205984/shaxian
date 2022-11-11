@@ -5,34 +5,62 @@
 @import '../table.less';
 @import '../popup.less';
 @import '../bottomBar.less';
-#storeDetail{
-  .rowCtn{
-    .colCtn{
-      .label{
+
+#storeDetail {
+  .rowCtn {
+    .colCtn {
+      .label {
         width: 6em;
       }
     }
   }
-  .flex5{
+
+  .checkCtn {
+    margin-top: 10px;
+    display: flex;
+    flex-wrap: wrap;
+
+    .label {
+      margin-bottom: 8px;
+    }
+
+    .elCtn {
+      margin-left: 10px;
+      margin-bottom: 8px;
+      width: 200px;
+    }
+
+    .check {
+      width: 160px;
+    }
+  }
+
+  .flex5 {
     flex: 5;
   }
-  .listCtn{
-    .tableCtn{
+
+  .listCtn {
+    .tableCtn {
       margin: 0;
     }
-    .row{
+
+    .row {
       min-height: 50px;
       height: auto;
     }
-    .elCtn{
+
+    .elCtn {
       width: 160px;
     }
-    &.smallHeight{
+
+    &.smallHeight {
       padding: 0;
-      .list{
+
+      .list {
         margin: 0;
       }
-      .row{
+
+      .row {
         min-height: 32px;
         margin: 6px 0;
       }

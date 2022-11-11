@@ -42,10 +42,10 @@
               <div class="content">
                 <div class="elCtn">
                   <el-input disabled
-                    v-show="noChange"
+                    v-show="noChange && noChangeDanJu"
                     v-model="relatedCode"
                     placeholder="单号信息"></el-input>
-                  <el-select v-show="!noChange"
+                  <el-select v-show="!noChange || !noChangeDanJu"
                     v-model="storeInfo.related_id"
                     filterable
                     remote
@@ -1099,6 +1099,10 @@ export default class InAndOut extends Vue {
       this.selfType = ['订单', 9]
     } else if (this.type === 10) {
       this.selfType = ['无单据', 10]
+    } else if (this.type === 11) {
+      this.selfType = ['无单据', 11]
+    } else if (this.type === 12) {
+      this.selfType = ['无单据', 12]
     }
   }
   // 根据选中的纱线初始化颜色属性下拉框

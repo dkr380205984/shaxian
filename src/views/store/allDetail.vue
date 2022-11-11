@@ -70,6 +70,29 @@
               @click="resetFilter(1)">重置</div>
           </div>
         </div>
+        <div class="filterCtn" style="margin-top:20px">
+          <div class="leftCtn"></div>
+          <div class="rightCtn">
+            <div class="btnC">
+              <div class="btn backHoverBlue" @click="goStore(3)">盘点移库</div>
+              <div class="btn backHoverOrange" @click="goStore(2)">盘点出库</div>
+              <div class="btn backHoverGreen" @click="goStore(1)">盘点入库</div>
+              <div class="btn backHoverBlue" @click="yarnFlag = true">合并纱线</div>
+              <div class="btn backHoverGreen" @click="showAddPO = true">采购并入库</div>
+              <div class="btn backHoverOrange" @click="$router.push('/order/salesOrderCreate')">销售并出库</div>
+            </div>
+          </div>
+        </div>
+        <div class="checkCtn">
+            <div class="label">已勾选单据：</div>
+            <div class="elCtn check" v-for="(item, index) in selectList" :key="item.id">
+              <el-input :value="item.name + '/' + item.color " disabled>
+                <template slot="append">
+                  <i class="el-icon-close hoverRed" style="cursor: pointer" @click="selectList.splice(index, 1)"></i>
+                </template>
+              </el-input>
+            </div>
+          </div>
         <div class="tableCtn"
           style="margin:24px 0"
           v-loading='!loading.page && loading.info'>
@@ -89,7 +112,7 @@
                   <div class="tcolumn">实际库存(KG)</div>
                   <div class="tcolumn">可用库存(KG)</div>
                   <div class="tcolumn"
-                    style="min-width:110px">操作</div>
+                    style="flex:2">操作</div>
                 </div>
               </div>
             </div>
@@ -100,14 +123,19 @@
               :key="item.store_name + item.second_store_name + item.name + item.second_store_name + item.color + item.attribute">
               <div class="tcolumn">{{item.store_name || '-'}}</div>
               <div class="tcolumn">{{item.second_store_name || '-'}}</div>
-              <div class="tcolumn">{{item.name}}</div>
+              <div class="tcolumn" style="cursor:pointer;" @click="item.checked = !item.checked; checkChange(item.checked,item);$forceUpdate()">
+                <div>
+                  <el-checkbox style="width:15%" v-model="item.checked"></el-checkbox>
+                  <span style="width:85%">{{item.name}}</span>
+                </div>
+              </div>
               <div class="tcolumn">{{item.color}}</div>
               <div class="tcolumn">{{item.attribute}}</div>
               <div class="tcolumn noPad"
                 style="flex:6">
                 <div class="trow"
                   v-for="itemStore in item.store_info"
-                  :key="itemStore.id">
+                  :key="'store' + itemStore.id">
                   <div class="tcolumn">
                     {{itemStore.batch_code}}
                     <!-- <el-checkbox :key="new Date().getMilliseconds()"
@@ -118,9 +146,15 @@
                   <div class="tcolumn">{{itemStore.reality_weight && $formatNum(itemStore.reality_weight) || '-'}}</div>
                   <div class="tcolumn blue">{{itemStore.useable_weight && $formatNum(itemStore.useable_weight) || '-'}}</div>
                   <div class="tcolumn flexRow"
-                    style="min-width:110px">
+                    style="flex:2">
                     <span class="opr green"
                       @click="goLogEl(item,itemStore)">日志</span>
+                    <span class="opr green"
+                      @click="openStore(1,item)">入库</span>
+                    <span class="opr red"
+                      @click="openStore(2,item)">出库</span>
+                    <span class="opr blue"
+                      @click="openStore(3,item)">移库</span>
                   </div>
                 </div>
               </div>
@@ -150,7 +184,7 @@
           <el-pagination
             background
             @current-change="getStoreInfoList"
-            :current-page.sync="storeListFilter.pages"
+            :current-page.sync="storeListFilter.page"
             :page-size="storeListFilter.limit"
             layout="prev, pager, next"
             :total="storeListFilter.total"
@@ -235,7 +269,7 @@
                 @change="getStoreLogList(1)"
                 placeholder="选择操作类型">
                 <el-option v-for="item in commonInit.typeArr"
-                  :key="item.id"
+                  :key="item.id + item.name"
                   :label="item.name"
                   :value="item.id">
                 </el-option>
@@ -252,7 +286,7 @@
                 @change="getStoreLogList(1)"
                 placeholder="每页展示条数（默认‘10’）">
                 <el-option v-for="item in commonInit.limitArr"
-                  :key="item.id"
+                  :key="item.id + item.name"
                   :label="item.name"
                   :value="item.id">
                 </el-option>
@@ -308,7 +342,7 @@
                   <div class="bodyCtn">
                     <div class="row"
                       v-for="item in storeLogInfo.list"
-                      :key="item.id">
+                      :key="item.id + item.code">
                       <div class="column min120">{{item.code}}</div>
                       <div class="column"
                         style="min-width:80px">{{item.action_type}}</div>
@@ -318,7 +352,7 @@
                         style="flex:10;flex-direction:column">
                         <div class="row"
                           v-for="(itemChild,indexChild) in item.child_data"
-                          :key="indexChild">
+                          :key="indexChild + itemChild.name">
                           <div class="column min120">{{itemChild.name}}</div>
                           <div class="column min120">{{itemChild.color}}</div>
                           <div class="column min120">{{itemChild.attribute}}</div>
@@ -357,7 +391,7 @@
                 <div class="bodyCtn">
                   <div class="row"
                     v-for="item in storeLogInfo.list"
-                    :key="item.id">
+                    :key="item.id + 'storeLogInfoList'">
                     <div class="column min120 blue"
                       :style="{'height':51*item.child_data.length - 1 + 'px'}">{{item.code}}</div>
                     <div class="column"
@@ -398,7 +432,7 @@
                 <div class="bodyCtn">
                   <div class="row"
                     v-for="item in storeLogInfo.list"
-                    :key="item.id">
+                    :key="item.id + 'sss'">
                     <div class="column min120"
                       :style="{'height':51*item.child_data.length - 1 + 'px'}">
                       <span class="blue opr"
@@ -452,7 +486,7 @@
             <div class="bodyCtn">
               <div class="row"
                 v-for="item in storeInfoList"
-                :key="item.id">
+                :key="item.id + 'sss' +item.name">
                 <div class="column">{{item.name}}</div>
                 <div class="column">{{item.total_weight || 0}}Kg</div>
                 <div class="column">{{item.admins.map(itemM=>itemM.name).join(',')}}</div>
@@ -502,13 +536,6 @@
         </div>
       </div>
     </div>
-    <in-and-out :noChange="false"
-      :updateId="updateId"
-      :bindFlag="bindFlag"
-      :firstStoreId="$route.params.id"
-      :initData="store_info.init_data"
-      :show.sync="store_info.show"
-      @close="resetStoreInfo"></in-and-out>
     <div class="popup"
       v-show="addFlag">
       <div class="main">
@@ -531,7 +558,7 @@
               <el-select v-model="createOrEditStoreObj.type"
                 placeholder="请选择仓库类型">
                 <el-option v-for="item in typeArr"
-                  :key="item.id"
+                  :key="item.id + 'storeType' + item.name"
                   :label="item.name"
                   :value="item.id">
                 </el-option>
@@ -545,7 +572,7 @@
                 multiple
                 placeholder="请选择仓库管理员">
                 <el-option v-for="item in user_list"
-                  :key="item.id"
+                  :key="item.id + 'storeAdmin' + item.name"
                   :label="item.name"
                   :value="item.id">
                 </el-option>
@@ -554,7 +581,7 @@
           </div>
           <div class="row"
             v-for="(itemLV2,indexLV2) in createOrEditStoreObj.LV2_info"
-            :key="indexLV2">
+            :key="indexLV2 + 'indexLV2'">
             <div :class="`label ${indexLV2 === 0 ? 'isMust' : ''}`">{{indexLV2 === 0 && '二级仓库名：' || ''}}</div>
             <div class="info">
               <el-input placeholder="请输入二级仓库名称"
@@ -585,6 +612,283 @@
         </div>
       </div>
     </div>
+    <div class="popup"
+      v-show="yarnFlag">
+      <div class="main" style="width:1200px">
+        <div class="titleCtn">
+          <span class="text">{{mergeStep?'勾选纱线':'合并纱线'}}</span>
+          <div class="closeCtn"
+            @click="yarnFlag = false">
+            <span class="el-icon-close"></span>
+          </div>
+        </div>
+        <div class="contentCtn">
+          <div class="explainCtn"
+            style="margin:12px 0">搜索并勾选需要合并的纱线，合并后，会将这部分纱线的数量合并到一个纱线上。剩余纱线的数量将被清零。</div>
+          <div v-if="mergeStep===1"
+            class="listCtn"
+            style="padding:32px 0">
+            <div class="filterCtn">
+              <div class="elCtn" style="width:30%">
+                <el-cascader v-model="mergeFilter.store_arr"
+                  :options="store_list"
+                  clearable
+                  @change="getMergeSearchList"
+                  :props="{value:'id',label:'name',children:'second_data'}"
+                  placeholder="请选择仓库"></el-cascader>
+              </div>
+              <div class="elCtn" style="width:30%">
+                <el-cascader
+                  v-model="mergeFilter.name"
+                  filterable
+                  clearable
+                  :show-all-levels="false"
+                  placeholder="请选择纱线"
+                  :options="yarn_list"
+                  @change="getMergeSearchList"
+                ></el-cascader>
+              </div>
+              <div class="elCtn" style="width:30%">
+                <el-input v-model="mergeFilter.color"
+                  @change="getMergeSearchList"
+                  placeholder="纱线颜色"></el-input>
+              </div>
+              <div class="btn backHoverBlue"
+                @click="getMergeSearchList">搜索</div>
+            </div>
+            <div class="list"
+              v-loading="mergeLoading">
+              <div class="headCtn">
+                <div class="row title" style="min-height: 40px;margin:unset">
+                  <div class="column">仓库名称</div>
+                  <div class="column">纱线名称</div>
+                  <div class="column">纱线颜色</div>
+                  <div class="column">纱线属性</div>
+                  <div class="column">批号/缸号/色号</div>
+                  <div class="column">库存数量</div>
+                  <div class="column"
+                    style="flex:0.3">勾选</div>
+                </div>
+              </div>
+              <div class="bodyCtn">
+                <div class="row" style="min-height: 40px;margin:unset"
+                  v-for="item in mergeList"
+                  :key="item.id + 'mergeList'">
+                  <div class="column">
+                    {{item.store_name}}<br />{{item.second_store_name}}
+                  </div>
+                  <div class="column" style="max-width:175px;word-break: break-all;">{{item.name}}</div>
+                  <div class="column" style="max-width:175px;word-break: break-all;">{{item.color}}</div>
+                  <div class="column" style="max-width:175px;word-break: break-all;">{{item.attribute}}</div>
+                  <div class="column" style="max-width:175px;word-break: break-all;">{{item.batch_code}}/{{item.vat_code}}/{{item.color_code}}</div>
+                  <div class="column" style="max-width:175px;word-break: break-all;">{{item.use_weight}}kg</div>
+                  <div class="column"
+                    style="flex:0.3">
+                    <el-checkbox v-model="item.check"
+                      @change="getMergeCheck($event,item)"></el-checkbox>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="pageCtn">
+              <el-pagination background
+                :page-size="10"
+                layout="prev, pager, next"
+                :total="mergeTotal"
+                :current-page.sync="mergePage"
+                @current-change="getMergeSearchList">
+              </el-pagination>
+            </div>
+          </div>
+          <div v-if="mergeStep===2"
+            class="listCtn"
+            style="padding:32px 0">
+            <div class="list"
+              v-loading="mergeLoading"
+              style="min-height:100px">
+              <div class="headCtn">
+                <div class="row title" style="min-height: 40px;margin:unset">
+                  <div class="column">仓库名称</div>
+                  <div class="column">待合并纱线</div>
+                  <div class="column">待合并颜色</div>
+                  <div class="column">待合并属性</div>
+                  <div class="column">批号/缸号/色号</div>
+                  <div class="column">待合并数量</div>
+                  <div class="column">操作</div>
+                </div>
+              </div>
+              <div class="bodyCtn">
+                <div class="row"
+                  style="min-height: 40px;margin:unset"
+                  v-for="item,index in mergeCheckList"
+                  :key="item.id + 'mergeCheckList'">
+                  <div class="column" style="max-width:160px;word-break:break-all">
+                    {{item.store_name}}<br />{{item.second_store_name}}
+                  </div>
+                  <div class="column" style="max-width:160px;word-break:break-all">{{item.name}}</div>
+                  <div class="column" style="max-width:160px;word-break:break-all">{{item.color}}</div>
+                  <div class="column" style="max-width:160px;word-break:break-all">{{item.attribute}}</div>
+                  <div class="column" style="max-width:160px;word-break:break-all">{{item.batch_code}}/{{item.vat_code}}/{{item.color_code}}</div>
+                  <div class="column" style="max-width:160px;word-break:break-all">{{item.use_weight}}kg</div>
+                  <div class="column" style="max-width:160px;word-break:break-all">
+                    <div class="oprCtn" style="border:unset">
+                      <div class="opr hoverRed"
+                        style="border:unset"
+                        @click="mergeCheckList.length>2?deleteMerge(index):$message.error('至少有两种纱线')">删除</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="list">
+              <div class="headCtn">
+                <div class="row title">
+                  <div class="column">合并仓库</div>
+                  <div class="column">合并纱线</div>
+                  <div class="column">合并颜色</div>
+                  <div class="column">合并属性</div>
+                  <div class="column">批号</div>
+                  <div class="column">缸号</div>
+                  <div class="column">色号</div>
+                  <div class="column">合并数量</div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="column" style="max-width:140px;box-sizing: border-box;">
+                  <div class="elCtn">
+                    <el-cascader v-model="mergeData.store_arr"
+                      :options="store_list"
+                      clearable
+                      :props="{value:'id',label:'name',children:'second_data'}"
+                      placeholder="请选择仓库"></el-cascader>
+                  </div>
+                </div>
+                <div class="column" style="max-width:140px;box-sizing: border-box;">
+                  <div class="elCtn">
+                    <el-select v-model="mergeData.name">
+                      <el-option v-for="item in mergeMatList"
+                        :key="item.id"
+                        :value="item.name"
+                        :label="item.name"></el-option>
+                    </el-select>
+                  </div>
+                </div>
+                <div class="column" style="max-width:140px;box-sizing: border-box;">
+                  <div class="elCtn">
+                    <el-input v-model="mergeData.color"
+                    placeholder="纱线颜色"></el-input>
+                  </div>
+                </div>
+                <div class="column" style="max-width:140px;box-sizing: border-box;">
+                  <div class="elCtn">
+                    <el-select v-model="mergeData.attribute"
+                      clearable
+                      placeholder="选择纱线属性">
+                      <el-option label="胚绞"
+                        value="胚绞"></el-option>
+                      <el-option label="胚筒"
+                        value="胚筒"></el-option>
+                      <el-option label="色绞"
+                        value="色绞"></el-option>
+                      <el-option label="色筒"
+                        value="色筒"></el-option>
+                    </el-select>
+                  </div>
+                </div>
+                <div class="column" style="max-width:140px;box-sizing: border-box;">
+                  <div class="elCtn">
+                    <el-input placeholder="批号"
+                      v-model="mergeData.batch_code"></el-input>
+                  </div>
+                </div>
+                <div class="column" style="max-width:140px;box-sizing: border-box;">
+                  <div class="elCtn">
+                    <el-input placeholder="缸号"
+                      v-model="mergeData.vat_code"></el-input>
+                  </div>
+                </div>
+                <div class="column" style="max-width:140px;box-sizing: border-box;">
+                  <div class="elCtn">
+                    <el-input placeholder="色号"
+                      v-model="mergeData.color_code"></el-input>
+                  </div>
+                </div>
+                <div class="column" style="max-width:140px;box-sizing: border-box;">
+                  <div class="elCtn">
+                    <el-input placeholder="数量"
+                      v-model="mergeData.weight"></el-input>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="oprCtn">
+          <span class="btn borderBtn" style="margin-right:20px"
+            @click="yarnFlag=false">取消</span>
+          <span class="btn backHoverOrange" style="margin-right:20px"
+            @click="mergeStep=1">上一步</span>
+          <span class="btn backHoverBlue" style="margin-right:20px"
+            @click="mergeStep===1?goMergeStep2():saveMergeMat()">{{mergeStep===1?'去合并':'确认合并'}}</span>
+        </div>
+      </div>
+    </div>
+    <in-and-out
+      :noChange="true"
+      :updateId="updateId"
+      :bindFlag="bindFlag"
+      :type="1"
+      :firstStoreId="firstStoreId"
+      :initData="initData"
+      :show.sync="showIn"
+      @close="init"
+    ></in-and-out>
+    <in-and-out
+      :noChange="true"
+      :updateId="updateId"
+      :bindFlag="bindFlag"
+      :type="2"
+      :firstStoreId="firstStoreId"
+      :initData="initData"
+      :show.sync="showOut"
+      @close="init"
+    ></in-and-out>
+    <in-and-out
+      :noChange="true"
+      :updateId="updateId"
+      :bindFlag="bindFlag"
+      :type="10"
+      :firstStoreId="firstStoreId"
+      :initData="initData"
+      :show.sync="showMove"
+      @close="init"
+    ></in-and-out>
+    <shaxianAddPO :show="showAddPO" :update="false" @close="order_yarn_info = {
+        order_id: '',
+        client_id: '',
+        total_price: '',
+        child_data: [
+          {
+            name: '',
+            weight: '',
+            color: '白胚',
+            attribute: '',
+            price: ''
+          }
+        ],
+        order_time: $getDate(new Date()),
+        delivery_time: '',
+        additional_fee: [
+          {
+            name: '',
+            price: '',
+            desc: ''
+          }
+        ],
+        total_additional_fee: 0,
+        file_url: '',
+        desc: ''
+      };showAddPO = false" :info="order_yarn_info" @afterCreate="init"></shaxianAddPO>
   </div>
 </template>
 
@@ -610,9 +914,70 @@ export default Vue.extend({
       showMore: false,
       lookListFlag:false,
       addFlag:false,
+      showIn:false,
+      showOut:false,
+      showMove:false,
+      showAddPO:false,
+      yarnFlag:false,
+      mergeLoading:false,
+      initData:[],
+      selectList:[],
+      firstStoreId:'',
       storeLoading:false,
       storeTotal:1,
       storePage:1,
+      mergeList: [],
+      mergeCheckList: [],
+      mergeMatList:[],
+      mergeTotal: 0,
+      mergePage: 1,
+      mergeData: {
+        store_id: '',
+        second_store_id: '',
+        store_arr: [],
+        material_id: '',
+        from_store_total_id: [],
+        material_color: '',
+        attribute: '',
+        color_code: '',
+        batch_code: '',
+        vat_code: '',
+        number: ''
+      },
+      mergeFilter: {
+        store_arr: [],
+        store_id: '',
+        secondary_id: '',
+        name: '',
+        color: '',
+        attribute: ''
+      },
+      order_yarn_info: {
+        order_id: '',
+        client_id: '',
+        total_price: '',
+        child_data: [
+          {
+            name: '',
+            weight: '',
+            color: '白胚',
+            attribute: '',
+            price: ''
+          }
+        ],
+        order_time: this.$getDate(new Date()),
+        delivery_time: '',
+        additional_fee: [
+          {
+            name: '',
+            price: '',
+            desc: ''
+          }
+        ],
+        total_additional_fee: 0,
+        file_url: '',
+        desc: ''
+      },
       typeArr: [
         {
           id: 1,
@@ -623,10 +988,6 @@ export default Vue.extend({
           name: '染厂仓库'
         }
       ],
-      store_info: {
-        show: false,
-        init_data: []
-      },
       storeInfoList:[],
       loading: {
         page: false,
@@ -759,7 +1120,8 @@ export default Vue.extend({
         useable_weight: 0
       },
       bindFlag: false,
-      updateId: 0
+      updateId: 0,
+      mergeStep: 1,
     }
   },
   computed: {
@@ -786,8 +1148,12 @@ export default Vue.extend({
   },
   methods: {
     init() {
+      this.initData = []
+      this.firstStoreId = ''
+      this.selectList = []
       this.getStoreInfoList()
       this.getStoreLogList()
+      this.getMergeSearchList()
     },
     changeStore(item: Store) {
       this.addFlag = true
@@ -1038,13 +1404,6 @@ export default Vue.extend({
       // @ts-ignore 对需要滚动的元素进行滚动操作
       this.$refs.list.scrollLeft += step
     },
-    resetStoreInfo() {
-      this.store_info = {
-        show: false,
-        init_data: []
-      }
-      this.init()
-    },
     exportExcel(type: number) {
       if (type === 1) {
         stock.excelOfLog().then((res) => {
@@ -1072,32 +1431,185 @@ export default Vue.extend({
         })
       }
     },
-    // 新增出入库按钮删除，这个函数暂时没用了
-    // openStore() {
-    //   const selectData = this.$clone(this.storeListCom.data).filter((item: any) => {
-    //     return item.store_info.filter((itemChild: any) => itemChild.check).length > 0
-    //   })
-    //   let secondStoreId: any
-    //   let errFlag = false
-    //   selectData.forEach((item: any) => {
-    //     item.store_info = item.store_info.filter((itemChild: any) => itemChild.check)
-    //     if (!secondStoreId) {
-    //       secondStoreId = item.second_store_id
-    //     } else {
-    //       if (secondStoreId !== item.second_store_id) {
-    //         errFlag = true
-    //       }
-    //     }
-    //   })
-    //   if (errFlag) {
-    //     this.$message.error('不能同时选择两个二级仓库的原料进行出入库，请重新选择')
-    //     return
-    //   }
-    //   this.store_info = {
-    //     show: true,
-    //     init_data: selectData
-    //   }
-    // },
+    saveMergeMat() {
+      console.log(this.mergeData)
+      if(this.mergeData.store_arr.length === 0){
+        this.$message.error('请选择仓库')
+        return 
+      }
+      const formCheck = this.$formCheck(this.mergeData, [
+        {
+          key: 'name',
+          errMsg: '请选择纱线'
+        },
+        {
+          key: 'color',
+          errMsg: '请选择颜色'
+        },
+        {
+          key: 'attribute',
+          errMsg: '请选择属性'
+        },
+        {
+          key: 'weight',
+          errMsg: '请输入合并数量'
+        }
+      ])
+      if (!formCheck) {
+        this.mergeData.vat_code = this.mergeData.vat_code || 'NOT_SET'
+        this.mergeData.color_code = this.mergeData.color_code || 'NOT_SET'
+        this.mergeData.batch_code = this.mergeData.batch_code || 'NOT_SET'
+        this.mergeData.store_id = this.mergeData.store_arr[0]
+        this.mergeData.second_store_id = this.mergeData.store_arr[1]
+        delete this.mergeData.id
+        console.log(this.mergeData)
+        store.combineStore(this.mergeData).then((res) => {
+          if (res.data.status) {
+            this.$message.success('合并成功')
+            this.mergeStep = 1
+            this.yarnFlag = false
+            this.init()
+          }
+        })
+      }
+    },
+    getMergeCheck(ev: boolean, info: any) {
+      if (ev) {
+        this.mergeCheckList.push(info)
+      } else {
+        let checkNum = null
+        this.mergeCheckList.forEach((item: any, index: number) => {
+          if (item.id === info.id) {
+            checkNum = index
+          }
+        })
+        if (checkNum) {
+          this.mergeCheckList.splice(checkNum, 1)
+        }
+      }
+    },
+    deleteMerge(index: number) {
+      this.$deleteItem(this.mergeCheckList, index)
+      this.getMergeMatList()
+    },
+     goMergeStep2() {
+      if (this.mergeCheckList.length < 2) {
+        this.$message.error('至少选择两个纱线进行合并')
+        return
+      }
+      this.getMergeMatList()
+      this.mergeStep = 2
+    },
+    getMergeMatList() {
+      this.mergeCheckList.forEach((item: any) => {
+        if (!this.mergeMatList.find((itemFind: any) => {
+          return itemFind.material_id === item.material_id
+        })) {
+          this.mergeMatList.push(item)
+        }
+      })
+      this.mergeData.from_store_total_id = this.mergeCheckList.map((item: any) => item.id)
+    },
+    // 原料颜色搜索
+    searchColor(str: string, cb: any) {
+      // let results = str ? this.yarnColorList.filter(this.createFilter(str)) : this.yarnColorList.slice(0, 10)
+      // // 调用 callback 返回建议列表的数据
+      // cb(results)
+    },
+    // 搜索合并纱线
+    getMergeSearchList() {
+      this.mergeLoading = true
+      store
+        .detailYarnList({
+          store_id: this.mergeFilter.store_arr ? this.mergeFilter.store_arr[0] : '',
+          second_store_id: this.mergeFilter.store_arr ? this.mergeFilter.store_arr[1] : '',
+          name: this.mergeFilter.name ? this.mergeFilter.name[1] : '',
+          page: this.mergePage,
+          limit: 10,
+          color: this.mergeFilter.color || null,
+          weight: 0,
+          vat_code: '',
+          color_code: '',
+          batch_code: ''
+        })
+        .then((res) => {
+          this.mergeList = res.data.data.items
+          this.mergeTotal = res.data.data.total
+
+          this.mergeLoading = false
+        })
+    },
+    openStore(type:number,item:number) {
+      if(type === 1){
+        // 入库
+        this.initData = [item]
+        this.showIn = true
+        // @ts-ignore
+        this.firstStoreId = item.store_id
+      } else if (type === 2){
+        // 出库
+        this.initData = [item]
+        this.showOut = true
+        // @ts-ignore
+        this.firstStoreId = item.store_id
+      } else if (type === 3){
+        // 移库
+        this.initData = [item]
+        this.showMove = true
+        // @ts-ignore
+        this.firstStoreId = item.store_id
+      }
+    },
+    goStore(type:number){
+      let arr = this.$mergeData(this.selectList,{
+        mainRule:['store_id','second_store_id'],
+        childrenName:'store_info'
+      })
+      if (arr.length > 1) {
+        this.$message.error('不能同时选择两个二级仓库的原料进行出入库，请重新选择')
+        return
+      }
+      
+      
+      arr[0].store_info.forEach((item:any) => {
+        item.store_id = arr[0].store_id
+        item.second_store_id = arr[0].second_store_id
+      });
+
+      if(type === 1){
+        // 入库
+        this.initData = arr[0].store_info
+        this.showIn = true
+        this.firstStoreId = arr[0].store_id
+      } else if (type === 2){
+        // 出库
+        this.initData = arr[0].store_info
+        this.showOut = true
+        this.firstStoreId = arr[0].store_id
+      } else if (type === 3){
+        // 移库
+        this.initData = arr[0].store_info
+        this.showMove = true
+        this.firstStoreId = arr[0].store_id
+      }
+    },
+    checkChange(val: boolean, itemInfo: any) {
+      if (val) {
+        itemInfo.id = '' + itemInfo.store_id + itemInfo.second_store_id + itemInfo.name + itemInfo.color + itemInfo.attribute
+        // console.log(itemInfo)
+        const index = this.selectList.map((item: any) => item.id).indexOf(itemInfo.id)
+        if (index === -1) {
+          this.selectList.push(itemInfo)
+        }
+      } else {
+        const index = this.selectList.map((item: any) => item.id).indexOf(itemInfo.id)
+        if (index !== -1) {
+          this.selectList.splice(index, 1)
+        }
+      }
+
+      this.$forceUpdate()
+    },
     deleteLog(id: number) {
       this.$confirm('是否删除该日志，这可能会导致相关库存变动?', '提示', {
         confirmButtonText: '确定',
@@ -1120,7 +1632,6 @@ export default Vue.extend({
         })
     },
     goFromStore(type: number, stroeInfo: StoreCreate) {
-      console.log(stroeInfo)
       if (type === 3) {
         this.$router.push('/directOrder/yarnDetail/' + stroeInfo.id)
       } else if (type === 4) {

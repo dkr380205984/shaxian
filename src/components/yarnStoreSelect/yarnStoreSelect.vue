@@ -325,7 +325,6 @@ export default Vue.extend({
       this.$emit('close')
       this.selectList = []
       this.storeListCom.data = []
-      this.$forceUpdate()
     },
     confirm() {
       this.$emit('confirm', this.selectList)

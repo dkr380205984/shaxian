@@ -318,7 +318,7 @@
                     </div>
                     <div class="content">
                       <div class="elCtn">
-                        <el-select placeholder="请选择加工单位" v-model="item.client_id" @change="$forceUpdate()">
+                        <el-select placeholder="请选择加工单位" :disabled="update_flag" v-model="item.client_id" @change="$forceUpdate()">
                           <el-option
                             v-for="itemClient in client_arr"
                             :key="itemClient.id"
@@ -336,7 +336,7 @@
                     </div>
                     <div class="content">
                       <div class="elCtn">
-                        <el-select placeholder="请选择加工类型" v-model="item.type" @change="$forceUpdate()">
+                        <el-select :disabled="update_flag" placeholder="请选择加工类型" v-model="item.type" @change="$forceUpdate()">
                           <el-option label="倒筒" value="倒筒"></el-option>
                           <el-option label="膨纱" value="膨纱"></el-option>
                           <el-option label="染色" value="染色"></el-option>
@@ -352,6 +352,7 @@
                     <div class="elCtn">
                       <el-date-picker
                         @blur="$forceUpdate()"
+                        :disabled='update_flag'
                         v-model="item.order_time"
                         type="date"
                         value-format="yyyy-MM-dd"
@@ -399,7 +400,7 @@
                     >
                       添加
                     </div> -->
-                    <div class="editBtn red" @click="process_info.length === 1?$message.error('至少有一个加工单'):$deleteItem(process_info, index)">删除</div>
+                    <div class="editBtn red" v-if="!update_flag" @click="process_info.length === 1?$message.error('至少有一个加工单'):$deleteItem(process_info, index)">删除</div>
                   </div>
                 </div>
                 <div
@@ -414,7 +415,7 @@
                     </div>
                     <div class="content">
                       <div class="elCtn">
-                        <el-select v-model="itemChild.id" placeholder="请选择纱线" @change="getYarnWeight(index,indexChild)">
+                        <el-select v-if="!update_flag" v-model="itemChild.id" placeholder="请选择纱线" @change="getYarnWeight(index,indexChild)">
                           <el-option
                             v-for="itemName,indexName in child_data_info"
                             :key="itemName.name + 'indexName' + indexName"
@@ -422,12 +423,14 @@
                             :value="itemName.id">
                           </el-option>
                         </el-select>
-                        <!-- <el-cascader
+                        <el-cascader
+                          v-else
+                          disabled
                           v-model="itemChild.name"
                           filterable
                           placeholder="请选择纱线"
                           :options="yarn_list"
-                        ></el-cascader> -->
+                        ></el-cascader>
                       </div>
                     </div>
                   </div>
@@ -443,7 +446,7 @@
                         <el-input placeholder="请选择加工类型" v-model="itemChild.color" disabled></el-input>
                       </div>
                       <div class="elCtn" v-if="item.type === '倒筒'">
-                        <el-select v-model="itemChild.before_attribute" placeholder="加工前" style="margin-right: 12px" @change="$forceUpdate()">
+                        <el-select v-model="itemChild.before_attribute" :disabled="update_flag" placeholder="加工前" style="margin-right: 12px" @change="$forceUpdate()">
                           <el-option label="胚绞" value="胚绞"></el-option>
                           <el-option label="胚筒" value="胚筒"></el-option>
                           <el-option label="色绞" value="色绞"></el-option>
@@ -459,10 +462,10 @@
                         </el-select>
                       </div>
                       <div class="elCtn" v-if="item.type === '膨纱'">
-                        <el-input placeholder="颜色" v-model="itemChild.color" @input="$forceUpdate()"></el-input>
+                        <el-input placeholder="颜色" :disabled="update_flag" v-model="itemChild.color" @input="$forceUpdate()"></el-input>
                       </div>
                       <div class="elCtn" v-if="item.type === '膨纱'">
-                        <el-select placeholder="属性" v-model="itemChild.attribute" @change="$forceUpdate()">
+                        <el-select placeholder="属性" :disabled="update_flag" v-model="itemChild.attribute" @change="$forceUpdate()">
                           <el-option label="胚绞" value="胚绞"></el-option>
                           <el-option label="胚筒" value="胚筒"></el-option>
                           <el-option label="色绞" value="色绞"></el-option>
@@ -498,7 +501,7 @@
                       </div>
                     </div>
                     <div
-                      v-if="indexChild === 0"
+                      v-if="indexChild === 0 && !update_flag"
                       class="editBtn blue"
                       @click="
                         $addItem(item.child_data, {
@@ -517,7 +520,7 @@
                     >
                       添加
                     </div>
-                    <div v-if="indexChild > 0" class="editBtn red" @click="$deleteItem(item.child_data, indexChild);$forceUpdate()">
+                    <div v-if="indexChild > 0 && !update_flag" class="editBtn red" @click="$deleteItem(item.child_data, indexChild);$forceUpdate()">
                       删除
                     </div>
                   </div>
@@ -636,7 +639,7 @@
           </div>
         </div>
         <div class="oprCtn">
-          <div class="opr blue" style="padding-left: 8px" @click="$addItem(process_info, {
+          <div class="opr blue" v-if="!update_flag" style="padding-left: 8px" @click="$addItem(process_info, {
               transfer_id: '',
               client_id: '',
               type: '',
@@ -1192,6 +1195,7 @@ export default Vue.extend({
           if (res.data.status) {
             this.$message.success('添加成功')
             this.resetProcess()
+            this.getList()
             this.loading = false
           }
         })
@@ -1234,7 +1238,7 @@ export default Vue.extend({
               desc: ''
             }
           ]
-      this.process_info = selfInfo
+      this.process_info = [selfInfo]
     }
   },
   mounted() {

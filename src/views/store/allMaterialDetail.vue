@@ -219,7 +219,7 @@
                       style="margin:0 5px;font-size:16px"></i>
                     <span class="blue">{{item.second_store_name}}</span>
                   </span>
-                  <span v-if="item.action_type===2||item.action_type===4||item.action_type===6||item.action_type===7||item.action_type===9">
+                  <span v-if="item.action_type===2||item.action_type===4||item.action_type===6||item.action_type===7||item.action_type===9||item.action_type === 16">
                     <span class="blue">{{item.second_store_name}}</span>
                     <i class="el-icon-s-unfold orange"
                       style="margin:0 5px;font-size:16px"></i>
@@ -390,6 +390,10 @@ export default Vue.extend({
           {
             id: 10,
             name: '仓库移库'
+          },
+          {
+            id: 16,
+            name: '加工调取'
           }
         ]
       }

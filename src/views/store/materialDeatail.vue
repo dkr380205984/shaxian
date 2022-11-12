@@ -438,6 +438,10 @@ export default Vue.extend({
           {
             id: 10,
             name: '仓库移库'
+          },
+          {
+            id: 16,
+            name: '加工调取'
           }
         ]
       }

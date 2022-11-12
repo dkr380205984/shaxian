@@ -384,7 +384,8 @@
                           item.action_type === 7 ||
                           item.action_type === 9 ||
                           item.action_type === 10 ||
-                          item.action_type === 12
+                          item.action_type === 12 || 
+                          item.action_type === 16
                       }"
                     >
                       {{ item.action_type | stockTypeFilter }}
@@ -416,7 +417,8 @@
                           item.action_type === 6 ||
                           item.action_type === 7 ||
                           item.action_type === 9 ||
-                          item.action_type === 12
+                          item.action_type === 12 ||
+                          item.action_type === 16
                         "
                       >
                         <span class="blue">{{ item.store_name }}/{{ item.second_store_name }}</span>
@@ -609,6 +611,10 @@ export default Vue.extend({
           {
             id: 11,
             name: '移库入库'
+          },
+          {
+            id: 16,
+            name: '加工调取'
           }
         ],
         remarkList: [],

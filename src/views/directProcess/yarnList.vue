@@ -1082,7 +1082,6 @@ export default Vue.extend({
                 weight: '',
               }
             ],
-            child_data_info:data.child_data,
           }
           this.child_data_info = data.child_data
       })

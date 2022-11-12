@@ -414,7 +414,8 @@
                           item.action_type === 7 ||
                           item.action_type === 9 ||
                           item.action_type === 10 ||
-                          item.action_type === 12
+                          item.action_type === 12 ||
+                          item.action_type === 16
                       }"
                     >
                       {{ item.action_type | stockTypeFilter }}
@@ -432,7 +433,7 @@
                           item.action_type === 8 ||
                           item.action_type === 13 ||
                           item.action_type === 14 ||
-                          item.action_type === 15
+                          item.action_type === 15 
                         "
                       >
                         <span class="green">{{ item.client_name || '无来源' }}</span>
@@ -446,7 +447,8 @@
                           item.action_type === 6 ||
                           item.action_type === 7 ||
                           item.action_type === 9 ||
-                          item.action_type === 12
+                          item.action_type === 12 ||
+                          item.action_type === 16
                         "
                       >
                         <span class="blue">{{ item.store_name }}/{{ item.second_store_name }}</span>
@@ -1126,6 +1128,10 @@ export default Vue.extend({
           {
             id: 11,
             name: '移库入库'
+          },
+          {
+            id: 16,
+            name: '加工调取'
           }
         ],
         remarkList: [],

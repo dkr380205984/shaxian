@@ -1616,6 +1616,13 @@ export default Vue.extend({
       }
     },
     goStore(type: number) {
+      if (type === 1) {
+        // 入库
+        // this.initData = arr[0].store_info
+        this.showIn = true
+        // this.firstStoreId = arr[0].store_id
+        return
+      }
       let arr = this.$mergeData(this.selectList, {
         mainRule: ['store_id', 'second_store_id'],
         childrenName: 'store_info'
@@ -1634,12 +1641,7 @@ export default Vue.extend({
         item.second_store_id = arr[0].second_store_id
       })
 
-      if (type === 1) {
-        // 入库
-        this.initData = arr[0].store_info
-        this.showIn = true
-        this.firstStoreId = arr[0].store_id
-      } else if (type === 2) {
+      if (type === 2) {
         // 出库
         this.initData = arr[0].store_info
         this.showOut = true

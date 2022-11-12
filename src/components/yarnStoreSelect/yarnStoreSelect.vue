@@ -74,9 +74,6 @@
                     <div class="tcolumn">色号</div>
                     <div class="tcolumn">实际库存(KG)</div>
                     <div class="tcolumn">可用库存(KG)</div>
-                    <div class="tcolumn" style="flex: 0.4">
-                      序号
-                    </div>
                     <div class="tcolumn" style="flex: 0.2">
                       <el-checkbox
                         v-model="allCheck"
@@ -116,9 +113,6 @@
                     </div>
                     <div class="tcolumn blue">
                       {{ (itemStore.useable_weight && $formatNum(itemStore.useable_weight)) || '-' }}
-                    </div>
-                    <div class="tcolumn" style="flex:0.4">
-                      {{itemStore.id}}
                     </div>
                     <div class="tcolumn flexRow" style="flex: 0.2">
                       <el-checkbox
@@ -329,6 +323,9 @@ export default Vue.extend({
     },
     close() {
       this.$emit('close')
+      this.selectList = []
+      this.storeListCom.data = []
+      this.$forceUpdate()
     },
     confirm() {
       this.$emit('confirm', this.selectList)

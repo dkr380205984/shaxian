@@ -287,6 +287,7 @@
                   <el-table-column prop="batch_code" label="批号"> </el-table-column>
                   <el-table-column prop="vat_code" label="缸号"> </el-table-column>
                   <el-table-column prop="color_code" label="色号"> </el-table-column>
+                  <el-table-column prop="use_weight" label="库存数量"> </el-table-column>
                   <el-table-column label="调取数量(必填)" width="120">
                     <template slot-scope="scope">
                       <el-input v-model="scope.row.weight" @change="changeInput($event, scope.row)"></el-input>
@@ -358,7 +359,7 @@
                       >
                       </el-date-picker>
                     </div>
-                    <div
+                    <!-- <div
                       v-if="index === 0"
                       class="editBtn blue"
                       @click="
@@ -397,8 +398,8 @@
                       "
                     >
                       添加
-                    </div>
-                    <div v-if="index > 0" class="editBtn red" @click="$deleteItem(process_info, index)">删除</div>
+                    </div> -->
+                    <div class="editBtn red" @click="process_info.length === 1?$message.error('至少有一个加工单'):$deleteItem(process_info, index)">删除</div>
                   </div>
                 </div>
                 <div
@@ -635,6 +636,40 @@
           </div>
         </div>
         <div class="oprCtn">
+          <div class="opr blue" style="padding-left: 8px" @click="$addItem(process_info, {
+              transfer_id: '',
+              client_id: '',
+              type: '',
+              price: '',
+              desc: '',
+              order_time: $getDate(new Date()),
+              delivery_time: '',
+              total_price: '',
+              file_url: '',
+              total_additional_fee: 0,
+              additional_fee: [
+                {
+                  name: '',
+                  price: '',
+                  desc: ''
+                }
+              ],
+              child_data: [
+                {
+                  name: '',
+                  transfer_info_id:'',
+                  before_attribute: '',
+                  after_attribute: '',
+                  before_color: '白胚',
+                  after_color: '',
+                  color: '',
+                  attribute: '',
+                  weight: ''
+                }
+              ]
+            })">
+            添加加工单
+          </div>
           <div class="opr" style="padding-left: 8px" @click="resetProcess">取消</div>
           <div class="opr" :class="{ blue: create_flag, orange: update_flag }" @click="saveProcess">
             {{ create_flag ? '下一步' : '确认修改' }}
@@ -851,7 +886,7 @@ export default Vue.extend({
           page: this.getYarnStoreObj.storePage || 1,
           limit: this.getYarnStoreObj.limit || 10,
           color: this.getYarnStoreObj.color || null,
-          weight: this.getYarnStoreObj.isFilterZero ? 0 : null,
+          weight: 0,
           vat_code: this.getYarnStoreObj.vat_code || null,
           color_code: this.getYarnStoreObj.color_code || null,
           batch_code: this.getYarnStoreObj.batch_code || null

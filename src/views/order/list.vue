@@ -115,27 +115,27 @@
                     <div class="number">{{ (scope.row.index || 0) + 1 }}/{{ scope.row.product_info.length }}</div>
                     <i class="el-icon-caret-bottom hover" @click="changeIndex(scope.row, 'add')"></i>
                   </div>
-                  <span>{{ scope.row.product_info[scope.row.index || 0]?.product_name || '无' }}</span>
+                  <span>{{ scope.row.product_info[scope.row.index || 0]?scope.row.product_info[scope.row.index || 0].product_name : '无' }}</span>
                 </div>
               </template>
             </el-table-column>
             <el-table-column prop="total_price" label="颜色/属性" width="150">
               <template slot-scope="scope">
                 <span
-                  >{{ scope.row.product_info[scope.row.index || 0]?.color || '无' }}/{{
-                    scope.row.product_info[scope.row.index || 0]?.attribute || '无'
+                  >{{ scope.row.product_info[scope.row.index || 0]?scope.row.product_info[scope.row.index || 0].color : '无' }}/{{
+                    scope.row.product_info[scope.row.index || 0]?scope.row.product_info[scope.row.index || 0]?scope.row.product_info[scope.row.index || 0].attribute : '无':'无'
                   }}</span
                 >
               </template>
             </el-table-column>
             <el-table-column prop="total_price" label="数量属性" width="120">
               <template slot-scope="scope">
-                <span>{{ scope.row.product_info[scope.row.index || 0]?.number_attribute || '无' }}</span>
+                <span>{{ scope.row.product_info[scope.row.index || 0]?scope.row.product_info[scope.row.index || 0].number_attribute : '无' }}</span>
               </template>
             </el-table-column>
             <el-table-column prop="total_price" label="下单数量" width="120">
               <template slot-scope="scope">
-                <span>{{ scope.row.product_info[scope.row.index || 0]?.weight || '无' }}</span>
+                <span>{{ scope.row.product_info[scope.row.index || 0]?scope.row.product_info[scope.row.index || 0].weight : '无' }}</span>
               </template>
             </el-table-column>
             <el-table-column prop="total_weight" label="下单总数(kg)" width="120"> </el-table-column>

@@ -317,7 +317,7 @@
                     </div>
                     <div class="content">
                       <div class="elCtn">
-                        <el-select placeholder="请选择加工单位" v-model="item.client_id">
+                        <el-select placeholder="请选择加工单位" v-model="item.client_id" @change="$forceUpdate()">
                           <el-option
                             v-for="itemClient in client_arr"
                             :key="itemClient.id"
@@ -335,7 +335,7 @@
                     </div>
                     <div class="content">
                       <div class="elCtn">
-                        <el-select placeholder="请选择加工类型" v-model="item.type">
+                        <el-select placeholder="请选择加工类型" v-model="item.type" @change="$forceUpdate()">
                           <el-option label="倒筒" value="倒筒"></el-option>
                           <el-option label="膨纱" value="膨纱"></el-option>
                           <el-option label="染色" value="染色"></el-option>
@@ -350,6 +350,7 @@
                     </div>
                     <div class="elCtn">
                       <el-date-picker
+                        @blur="$forceUpdate()"
                         v-model="item.order_time"
                         type="date"
                         value-format="yyyy-MM-dd"
@@ -412,12 +413,20 @@
                     </div>
                     <div class="content">
                       <div class="elCtn">
-                        <el-cascader
+                        <el-select v-model="itemChild.id" placeholder="请选择纱线" @change="getYarnWeight(index,indexChild)">
+                          <el-option
+                            v-for="itemName,indexName in child_data_info"
+                            :key="itemName.name + 'indexName' + indexName"
+                            :label="itemName.name"
+                            :value="itemName.id">
+                          </el-option>
+                        </el-select>
+                        <!-- <el-cascader
                           v-model="itemChild.name"
                           filterable
                           placeholder="请选择纱线"
                           :options="yarn_list"
-                        ></el-cascader>
+                        ></el-cascader> -->
                       </div>
                     </div>
                   </div>
@@ -433,7 +442,7 @@
                         <el-input placeholder="请选择加工类型" v-model="itemChild.color" disabled></el-input>
                       </div>
                       <div class="elCtn" v-if="item.type === '倒筒'">
-                        <el-select v-model="itemChild.before_attribute" placeholder="加工前" style="margin-right: 12px">
+                        <el-select v-model="itemChild.before_attribute" placeholder="加工前" style="margin-right: 12px" @change="$forceUpdate()">
                           <el-option label="胚绞" value="胚绞"></el-option>
                           <el-option label="胚筒" value="胚筒"></el-option>
                           <el-option label="色绞" value="色绞"></el-option>
@@ -441,7 +450,7 @@
                         </el-select>
                       </div>
                       <div class="elCtn" v-if="item.type === '倒筒'">
-                        <el-select v-model="itemChild.after_attribute" placeholder="加工后">
+                        <el-select v-model="itemChild.after_attribute" placeholder="加工后" @change="$forceUpdate()">
                           <el-option label="胚绞" value="胚绞"></el-option>
                           <el-option label="胚筒" value="胚筒"></el-option>
                           <el-option label="色绞" value="色绞"></el-option>
@@ -449,10 +458,10 @@
                         </el-select>
                       </div>
                       <div class="elCtn" v-if="item.type === '膨纱'">
-                        <el-input placeholder="颜色" v-model="itemChild.color"></el-input>
+                        <el-input placeholder="颜色" v-model="itemChild.color" @input="$forceUpdate()"></el-input>
                       </div>
                       <div class="elCtn" v-if="item.type === '膨纱'">
-                        <el-select placeholder="属性" v-model="itemChild.attribute">
+                        <el-select placeholder="属性" v-model="itemChild.attribute" @change="$forceUpdate()">
                           <el-option label="胚绞" value="胚绞"></el-option>
                           <el-option label="胚筒" value="胚筒"></el-option>
                           <el-option label="色绞" value="色绞"></el-option>
@@ -461,6 +470,7 @@
                       </div>
                       <div class="elCtn" v-if="item.type === '染色'">
                         <el-input
+                          @input="$forceUpdate()"
                           v-model="itemChild.before_color"
                           placeholder="加工前颜色"
                           disabled
@@ -469,7 +479,7 @@
                         </el-input>
                       </div>
                       <div class="elCtn" v-if="item.type === '染色'">
-                        <el-input v-model="itemChild.after_color" placeholder="加工后颜色"> </el-input>
+                        <el-input v-model="itemChild.after_color" placeholder="加工后颜色" @input="$forceUpdate()"> </el-input>
                       </div>
                     </div>
                   </div>
@@ -480,7 +490,7 @@
                     </div>
                     <div class="content flexRow">
                       <div class="elCtn">
-                        <el-input placeholder="单价" v-model="itemChild.price"> </el-input>
+                        <el-input placeholder="单价" v-model="itemChild.price" @input="$forceUpdate()"> </el-input>
                       </div>
                       <div class="elCtn">
                         <el-input placeholder="数量" disabled v-model="itemChild.weight"></el-input>
@@ -501,11 +511,12 @@
                           attribute: '',
                           weight: ''
                         })
+                        $forceUpdate()
                       "
                     >
                       添加
                     </div>
-                    <div v-if="indexChild > 0" class="editBtn red" @click="$deleteItem(item.child_data, indexChild)">
+                    <div v-if="indexChild > 0" class="editBtn red" @click="$deleteItem(item.child_data, indexChild);$forceUpdate()">
                       删除
                     </div>
                   </div>
@@ -518,7 +529,7 @@
                     </div>
                     <div class="content">
                       <div class="elCtn">
-                        <el-input v-model="itemAdd.name" placeholder="请选择额外费用名称"> </el-input>
+                        <el-input v-model="itemAdd.name" placeholder="请选择额外费用名称" @input="$forceUpdate()"> </el-input>
                       </div>
                     </div>
                   </div>
@@ -529,7 +540,7 @@
                     </div>
                     <div class="content">
                       <div class="elCtn">
-                        <el-input v-model="itemAdd.price" placeholder="请输入额外费用金额">
+                        <el-input v-model="itemAdd.price" placeholder="请输入额外费用金额" @input="$forceUpdate()">
                           <template slot="append">元</template>
                         </el-input>
                       </div>
@@ -541,7 +552,7 @@
                       <span class="explanation">(必选)</span>
                     </div>
                     <div class="elCtn">
-                      <el-input v-model="itemAdd.desc" placeholder="请输入额外费用备注"></el-input>
+                      <el-input v-model="itemAdd.desc" placeholder="请输入额外费用备注" @input="$forceUpdate()"></el-input>
                     </div>
                     <div
                       v-if="indexAdd === 0"
@@ -570,6 +581,7 @@
                     <div class="content">
                       <div class="elCtn">
                         <el-date-picker
+                          @blur="$forceUpdate()"
                           v-model="item.delivery_time"
                           type="date"
                           value-format="yyyy-MM-dd"
@@ -606,7 +618,7 @@
                       :data="postData"
                       :limit="1"
                       :file-list="item.file_url ? [{ name: '说明文件', url: item.file_url }] : []"
-                      :on-success="successFile"
+                      :on-success="function(response){return successFile(response, index)}"
                       ref="uploada"
                       list-type="picture"
                     >
@@ -635,7 +647,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { yarnProcess, store } from '@/assets/js/api'
+import { yarnProcess, store, stock } from '@/assets/js/api'
 import { ProcessYarn } from '@/types/orderProcessYarn'
 export default Vue.extend({
   data(): {
@@ -652,6 +664,7 @@ export default Vue.extend({
       step: 0,
       page: 1,
       total: 1,
+      uploadIndex: '',
       page_size: 10,
       showMore: false,
       client_id: '',
@@ -660,6 +673,7 @@ export default Vue.extend({
       status: '',
       date: [],
       user_id: '',
+      child_data_info: [],
       list: [],
       storeList: [],
       selectList: [],
@@ -932,8 +946,8 @@ export default Vue.extend({
         return false
       }
     },
-    successFile(response: any) {
-      // this.process_info[index].file_url = 'https://file.zwyknit.com/' + response.key
+    successFile(response: any,index:number) {
+      this.process_info[index].file_url = 'https://file.zwyknit.com/' + response.key
     },
     resetProcess() {
       this.create_flag = false
@@ -989,26 +1003,89 @@ export default Vue.extend({
         this.$message.error('只能选择相同仓库和相同二级仓库的下的纱线进行加工操作')
         return
       }
-      console.log(arr[0])
-      store
-        .orderSave({
-          store_total_id: arr[0].store_id,
-          order_id: '',
-          total_weight: arr[0].child_data.reduce((a: any, b: any) => {
-            return a + (b.weight || 0)
-          }, 0),
-          desc: '',
-          child_data: arr[0].child_data.map((item: any) => {
-            return {
-              order_info_id: '',
-              weight: item.weight
-            }
-          })
+      let params = {
+        order_id: null,
+        related_id: null,
+        action_type: 16,
+        complete_time: this.$getDate(new Date()),
+        desc: null,
+        store_id: arr[0].store_id,
+        second_store_id: arr[0].second_store_id,
+        move_store_id: null,
+        move_second_store_id: null,
+        client_id: null,
+        child_data: arr[0].child_data.map((item: any) => {
+          return {
+            name: Array.isArray(item.name) ? item.name[1] : item.name,
+            action_weight: item.weight || 0,
+            color: item.color,
+            attribute: item.attribute,
+            batch_code: item.batch_code || 'NOT_SET',
+            color_code: item.color_code || 'NOT_SET',
+            vat_code: item.vat_code || 'NOT_SET',
+            item: null,
+            related_info_id: '',
+            desc: ''
+          }
         })
+      }
+      stock
+        // @ts-ignore
+        .create({data:[params]})
         .then((res) => {
-          console.log(res.data.data)
+          this.getStockDetail(res.data.data[0])
         })
       this.step = 1
+    },
+    getYarnWeight(index:number,indexChild:number){
+      let itemName = this.process_info[index].child_data[indexChild]
+      let a = this.child_data_info.find((item:any) =>{
+        // @ts-ignore
+        return item.id === itemName.id
+      })
+      itemName.weight = a.action_weight
+      itemName.transfer_info_id = a.id
+      itemName.name = a.name
+      this.$forceUpdate()
+    },
+    getStockDetail(id:number){
+      stock.detail({id}).then(res => {
+        let data = res.data.data
+        this.process_info[0] = {
+            transfer_id: data.id,
+            client_id: '',
+            type: '',
+            price: '',
+            desc: '',
+            order_time: this.$getDate(new Date()),
+            delivery_time: '',
+            total_price: '',
+            file_url: '',
+            total_additional_fee: 0,
+            additional_fee: [
+              {
+                name: '',
+                price: '',
+                desc: ''
+              }
+            ],
+            child_data: [
+              {
+                name: '',
+                transfer_info_id:'',
+                before_attribute: '',
+                after_attribute: '',
+                before_color: '白胚',
+                after_color: '',
+                color: '',
+                attribute: '',
+                weight: '',
+              }
+            ],
+            child_data_info:data.child_data,
+          }
+          this.child_data_info = data.child_data
+      })
     },
     saveProcess() {
       if (this.step === 0) {
@@ -1056,21 +1133,21 @@ export default Vue.extend({
       this.process_info.forEach((item) => {
         item.child_data.forEach((itemChild) => {
           itemChild.name = itemChild.name.constructor === Array ? itemChild.name[1] : itemChild.name
-          item.total_price =
-            item.child_data.reduce((total, current: any) => {
-              return total + current.weight * current.price
-            }, 0) +
-            (item.additional_fee as any[]).reduce((total, current) => {
-              return total + Number(current.price)
-            }, 0)
-          item.total_additional_fee = (item.additional_fee as any[]).reduce((total, current) => {
-            return total + Number(current.price)
-          }, 0)
-          item.additional_fee =
-            (item.additional_fee as any[]).filter((itemChild) => itemChild.name && itemChild.price).length > 0
-              ? JSON.stringify(item.additional_fee)
-              : ''
         })
+        item.total_price =
+          item.child_data.reduce((total, current: any) => {
+            return total + current.weight * current.price
+          }, 0) +
+          (item.additional_fee as any[]).reduce((total, current) => {
+            return total + Number(current.price || 0)
+          }, 0)
+        item.total_additional_fee = (item.additional_fee as any[]).reduce((total, current) => {
+          return total + Number(current.price || 0)
+        }, 0)
+        item.additional_fee =
+          (item.additional_fee as any[]).filter((itemChild) => itemChild.name && itemChild.price).length > 0
+            ? JSON.stringify(item.additional_fee)
+            : ''
       })
       yarnProcess
         .create({

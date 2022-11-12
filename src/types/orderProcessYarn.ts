@@ -75,6 +75,8 @@ export interface ProcessYarn {
   total_additional_fee: number
   additional_fee?: string | AditionalFee[]// 额外费用的JSON字符串
   child_data: ProcessYarnChild[]
+  total_weight?: number | string
+  child_data_info?: Array<any>
   add_store_data?: Array<{
     store_id: number | string
     second_store_id: number | string

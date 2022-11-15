@@ -230,10 +230,10 @@
                 @change="getStoreLogList(1)"
                 placeholder="选择纱线属性"
               >
-                <el-option label="胚绞" value="胚绞"></el-option>
-                <el-option label="胚筒" value="胚筒"></el-option>
-                <el-option label="色绞" value="色绞"></el-option>
-                <el-option label="色筒" value="色筒"></el-option>
+                <el-option label="胚纱"
+                  value="胚纱"></el-option>
+                <el-option label="筒纱"
+                  value="筒纱"></el-option>
               </el-select>
             </div>
             <div class="elCtn" style="width: 120px">
@@ -830,10 +830,10 @@
                 <div class="column" style="max-width: 140px; box-sizing: border-box">
                   <div class="elCtn">
                     <el-select v-model="mergeData.attribute" clearable placeholder="选择纱线属性">
-                      <el-option label="胚绞" value="胚绞"></el-option>
-                      <el-option label="胚筒" value="胚筒"></el-option>
-                      <el-option label="色绞" value="色绞"></el-option>
-                      <el-option label="色筒" value="色筒"></el-option>
+                      <el-option label="胚纱"
+                        value="胚纱"></el-option>
+                      <el-option label="筒纱"
+                        value="筒纱"></el-option>
                     </el-select>
                   </div>
                 </div>
@@ -1509,9 +1509,9 @@ export default Vue.extend({
         }
       ])
       if (!formCheck) {
-        this.mergeData.vat_code = this.mergeData.vat_code || 'NOT_SET'
-        this.mergeData.color_code = this.mergeData.color_code || 'NOT_SET'
-        this.mergeData.batch_code = this.mergeData.batch_code || 'NOT_SET'
+        this.mergeData.vat_code = this.mergeData.vat_code || ''
+        this.mergeData.color_code = this.mergeData.color_code || ''
+        this.mergeData.batch_code = this.mergeData.batch_code || ''
         this.mergeData.store_id = this.mergeData.store_arr[0]
         this.mergeData.second_store_id = this.mergeData.store_arr[1]
         delete this.mergeData.id

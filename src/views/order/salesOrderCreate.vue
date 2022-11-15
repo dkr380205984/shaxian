@@ -132,8 +132,8 @@
                   <div class="noData" v-if="order_info.product_info.length === 0">请添加至少一种纱线</div>
                   <div class="trow" v-for="(itemPro, indexPro) in order_info.product_info" :key="indexPro">
                     <div class="tcolumn" style="flex: 1.7">
-                      <div class="el" style="display:flex;align-items:center">
-                        <span style="width:10%">{{indexPro+1}}</span>
+                      <div class="el noBorderRadius" style="display:flex;align-items:center">
+                        <span class="el-input-group__prepend" style="height: 30px;line-height: 30px">{{indexPro+1}}</span>
                         <el-cascader
                           v-model="itemPro.name"
                           style="width:90%"
@@ -200,7 +200,7 @@
                       ></el-input>
                     </div>
                     <div class="tcolumn">
-                      <el-input class="el" v-model="itemPro.price" placeholder="销售单价" @input="cmpTotal"> </el-input>
+                      <el-input class="el" v-model="itemPro.price" type="number" placeholder="销售单价" @input="cmpTotal"> </el-input>
                     </div>
                     <div class="tcolumn" style="flex: 1.5">
                       <span>{{ (itemPro.store_name || '') }}/ <br/> {{(itemPro.second_store_name || '') }}</span>
@@ -208,6 +208,7 @@
                     <div class="tcolumn">
                       <el-input
                         class="el"
+                        type="number"
                         v-model="itemPro.weight"
                         :placeholder="itemPro.useable_weight || '数量'"
                         @input="cmpTotal"
@@ -464,7 +465,7 @@ export default Vue.extend({
       },
       editor: '',
       postData: { key: '', token: '' },
-      attributeArr: [{ value: '胚绞' }, { value: '胚筒' }, { value: '色绞' }, { value: '色筒' }]
+      attributeArr: [{ value: '胚纱' }, { value: '筒纱' }],
     }
   },
   computed: {
@@ -523,6 +524,10 @@ export default Vue.extend({
       this.yarn_list[0].children = this.yarn_list[0].children.map((item: any) => {
         return item.value
       })
+      let item = this.order_info.product_info[0]
+      if(this.order_info.product_info.length === 1 && item.attribute === "" && item.color === "" && item.name.length === 0 && item.number_attribute ==="" && item.price === "" && item.weight === ""){
+        this.order_info.product_info = []
+      }
       selectList.forEach((item: any) => {
         // @ts-ignore
         this.yarn_list[0].children.push(item.name)
@@ -1028,4 +1033,11 @@ export default Vue.extend({
 
 <style lang="less" scoped>
 @import '~@/assets/less/order/salesOrderCreate.less';
+</style>
+<style lang='less'>
+.noBorderRadius{
+  .el-input__inner{
+    border-radius: 0 4px 4px 0;
+  }
+}
 </style>

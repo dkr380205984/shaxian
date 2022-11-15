@@ -155,17 +155,6 @@
                   placeholder="请输入纱线属性"
                   @input="render"
                 ></el-autocomplete>
-                <!-- <el-select v-model="item.name"
-                  placeholder="请选择纱线属性">
-                  <el-option label="胚绞"
-                    value="胚绞"></el-option>
-                  <el-option label="胚筒"
-                    value="胚筒"></el-option>
-                  <el-option label="色绞"
-                    value="色绞"></el-option>
-                  <el-option label="色筒"
-                    value="色筒"></el-option>
-                </el-select> -->
               </div>
               <div
                 class="editBtn addBtn"
@@ -238,18 +227,6 @@
                             placeholder="请输入纱线属性"
                             @change="render"
                           ></el-autocomplete>
-                          <!-- <el-select style="max-height:32px"
-                            v-model="itemChild.attribute"
-                            placeholder="属性">
-                            <el-option label="胚绞"
-                              value="胚绞"></el-option>
-                            <el-option label="胚筒"
-                              value="胚筒"></el-option>
-                            <el-option label="色绞"
-                              value="色绞"></el-option>
-                            <el-option label="色筒"
-                              value="色筒"></el-option>
-                          </el-select> -->
                         </div>
                         <div class="tcolumn">
                           <el-input class="el" v-model="itemChild.price" placeholder="单价">
@@ -353,7 +330,7 @@ export default Vue.extend({
       typeFlag: false,
       submit_form: [],
       name_flag: 'normal',
-      attributeArr: [{ value: '胚绞' }, { value: '胚筒' }, { value: '色绞' }, { value: '色筒' }]
+      attributeArr: [{ value: '胚纱' }, { value: '筒纱' }]
     }
   },
   computed: {

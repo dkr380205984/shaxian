@@ -607,9 +607,9 @@ export default class InAndOutMat extends Vue {
           action_weight: item.action_weight,
           color: item.color || item.colorAttr.split('IamConnector')[0],
           attribute: item.attribute || item.colorAttr.split('IamConnector')[1],
-          batch_code: item.batch_code || 'NOT_SET',
-          color_code: item.color_code || 'NOT_SET',
-          vat_code: item.vat_code || 'NOT_SET',
+          batch_code: item.batch_code || '',
+          color_code: item.color_code || '',
+          vat_code: item.vat_code || '',
           item: item.item,
           related_info_id: '',
           desc: ''

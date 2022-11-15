@@ -76,16 +76,16 @@
           </el-upload>
           <div class="prompt">点击或拖拽至上传框,只能上传jpg/png文件，且不超过6MB</div>
         </div>
-      </div>
+      </div> -->
       <div class="row">
-        <span class="label">公司电话:</span>
+        <span class="label">公司手机:</span>
         <div class="content">
-          <el-input placeholder="请输入公司电话"
+          <el-input placeholder="请输入公司手机"
             class="input-item"
-            v-model="companyInfo.client_tel">
+            v-model="companyInfo.phone">
           </el-input>
         </div>
-      </div>
+      </div> <!--
       <div class="row">
         <span class="label">公司邮箱：</span>
         <div class="content">
@@ -94,16 +94,16 @@
             v-model="companyInfo.client_email">
           </el-input>
         </div>
-      </div>
+      </div> -->
       <div class="row">
         <span class="label">公司地址：</span>
         <div class="content">
           <el-input placeholder="请输入公司地址"
             class="input-item"
-            v-model="companyInfo.client_address">
+            v-model="companyInfo.address">
           </el-input>
         </div>
-      </div> -->
+      </div>
     </div>
     <div class="bottomFixBar">
       <div class="main">
@@ -130,9 +130,9 @@ export default Vue.extend({
         logoUrl: window.sessionStorage.getItem('logo') || '',
         client_name: window.sessionStorage.getItem('full_name'),
         client_about: '',
-        client_tel: '',
+        phone: window.sessionStorage.getItem('phone') || '',
         client_email: '',
-        client_address: '',
+        address: window.sessionStorage.getItem('address') || '',
         file_logo: [],
         file_image: []
       }
@@ -151,7 +151,9 @@ export default Vue.extend({
       }
       clientInfoSetting({
         logo: this.companyInfo.logoUrl,
-        alias: this.companyInfo.alias
+        alias: this.companyInfo.alias,
+        phone: this.companyInfo.phone,
+        address: this.companyInfo.address,
       }).then((res) => {
         if (res.data.status) {
           this.$message.success('设置成功,重新登陆后设置生效')

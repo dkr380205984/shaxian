@@ -6,7 +6,6 @@
         <span
           class="addBtn btn btnMain"
           @click="
-            getYarnStoreList()
             resetProcess()
             create_flag = true
             step = 0
@@ -199,17 +198,16 @@
         </div>
         <div class="contentCtn" v-loading="loadingPro" style="padding: 0; max-height: 800px">
           <div class="createCtn">
-            <el-steps v-if="!update_flag" :active="step" process-status="finish">
-              <el-step title="库存调取"></el-step>
+            <el-steps v-if="!update_flag" :active="step" process-status="finish" finish-status="success">
+              <el-step title="选择仓库"></el-step>
+              <el-step title="填写调取数量"></el-step>
               <el-step title="填写加工单"></el-step>
             </el-steps>
-            <template v-if="step === 0">
+            <template v-if="step === 0 || step === 1">
               <div class="listCtn" style="padding: unset; margin-top: 20px">
                 <div class="explainCtn" style="margin: 12px 0">
-                  能且只能选择相同仓库和相同二级仓库的下的纱线进行加工操作
-                  <br />
                   <span style="font-weight: bold; font-size: 18px; color: red"
-                    >选中的调取数量必填，就是后面加工单的加工数量</span
+                    >第一步选择仓库，第二步填写调取数量，第三步填写加工单</span
                   >
                 </div>
                 <div class="filterCtn" style="padding-bottom: 30px">
@@ -218,10 +216,9 @@
                       <el-cascader
                         v-model="getYarnStoreObj.LV2_name"
                         :options="store_list"
-                        @change="getYarnStoreList"
+                        @change="selectList = [];getYarnStoreList($event)"
                         :props="{ value: 'id', label: 'name', children: 'second_data' }"
                         placeholder="请选择仓库"
-                        clearable
                       >
                       </el-cascader>
                     </div>
@@ -268,12 +265,9 @@
                 </div>
                 <el-table
                   ref="table"
-                  @selection-change="selectionChange"
                   :data="storeList"
-                  :row-key="getRowKeys"
                   style="width: 100%"
                 >
-                  <el-table-column :reserve-selection="true" type="selection" width="45" />
                   <el-table-column width="220" label="所在仓库">
                     <template slot-scope="scope">
                       <span style="margin-left: 10px"
@@ -290,7 +284,7 @@
                   <el-table-column prop="use_weight" label="库存数量"> </el-table-column>
                   <el-table-column label="调取数量(必填)" width="120">
                     <template slot-scope="scope">
-                      <el-input v-model="scope.row.weight" @change="changeInput($event, scope.row)"></el-input>
+                      <el-input v-model="scope.row.weight" placeholder="调取数量" @change="changeInput($event, scope.row)"></el-input>
                     </template>
                   </el-table-column>
                 </el-table>
@@ -307,7 +301,7 @@
                 </div>
               </div>
             </template>
-            <template v-if="step === 1">
+            <template v-if="step === 2">
               <div v-for="(item, index) in process_info" :key="'process_info' + index">
                 <div style="border: 1px solid #e9e9e9" v-if="index !== 0"></div>
                 <div class="rowCtn">
@@ -323,7 +317,7 @@
                             v-for="itemClient in client_arr"
                             :key="itemClient.id"
                             :value="itemClient.id"
-                            :label="itemClient.name"
+                            :label="itemClient.code +'-'+ itemClient.name"
                           ></el-option>
                         </el-select>
                       </div>
@@ -447,18 +441,18 @@
                       </div>
                       <div class="elCtn" v-if="item.type === '倒筒'">
                         <el-select v-model="itemChild.before_attribute" :disabled="update_flag" placeholder="加工前" style="margin-right: 12px" @change="$forceUpdate()">
-                          <el-option label="胚绞" value="胚绞"></el-option>
-                          <el-option label="胚筒" value="胚筒"></el-option>
-                          <el-option label="色绞" value="色绞"></el-option>
-                          <el-option label="色筒" value="色筒"></el-option>
+                          <el-option label="胚纱"
+                            value="胚纱"></el-option>
+                          <el-option label="筒纱"
+                            value="筒纱"></el-option>
                         </el-select>
                       </div>
                       <div class="elCtn" v-if="item.type === '倒筒'">
                         <el-select v-model="itemChild.after_attribute" placeholder="加工后" @change="$forceUpdate()">
-                          <el-option label="胚绞" value="胚绞"></el-option>
-                          <el-option label="胚筒" value="胚筒"></el-option>
-                          <el-option label="色绞" value="色绞"></el-option>
-                          <el-option label="色筒" value="色筒"></el-option>
+                          <el-option label="胚纱"
+                            value="胚纱"></el-option>
+                          <el-option label="筒纱"
+                            value="筒纱"></el-option>
                         </el-select>
                       </div>
                       <div class="elCtn" v-if="item.type === '膨纱'">
@@ -466,10 +460,10 @@
                       </div>
                       <div class="elCtn" v-if="item.type === '膨纱'">
                         <el-select placeholder="属性" :disabled="update_flag" v-model="itemChild.attribute" @change="$forceUpdate()">
-                          <el-option label="胚绞" value="胚绞"></el-option>
-                          <el-option label="胚筒" value="胚筒"></el-option>
-                          <el-option label="色绞" value="色绞"></el-option>
-                          <el-option label="色筒" value="色筒"></el-option>
+                          <el-option label="胚纱"
+                            value="胚纱"></el-option>
+                          <el-option label="筒纱"
+                            value="筒纱"></el-option>
                         </el-select>
                       </div>
                       <div class="elCtn" v-if="item.type === '染色'">
@@ -494,10 +488,10 @@
                     </div>
                     <div class="content flexRow">
                       <div class="elCtn">
-                        <el-input placeholder="单价" v-model="itemChild.price" @input="$forceUpdate()"> </el-input>
+                        <el-input placeholder="单价" type='number' v-model="itemChild.price" @input="$forceUpdate()"> </el-input>
                       </div>
                       <div class="elCtn">
-                        <el-input placeholder="数量" disabled v-model="itemChild.weight"></el-input>
+                        <el-input placeholder="数量" type='number' disabled v-model="itemChild.weight"></el-input>
                       </div>
                     </div>
                     <div
@@ -577,7 +571,7 @@
                   </div>
                 </div>
                 <div class="rowCtn">
-                  <div class="colCtn" style="max-width: 226.72px">
+                  <div class="colCtn" style="max-width: 276.72px">
                     <div class="label">
                       <span class="text">交货日期</span>
                       <span class="explanation">(必选)</span>
@@ -636,43 +630,45 @@
                 </div>
               </div>
             </template>
+            <div class="btnCtn">
+              <div class="btn backHoverBlue" v-if="!update_flag && step === 2" @click="$addItem(process_info, {
+                  transfer_id: '',
+                  client_id: '',
+                  type: '',
+                  price: '',
+                  desc: '',
+                  order_time: $getDate(new Date()),
+                  delivery_time: '',
+                  total_price: '',
+                  file_url: '',
+                  total_additional_fee: 0,
+                  additional_fee: [
+                    {
+                      name: '',
+                      price: '',
+                      desc: ''
+                    }
+                  ],
+                  child_data: [
+                    {
+                      name: '',
+                      transfer_info_id:'',
+                      before_attribute: '',
+                      after_attribute: '',
+                      before_color: '白胚',
+                      after_color: '',
+                      color: '',
+                      attribute: '',
+                      weight: ''
+                    }
+                  ]
+                })">
+                添加加工单
+              </div>
+            </div>
           </div>
         </div>
         <div class="oprCtn">
-          <div class="opr blue" v-if="!update_flag" style="padding-left: 8px" @click="$addItem(process_info, {
-              transfer_id: '',
-              client_id: '',
-              type: '',
-              price: '',
-              desc: '',
-              order_time: $getDate(new Date()),
-              delivery_time: '',
-              total_price: '',
-              file_url: '',
-              total_additional_fee: 0,
-              additional_fee: [
-                {
-                  name: '',
-                  price: '',
-                  desc: ''
-                }
-              ],
-              child_data: [
-                {
-                  name: '',
-                  transfer_info_id:'',
-                  before_attribute: '',
-                  after_attribute: '',
-                  before_color: '白胚',
-                  after_color: '',
-                  color: '',
-                  attribute: '',
-                  weight: ''
-                }
-              ]
-            })">
-            添加加工单
-          </div>
           <div class="opr" style="padding-left: 8px" @click="resetProcess">取消</div>
           <div class="opr" :class="{ blue: create_flag, orange: update_flag }" @click="saveProcess">
             {{ create_flag ? '下一步' : '确认修改' }}
@@ -859,8 +855,8 @@ export default Vue.extend({
           this.total = res.data.data.total
           this.list.forEach((item: any) => {
             item.total_weight = item.child_data.reduce((total: number, current: any) => {
-              return total + current.weight
-            }, 0)
+              return total + +current.weight
+            }, 0).toFixed(1)
           })
           this.loading = false
           this.$forceUpdate()
@@ -876,10 +872,28 @@ export default Vue.extend({
       }
       obj.onmousewheel = obj.onmousewheel = this.mouseScroll(obj)
     },
-    changeInput(ev: any, item: any) {
-      item.weight = ev
+    changeInput(ev: any, itemInfo: any) {
+      if(!ev){
+        let index = this.selectList.findIndex((item:any) => {
+          return item.id === itemInfo.id
+        })
+        if(typeof index === 'number'){
+          this.$deleteItem(this.selectList,index)
+        }
+      } else {
+        if(!this.selectList.find((item:any) => {
+          return item.id === itemInfo.id
+        })){
+          this.selectList.push(itemInfo)
+        }
+      }
+      itemInfo.weight = ev
     },
     getYarnStoreList() {
+      if(!this.getYarnStoreObj.LV2_name){
+        return
+      }
+      this.step = 1
       this.loadingPro = true
       store
         .detailYarnList({
@@ -895,16 +909,17 @@ export default Vue.extend({
           batch_code: this.getYarnStoreObj.batch_code || null
         })
         .then((res) => {
+          res.data.data.items.forEach((item:any) => {
+            this.selectList.forEach((itemSel:any) => {
+              if(item.id === itemSel.id){
+                item.weight = itemSel.weight
+              }
+            });
+          });
           this.storeList = res.data.data.items
           this.getYarnStoreObj.storeTotal = res.data.data.total
           this.loadingPro = false
         })
-    },
-    selectionChange(val: any) {
-      this.selectList = val
-    },
-    getRowKeys(row: any) {
-      return row.id
     },
     mouseScroll(obj: any) {
       return function () {
@@ -990,6 +1005,8 @@ export default Vue.extend({
     resetProcess() {
       this.create_flag = false
       this.update_flag = false
+      this.getYarnStoreObj.LV2_name = ''
+      this.storeList = []
       this.process_info = [
         {
           transfer_id: '',
@@ -1029,7 +1046,7 @@ export default Vue.extend({
     // 选择仓库
     changeStoreData() {
       if (this.selectList.length === 0) {
-        this.$message.error('请选择至少一个仓库')
+        this.$message.error('请至少填写一个调取数量')
         return
       }
 
@@ -1058,9 +1075,9 @@ export default Vue.extend({
             action_weight: item.weight || 0,
             color: item.color,
             attribute: item.attribute,
-            batch_code: item.batch_code || 'NOT_SET',
-            color_code: item.color_code || 'NOT_SET',
-            vat_code: item.vat_code || 'NOT_SET',
+            batch_code: item.batch_code || '',
+            color_code: item.color_code || '',
+            vat_code: item.vat_code || '',
             item: null,
             related_info_id: '',
             desc: ''
@@ -1073,7 +1090,7 @@ export default Vue.extend({
         .then((res) => {
           this.getStockDetail(res.data.data[0])
         })
-      this.step = 1
+      this.step = 2
     },
     getYarnWeight(index:number,indexChild:number){
       let itemName = this.process_info[index].child_data[indexChild]
@@ -1089,6 +1106,7 @@ export default Vue.extend({
     getStockDetail(id:number){
       stock.detail({id}).then(res => {
         let data = res.data.data
+        console.log(data)
         this.process_info[0] = {
             transfer_id: data.id,
             client_id: '',
@@ -1107,25 +1125,30 @@ export default Vue.extend({
                 desc: ''
               }
             ],
-            child_data: [
-              {
-                name: '',
-                transfer_info_id:'',
+            child_data: res.data.data.child_data.map((item:any) => {
+              return {
+                name: item.name,
+                transfer_info_id: item.id || '',
+                id: item.id || '',
                 before_attribute: '',
                 after_attribute: '',
                 before_color: '白胚',
                 after_color: '',
                 color: '',
                 attribute: '',
-                weight: '',
+                weight: item.action_weight,
               }
-            ],
+            }),
           }
           this.child_data_info = data.child_data
       })
     },
     saveProcess() {
       if (this.step === 0) {
+        this.$message.error('请先选择仓库')
+        return
+      }
+      if (this.step === 1) {
         this.changeStoreData()
         return
       }
@@ -1228,7 +1251,7 @@ export default Vue.extend({
     openUpdate(info: ProcessYarn) {
       const selfInfo = JSON.parse(JSON.stringify(info))
       this.update_flag = true
-      this.step = 1
+      this.step = 2
       selfInfo.additional_fee = selfInfo.additional_fee
         ? JSON.parse(info.additional_fee as string)
         : [
@@ -1288,5 +1311,8 @@ export default Vue.extend({
 .el-table__fixed-right::before,
 .el-table__fixed::before {
   content: unset;
+}
+.el-date-editor.el-input{
+  width:100%;
 }
 </style>

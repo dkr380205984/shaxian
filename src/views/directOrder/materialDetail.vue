@@ -644,7 +644,7 @@ export default Vue.extend({
             order_id: '',
             name: item.yarn_name,
             action_weight: item.action_weight,
-            batch_code: item.batch_code || 'NOT_SET',
+            batch_code: item.batch_code || '',
             item: item.item,
             related_info_id: '',
             desc: ''

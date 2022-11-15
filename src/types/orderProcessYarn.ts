@@ -10,6 +10,7 @@ export interface YarnInfo {
   attribute: string
   price: number | string
   push_weight?: string | number
+  push_price?: string | number
 }
 
 // 额外费用
@@ -36,6 +37,8 @@ export interface OrderYarn {
   file_url?: string
   total_price?: string | number
   total_weight?: string | number
+  total_push_weight?: string | number
+  total_push_price?: string | number
   total_additional_fee: number
   desc: string
   add_store_data?: Array<{

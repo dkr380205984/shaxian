@@ -10,6 +10,8 @@ interface AditionalFee {
 }
 
 export interface Order {
+  total_weight_sale?: string | number
+  total_price_sale?: string | number
   code?: string
   order_code: string
   order_time: string

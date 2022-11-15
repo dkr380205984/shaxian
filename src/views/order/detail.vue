@@ -181,13 +181,12 @@
                   <div class="tcolumn">纱线颜色</div>
                   <div class="tcolumn">纱线属性</div>
                   <div class="tcolumn">数量属性</div>
-                  <div class="tcolumn">批号</div>
-                  <div class="tcolumn">缸号</div>
-                  <div class="tcolumn">色号</div>
+                  <div class="tcolumn">批号/色号/缸号</div>
                   <div class="tcolumn">销售仓库</div>
                   <div class="tcolumn">销售单价(元)</div>
                   <div class="tcolumn">销售数量(kg)</div>
                   <div class="tcolumn">销售件数(件)</div>
+                  <div class="tcolumn">金额小计(元)</div>
                 </div>
               </div>
             </div>
@@ -209,13 +208,28 @@
                   </div>
                   <div class="tcolumn">{{itemChild.attribute}}</div>
                   <div class="tcolumn">{{itemChild.number_attribute}}</div>
-                  <div class="tcolumn">{{itemChild.batch_code}}</div>
-                  <div class="tcolumn">{{itemChild.vat_code}}</div>
-                  <div class="tcolumn">{{itemChild.color_code}}</div>
-                  <div class="tcolumn">{{itemChild.store}}</div>
+                  <div class="tcolumn">{{itemChild.batch_code}}/{{itemChild.color_code}}/{{itemChild.vat_code}}</div>
+                  <div class="tcolumn">{{itemChild.store}}/<br/>{{itemChild.secondary_store}}</div>
                   <div class="tcolumn">{{itemChild.price}}元</div>
                   <div class="tcolumn blue">{{itemChild.weight}}kg</div>
                   <div class="tcolumn">{{itemChild.item||0}}件</div>
+                  <div class="tcolumn">{{((itemChild.price|| 0) * (itemChild.weight||0)).toFixed(2)}}元</div>
+                </div>
+              </div>
+            </div>
+            <div class="trow" style="background:#F4F4F4">
+              <div class="tcolumn">合计</div>
+              <div class="tcolumn noPad" style="flex:7">
+                <div class="trow">
+                  <div class="tcolumn"></div>
+                  <div class="tcolumn"></div>
+                  <div class="tcolumn"></div>
+                  <div class="tcolumn"></div>
+                  <div class="tcolumn"></div>
+                  <div class="tcolumn"></div>
+                  <div class="tcolumn">{{order_info.total_weight}}kg</div>
+                  <div class="tcolumn"></div>
+                  <div class="tcolumn">{{order_info.total_price - order_info.total_additional_fee}}元</div>
                 </div>
               </div>
             </div>

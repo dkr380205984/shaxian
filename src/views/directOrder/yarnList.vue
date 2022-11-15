@@ -459,8 +459,8 @@ export default Vue.extend({
           this.total = res.data.data.total
           this.list.forEach((item: any) => {
             item.total_weight = item.child_data.reduce((total: number, current: any) => {
-              return total + current.weight
-            }, 0)
+              return total + +current.weight
+            }, 0).toFixed(1)
           })
           this.loading = false
         })

@@ -10,7 +10,7 @@ const login = (params:
 // token
 const getToken = () => http.get(`${baseUrl}/upload/token`)
 // 公司信息设置
-const clientInfoSetting = (params: { logo: string, alias: string }) => http.post(`${baseUrl}/company/info/save`, params, 'application/json')
+const clientInfoSetting = (params: { logo: string, alias: string, phone: string, address: string }) => http.post(`${baseUrl}/company/info/save`, params, 'application/json')
 
 // 用户信息
 const authInfo = (params: any) => http.post(`${baseUrl}/auth/info`, params, 'application/json')

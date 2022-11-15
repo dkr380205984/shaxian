@@ -80,13 +80,15 @@ export default Vue.extend({
           } else {
             window.localStorage.removeItem('zhPassWord')
           }
-          window.sessionStorage.setItem('token_type', res.data.data.token_type)
-          window.sessionStorage.setItem('token', res.data.data.access_token)
+          // window.sessionStorage.setItem('token_type', res.data.data.token_type)
+          // window.sessionStorage.setItem('token', res.data.data.access_token)
           const { authInfo } = require('@/assets/js/api')
           authInfo().then((res2: any) => {
             if (res2.data.status !== false) {
               window.sessionStorage.setItem('logo', res2.data.data.logo)
               window.sessionStorage.setItem('alias', res2.data.data.alias)
+              window.sessionStorage.setItem('phone', res2.data.data.phone || '')
+              window.sessionStorage.setItem('address', res2.data.data.address || '')
               window.sessionStorage.setItem('full_name', res2.data.data.company_name)
               window.sessionStorage.setItem('user_name', res2.data.data.name)
               window.sessionStorage.setItem('module_info', res2.data.data.module_info)

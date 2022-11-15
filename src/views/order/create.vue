@@ -465,7 +465,7 @@ export default Vue.extend({
       },
       editor: '',
       postData: { key: '', token: '' },
-      attributeArr: [{ value: '胚绞' }, { value: '胚筒' }, { value: '色绞' }, { value: '色筒' }],
+      attributeArr: [{ value: '胚纱' }, { value: '筒纱' }],
       copyOption: ['attribute', 'number_attribute', 'price']
     }
   },

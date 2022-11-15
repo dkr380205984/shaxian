@@ -81,14 +81,10 @@
               <div class="elCtn">
                 <el-select v-model="craft_info.attribute"
                   placeholder="请选择纱线属性">
-                  <el-option label="胚绞"
-                    value="胚绞"></el-option>
-                  <el-option label="胚筒"
-                    value="胚筒"></el-option>
-                  <el-option label="色绞"
-                    value="色绞"></el-option>
-                  <el-option label="色筒"
-                    value="色筒"></el-option>
+                  <el-option label="胚纱"
+                    value="胚纱"></el-option>
+                  <el-option label="筒纱"
+                    value="筒纱"></el-option>
                 </el-select>
               </div>
             </div>

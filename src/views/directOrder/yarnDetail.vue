@@ -21,7 +21,11 @@
           </div>
           <div class="colCtn">
             <span class="label">采购总价：</span>
-            <span class="text">{{ order_yarn_info.total_price }}元</span>
+            <span class="text">
+              <span class="text">计划：{{ order_yarn_info.total_price }}元</span>
+              <br/>
+              <span class="text">实际：{{ (+order_yarn_info.total_push_price + +order_yarn_info.total_additional_fee).toFixed(2)}}元</span>
+            </span>
           </div>
         </div>
         <div class="rowCtn">
@@ -110,31 +114,35 @@
         <div class="tableCtn">
           <div class="thead">
             <div class="trow">
-              <div class="tcolumn" style="flex: 5">
-                <div class="trow">
-                  <div class="tcolumn">纱线名称</div>
-                  <div class="tcolumn">纱线颜色</div>
-                  <div class="tcolumn">纱线属性</div>
-                  <div class="tcolumn">采购单价(元)</div>
-                  <div class="tcolumn">计划采购数量(kg)</div>
-                </div>
-              </div>
+              <div class="tcolumn">纱线名称</div>
+              <div class="tcolumn">纱线颜色</div>
+              <div class="tcolumn">纱线属性</div>
+              <div class="tcolumn">采购单价(元)</div>
+              <div class="tcolumn">计划采购数量(kg)</div>
               <div class="tcolumn">已入库数量(kg)</div>
               <div class="tcolumn">待入库数量(kg)</div>
             </div>
           </div>
           <div class="tbody">
-            <div class="trow">
-              <div class="tcolumn" style="flex: 5">
-                <div class="trow" v-for="(item, index) in order_yarn_info.child_data" :key="index">
-                  <div class="tcolumn">{{ item.name }}</div>
-                  <div class="tcolumn">{{ item.color }}</div>
-                  <div class="tcolumn">{{ item.attribute }}</div>
-                  <div class="tcolumn">{{ item.price }}元</div>
-                  <div class="tcolumn blue">{{ item.weight }}kg</div>
-                </div>
+            <div class="trow" v-for="(item, index) in order_yarn_info.child_data" :key="index">
+              <div class="tcolumn">{{ item.name }}</div>
+              <div class="tcolumn">{{ item.color }}</div>
+              <div class="tcolumn">{{ item.attribute }}</div>
+              <div class="tcolumn">{{ item.price }}元</div>
+              <div class="tcolumn blue">{{ item.weight }}kg</div>
+              <div class="tcolumn green">{{ item.push_weight }}kg</div>
+              <div class="tcolumn red">{{ item.weight - item.push_weight }}kg</div>
+            </div>
+            <div class="trow" style="background:#F4F4F4;">
+              <div class="tcolumn">合计</div>
+              <div class="tcolumn"></div>
+              <div class="tcolumn"></div>
+              <div class="tcolumn">
+                <div>计划:{{(+order_yarn_info.total_price - +order_yarn_info.total_additional_fee).toFixed(2)}} 元</div>
+                <div class="green">实际:{{ order_yarn_info.total_push_price }} 元</div>
               </div>
-              <div class="tcolumn green">{{ order_yarn_info.push_weight }}kg</div>
+              <div class="tcolumn blue">{{ (order_yarn_info.total_weight).toFixed(1) }}kg</div>
+              <div class="tcolumn green">{{ order_yarn_info.push_weight }} kg</div>
               <div class="tcolumn red">{{ order_yarn_info.total_weight - order_yarn_info.push_weight }}kg</div>
             </div>
           </div>
@@ -654,6 +662,12 @@ export default Vue.extend({
           : []
         this.order_yarn_info.total_weight = this.order_yarn_info.child_data.reduce((total, current) => {
           return total + Number(current.weight)
+        }, 0)
+        this.order_yarn_info.total_push_price = this.order_yarn_info.child_data.reduce((total, current) => {
+          return total + Number(current.push_price)
+        }, 0).toFixed(2)
+        this.order_yarn_info.total_push_weight = this.order_yarn_info.child_data.reduce((total, current) => {
+          return total + Number(current.push_weight)
         }, 0)
         this.order_in_log = res[1].data.data.data.items
         this.deduct_list = res[2].data.data

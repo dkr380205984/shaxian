@@ -283,15 +283,31 @@
                   </div>
                   <div class="tcolumn"
                     v-if="storeInfo.type!=='染色'">
-                    <template v-if="selfType[0]==='采购单' ||selfType[0]==='调取单' || selfType[0]==='工艺单' || selfType[0]==='订单'">
+                    <template v-if="selfType[0]==='调取单' || selfType[0]==='工艺单' || selfType[0]==='订单'">
                       <el-select class="el"
                         no-data-text="请先选择纱线"
                         placeholder="颜色"
-                        v-model="item.color">
+                        v-model="item.color"
+                      >
                         <el-option v-for="itemChild in item.colorArr"
-                          :key="itemChild.value"
+                          :key="itemChild.value + itemChild.id"
                           :label="itemChild.label"
-                          :value="itemChild.value"></el-option>
+                          :value="itemChild.value"
+                        ></el-option>
+                      </el-select>
+                    </template>
+                    <template v-if="selfType[0]==='采购单'">
+                      <el-select class="el"
+                        no-data-text="请先选择纱线"
+                        placeholder="颜色"
+                        v-model="item.colorName"
+                        value-key='id'
+                      >
+                        <el-option v-for="itemChild in item.colorArr"
+                          :key="itemChild.id"
+                          :label="itemChild.label"
+                          :value="itemChild"
+                        ></el-option>
                       </el-select>
                     </template>
                     <template v-else>
@@ -305,14 +321,10 @@
                     <el-select class="el"
                       v-model="item.attribute"
                       placeholder="属性">
-                      <el-option label="胚绞"
-                        value="胚绞"></el-option>
-                      <el-option label="胚筒"
-                        value="胚筒"></el-option>
-                      <el-option label="色绞"
-                        value="色绞"></el-option>
-                      <el-option label="色筒"
-                        value="色筒"></el-option>
+                      <el-option label="胚纱"
+                        value="胚纱"></el-option>
+                      <el-option label="筒纱"
+                        value="筒纱"></el-option>
                     </el-select>
                   </div>
                   <div class="tcolumn"
@@ -330,28 +342,20 @@
                       style="margin-right:4px">
                       <el-select v-model="item.before_attribute"
                         placeholder="加工前">
-                        <el-option label="胚绞"
-                          value="胚绞"></el-option>
-                        <el-option label="胚筒"
-                          value="胚筒"></el-option>
-                        <el-option label="色绞"
-                          value="色绞"></el-option>
-                        <el-option label="色筒"
-                          value="色筒"></el-option>
+                        <el-option label="胚纱"
+                        value="胚纱"></el-option>
+                        <el-option label="筒纱"
+                          value="筒纱"></el-option>
                       </el-select>
                     </div>
                     <div class="el"
                       v-if="storeInfo.type==='倒筒'">
                       <el-select v-model="item.after_attribute"
                         placeholder="加工后">
-                        <el-option label="胚绞"
-                          value="胚绞"></el-option>
-                        <el-option label="胚筒"
-                          value="胚筒"></el-option>
-                        <el-option label="色绞"
-                          value="色绞"></el-option>
-                        <el-option label="色筒"
-                          value="色筒"></el-option>
+                        <el-option label="胚纱"
+                          value="胚纱"></el-option>
+                        <el-option label="筒纱"
+                          value="筒纱"></el-option>
                       </el-select>
                     </div>
                     <div class="el"
@@ -441,6 +445,7 @@
                   color_code: '',
                   vat_code: '',
                   item: '',
+                  id:'',
                   number_attribute:'98纱',
                   price:'',
                   before_attribute: '',
@@ -1115,7 +1120,8 @@ export default class InAndOut extends Vue {
       .childrenMergeInfo.map((item: any) => {
         return {
           value: item.color,
-          label: item.color
+          label: item.color,
+          id: item.id
         }
       })
     if (info) {
@@ -1304,9 +1310,9 @@ export default class InAndOut extends Vue {
                 action_weight: item.action_weight,
                 color: item.color,
                 attribute: item.attribute,
-                batch_code: item.batch_code || 'NOT_SET',
-                color_code: item.color_code || 'NOT_SET',
-                vat_code: item.vat_code || 'NOT_SET',
+                batch_code: item.batch_code || '',
+                color_code: item.color_code || '',
+                vat_code: item.vat_code || '',
                 item: item.item,
                 desc: ''
               }
@@ -1363,9 +1369,9 @@ export default class InAndOut extends Vue {
                 action_weight: item.action_weight,
                 color: item.color,
                 attribute: item.attribute,
-                batch_code: item.batch_code || 'NOT_SET',
-                color_code: item.color_code || 'NOT_SET',
-                vat_code: item.vat_code || 'NOT_SET',
+                batch_code: item.batch_code || '',
+                color_code: item.color_code || '',
+                vat_code: item.vat_code || '',
                 item: item.item,
                 desc: ''
               }
@@ -1437,9 +1443,9 @@ export default class InAndOut extends Vue {
                 action_weight: item.action_weight,
                 color: this.storeInfo.type === '染色' ? item.after_color : item.color,
                 attribute: item.attribute,
-                batch_code: item.batch_code || 'NOT_SET',
-                color_code: item.color_code || 'NOT_SET',
-                vat_code: item.vat_code || 'NOT_SET',
+                batch_code: item.batch_code || '',
+                color_code: item.color_code || '',
+                vat_code: item.vat_code || '',
                 item: item.item,
                 desc: ''
               }
@@ -1459,6 +1465,13 @@ export default class InAndOut extends Vue {
           }
         })
     } else {
+      if(this.type === 3){
+        this.storeInfo.child_data.forEach((itemChild:any) => {
+          itemChild.color = itemChild.colorName.label
+          itemChild.related_info_id = itemChild.colorName.id  
+        })
+      }
+      // return
       const formData: StoreCreate = {
         order_id: this.selfType[1] === 9 ? this.storeInfo.related_id : this.orderId || this.storeInfo.order_id,
         related_id: this.storeInfo.related_id,
@@ -1469,6 +1482,7 @@ export default class InAndOut extends Vue {
         second_store_id: (this.storeInfo.select_id as any[])[1],
         move_store_id: this.selfType[1] === 10 ? (this.storeInfo.move_select_id as any[])[0] : '',
         move_second_store_id: this.selfType[1] === 10 ? (this.storeInfo.move_select_id as any[])[1] : '',
+        // @ts-ignore
         client_id: Array.isArray(this.storeInfo.client_id) ? this.storeInfo.client_id[1] : this.storeInfo.client_id,
         child_data: this.storeInfo.child_data.map((item: any) => {
           return {
@@ -1476,11 +1490,11 @@ export default class InAndOut extends Vue {
             action_weight: item.action_weight,
             color: item.color,
             attribute: item.attribute,
-            batch_code: item.batch_code || 'NOT_SET',
-            color_code: item.color_code || 'NOT_SET',
-            vat_code: item.vat_code || 'NOT_SET',
+            batch_code: item.batch_code || '',
+            color_code: item.color_code || '',
+            vat_code: item.vat_code || '',
             item: item.item,
-            related_info_id: '',
+            related_info_id: item.related_info_id || '',
             desc: ''
           }
         })
@@ -1560,9 +1574,9 @@ export default class InAndOut extends Vue {
                   label: item.color
                 }
               ],
-              batch_code: itemChild.batch_code === 'NOT_SET' ? '' : itemChild.batch_code,
-              color_code: itemChild.color_code === 'NOT_SET' ? '' : itemChild.color_code,
-              vat_code: itemChild.vat_code === 'NOT_SET' ? '' : itemChild.vat_code,
+              batch_code: itemChild.batch_code === '' ? '' : itemChild.batch_code,
+              color_code: itemChild.color_code === '' ? '' : itemChild.color_code,
+              vat_code: itemChild.vat_code === '' ? '' : itemChild.vat_code,
               item: ''
             })
           })

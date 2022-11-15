@@ -71,7 +71,7 @@
             </div>
           </div>
           <div class="row">
-            <div class="label">备注信息：</div>
+            <div class="label">公司声明：</div>
             <div class="info"
               ref="wangeditor">
             </div>

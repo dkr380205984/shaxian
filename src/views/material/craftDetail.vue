@@ -738,13 +738,13 @@ export default Vue.extend({
       }
       this.store_yarn_info.child_data[0].color_code = this.store_yarn_info.child_data[0].color_code
         ? this.store_yarn_info.child_data[0].color_code
-        : 'NOT_SET'
+        : ''
       this.store_yarn_info.child_data[0].batch_code = this.store_yarn_info.child_data[0].batch_code
         ? this.store_yarn_info.child_data[0].batch_code
-        : 'NOT_SET'
+        : ''
       this.store_yarn_info.child_data[0].vat_code = this.store_yarn_info.child_data[0].vat_code
         ? this.store_yarn_info.child_data[0].vat_code
-        : 'NOT_SET'
+        : ''
       this.store_yarn_info.store_id = (this.store_yarn_info.select_id as number[])[0]
       this.store_yarn_info.second_store_id = (this.store_yarn_info.select_id as number[])[1]
       stock.create({ data: [this.store_yarn_info] }).then((res) => {

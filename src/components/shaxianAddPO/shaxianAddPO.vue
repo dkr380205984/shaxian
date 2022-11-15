@@ -17,12 +17,12 @@
               </div>
               <div class="content">
                 <div class="elCtn">
-                  <el-select placeholder="请选择供货商" v-model="order_yarn_info.client_id">
+                  <el-select placeholder="请选择供货商" v-model="order_yarn_info.client_id" filterable>
                     <el-option
                       v-for="item in client_arr"
                       :key="item.id"
                       :value="item.id"
-                      :label="item.name"
+                      :label="item.code + '-' +item.name"
                     ></el-option>
                   </el-select>
                 </div>
@@ -83,10 +83,10 @@
                 </div>
                 <div class="elCtn">
                   <el-select placeholder="属性" v-model="item.attribute">
-                    <el-option label="胚绞" value="胚绞"></el-option>
-                    <el-option label="胚筒" value="胚筒"></el-option>
-                    <el-option label="色绞" value="色绞"></el-option>
-                    <el-option label="色筒" value="色筒"></el-option>
+                    <el-option label="胚纱"
+                      value="胚纱"></el-option>
+                    <el-option label="筒纱"
+                      value="筒纱"></el-option>
                   </el-select>
                 </div>
               </div>
@@ -96,14 +96,14 @@
                 <span class="text">单价/数量</span>
                 <span class="explanation">(必填)</span>
               </div>
-              <div class="content flexRow">
+              <div class="content flexRow noPadInput">
                 <div class="elCtn">
-                  <el-input placeholder="单价" v-model="item.price" @input="cmpTotalPrice">
+                  <el-input placeholder="单价" type="number" v-model="item.price" @input="cmpTotalPrice">
                     <template slot="append">元</template>
                   </el-input>
                 </div>
                 <div class="elCtn">
-                  <el-input placeholder="数量" v-model="item.weight" @input="cmpTotalPrice">
+                  <el-input placeholder="数量" type="number" v-model="item.weight" @input="cmpTotalPrice">
                     <template slot="append">kg</template>
                   </el-input>
                 </div>
@@ -327,10 +327,10 @@
                 </div>
                 <div class="tcolumn">
                   <el-select class="el" v-model="item.attribute" placeholder="属性">
-                    <el-option label="胚绞" value="胚绞"></el-option>
-                    <el-option label="胚筒" value="胚筒"></el-option>
-                    <el-option label="色绞" value="色绞"></el-option>
-                    <el-option label="色筒" value="色筒"></el-option>
+                    <el-option label="胚纱"
+                      value="胚纱"></el-option>
+                    <el-option label="筒纱"
+                      value="筒纱"></el-option>
                   </el-select>
                 </div>
                 <div class="tcolumn" style="flex: 2; flex-direction: row; align-items: center">
@@ -853,26 +853,30 @@ export default Vue.extend({
               if (step === 2) {
                 this.store_info.client_id = this.order_yarn_info.client_id
                 this.store_info.related_id = res.data.data[0]
+                yarnOrder.detail({
+                  id: res.data.data[0]
+                }).then(ress => {
+                  
+                  this.selfYarnArr = this.$mergeData(ress.data.data.child_data, {
+                    mainRule: 'name'
+                  })
 
-                this.selfYarnArr = this.$mergeData(this.order_yarn_info.child_data, {
-                  mainRule: 'name'
+                  this.store_info.child_data = ress.data.data.child_data.map((item: any) => {
+                    return {
+                      action_weight: item.weight,
+                      attribute: item.attribute,
+                      color: item.color,
+                      name: item.name,
+                      price: item.price,
+                      batch_code: '',
+                      color_code: '',
+                      vat_code: '',
+                      item: '',
+                      related_info_id: item.id
+                    }
+                  })
+                  this.step = 2
                 })
-
-                this.store_info.child_data = this.order_yarn_info.child_data.map((item: any) => {
-                  return {
-                    action_weight: item.weight,
-                    attribute: item.attribute,
-                    color: item.color,
-                    name: item.name,
-                    price: item.price,
-                    batch_code: '',
-                    color_code: '',
-                    vat_code: '',
-                    item: '',
-                    related_info_id: ''
-                  }
-                })
-                this.step = 2
               }
             }
             this.loading = false
@@ -942,9 +946,9 @@ export default Vue.extend({
       this.store_info.store_id = this.store_info.select_id[0]
       this.store_info.second_store_id = this.store_info.select_id[1]
       this.store_info.child_data.forEach((item: any) => {
-        item.batch_code = item.batch_code || 'NOT_SET'
-        item.color_code = item.color_code || 'NOT_SET'
-        item.vat_code = item.vat_code || 'NOT_SET'
+        item.batch_code = item.batch_code || ''
+        item.color_code = item.color_code || ''
+        item.vat_code = item.vat_code || ''
       })
       // return
       stock.create({ data: [this.store_info] }).then((res) => {
@@ -1024,4 +1028,11 @@ export default Vue.extend({
 </script>
 <style lang="less" scoped>
 @import './shaxianAddPO.less';
+</style>
+<style lang="less">
+.noPadInput{
+  .el-input__inner{
+    padding-right: 5px;
+  }
+}
 </style>

@@ -541,6 +541,14 @@ export default Vue.extend({
         }
       })
 
+      let arr = this.$mergeData(this.submit_form[0].child_data,{
+        mainRule:['attribute','price','desc','color']
+      })
+      if(this.submit_form[0].child_data.length !== arr.length) {
+        this.$message.error('请勿提交所有信息全部相同的纱线')
+        return
+      }
+
       product.create({ data: this.submit_form }).then((res) => {
         if (res.data.status) {
           this.$message.success('添加成功')

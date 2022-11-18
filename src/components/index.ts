@@ -12,6 +12,7 @@ import relatedInfo from './relatedInfo/relatedInfo.vue'
 import productCreate from './productCreate/productCreate.vue'
 import shaxianAddPO from './shaxianAddPO/shaxianAddPO.vue'
 import yarnStoreSelect from './yarnStoreSelect/yarnStoreSelect.vue'
+import addTransProcess from './addTransProcess/addTransProcess.vue'
 export default {
   install: (vue: any) => {
     vue.component('sort', sort)
@@ -28,5 +29,6 @@ export default {
     vue.component('productCreate', productCreate)
     vue.component('shaxianAddPO', shaxianAddPO)
     vue.component('yarnStoreSelect', yarnStoreSelect)
+    vue.component('addTransProcess', addTransProcess)
   }
 }

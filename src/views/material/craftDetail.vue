@@ -83,8 +83,8 @@
               <div class="column min120">入库日期</div>
               <div class="column min120">入库数量</div>
               <div class="column min120">入库件数</div>
-              <div class="column min120">色号</div>
               <div class="column min120">批号</div>
+              <div class="column min120">色号</div>
               <div class="column min120">缸号</div>
               <div class="column min120">备注信息</div>
               <div class="column min120">操作</div>
@@ -98,8 +98,8 @@
               <div class="column min120">{{item.complete_time}}</div>
               <div class="column min120">{{item.child_data[0].action_weight}}kg</div>
               <div class="column min120">{{item.child_data[0].item}}件</div>
-              <div class="column min120">{{item.child_data[0].color_code}}</div>
               <div class="column min120">{{item.child_data[0].batch_code}}</div>
+              <div class="column min120">{{item.child_data[0].color_code}}</div>
               <div class="column min120">{{item.child_data[0].vat_code}}</div>
               <div class="column min120">{{item.desc||'无'}}</div>
               <div class="column min120">
@@ -365,17 +365,17 @@
             </div>
           </div>
           <div class="row">
-            <div class="label">加工色号：</div>
-            <div class="info">
-              <el-input placeholder="请输入加工色号"
-                v-model="store_yarn_info.child_data[0].color_code"></el-input>
-            </div>
-          </div>
-          <div class="row">
             <div class="label">批号：</div>
             <div class="info">
               <el-input placeholder="请输入批号"
                 v-model="store_yarn_info.child_data[0].batch_code"></el-input>
+            </div>
+          </div>
+          <div class="row">
+            <div class="label">加工色号：</div>
+            <div class="info">
+              <el-input placeholder="请输入加工色号"
+                v-model="store_yarn_info.child_data[0].color_code"></el-input>
             </div>
           </div>
           <div class="row">

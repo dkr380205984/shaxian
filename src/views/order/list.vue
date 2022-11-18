@@ -185,7 +185,7 @@
             <el-table-column fixed="right" label="操作" width="150">
               <template slot-scope="scope">
                 <span class="blue opr" @click="$router.push('/order/detail/' + scope.row.id)">详情</span>
-                <span class="orange opr" @click="scope.row.type == 1?$router.push('/order/update/' + scope.row.id):$router.push('/order/salesOrderCreate?id=' + scope.row.id)">修改</span>
+                <span class="orange opr" v-if='scope.row.type == 1' @click="$router.push('/order/update/' + scope.row.id)">修改</span>
                 <el-dropdown>
                   <span class="green" style="margin-left: 8px; cursor: pointer">更多</span>
                   <el-dropdown-menu slot="dropdown">
@@ -435,9 +435,11 @@ export default Vue.extend({
           page: this.page
         })
         .then((res) => {
-          this.list = res.data.data.items
-          this.total = res.data.data.total
-          this.loading = false
+          if(res.data.status){
+            this.list = res.data.data.items
+            this.total = res.data.data.total
+          }
+            this.loading = false
         })
     },
     deleteOrder(id: number) {

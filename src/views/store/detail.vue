@@ -289,7 +289,7 @@
           </div>
         </div>
         <div class="listCtn">
-          <div class="list">
+          <div class="list fz14">
             <div class="overflow" @mousewheel.prevent="listenWheel" ref="list">
               <div class="tableCtn">
                 <div class="table">
@@ -376,7 +376,8 @@
                           item.action_type === 11 ||
                           item.action_type === 13 ||
                           item.action_type === 14 ||
-                          item.action_type === 15,
+                          item.action_type === 15 || 
+                          item.action_type === 17 , 
                         green:
                           item.action_type === 2 ||
                           item.action_type === 4 ||
@@ -403,7 +404,8 @@
                           item.action_type === 8 ||
                           item.action_type === 13 ||
                           item.action_type === 14 ||
-                          item.action_type === 15
+                          item.action_type === 15 ||
+                          item.action_type === 17
                         "
                       >
                         <span class="green">{{ item.client_name || '无来源' }}</span>
@@ -460,6 +462,10 @@
                 </div>
               </div>
             </div>
+          </div>
+          <div style="display:flex">
+            <span class="blue" style="font-weight:bold">合计入库：{{ storeLogInfo.total_pop }}kg</span>
+            <span class="green" style="font-weight:bold;margin-left:20px">合计出库：{{ storeLogInfo.total_push }}kg</span>
           </div>
         </div>
         <div class="pageCtn">
@@ -615,6 +621,10 @@ export default Vue.extend({
           {
             id: 16,
             name: '加工调取'
+          },
+          {
+            id: 17,
+            name: '加工回库'
           }
         ],
         remarkList: [],
@@ -776,11 +786,11 @@ export default Vue.extend({
         })
         .then((res) => {
           this.storeLogInfo = {
-            total_pop: res.data.data.others_data.total_pop || 0,
-            total_push: res.data.data.others_data.total_push || 0,
-            list: res.data.data.data.items
+            total_pop: res.data.data.additional.total_pop || 0,
+            total_push: res.data.data.additional.total_push || 0,
+            list: res.data.data.items
           }
-          this.storeLogListFilter.total = res.data.data.data.total
+          this.storeLogListFilter.total = res.data.data.total
 
           this.loading.log = false
           // 更新页码
@@ -979,4 +989,9 @@ export default Vue.extend({
 
 <style lang="less" scoped>
 @import '~@/assets/less/store/detail.less';
+.fz14{
+  *{
+    font-size: 14px!important;
+  }
+}
 </style>

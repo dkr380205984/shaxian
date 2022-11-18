@@ -298,11 +298,11 @@ export default Vue.extend({
                   type: 'success',
                   message: '删除成功!'
                 })
+                this.getFilters()
+                this.getList()
+                this.$forceUpdate()
               }
             })
-          this.getFilters()
-          this.getList()
-          this.$forceUpdate()
         })
         .catch(() => {
           this.$message({

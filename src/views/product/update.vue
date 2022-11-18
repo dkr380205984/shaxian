@@ -195,6 +195,13 @@ export default Vue.extend({
     editChild(detail: ProductDetail) {
       if (detail.edit) {
         if (detail.color && detail.attribute) {
+          let arr = this.$mergeData(this.submit_form,{
+            mainRule:['color','attribute','price','desc']
+          })
+          if(this.submit_form.length !== arr.length) {
+            this.$message.error('请勿提交所有信息全部相同的纱线')
+            return
+          }
           this.loading = true
           product
             .editProChild({

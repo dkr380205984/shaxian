@@ -49,6 +49,8 @@ export interface OrderYarn {
 }
 
 export interface ProcessYarnChild {
+  attributeName?: string;
+  colorName?: string;
   name: string
   transfer_info_id?: string | number
   before_color?: string

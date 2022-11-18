@@ -394,6 +394,10 @@ export default Vue.extend({
           {
             id: 16,
             name: '加工调取'
+          },
+          {
+            id: 17,
+            name: '加工回库'
           }
         ]
       }

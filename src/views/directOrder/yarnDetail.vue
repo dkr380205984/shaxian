@@ -669,7 +669,7 @@ export default Vue.extend({
         this.order_yarn_info.total_push_weight = this.order_yarn_info.child_data.reduce((total, current) => {
           return total + Number(current.push_weight)
         }, 0)
-        this.order_in_log = res[1].data.data.data.items
+        this.order_in_log = res[1].data.data.items
         this.deduct_list = res[2].data.data
         this.deduct_list.forEach((item: any) => {
           item.deduct_content = JSON.parse(item.deduct_content) || []

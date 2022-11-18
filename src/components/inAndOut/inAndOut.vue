@@ -101,6 +101,7 @@
                   </div>
                 </div>
               </template>
+              <template v-else-if="selfType[1]===17"></template>
               <template v-else-if="selfType[1]===10">
                 <div class="colCtn flex3">
                   <div class="label">
@@ -266,8 +267,8 @@
                         placeholder="纱线名称"
                         v-model="item.name"
                         @change="getColor($event,item)">
-                        <el-option v-for="item in selfYarnArr"
-                          :key="item.name"
+                        <el-option v-for="item,index in selfYarnArr"
+                          :key="item.name + index"
                           :label="item.name"
                           :value="item.name"></el-option>
                       </el-select>
@@ -296,7 +297,7 @@
                         ></el-option>
                       </el-select>
                     </template>
-                    <template v-if="selfType[0]==='采购单'">
+                    <template v-else-if="selfType[0]==='采购单'">
                       <el-select class="el"
                         no-data-text="请先选择纱线"
                         placeholder="颜色"
@@ -638,6 +639,10 @@ export default class InAndOut extends Vue {
         {
           label: '出库',
           value: 4
+        },
+        {
+          label: '入库',
+          value: 17
         }
       ]
     },
@@ -770,7 +775,6 @@ export default class InAndOut extends Vue {
   }
   // 出入库类型
   get inOrOut(): string {
-    console.log(this.selfType)
     if (
       this.selfType.length > 0 &&
       (this.selfType[1] === 1 || this.selfType[1] === 3 || this.selfType[1] === 5 || this.selfType[1] === 8)
@@ -894,7 +898,7 @@ export default class InAndOut extends Vue {
         })
     }
     // 调取单
-    if (this.selfType[0] === '调取单') {
+    if (this.selfType[0] === '调取单' && this.selfType[1] !== 17) {
       store
         .orderDetail({
           id
@@ -940,6 +944,55 @@ export default class InAndOut extends Vue {
           ]
           this.loading = false
         })
+    } else if (this.selfType[0] === '调取单' && this.selfType[1] === 17){
+      stock.detail({
+        id
+      }).then(res => {
+        const data = res.data.data
+        
+        this.storeInfo.select_id = [data.store_id, data.second_store_id]
+        this.initYarnArr = data.child_data.map((itemChild:any) => {
+          return {
+            name: itemChild.name,
+            childrenMergeInfo: [
+              {
+                color: itemChild.color,
+                attribute: itemChild.attribute
+              }
+            ]
+          }
+        })   
+        
+        this.storeInfo.child_data = []
+        data.process_info.forEach((itemPro:any) => {
+          let a = itemPro.child_data.map((itemChild:any) =>{
+            // let b = data.child_data.find((item:any) =>{
+            //   console.log(itemChild,item)
+            //   return item.id === itemChild.transfer_info_id && itemChild.type === item.type
+            // })
+            // console.log(b)
+            return {
+              name: itemChild.name,
+              action_weight: itemChild.weight,
+              color: itemChild.after_color || itemChild.color || '白胚',
+              attribute: itemChild.after_attribute || itemChild.before_attribute,
+              batch_code: itemChild.batch_code,
+              color_code: itemChild.color_code,
+              vat_code: itemChild.vat_code,
+              item: itemChild.item,
+              colorArr: [
+                {
+                  label: itemChild.after_color || itemChild.color || '白胚',
+                  value: itemChild.after_color || itemChild.color || '白胚',
+                  id:itemChild.id
+                }
+              ]
+            }
+          })
+          this.storeInfo.child_data.push(...a)
+        });
+        this.loading = false
+      })
     }
     // 加工单
     if (this.selfType[0] === '加工单') {
@@ -1094,6 +1147,7 @@ export default class InAndOut extends Vue {
       this.selfType = ['采购单', 3]
     } else if (this.type === 4) {
       this.selfType = ['调取单', 4]
+      this.relatedId?this.initDetail(this.relatedId as number):''
     } else if (this.type === 5) {
       this.selfType = ['加工单', 5]
       this.initDetail(this.relatedId as number)
@@ -1108,6 +1162,9 @@ export default class InAndOut extends Vue {
       this.selfType = ['无单据', 11]
     } else if (this.type === 12) {
       this.selfType = ['无单据', 12]
+    } else if (this.type === 17) {
+      this.selfType = ['调取单', 17]
+      this.relatedId?this.initDetail(this.relatedId as number):''
     }
   }
   // 根据选中的纱线初始化颜色属性下拉框
@@ -1144,11 +1201,13 @@ export default class InAndOut extends Vue {
         this.$message.error('请选择移库仓库')
         return
       }
-    } else {
+    } else if(this.selfType[1] !== 17) {
       if (!this.storeInfo.client_id) {
         this.$message.error('请选择单位')
         return
       }
+    } else {
+
     }
 
     if (

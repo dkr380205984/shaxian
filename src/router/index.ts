@@ -194,6 +194,10 @@ const routes: RouteConfig[] = [
         name: '纱线加工列表',
         component: () => import('../views/directProcess/yarnList.vue')
       }, {
+        path: '/directProcess/yarnDetailNew/:id',
+        name: '调取加工详情',
+        component: () => import('../views/directProcess/yarnDetailNew.vue')
+      }, {
         path: '/directProcess/yarnDetail/:id',
         name: '纱线加工详情',
         component: () => import('../views/directProcess/yarnDetail.vue')
@@ -288,6 +292,11 @@ const routes: RouteConfig[] = [
         path: 'orderPrint',
         name: 'orderPrint',
         component: () => import('@/views/print/orderPrint.vue')
+      },
+      {// 新加工单
+        path: 'processPrint',
+        name: 'processPrint',
+        component: () => import('@/views/print/processPrint.vue')
       },
       {// 加工单
         path: 'processYarn/:documentId',

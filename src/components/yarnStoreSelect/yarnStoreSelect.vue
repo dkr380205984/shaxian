@@ -8,6 +8,11 @@
         </div>
       </div>
       <div class="listCtn">
+        <div class="explainCtn" style="margin: 12px 0" v-if="yarnList.length > 0">
+          <span style="font-weight: bold; font-size: 18px;"
+            >选择仓库纱线名称后方可进行下一步</span
+          >
+        </div>
         <div class="filterCtn">
           <div class="leftCtn" style="padding: unset">
             <div class="elCtn">
@@ -21,7 +26,23 @@
               </el-cascader>
             </div>
             <div class="elCtn" style="width: 120px">
+              <el-select
+                v-if="yarnList.length > 0"
+                v-model="filterObj.name"
+                filterable
+                placeholder="纱线名称"
+                @change="getList"
+                :options="yarn_list"
+              >
+                <el-option
+                  v-for="(itemYarn, indexYarn) in yarn_list"
+                  :key="indexYarn + '纱线名称'"
+                  :label="itemYarn.label"
+                  :value="itemYarn.value"
+                ></el-option>
+              </el-select>
               <el-cascader
+                v-else
                 v-model="filterObj.name"
                 filterable
                 placeholder="纱线名称"
@@ -39,21 +60,21 @@
               <el-input v-model="filterObj.batch_code" @change="getList" placeholder="批号"></el-input>
             </div>
             <div class="elCtn" style="width: 120px">
-              <el-input v-model="filterObj.vat_code" @change="getList" placeholder="缸号"></el-input>
+              <el-input v-model="filterObj.color_code" @change="getList" placeholder="色号"></el-input>
             </div>
             <div class="elCtn" style="width: 120px">
-              <el-input v-model="filterObj.color_code" @change="getList" placeholder="色号"></el-input>
+              <el-input v-model="filterObj.vat_code" @change="getList" placeholder="缸号"></el-input>
             </div>
             <div class="elCtn" style="width: 20px">
               <el-checkbox v-model="filterObj.isFilterZero" @change="getList">过滤库存为0的纱线</el-checkbox>
             </div>
           </div>
         </div>
-        <div class="list" style="max-height: 60vh; overflow: scroll;margin:unset;">
+        <div class="list" style="max-height: 60vh; overflow: scroll; margin: unset">
           <div class="checkCtn">
             <div class="label">已勾选单据：</div>
             <div class="elCtn check" v-for="(item, index) in selectList" :key="item.id">
-              <el-input :value="item.id + '-' + item.store_name " disabled>
+              <el-input :value="item.id + '-' + item.store_name" disabled>
                 <template slot="append">
                   <i class="el-icon-close hoverRed" style="cursor: pointer" @click="selectList.splice(index, 1)"></i>
                 </template>
@@ -70,10 +91,9 @@
                 <div class="tcolumn noPad" style="flex: 6">
                   <div class="trow">
                     <div class="tcolumn">批号</div>
-                    <div class="tcolumn">缸号</div>
                     <div class="tcolumn">色号</div>
+                    <div class="tcolumn">缸号</div>
                     <div class="tcolumn">实际库存(KG)</div>
-                    <div class="tcolumn">可用库存(KG)</div>
                     <div class="tcolumn" style="flex: 0.2">
                       <el-checkbox
                         v-model="allCheck"
@@ -106,13 +126,10 @@
                 <div class="tcolumn noPad" style="flex: 6">
                   <div class="trow" v-for="itemStore in item.store_info" :key="itemStore.id">
                     <div class="tcolumn">{{ itemStore.batch_code }}</div>
-                    <div class="tcolumn">{{ itemStore.vat_code }}</div>
                     <div class="tcolumn">{{ itemStore.color_code }}</div>
+                    <div class="tcolumn">{{ itemStore.vat_code }}</div>
                     <div class="tcolumn">
                       {{ (itemStore.reality_weight && $formatNum(itemStore.reality_weight)) || '-' }}
-                    </div>
-                    <div class="tcolumn blue">
-                      {{ (itemStore.useable_weight && $formatNum(itemStore.useable_weight)) || '-' }}
                     </div>
                     <div class="tcolumn flexRow" style="flex: 0.2">
                       <el-checkbox
@@ -134,8 +151,6 @@
                     <div class="tcolumn"></div>
                     <div class="tcolumn"></div>
                     <div class="tcolumn">{{ $formatNum($toFixed(storeListCom.reality_weight)) }}</div>
-                    <div class="tcolumn blue">{{ $formatNum($toFixed(storeListCom.useable_weight)) }}</div>
-                    <div class="tcolumn" style="flex: 0.4"></div>
                     <div class="tcolumn" style="flex: 0.2"></div>
                   </div>
                 </div>
@@ -170,6 +185,10 @@ export default Vue.extend({
     show: {
       type: Boolean,
       required: true
+    },
+    yarnList: {
+      type: Array,
+      default: []
     }
   },
   data(): any {
@@ -184,7 +203,7 @@ export default Vue.extend({
         vat_code: '',
         isFilterZero: true,
         page: 1,
-        total: 1,
+        total: 1
       },
       isIndeterminate: false,
       allCheck: false,
@@ -198,28 +217,36 @@ export default Vue.extend({
       return this.$store.state.api.storeHouse.arr.filter((item: any) => item.store_type === 1)
     },
     yarn_list() {
-      return this.$store.state.api.yarnType.arr.map((item: any) => {
-        return {
-          value: item.name,
-          label: item.name,
-          children: item.yarns.map((itemChild: any) => {
-            return {
-              value: itemChild.name,
-              label: itemChild.name
-            }
-          })
-        }
-      })
+      if (this.yarnList.length > 0) {
+        return this.yarnList
+      } else {
+        return this.$store.state.api.yarnType.arr.map((item: any) => {
+          return {
+            value: item.name,
+            label: item.name,
+            children: item.yarns.map((itemChild: any) => {
+              return {
+                value: itemChild.name,
+                label: itemChild.name
+              }
+            })
+          }
+        })
+      }
     }
   },
   methods: {
     getList() {
       this.loading = true
+      if (this.yarnList.length > 0 && (!this.filterObj.name || !this.filterObj.LV2_name)) {
+        this.loading = false
+        return
+      }
       store
         .detailYarnList({
           store_id: this.filterObj.LV2_name ? this.filterObj.LV2_name[0] : '',
           second_store_id: this.filterObj.LV2_name ? this.filterObj.LV2_name[1] : '',
-          name: this.filterObj.name[1] || null,
+          name: this.yarnList.length > 0 ? this.filterObj.name : this.filterObj.name ? this.filterObj.name[1] : null,
           color: this.filterObj.color || null,
           weight: this.filterObj.isFilterZero ? 0 : null,
           vat_code: this.filterObj.vat_code || null,
@@ -232,7 +259,6 @@ export default Vue.extend({
           this.list = res.data.data.items
           this.storeListCom = {
             reality_weight: this.list.map((itemM: any) => +itemM.total_weight).reduce((a: any, b: any) => a + b, 0),
-            useable_weight: this.list.map((itemM: any) => +itemM.use_weight).reduce((a: any, b: any) => a + b, 0),
             data: this.$mergeData(this.list, {
               mainRule: ['store_id', 'second_store_id', 'name', 'color', 'attribute'],
               otherRule: [{ name: 'second_store_name' }, { name: 'store_name' }],
@@ -327,6 +353,10 @@ export default Vue.extend({
       this.storeListCom.data = []
     },
     confirm() {
+      if(this.selectList.length === 0){
+        this.$message.error('请选择至少一条库存数据')
+        return
+      }
       this.$emit('confirm', this.selectList)
       this.close()
     },

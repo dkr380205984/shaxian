@@ -63,7 +63,13 @@
               </div>
               <div class="content">
                 <div class="elCtn">
+                  <el-select v-if="info.orderId" v-model="item.name" filterable
+                    placeholder="请选择纱线"
+                    :options="yarn_list">
+                    <el-option v-for="itemYarn,indexYarn in yarn_list" :key='indexYarn + "请选择纱线"' :label="itemYarn.label" :value="itemYarn.value"></el-option>
+                  </el-select>
                   <el-cascader
+                    v-else
                     v-model="item.name"
                     filterable
                     placeholder="请选择纱线"
@@ -250,11 +256,11 @@
           </div>
         </div>
         <div class="oprCtn">
-          <span class="btn borderBtn" @click="close">取消</span>
+          <span class="btn borderBtn" style="margin-right: 20px" @click="close">取消</span>
           <span
             class="btn"
+            v-if="!orderId"
             :class="{ backHoverBlue: !update, backHoverOrange: update }"
-            style="margin: 0 20px"
             @click="saveOrder(1)"
             >{{ update ? '确认修改' : '确认采购' }}</span
           >
@@ -435,7 +441,7 @@ import Vue from 'vue'
 import { yarnOrder, stock } from '@/assets/js/api'
 export default Vue.extend({
   props: {
-    id: {
+    orderId: {
       default: ''
     },
     show: {
@@ -444,7 +450,7 @@ export default Vue.extend({
     },
     info: {
       type: Object,
-      default: false
+      default: {}
     },
     update: {
       type: Boolean,
@@ -513,18 +519,28 @@ export default Vue.extend({
   },
   computed: {
     yarn_list() {
-      return this.$store.state.api.yarnType.arr.map((item: any) => {
-        return {
-          value: item.name,
-          label: item.name,
-          children: item.yarns.map((itemChild: any) => {
-            return {
-              value: itemChild.name,
-              label: itemChild.name
-            }
-          })
-        }
-      })
+      if(this.info.orderId){
+        // console.log(this.info)
+        return this.info.child_data.map((item:any) => {
+          return {
+            label: item.name,
+            value: item.name
+          }
+        })
+      } else {
+        return this.$store.state.api.yarnType.arr.map((item: any) => {
+          return {
+            value: item.name,
+            label: item.name,
+            children: item.yarns.map((itemChild: any) => {
+              return {
+                value: itemChild.name,
+                label: itemChild.name
+              }
+            })
+          }
+        })
+      }
     },
     store_list() {
       return this.$store.state.api.storeHouse.arr.filter((item: any) => item.store_type === 1)
@@ -841,7 +857,7 @@ export default Vue.extend({
       } else {
         yarnOrder
           .create({
-            data: [params]
+            data: [params],
           })
           .then((res) => {
             if (res.data.status) {
@@ -942,16 +958,17 @@ export default Vue.extend({
         return
       }
 
-      console.log(this.store_info.select_id)
+      // console.log(this.store_info.select_id)
       this.store_info.store_id = this.store_info.select_id[0]
       this.store_info.second_store_id = this.store_info.select_id[1]
+      this.store_info.order_id = this.orderId
       this.store_info.child_data.forEach((item: any) => {
         item.batch_code = item.batch_code || ''
         item.color_code = item.color_code || ''
         item.vat_code = item.vat_code || ''
       })
       // return
-      stock.create({ data: [this.store_info] }).then((res) => {
+      stock.create({ data: [this.store_info], }).then((res) => {
         if (res.data.status) {
           this.$message.success('入库成功')
           this.$emit('afterCreate')
@@ -964,7 +981,7 @@ export default Vue.extend({
         this.order_yarn_info = this.info
       } else {
         this.order_yarn_info = {
-          order_id: '',
+          order_id: this.orderId || '',
           client_id: '',
           total_price: '',
           child_data: [

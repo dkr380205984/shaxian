@@ -65,6 +65,7 @@
               <div class="btn backHoverBlue" @click="yarnFlag = true">合并纱线</div>
               <div class="btn backHoverGreen" @click="showAddPO = true">采购并入库</div>
               <div class="btn backHoverOrange" @click="$router.push('/order/salesOrderCreate')">销售并出库</div>
+              <div class="btn backHoverOrange" @click="create_flag = true">出库并加工</div>
             </div>
           </div>
         </div>
@@ -230,10 +231,8 @@
                 @change="getStoreLogList(1)"
                 placeholder="选择纱线属性"
               >
-                <el-option label="胚纱"
-                  value="胚纱"></el-option>
-                <el-option label="筒纱"
-                  value="筒纱"></el-option>
+                <el-option label="胚纱" value="胚纱"></el-option>
+                <el-option label="筒纱" value="筒纱"></el-option>
               </el-select>
             </div>
             <div class="elCtn" style="width: 120px">
@@ -315,7 +314,7 @@
           </div>
         </div>
         <div class="listCtn">
-          <div class="list">
+          <div class="list fz14">
             <div class="overflow" @mousewheel.prevent="listenWheel" ref="list">
               <div class="tableCtn">
                 <div class="table">
@@ -406,7 +405,8 @@
                           item.action_type === 11 ||
                           item.action_type === 13 ||
                           item.action_type === 14 ||
-                          item.action_type === 15,
+                          item.action_type === 15 ||
+                          item.action_type === 17,
                         green:
                           item.action_type === 2 ||
                           item.action_type === 4 ||
@@ -433,7 +433,8 @@
                           item.action_type === 8 ||
                           item.action_type === 13 ||
                           item.action_type === 14 ||
-                          item.action_type === 15 
+                          item.action_type === 15 ||
+                          item.action_type === 17
                         "
                       >
                         <span class="green">{{ item.client_name || '无来源' }}</span>
@@ -488,6 +489,10 @@
                 </div>
               </div>
             </div>
+          </div>
+          <div style="display:flex">
+            <span class="blue" style="font-weight:bold">合计入库：{{ storeLogInfo.total_pop }}kg</span>
+            <span class="green" style="font-weight:bold;margin-left:20px">合计出库：{{ storeLogInfo.total_push }}kg</span>
           </div>
         </div>
         <div class="pageCtn">
@@ -703,7 +708,7 @@
                   <div class="column">纱线名称</div>
                   <div class="column">纱线颜色</div>
                   <div class="column">纱线属性</div>
-                  <div class="column">批号/缸号/色号</div>
+                  <div class="column">批号/色号/缸号</div>
                   <div class="column">库存数量</div>
                   <div class="column" style="flex: 0.3">勾选</div>
                 </div>
@@ -720,7 +725,7 @@
                   <div class="column" style="max-width: 175px; word-break: break-all">{{ item.color }}</div>
                   <div class="column" style="max-width: 175px; word-break: break-all">{{ item.attribute }}</div>
                   <div class="column" style="max-width: 175px; word-break: break-all">
-                    {{ item.batch_code }}/{{ item.vat_code }}/{{ item.color_code }}
+                    {{ item.batch_code }}/{{ item.color_code }}/{{ item.vat_code }}
                   </div>
                   <div class="column" style="max-width: 175px; word-break: break-all">{{ item.use_weight }}kg</div>
                   <div class="column" style="flex: 0.3">
@@ -749,7 +754,7 @@
                   <div class="column">待合并纱线</div>
                   <div class="column">待合并颜色</div>
                   <div class="column">待合并属性</div>
-                  <div class="column">批号/缸号/色号</div>
+                  <div class="column">批号/色号/缸号</div>
                   <div class="column">待合并数量</div>
                   <div class="column">操作</div>
                 </div>
@@ -768,7 +773,7 @@
                   <div class="column" style="max-width: 160px; word-break: break-all">{{ item.color }}</div>
                   <div class="column" style="max-width: 160px; word-break: break-all">{{ item.attribute }}</div>
                   <div class="column" style="max-width: 160px; word-break: break-all">
-                    {{ item.batch_code }}/{{ item.vat_code }}/{{ item.color_code }}
+                    {{ item.batch_code }}/{{ item.color_code }}/{{ item.vat_code }}
                   </div>
                   <div class="column" style="max-width: 160px; word-break: break-all">{{ item.use_weight }}kg</div>
                   <div class="column" style="max-width: 160px; word-break: break-all">
@@ -793,8 +798,8 @@
                   <div class="column">合并颜色</div>
                   <div class="column">合并属性</div>
                   <div class="column">批号</div>
-                  <div class="column">缸号</div>
                   <div class="column">色号</div>
+                  <div class="column">缸号</div>
                   <div class="column">合并数量</div>
                 </div>
               </div>
@@ -830,10 +835,8 @@
                 <div class="column" style="max-width: 140px; box-sizing: border-box">
                   <div class="elCtn">
                     <el-select v-model="mergeData.attribute" clearable placeholder="选择纱线属性">
-                      <el-option label="胚纱"
-                        value="胚纱"></el-option>
-                      <el-option label="筒纱"
-                        value="筒纱"></el-option>
+                      <el-option label="胚纱" value="胚纱"></el-option>
+                      <el-option label="筒纱" value="筒纱"></el-option>
                     </el-select>
                   </div>
                 </div>
@@ -844,12 +847,12 @@
                 </div>
                 <div class="column" style="max-width: 140px; box-sizing: border-box">
                   <div class="elCtn">
-                    <el-input placeholder="缸号" v-model="mergeData.vat_code"></el-input>
+                    <el-input placeholder="色号" v-model="mergeData.color_code"></el-input>
                   </div>
                 </div>
                 <div class="column" style="max-width: 140px; box-sizing: border-box">
                   <div class="elCtn">
-                    <el-input placeholder="色号" v-model="mergeData.color_code"></el-input>
+                    <el-input placeholder="缸号" v-model="mergeData.vat_code"></el-input>
                   </div>
                 </div>
                 <div class="column" style="max-width: 140px; box-sizing: border-box">
@@ -873,6 +876,7 @@
         </div>
       </div>
     </div>
+    <add-trans-process :update_flag='false' :create_flag='create_flag' :info='{}' @close='create_flag = false' @afterCreate='init()'></add-trans-process>
     <in-and-out
       :noChange="true"
       :updateId="updateId"
@@ -969,6 +973,7 @@ export default Vue.extend({
       showAddPO: false,
       yarnFlag: false,
       mergeLoading: false,
+      create_flag: false,
       initData: [],
       selectList: [],
       firstStoreId: '',
@@ -1059,7 +1064,7 @@ export default Vue.extend({
       storeListFilter: {
         LV2_name: '',
         name: '',
-        color: '白胚',
+        color: '',
         isFilterZero: true,
         page: 1,
         limit: 20,
@@ -1077,7 +1082,7 @@ export default Vue.extend({
       storeLogListFilter: {
         LV2_name: '',
         name: '',
-        color: '白胚',
+        color: '',
         attr: '',
         type: '',
         code: '',
@@ -1132,6 +1137,10 @@ export default Vue.extend({
           {
             id: 16,
             name: '加工调取'
+          },
+          {
+            id: 17,
+            name: '加工回库'
           }
         ],
         remarkList: [],
@@ -1411,11 +1420,11 @@ export default Vue.extend({
         })
         .then((res) => {
           this.storeLogInfo = {
-            total_pop: res.data.data.others_data.total_pop || 0,
-            total_push: res.data.data.others_data.total_push || 0,
-            list: res.data.data.data.items
+            total_pop: res.data.data.additional.total_pop || 0,
+            total_push: res.data.data.additional.total_push || 0,
+            list: res.data.data.items
           }
-          this.storeLogListFilter.total = res.data.data.data.total
+          this.storeLogListFilter.total = res.data.data.total
 
           this.loading.log = false
           // 更新页码
@@ -1759,4 +1768,9 @@ export default Vue.extend({
 
 <style lang="less" scoped>
 @import '~@/assets/less/store/detail.less';
+.fz14 {
+  * {
+    font-size: 14px !important;
+  }
+}
 </style>

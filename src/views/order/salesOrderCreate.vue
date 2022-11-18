@@ -188,14 +188,14 @@
                       ></el-input>
                       <el-input
                         class="el"
-                        v-model="itemPro.vat_code"
-                        placeholder="缸号"
+                        v-model="itemPro.color_code"
+                        placeholder="色号"
                         style="margin-right: 4px"
                       ></el-input>
                       <el-input
                         class="el"
-                        v-model="itemPro.color_code"
-                        placeholder="色号"
+                        v-model="itemPro.vat_code"
+                        placeholder="缸号"
                         style="margin-right: 4px"
                       ></el-input>
                     </div>
@@ -714,51 +714,51 @@ export default Vue.extend({
       order.create(formData).then((res) => {
         if (res.data.status) {
           this.$message.success(this.update ? '修改成功' : '添加成功')
-          if (this.update) {
-            this.$router.push('/order/detail/' + this.order_info.id)
-          } else {
-            this.$confirm('继续添加新订单?', '提示', {
-              confirmButtonText: '继续添加',
-              cancelButtonText: '返回列表',
-              type: 'warning'
-            })
-              .then(() => {
-                this.order_info = {
-                  order_code: '',
-                  order_time: this.$getDate(new Date()),
-                  delivery_time: '',
-                  client_id: '',
-                  type: 2,
-                  total_price: 0,
-                  total_weight: 0,
-                  desc: '',
-                  file_url: '',
-                  additional_fee: [
-                    {
-                      name: '',
-                      price: '',
-                      desc: ''
-                    }
-                  ],
-                  total_additional_fee: 0,
-                  product_info: [
-                    {
-                      name: '',
-                      number_attribute: '',
-                      weight: '',
-                      price: '',
-                      attribute: '',
-                      color: ''
-                    }
-                  ]
-                }
-              })
-              .catch(() => {
-                this.$router.push(
-                  '/order/list?page=1&&order_code=&&product_name=&&client_id=&&user_id=&&page_size=10&&date='
-                )
-              })
-          }
+          this.$router.push('/order/detail/'+res.data.data)
+          // if (this.update) {
+          // } else {
+          //   this.$confirm('继续添加新订单?', '提示', {
+          //     confirmButtonText: '继续添加',
+          //     cancelButtonText: '返回列表',
+          //     type: 'warning'
+          //   })
+          //     .then(() => {
+          //       this.order_info = {
+          //         order_code: '',
+          //         order_time: this.$getDate(new Date()),
+          //         delivery_time: '',
+          //         client_id: '',
+          //         type: 2,
+          //         total_price: 0,
+          //         total_weight: 0,
+          //         desc: '',
+          //         file_url: '',
+          //         additional_fee: [
+          //           {
+          //             name: '',
+          //             price: '',
+          //             desc: ''
+          //           }
+          //         ],
+          //         total_additional_fee: 0,
+          //         product_info: [
+          //           {
+          //             name: '',
+          //             number_attribute: '',
+          //             weight: '',
+          //             price: '',
+          //             attribute: '',
+          //             color: ''
+          //           }
+          //         ]
+          //       }
+          //     })
+          //     .catch(() => {
+          //       this.$router.push(
+          //         '/order/list?page=1&&order_code=&&product_name=&&client_id=&&user_id=&&page_size=10&&date='
+          //       )
+          //     })
+          // }
         } else {
           this.loading = false
         }

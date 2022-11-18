@@ -637,51 +637,54 @@ export default Vue.extend({
           : ''
       order.create(formData).then((res) => {
         if (res.data.status) {
-          this.$message.success('添加成功')
-          this.$confirm('继续添加新订单?', '提示', {
-            confirmButtonText: '继续添加',
-            cancelButtonText: '返回列表',
-            type: 'warning'
-          })
-            .then(() => {
-              this.order_info = {
-                order_code: '',
-                order_time: this.$getDate(new Date()),
-                delivery_time: '',
-                client_id: '',
-                total_price: 0,
-                total_weight: 0,
-                desc: '',
-                file_url: '',
-                additional_fee: [
-                  {
-                    name: '',
-                    price: '',
-                    desc: ''
-                  }
-                ],
-                total_additional_fee: 0,
-                product_info: [
-                  {
-                    name: '',
-                    child_data: [
-                      {
-                        number_attribute: '',
-                        weight: '',
-                        price: '',
-                        attribute: '',
-                        color: ''
-                      }
-                    ]
-                  }
-                ]
-              }
-            })
-            .catch(() => {
-              this.$router.push(
-                '/order/list?page=1&&order_code=&&product_name=&&client_id=&&user_id=&&page_size=10&&date='
-              )
-            })
+          // this.$message.success('添加成功')
+          // this.$confirm('继续添加新订单?', '提示', {
+          //   confirmButtonText: '继续添加',
+          //   cancelButtonText: '返回列表',
+          //   type: 'warning'
+          // })
+          //   .then(() => {
+          //     this.order_info = {
+          //       order_code: '',
+          //       order_time: this.$getDate(new Date()),
+          //       delivery_time: '',
+          //       client_id: '',
+          //       total_price: 0,
+          //       total_weight: 0,
+          //       desc: '',
+          //       file_url: '',
+          //       additional_fee: [
+          //         {
+          //           name: '',
+          //           price: '',
+          //           desc: ''
+          //         }
+          //       ],
+          //       total_additional_fee: 0,
+          //       product_info: [
+          //         {
+          //           name: '',
+          //           child_data: [
+          //             {
+          //               number_attribute: '',
+          //               weight: '',
+          //               price: '',
+          //               attribute: '',
+          //               color: ''
+          //             }
+          //           ]
+          //         }
+          //       ]
+          //     }
+          //   })
+          //   .catch(() => {
+          //     this.$router.push(
+          //       '/order/list?page=1&&order_code=&&product_name=&&client_id=&&user_id=&&page_size=10&&date='
+          //     )
+          //   })
+          this.$router.push(
+            '/order/detail/' + res.data.data
+          )
         } else {
           this.loading = false
         }

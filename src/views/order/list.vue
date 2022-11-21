@@ -186,7 +186,7 @@
               <template slot-scope="scope">
                 <span class="blue opr" @click="$router.push('/order/detail/' + scope.row.id)">详情</span>
                 <span class="orange opr" v-if='scope.row.type == 1' @click="$router.push('/order/update/' + scope.row.id)">修改</span>
-                <el-dropdown>
+                <!-- <el-dropdown>
                   <span class="green" style="margin-left: 8px; cursor: pointer">更多</span>
                   <el-dropdown-menu slot="dropdown">
                     <el-dropdown-item @click.native="$router.push('/orderProcessYarn/detail/' + scope.row.id)">
@@ -199,7 +199,7 @@
                       <span class="red">删除订单</span>
                     </el-dropdown-item>
                   </el-dropdown-menu>
-                </el-dropdown>
+                </el-dropdown> -->
               </template>
             </el-table-column>
           </el-table>

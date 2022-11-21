@@ -11,15 +11,15 @@
           </el-tooltip>
         </div>
         <div class="rowCtn">
-          <div class="colCtn">
+          <div class="colCtn flex3">
             <span class="label">订单号：</span>
             <span class="text blue">{{ order_info.code }}</span>
           </div>
-          <div class="colCtn">
+          <div class="colCtn flex3">
             <span class="label">客户单号：</span>
             <span class="text green">{{ order_info.order_code }}</span>
           </div>
-          <div class="colCtn">
+          <div class="colCtn flex3">
             <span class="label">下单客户：</span>
             <span class="text">{{ order_info.client_name }}</span>
           </div>
@@ -255,44 +255,56 @@
     <div class="module" v-if="order_info.type == 1">
       <div class="titleCtn">
         <span class="title">发货信息</span>
-        <span class="addBtn btn btnMain" v-if="order_info.type == 1" @click="showProcessClient = true">加工单发货</span>
+        <span class="addBtn btn btnMain" v-if="order_info.type == 1" @click="jiagongdanList.length>0?showProcessClient = true:$message.error('请先创建加工单')">加工单位发货</span>
         <span class="addBtn btn btnMain" v-if="order_info.type == 1" @click="showStore = true">库存发货</span>
       </div>
       <div style="padding: 20px 32px">
         <div class="tableCtn">
           <div class="thead">
             <div class="trow">
-              <div class="tcolumn">出库单号</div>
-              <div class="tcolumn">来源仓库</div>
-              <div class="tcolumn noPad" style="flex: 4">
+              <div class="tcolumn">发货日期</div>
+              <div class="tcolumn">发货单号</div>
+              <div class="tcolumn">发货仓库</div>
+              <div class="tcolumn noPad" style="flex: 9">
                 <div class="trow">
                   <div class="tcolumn">纱线名称</div>
-                  <div class="tcolumn">出库颜色</div>
-                  <div class="tcolumn">出库属性</div>
-                  <div class="tcolumn">出库数量</div>
+                  <div class="tcolumn">纱线颜色</div>
+                  <div class="tcolumn">纱线属性</div>
+                  <!-- <div class="tcolumn">数量属性</div> -->
+                  <div class="tcolumn">批号/色号/缸号</div>
+                  <!-- <div class="tcolumn">发货单价(元)</div> -->
+                  <div class="tcolumn">发货数量</div>
+                  <div class="tcolumn">发货件数</div>
                 </div>
               </div>
+              <!-- <div class="tcolumn">小计</div> -->
               <div class="tcolumn">备注信息</div>
-              <div class="tcolumn">出库日期</div>
               <div class="tcolumn">操作人</div>
+              <!-- <div class="tcolumn">操作</div> -->
             </div>
           </div>
           <div class="tbody">
             <div class="trow gray" v-if="final_out_log.length === 0" style="line-height: 46px">暂无发货信息</div>
             <div class="trow" v-for="item in final_out_log" :key="item.id">
+              <div class="tcolumn">{{ item.complete_time }}</div>
               <div class="tcolumn">{{ item.code }}</div>
               <div class="tcolumn">{{ item.store_name }}/{{ item.second_store_name }}</div>
-              <div class="tcolumn noPad" style="flex: 4">
+              <div class="tcolumn noPad" style="flex: 9">
                 <div class="trow" v-for="(itemChild, indexChild) in item.child_data" :key="indexChild">
                   <div class="tcolumn">{{ itemChild.name }}</div>
                   <div class="tcolumn">{{ itemChild.color }}</div>
                   <div class="tcolumn">{{ itemChild.attribute }}</div>
+                  <!-- <div class="tcolumn">{{ itemChild.number_attribute || '无' }}</div> -->
+                  <div class="tcolumn" style="word-break: break-all;">{{ itemChild.batch_code }}/{{ itemChild.color_code }}/{{ itemChild.vat_code }}</div>
+                  <!-- <div class="tcolumn">{{ itemChild.price || 0}}</div> -->
                   <div class="tcolumn blue">{{ itemChild.action_weight }}kg</div>
+                  <div class="tcolumn blue">{{ itemChild.item || 0 }}</div>
                 </div>
               </div>
+              <!-- <div class="tcolumn">{{ item.total_price || 0 }}</div> -->
               <div class="tcolumn">{{ item.desc || '无' }}</div>
-              <div class="tcolumn">{{ item.complete_time }}</div>
               <div class="tcolumn">{{ item.user_name }}</div>
+              <!-- <div class="tcolumn">打印</div> -->
             </div>
           </div>
         </div>
@@ -503,7 +515,7 @@
           <div class="buttonList">
             <div class="showButton" @click="showGuanLian = true">
               <i class="el-icon-s-grid"></i>
-              <span class="text">关联页面</span>
+              <span class="text">关联单据</span>
             </div>
             <!-- <div class="otherInfoCtn" style="left: 0">
               <div class="otherInfo">
@@ -985,14 +997,20 @@
       </div>
     </div>
     <div class="popup" v-show="showKucunFahuo">
-      <div class="main">
+      <div class="main" style="min-width:1360px">
         <div class="titleCtn">
           <div class="text">从库存发货</div>
           <i class="el-icon-close" @click="showKucunFahuo = false;fahuoList = []"></i>
         </div>
+        <div class="listCtn">
+          <el-steps :active="1" process-status="finish" finish-status="success">
+            <el-step title="选择仓库和纱线名称"></el-step>
+            <el-step title="从库存发货"></el-step>
+          </el-steps>
+        </div>
         <div class="createCtn">
           <div class="rowCtn">
-            <div class="colCtn">
+            <div class="colCtn" style="flex:3">
               <div class="label">
                 <span class="text">库存纱线</span>
                 <span class="explanation">(必选)</span>
@@ -1010,7 +1028,7 @@
             </div>
             <div class="colCtn">
               <div class="label">
-                <span class="text">当前发货数量</span>
+                <span class="text">当前发货数</span>
                 <span class="explanation">(必填)</span>
               </div>
             </div>
@@ -1023,7 +1041,7 @@
           </div>
           <div style="max-height: 600px; overflow: scroll">
             <div class="rowCtn" v-for="(item, index) in fahuoList" :key="index + '发货数量'">
-              <div class="colCtn">
+              <div class="colCtn" style="flex:3">
                 {{ item.store_name }} / {{ item.second_store_name }} / {{item.name}} / {{item.attribute}} / {{item.color}} / {{item.batch_code}} / {{item.color_code}} / {{item.vat_color}}
               </div>
               <div class="colCtn">
@@ -1038,12 +1056,35 @@
               </div>
               <div class="colCtn">
                 <div class="elCtn">
-                  <el-input v-model="item.action_weight" placeholder="发货数量"><template slot="append">kg</template></el-input>
+                  <el-input v-model="item.action_weight" type="number" @input="getTotalInfo()" placeholder="发货数量"><template slot="append">kg</template></el-input>
                 </div>
               </div>
               <div class="colCtn">
                 <div class="elCtn">
-                  <el-input v-model="item.item" placeholder="件数"><template slot="append">件</template></el-input>
+                  <el-input v-model="item.item" type="number" @input="getTotalInfo()" placeholder="件数"><template slot="append">件</template></el-input>
+                </div>
+              </div>
+            </div>
+            <div class="rowCtn">
+              <div class="colCtn" style="flex:3"></div>
+              <div class="colCtn">
+                <div class="elCtn">
+                  {{fahuoListObj.total_reality_weight}}kg
+                </div>
+              </div>
+              <div class="colCtn">
+                <div class="elCtn">
+                  {{fahuoListObj.total_weight}}kg
+                </div>
+              </div>
+              <div class="colCtn">
+                <div class="elCtn">
+                  {{fahuoListObj.total_action_weight}}kg
+                </div>
+              </div>
+              <div class="colCtn">
+                <div class="elCtn">
+                  {{fahuoListObj.total_item}}件
                 </div>
               </div>
             </div>
@@ -1082,7 +1123,7 @@
       </div>
     </div>
     <div class="popup" v-show="showProcessClient">
-      <div class="main">
+      <div class="main" style="min-width:1360px">
         <div class="titleCtn">
           <div class="text">加工单位直接发货</div>
           <i class="el-icon-close" @click="showProcessClient = false;jiagongdanList = []"></i>
@@ -1103,6 +1144,11 @@
             </div>
             <div class="colCtn">
               <div class="label">
+                <span class="text">批号/缸号/色号</span>
+              </div>
+            </div>
+            <div class="colCtn">
+              <div class="label">
                 <span class="text">件数</span>
                 <span class="explanation">(选填)</span>
               </div>
@@ -1112,6 +1158,13 @@
             <div class="rowCtn" v-for="(item, index) in jiagongdanList" :key="index + '发货数量'">
               <div class="colCtn">
                 {{ item.client_name }} / {{item.name}} / {{item.color}} / {{item.attribute}}
+              </div>
+              <div class="colCtn">
+                <div class="elCtn" style="display:flex">
+                  <el-input step="margin-left:10px" v-model="item.batch_code" placeholder="批号"></el-input>
+                  <el-input step="margin-left:10px" v-model="item.color_code" placeholder="色号"></el-input>
+                  <el-input step="margin-left:10px" v-model="item.vat_code" placeholder="缸号"></el-input>
+                </div>
               </div>
               <div class="colCtn">
                 <div class="elCtn">
@@ -1176,18 +1229,76 @@
               </div>
             </div>
             <div class="tbody">
-              <div class="trow" v-for="item,index in order_log_list" :key="index + '日志'">
-                <div class="tcolumn" v-if="item.action_type === 3">采购并入库</div>
-                <div class="tcolumn" v-if="item.action_type === 9">库存发货</div>
-                <div class="tcolumn" v-if="item.action_type === 16">调取并加工</div>
-                <div class="tcolumn" v-if="item.action_type === 17">加工回库</div>
-                <div class="tcolumn" v-if="item.action_type === 18">加工单发货</div>
-                <div class="tcolumn">{{item.code}}</div>
-                <div class="tcolumn">{{item.user_name}}</div>
-                <div class="tcolumn">{{$getDate(item.created_at)}}</div>
-                <div class="tcolumn gray" v-if="item.action_type === 9 || item.action_type === 18 || item.action_type === 17">暂无操作</div>
-                <div class="tcolumn hoverBlue" style="cursor:pointer" v-if="item.action_type === 3" @click="$router.push('/directOrder/yarnDetail/'+item.related_id)">详情</div>
-                <div class="tcolumn hoverBlue" style="cursor:pointer" v-if="item.action_type === 16" @click="$router.push('/directProcess/yarnDetailNew/'+item.id)">详情</div>
+              <div class="trow">
+                <div class="tcolumn">采购并入库</div>
+                <div class="tcolumn noPad" style="flex:4.5">
+                  <div class="trow" v-for="item,index in caigouList" :key="index + '日志'">
+                    <div class="tcolumn">{{item.code}}</div>
+                    <div class="tcolumn">{{item.user_name}}</div>
+                    <div class="tcolumn">{{$getDate(item.created_at)}}</div>
+                    <div class="tcolumn hoverBlue" style="cursor:pointer" @click="$router.push('/directOrder/yarnDetail/'+item.related_id)">详情</div>
+                  </div>
+                  <div v-if="caigouList.length === 0" class="trow tc" style="align-items:center">
+                    暂无单据
+                  </div>
+                </div>
+              </div>
+              <div class="trow">
+                <div class="tcolumn">库存发货</div>
+                <div class="tcolumn noPad" style="flex:4.5">
+                  <div class="trow" v-for="item,index in kucunList" :key="index + '日志1'">
+                    <div class="tcolumn">{{item.code}}</div>
+                    <div class="tcolumn">{{item.user_name}}</div>
+                    <div class="tcolumn">{{$getDate(item.created_at)}}</div>
+                    <div class="tcolumn gray">暂无操作</div>
+                  </div>
+                  <div v-if="kucunList.length === 0" class="trow tc" style="align-items:center">
+                    暂无单据
+                  </div>
+                </div>
+              </div>
+              <div class="trow">
+                <div class="tcolumn">调取并加工</div>
+                <div class="tcolumn noPad" style="flex:4.5">
+                  <div class="trow" v-for="item,index in diaoquList" :key="index + '日志2'">
+                    <div class="tcolumn">{{item.code}}</div>
+                    <div class="tcolumn">{{item.user_name}}</div>
+                    <div class="tcolumn">{{$getDate(item.created_at)}}</div>
+                    <div class="tcolumn hoverBlue" style="cursor:pointer" @click="$router.push('/directProcess/yarnDetailNew/'+item.id)">详情</div>
+                  </div>
+                  <div v-if="kucunList.length === 0" class="trow tc" style="align-items:center">
+                    暂无单据
+                  </div>
+                </div>
+              </div>
+              <div class="trow">
+                <div class="tcolumn">加工回库</div>
+                <div class="tcolumn noPad" style="flex:4.5">
+                  <div class="trow" v-for="item,index in huikuList" :key="index + '日志3'">
+                    <div class="tcolumn">{{item.code}}</div>
+                    <div class="tcolumn">{{item.user_name}}</div>
+                    <div class="tcolumn">{{$getDate(item.created_at)}}</div>
+                    <div class="tcolumn gray">暂无操作</div>
+                    <!-- <div class="tcolumn hoverBlue" style="cursor:pointer" v-if="item.action_type === 16" @click="$router.push('/directProcess/yarnDetailNew/'+item.id)">详情</div> -->
+                  </div>
+                  <div v-if="huikuList.length === 0" class="trow tc" style="align-items:center">
+                    暂无单据
+                  </div>
+                </div>
+              </div>
+              <div class="trow">
+                <div class="tcolumn">加工单发货</div>
+                <div class="tcolumn noPad" style="flex:4.5">
+                  <div class="trow" v-for="item,index in jiagsdjList" :key="index + '日志4'">
+                    <div class="tcolumn">{{item.code}}</div>
+                    <div class="tcolumn">{{item.user_name}}</div>
+                    <div class="tcolumn">{{$getDate(item.created_at)}}</div>
+                    <div class="tcolumn gray">暂无操作</div>
+                  </div>
+                  <div v-if="jiagsdjList.length === 0" class="trow tc" style="align-items:center">
+                    暂无单据
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -1223,13 +1334,24 @@ export default Vue.extend({
       fahuoList: [],
       jiagongdanList: [],
       order_log_list: [],
+      caigouList: [],
+      kucunList: [],
+      diaoquList: [],
+      huikuList: [],
+      jiagsdjList:[],
+      fahuoListObj:{
+        total_reality_weight:0,
+        total_weight:0,
+        total_action_weight:0,
+        total_item:0,
+      },
       fahuoObj:{
         desc:'',
-        date:''
+        date: this.$getDate(new Date()),
       },
       jiagongdanObj:{
         desc:'',
-        date:''
+        date: this.$getDate(new Date()),
       },
       shaxianInfo: {},
       process_info: {
@@ -1489,6 +1611,11 @@ export default Vue.extend({
         this.order_cancel_log = res[2].data.data.items.filter(
           (item: any) => Number(item.client_id) === Number(this.order_info.client_id) && item.action_type === 15
         )
+        this.caigouList = res[2].data.data.items.filter((item: any) =>(item.action_type === 3))
+        this.kucunList = res[2].data.data.items.filter((item: any) =>(item.action_type === 9))
+        this.diaoquList = res[2].data.data.items.filter((item: any) =>(item.action_type === 16))
+        this.huikuList = res[2].data.data.items.filter((item: any) =>(item.action_type === 17))
+        this.jiagsdjList = res[2].data.data.items.filter((item: any) =>(item.action_type === 18))
         this.order_log_list = res[2].data.data.items
         if (this.order_info.status === 4) {
           if (res[3].data.data) {
@@ -1578,7 +1705,7 @@ export default Vue.extend({
       })
       if(print){
         // @ts-ignore
-        this.$router.push('/print/orderPrint?id='+this.order_info.id +'&printA4Type=false')
+        this.$openUrl('/print/orderPrint?id='+this.order_info.id +'&printA4Type=false')
       }
     },
     confirmJiaGong(print:any){
@@ -1614,15 +1741,22 @@ export default Vue.extend({
       })
       if(print){
         // @ts-ignore
-        this.$router.push('/print/orderPrint?id='+this.order_info.id +'&printA4Type=false')
+        this.$openUrl('/print/orderPrint?id='+this.order_info.id +'&printA4Type=false')
       }
     },
     getYarnSelect(dataList: any) {
       // 库存发货
       let arr: any = []
+      let arrOrder: any = []
       this.final_out_log.forEach((item: any) => {
         item.child_data.forEach((itemChild: any) => {
           arr.push(itemChild)
+        })
+      })
+      this.order_info.product_info.forEach((item: any) => {
+        item.child_data.forEach((itemChild: any) => {
+          itemChild.name = item.product_name
+          arrOrder.push(itemChild)
         })
       })
       dataList.forEach((item: any) => {
@@ -1636,13 +1770,29 @@ export default Vue.extend({
             item.name === itemArr.name
           )
         })
+        let objOrder = arrOrder.find((itemArr: any) => {
+          return (
+            itemArr.attribute === item.attribute &&
+            item.color === itemArr.color &&
+            item.name === itemArr.name
+          )
+        })
         if (obj) {
           obj.store_name = item.store_name
           obj.second_store_name = item.second_store_name
           obj.store_id = item.store_id
           obj.second_store_id = item.second_store_id
-          obj.reality_weight = item.reality_weight
-          obj.weight = obj.action_weight
+          obj.reality_weight = objOrder.weight || 0
+          obj.weight = arr.reduce((a:any,b:any) => {
+            if(b.attribute === item.attribute &&
+            item.color === b.color &&
+            item.vat_code === b.vat_code &&
+            item.color_code === b.color_code &&
+            item.batch_code === b.batch_code &&
+            item.name === b.name){
+              return a + Number(b.action_weight)
+            }
+          },0)
           obj.action_weight = ''
           this.fahuoList.push(obj)
         } else {
@@ -1658,11 +1808,21 @@ export default Vue.extend({
             second_store_name: item.second_store_name,
             store_id: item.store_id,
             second_store_id: item.second_store_id,
-            reality_weight: 0
+            weight: 0,
+            reality_weight: objOrder?objOrder.weight : 0
           })
         }
       })
+      this.getTotalInfo()
       this.showKucunFahuo = true
+    },
+    getTotalInfo(){
+      this.fahuoListObj = {
+        total_reality_weight:this.fahuoList.reduce((a:any,b:any) => {return a+(Number(b.reality_weight) || 0)},0),
+        total_weight:this.fahuoList.reduce((a:any,b:any) => {return a+(Number(b.weight) || 0)},0),
+        total_action_weight:this.fahuoList.reduce((a:any,b:any) => {return a+(Number(b.action_weight) || 0)},0),
+        total_item:this.fahuoList.reduce((a:any,b:any) => {return a+(Number(b.item) || 0)},0),
+      }
     },
     confirm() {
       this.$confirm('是否确认订单完成?', '提示', {

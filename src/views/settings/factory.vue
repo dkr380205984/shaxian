@@ -54,12 +54,12 @@
               <div class="column">{{ item.address || '/' }}</div>
               <div class="column">{{ item.contact || '/' }}</div>
               <div class="column">{{ item.contact_phone || '/' }}</div>
-              <div :class="`column ${(item.status && 'green') || 'red'}`">
-                {{ (item.status && '合作中') || '禁用中' }}
+              <div :class="`column ${(item.status === 1 && 'green') || 'red'}`">
+                {{ (item.status === 1 && '合作中') || '禁用中' }}
               </div>
               <div class="column">
                 <span class="col_btn orange" @click="changeFactory(item)">修改</span>
-                <span class="col_btn green" v-if="!item.status" @click="disableFactory(item)">启用</span>
+                <span class="col_btn green" v-if="!(item.status === 1)" @click="disableFactory(item)">启用</span>
                 <span class="col_btn red" v-else @click="disableFactory(item)">禁用</span>
               </div>
             </div>
@@ -232,7 +232,7 @@ export default Vue.extend({
       status: '1',
       statusArr: [
         {
-          id: '0',
+          id: '2',
           name: '禁用中'
         },
         {
@@ -450,7 +450,7 @@ export default Vue.extend({
       }
     },
     disableFactory(item: PartyB) {
-      this.$confirm('此操作将禁用该加工厂, 是否继续?', '提示', {
+      this.$confirm('此操作将'+(item.status === 1?'禁用':'启用')+'该加工厂, 是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
@@ -463,7 +463,7 @@ export default Vue.extend({
             if (res.data.status !== false) {
               this.$message({
                 type: 'success',
-                message: `${(item.status && '禁用') || '启用'}成功!`
+                message: `${(item.status === 1 && '禁用') || '启用'}成功!`
               })
               this.init()
             }

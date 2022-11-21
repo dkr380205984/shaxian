@@ -288,11 +288,11 @@ const plugin = {
         }
       } else {
         if (!(store as any).state[checkInfo[0]][checkInfo[1]].status) {
-          if (item.getInfoMethed && item.getInfoMethed === 'commit') {
-            store.commit(checkInfo[0] + '/' + item.getInfoApi)
-          } else {
+          // if (item.getInfoMethed && item.getInfoMethed === 'commit') {
+          //   store.commit(checkInfo[0] + '/' + item.getInfoApi)
+          // } else {
             store.dispatch(checkInfo[0] + '/' + item.getInfoApi)
-          }
+          // }
         }
       }
 

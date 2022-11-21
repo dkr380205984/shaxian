@@ -64,7 +64,6 @@
                   <div class="tcolumn">色号</div>
                   <div class="tcolumn">缸号</div>
                   <div class="tcolumn">实际库存(kg)</div>
-                  <div class="tcolumn">可用库存(kg)</div>
                 </div>
               </div>
             </div>
@@ -85,7 +84,6 @@
                   <div class="tcolumn">{{itemStore.color_code}}</div>
                   <div class="tcolumn">{{itemStore.vat_code}}</div>
                   <div class="tcolumn">{{itemStore.reality_weight && $formatNum(itemStore.reality_weight) || '-'}}</div>
-                  <div class="tcolumn blue">{{itemStore.useable_weight && $formatNum(itemStore.useable_weight) || '-'}}</div>
                 </div>
               </div>
             </div>

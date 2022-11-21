@@ -1,6 +1,6 @@
 <template>
   <div class="yarnStoreSelect popup" v-show="show">
-    <div class="main" style="min-width: 1100px">
+    <div class="main" style="min-width:1360px">
       <div class="titleCtn">
         <div class="text">库存纱线</div>
         <div class="closeCtn" @click="close">
@@ -8,10 +8,12 @@
         </div>
       </div>
       <div class="listCtn">
+        <el-steps v-if="yarnList.length > 0" :active="0" process-status="finish" finish-status="success">
+          <el-step title="选择仓库和纱线名称"></el-step>
+          <el-step title="从库存发货"></el-step>
+        </el-steps>
         <div class="explainCtn" style="margin: 12px 0" v-if="yarnList.length > 0">
-          <span style="font-weight: bold; font-size: 18px;"
-            >选择仓库纱线名称后方可进行下一步</span
-          >
+          <span style="font-weight: bold; font-size: 18px; color: red"> 请选择发货仓库、纱线名称，并勾选需要发货的纱线。勾选完毕后，点击下一步，填写发货数量。 </span>
         </div>
         <div class="filterCtn">
           <div class="leftCtn" style="padding: unset">
@@ -72,13 +74,19 @@
         </div>
         <div class="list" style="max-height: 60vh; overflow: scroll; margin: unset">
           <div class="checkCtn">
-            <div class="label">已勾选单据：</div>
-            <div class="elCtn check" v-for="(item, index) in selectList" :key="item.id">
-              <el-input :value="item.id + '-' + item.store_name" disabled>
-                <template slot="append">
-                  <i class="el-icon-close hoverRed" style="cursor: pointer" @click="selectList.splice(index, 1)"></i>
-                </template>
-              </el-input>
+            <div class="label">已勾选纱线：</div>
+            <div class="boxCtn">
+              <div class="boxCtn">
+                <div class="box" v-for="(item, index) in selectList" :key="index + 'yarnListShaXian'">
+                  {{ item.name }}/{{ item.color }}/{{ item.attribute }}/{{ item.batch_code }}/{{ item.vat_code }}/{{
+                    item.color_code
+                  }}
+                  <span
+                    class="el-icon-circle-close closeIcon hoverRed"
+                    @click="selectList.splice(index, 1)"
+                  ></span>
+                </div>
+              </div>
             </div>
           </div>
           <div class="tableCtn" style="margin: 24px 0" v-loading="loading">
@@ -172,7 +180,8 @@
       </div>
       <div class="oprCtn">
         <span class="btn borderBtn" @click="close">取消</span>
-        <span class="btn backHoverBlue" style="margin: 0 20px" @click="confirm">提交</span>
+        <span class="btn backHoverBlue" style="margin: 0 20px" v-if="yarnList.length > 0" @click="confirm">下一步</span>
+        <span class="btn backHoverBlue" style="margin: 0 20px" v-else @click="confirm">提交</span>
       </div>
     </div>
   </div>
@@ -353,7 +362,7 @@ export default Vue.extend({
       this.storeListCom.data = []
     },
     confirm() {
-      if(this.selectList.length === 0){
+      if (this.selectList.length === 0) {
         this.$message.error('请选择至少一条库存数据')
         return
       }

@@ -99,7 +99,7 @@ const apiActions = {
     })
   },
   getPartyBAsync(content: ActionContext<ApiState, any>) {
-    partyB.list().then((res) => {
+    partyB.list({status: 1}).then((res) => {
       if (res.data.status !== false) {
         content.commit('getPartyB', res.data.data)
       }

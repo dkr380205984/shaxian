@@ -36,8 +36,8 @@
               v-for="item in colorList"
               :key="item.id">
               <div class="column">{{item.name}}</div>
-              <div class="column">{{item.create_user || '/'}}</div>
-              <div class="column">{{item.created_at ? $getDate(item.created_at) : '/'}}</div>
+              <div class="column">{{item.user_name || '/'}}</div>
+              <div class="column">{{item.create_time ? $getDate(item.create_time) : '/'}}</div>
               <div class="column">
                 <span class="col_btn orange"
                   @click="changeColor(item)">修改</span>

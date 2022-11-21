@@ -16,7 +16,7 @@ export interface PartyBListParams {
   page?: number
   limit?: number
   name?: string | null
-  status?: 1 | 0 | null // 1合作中0禁用中null全部展示
+  status?: 1 | 2 | null // 1启用2禁用中null全部展示
   client_type?: string | null
   type?: 1 | 2 | 3
   start_time?: string

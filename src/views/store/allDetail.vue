@@ -93,7 +93,6 @@
                   <div class="tcolumn">色号</div>
                   <div class="tcolumn">缸号</div>
                   <div class="tcolumn">实际库存(KG)</div>
-                  <div class="tcolumn">可用库存(KG)</div>
                   <div class="tcolumn" style="flex: 2">操作</div>
                 </div>
               </div>
@@ -142,9 +141,6 @@
                   <div class="tcolumn">
                     {{ (itemStore.reality_weight && $formatNum(itemStore.reality_weight)) || '-' }}
                   </div>
-                  <div class="tcolumn blue">
-                    {{ (itemStore.useable_weight && $formatNum(itemStore.useable_weight)) || '-' }}
-                  </div>
                   <div class="tcolumn flexRow" style="flex: 2">
                     <span class="opr green" @click="goLogEl(item, itemStore)">日志</span>
                     <span class="opr green" @click="openStore(1, item)">入库</span>
@@ -166,8 +162,7 @@
                   <div class="tcolumn"></div>
                   <div class="tcolumn"></div>
                   <div class="tcolumn">{{ $formatNum($toFixed(storeListCom.reality_weight)) }}</div>
-                  <div class="tcolumn blue">{{ $formatNum($toFixed(storeListCom.useable_weight)) }}</div>
-                  <div class="tcolumn" style="min-width: 110px"></div>
+                  <div class="tcolumn flexRow" style="flex:2"></div>
                 </div>
               </div>
             </div>

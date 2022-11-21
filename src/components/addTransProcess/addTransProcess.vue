@@ -16,7 +16,9 @@
             <div class="listCtn" style="padding: unset; margin-top: 20px">
               <div class="explainCtn" style="margin: 12px 0">
                 <span style="font-weight: bold; font-size: 18px; color: red"
-                  >第一步选择仓库{{yarnList.length > 0?'和纱线名称':''}}，第二步填写调取数量，第三步填写加工单</span
+                  >第一步选择仓库{{
+                    yarnList.length > 0 ? '和纱线名称' : ''
+                  }}，第二步填写调取数量，第三步填写加工单</span
                 >
               </div>
               <div class="filterCtn" style="padding-bottom: 30px">
@@ -480,7 +482,7 @@
                   price: '',
                   desc: '',
                   order_time: $getDate(new Date()),
-                  delivery_time: '',
+                  delivery_time: this.$getDate(new Date()),
                   total_price: '',
                   file_url: '',
                   total_additional_fee: 0,
@@ -515,7 +517,7 @@
       <div class="oprCtn">
         <div class="opr" style="padding-left: 8px" @click="close">取消</div>
         <div class="opr" :class="{ blue: create_flag, orange: update_flag }" @click="saveProcess">
-          {{ create_flag ? '下一步' : '确认修改' }}
+          {{ create_flag ? (step === 2 ? '提交' : '下一步') : '确认修改' }}
         </div>
       </div>
     </div>
@@ -600,7 +602,7 @@ export default Vue.extend({
           price: '',
           desc: '',
           order_time: this.$getDate(new Date()),
-          delivery_time: '',
+          delivery_time: this.$getDate(new Date()),
           total_price: '',
           file_url: '',
           total_additional_fee: 0,
@@ -715,7 +717,7 @@ export default Vue.extend({
           price: '',
           desc: '',
           order_time: this.$getDate(new Date()),
-          delivery_time: '',
+          delivery_time: this.$getDate(new Date()),
           total_price: '',
           file_url: '',
           total_additional_fee: 0,
@@ -749,7 +751,7 @@ export default Vue.extend({
     getYarnStoreList() {
       if (!this.getYarnStoreObj.LV2_name) {
         return
-      } else if(this.yarnList.length > 0 && !this.getYarnStoreObj.name){
+      } else if (this.yarnList.length > 0 && !this.getYarnStoreObj.name) {
         return
       }
       this.step = 1
@@ -878,7 +880,7 @@ export default Vue.extend({
           price: '',
           desc: '',
           order_time: this.$getDate(new Date()),
-          delivery_time: '',
+          delivery_time: this.$getDate(new Date()),
           total_price: '',
           file_url: '',
           total_additional_fee: 0,

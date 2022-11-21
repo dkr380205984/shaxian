@@ -1078,7 +1078,6 @@
                       <div class="tcolumn">缸号</div>
                       <div class="tcolumn">仓库名称</div>
                       <div class="tcolumn">实际库存</div>
-                      <div class="tcolumn">可用库存</div>
                       <div class="tcolumn">操作</div>
                     </div>
                   </div>
@@ -1101,7 +1100,6 @@
                       <div class="tcolumn">{{itemChild.vat_code}}</div>
                       <div class="tcolumn">{{itemChild.store_name}}</div>
                       <div class="tcolumn">{{itemChild.total_weight}}</div>
-                      <div class="tcolumn">{{itemChild.use_weight}}</div>
                       <div class="tcolumn">
                         <span class="opr blue"
                           @click="getStoreInfo(itemChild,item.name)">调取</span>
@@ -1126,7 +1124,6 @@
                     <div class="column">缸号</div>
                     <div class="column">仓库名称</div>
                     <div class="column">实际库存</div>
-                    <div class="column">可用库存</div>
                   </div>
                 </div>
                 <div class="bodyCtn">
@@ -1139,7 +1136,6 @@
                     <div class="column">{{store_info.vat_code}}</div>
                     <div class="column">{{store_info.store_name}}</div>
                     <div class="column">{{store_info.reality_weight}}</div>
-                    <div class="column">{{store_info.use_weight}}</div>
                   </div>
                 </div>
               </div>

@@ -98,7 +98,6 @@
                 <div class="trow">
                   <div class="tcolumn">批号</div>
                   <div class="tcolumn">实际库存(KG)</div>
-                  <div class="tcolumn">可用库存(KG)</div>
                   <div class="tcolumn">操作</div>
                 </div>
               </div>
@@ -116,7 +115,6 @@
                   :key="indexStore">
                   <div class="tcolumn">{{itemStore.batch_code}}</div>
                   <div class="tcolumn">{{itemStore.reality_weight && $formatNum(itemStore.reality_weight) || '-'}}</div>
-                  <div class="tcolumn blue">{{itemStore.useable_weight && $formatNum(itemStore.useable_weight) || '-'}}</div>
                   <div class="tcolumn flexRow">
                     <span class="opr green"
                       @click="goLogEl(item)">日志</span>

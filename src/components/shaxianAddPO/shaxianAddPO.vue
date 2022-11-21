@@ -732,12 +732,12 @@ export default Vue.extend({
     },
     cmpTotalPrice() {
       this.order_yarn_info.total_price =
-        this.order_yarn_info.child_data.reduce((total: any, current: any) => {
+        (this.order_yarn_info.child_data.reduce((total: any, current: any) => {
           return total + Number(current.price) * Number(current.weight)
         }, 0) +
         (this.order_yarn_info.additional_fee as any[]).reduce((total, current) => {
           return total + Number(current.price)
-        }, 0)
+        }, 0)).toFixed(2)
     },
     beforeAvatarUpload(file: any) {
       const fileName = file.name.lastIndexOf('.') // 取到文件名开始到最后一个点的长度

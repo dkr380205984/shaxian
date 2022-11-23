@@ -1264,6 +1264,11 @@
                   <span class="text">{{ totalJiaGongDan.totalFahuoNumber }}kg</span>
                 </div>
               </div>
+              <div class="colCtn">
+                <div class="label">
+                  <span class="text">{{ totalJiaGongDan.totalJiaGongNumber }}kg</span>
+                </div>
+              </div>
               <div class="colCtn" style="flex: 1.5"></div>
               <div class="colCtn">
                 <div class="label">
@@ -1868,6 +1873,11 @@ export default Vue.extend({
         totalFahuoNumber: this.jiagongdanList
           .reduce((a: any, b: any) => {
             return a + (Number(b.fahuoNumber) || 0)
+          }, 0)
+          .toFixed(1),
+        totalJiaGongNumber: this.jiagongdanList
+          .reduce((a: any, b: any) => {
+            return a + (Number(b.jiagongNumber) || 0)
           }, 0)
           .toFixed(1),
         totalActionWeight: this.jiagongdanList

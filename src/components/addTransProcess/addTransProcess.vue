@@ -1,12 +1,12 @@
 <template>
   <div id="addTransProcess" class="popup" v-show="update_flag || create_flag">
-    <div class="main" style="width: 1110px">
+    <div class="main" style="width: 1300px">
       <div class="titleCtn">
         <span class="text">{{ update_flag ? '修改' : '添加' }}加工单</span>
         <i class="close_icon el-icon-close" @click="close"></i>
       </div>
       <div class="contentCtn" v-loading="loading" style="padding: 0; max-height: 800px">
-        <div class="createCtn">
+        <div class="createCtn" style="max-height: 700px;overflow:scroll">
           <el-steps v-if="!update_flag" :active="step" process-status="finish" finish-status="success">
             <el-step title="选择仓库"></el-step>
             <el-step title="填写调取数量"></el-step>
@@ -91,6 +91,11 @@
                       placeholder="缸号"
                     ></el-input>
                   </div>
+                  <div class="elCtn" style="width:9%">
+                    <el-tooltip class="item" effect="dark" content="过滤库存数量<=0的库存" placement="top-start">
+                      <el-checkbox v-model="getYarnStoreObj.isFilterZero" @change="getYarnStoreList"></el-checkbox>
+                    </el-tooltip>
+                  </div>
                 </div>
               </div>
               <el-table ref="table" :data="storeList" style="width: 100%">
@@ -101,7 +106,7 @@
                     >
                   </template>
                 </el-table-column>
-                <el-table-column prop="name" label="纱线名"> </el-table-column>
+                <el-table-column width="220" prop="name" label="纱线名"> </el-table-column>
                 <el-table-column prop="attribute" label="纱线属性"> </el-table-column>
                 <el-table-column prop="color" label="颜色"> </el-table-column>
                 <el-table-column prop="batch_code" label="批号"> </el-table-column>
@@ -239,11 +244,18 @@
                   </div>
                 </div>
                 <div class="colCtn">
-                  <div class="label" v-if="indexChild === 0">
-                    <span class="text">{{
+                  <div style="display:flex;align-items:center">
+                    <div class="label" v-if="indexChild === 0">
+                      <span class="text">{{
                       item.type ? (item.type === '膨纱' ? '颜色/属性' : '加工前/加工后') : '请选择加工类型'
                     }}</span>
                     <span class="explanation">(必填)</span>
+                    </div>
+                    <!-- <el-tooltip v-if="indexChild === 0 && item.type === '染色'" style="cursor:pointer;margin-left:10px" class="item" effect="dark" content="统一属性" placement="top">
+                      <svg class="iconFont copyIcon hoverBlue" aria-hidden="true" @click="copyInfo('attribute')">
+                        <use xlink:href="#icon-tongbushuju1"></use>
+                      </svg>
+                    </el-tooltip> -->
                   </div>
                   <div class="content flexRow">
                     <div class="elCtn" style="width: 100%" v-if="!item.type">
@@ -306,6 +318,9 @@
                       </el-input>
                     </div>
                   </div>
+                  <div v-if="itemChild.before_color.indexOf('白') === -1 && item.type === '染色'" style="color:red;margin-top:5px">
+                    该纱线不是白胚纱，可能无法进行染色
+                  </div>
                 </div>
                 <div class="colCtn">
                   <div class="label" v-if="indexChild === 0">
@@ -318,7 +333,7 @@
                       </el-input>
                     </div>
                     <div class="elCtn">
-                      <el-input placeholder="数量" type="number" disabled v-model="itemChild.weight"></el-input>
+                      <el-input placeholder="数量" type="number" :disabled='item.type !== "染色"' @input="$forceUpdate()" v-model="itemChild.weight"></el-input>
                     </div>
                   </div>
                   <div
@@ -482,7 +497,7 @@
                   price: '',
                   desc: '',
                   order_time: $getDate(new Date()),
-                  delivery_time: this.$getDate(new Date()),
+                  delivery_time: $getDate(new Date()),
                   total_price: '',
                   file_url: '',
                   total_additional_fee: 0,
@@ -547,6 +562,12 @@ export default Vue.extend({
     info: {
       type: Object,
       default: {}
+    },
+    yarnInfoList:{
+      type: Array,
+      default:function(){
+        return []
+      }
     }
   },
   data(): any {
@@ -556,6 +577,8 @@ export default Vue.extend({
       dialogVisible: false,
       dialogImageUrl: '',
       step: 0,
+      total_number: 0,
+      diaoquNumber: 0,
       storeList: [],
       getYarnStoreObj: {
         store_id: '',
@@ -566,6 +589,7 @@ export default Vue.extend({
         batch_code: '',
         vat_code: '',
         color_code: '',
+        isFilterZero:true,
         storePage: 1,
         storeTotal: 1
       },
@@ -661,6 +685,12 @@ export default Vue.extend({
   },
   methods: {
     close() {
+      if(this.trans_id){
+        stock
+          .delete({
+            id:this.trans_id
+          })
+      }
       this.$emit('close')
       this.resetProcess()
     },
@@ -678,14 +708,23 @@ export default Vue.extend({
     changeType(ev: any, item: any) {
       // console.log(ev,item)
       item.child_data.forEach((itemChild: any) => {
-        // console.log(itemChild)
+        itemChild.before_attribute = itemChild.attributeName
+        itemChild.before_color = itemChild.colorName
         if (ev === '倒筒') {
-          itemChild.before_attribute = itemChild.attributeName
           itemChild.after_attribute =
             itemChild.attributeName === '胚纱' ? '筒纱' : itemChild.attributeName === '筒纱' ? '胚纱' : ''
+          itemChild.color = ''
+          itemChild.attribute = ''
+          itemChild.after_color = ''
         } else if (ev === '膨纱') {
           itemChild.color = '膨纱'
           itemChild.attribute = '膨纱'
+          itemChild.after_attribute = ''
+          itemChild.after_color = ''
+        } else if(ev === '染色') {
+          itemChild.color = ''
+          itemChild.attribute = ''
+          itemChild.after_attribute = ''
         }
       })
       this.$forceUpdate()
@@ -707,9 +746,10 @@ export default Vue.extend({
       this.$forceUpdate()
     },
     getStockDetail(id: number) {
+      this.trans_id = id
       stock.detail({ id }).then((res) => {
         let data = res.data.data
-        // console.log(data)
+        this.diaoquNumber = data.child_data[0].action_weight
         this.process_info[0] = {
           transfer_id: data.id,
           client_id: '',
@@ -728,7 +768,7 @@ export default Vue.extend({
               desc: ''
             }
           ],
-          child_data: res.data.data.child_data.map((item: any) => {
+          child_data: data.child_data.map((item: any) => {
             return {
               name: item.name,
               transfer_info_id: item.id || '',
@@ -744,6 +784,28 @@ export default Vue.extend({
               weight: item.action_weight
             }
           })
+        }
+        if(this.yarnInfoList.length > 0){
+          let a = this.yarnInfoList.find((item:any) => {
+            return item.name === data.child_data[0].name
+          })
+          this.process_info[0].child_data = []
+          a.child_data.forEach((item:any) => {
+            this.process_info[0].child_data.push({
+              name: a.name,
+              transfer_info_id: item.id || '',
+              id: data.child_data[0].id || '',
+              before_attribute: '',
+              after_attribute: '',
+              before_color: data.child_data[0].color,
+              after_color: item.color,
+              color: '',
+              attribute: '',
+              colorName: item.color || '',
+              attributeName: item.attribute || '',
+              weight: item.weight
+            })
+          });
         }
         this.child_data_info = data.child_data
       })
@@ -769,7 +831,7 @@ export default Vue.extend({
           page: this.getYarnStoreObj.storePage || 1,
           limit: this.getYarnStoreObj.limit || 10,
           color: this.getYarnStoreObj.color || null,
-          weight: 0,
+          weight: this.getYarnStoreObj.isFilterZero ? 0 : null,
           vat_code: this.getYarnStoreObj.vat_code || null,
           color_code: this.getYarnStoreObj.color_code || null,
           batch_code: this.getYarnStoreObj.batch_code || null
@@ -853,6 +915,17 @@ export default Vue.extend({
             ? JSON.stringify(item.additional_fee)
             : ''
       })
+      this.total_weight = this.process_info.reduce((a:any,b:any) => {
+        return a + b.child_data.reduce((a1:any,b1:any) => {
+          return a1 + (Number(b1.weight) || 0)
+        },0)
+      },0)
+      
+      if(this.diaoquNumber < this.total_weight){
+        this.$message.error('总数量不能超过'+this.diaoquNumber)
+        this.loading = false
+        return
+      }
       yarnProcess
         .create({
           order_id: this.orderId || '',
@@ -953,6 +1026,13 @@ export default Vue.extend({
       if (this.selectList.length === 0) {
         this.$message.error('请至少填写一个调取数量')
         return
+      }
+
+      if(this.yarnInfoList.length > 0){
+        if(this.selectList.length !== 1){
+          this.$message.error('只能填写一个调取数量')
+          return
+        }
       }
 
       let arr = this.$mergeData(this.selectList, {

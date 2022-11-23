@@ -370,7 +370,6 @@ export default Vue.extend({
     printList(undefined, 10).then((res: any) => {
       this.desc = res.desc
     })
-    this.printA4Type = this.$route.query.printA4Type === 'true'
     order
       .detail({
         id: +this.$route.query.id

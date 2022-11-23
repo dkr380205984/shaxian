@@ -1,6 +1,6 @@
 <template>
   <div class="shaxianAddPO popup" v-show="show" v-loading="loading">
-    <div class="main" style="min-width: 1000px">
+    <div class="main" style="min-width: 1200px">
       <div class="titleCtn">
         <div class="text">采购单{{ update ? '修改' : '添加' }}/入库</div>
         <div class="closeCtn" @click="close">
@@ -8,7 +8,7 @@
         </div>
       </div>
       <template v-if="step === 1">
-        <div class="createCtn">
+        <div class="createCtn" style="max-height: 700px; overflow: scroll">
           <div class="rowCtn">
             <div class="colCtn">
               <div class="label">
@@ -22,7 +22,7 @@
                       v-for="item in client_arr"
                       :key="item.id"
                       :value="item.id"
-                      :label="item.code + '-' +item.name"
+                      :label="item.code + '-' + item.name"
                     ></el-option>
                   </el-select>
                 </div>
@@ -63,10 +63,19 @@
               </div>
               <div class="content">
                 <div class="elCtn">
-                  <el-select v-if="info.orderId" v-model="item.name" filterable
+                  <el-select
+                    v-if="info.orderId"
+                    v-model="item.name"
+                    filterable
                     placeholder="请选择纱线"
-                    :options="yarn_list">
-                    <el-option v-for="itemYarn,indexYarn in yarn_list" :key='indexYarn + "请选择纱线"' :label="itemYarn.label" :value="itemYarn.value"></el-option>
+                    :options="yarn_list"
+                  >
+                    <el-option
+                      v-for="(itemYarn, indexYarn) in yarn_list"
+                      :key="indexYarn + '请选择纱线'"
+                      :label="itemYarn.label"
+                      :value="itemYarn.value"
+                    ></el-option>
                   </el-select>
                   <el-cascader
                     v-else
@@ -79,9 +88,23 @@
               </div>
             </div>
             <div class="colCtn">
-              <div class="label" v-if="index === 0">
-                <span class="text">颜色/属性</span>
-                <span class="explanation">(必填)</span>
+              <div style="display: flex; align-items: center">
+                <div class="label" v-if="index === 0">
+                  <span class="text">颜色/属性</span>
+                  <span class="explanation">(必填)</span>
+                </div>
+                <el-tooltip
+                  v-if="index === 0"
+                  style="cursor: pointer; margin-left: 10px"
+                  class="item"
+                  effect="dark"
+                  content="统一属性"
+                  placement="top"
+                >
+                  <svg class="iconFont copyIcon hoverBlue" aria-hidden="true" @click="copyInfo('attribute')">
+                    <use xlink:href="#icon-tongbushuju1"></use>
+                  </svg>
+                </el-tooltip>
               </div>
               <div class="content flexRow">
                 <div class="elCtn">
@@ -89,18 +112,30 @@
                 </div>
                 <div class="elCtn">
                   <el-select placeholder="属性" v-model="item.attribute">
-                    <el-option label="胚纱"
-                      value="胚纱"></el-option>
-                    <el-option label="筒纱"
-                      value="筒纱"></el-option>
+                    <el-option label="胚纱" value="胚纱"></el-option>
+                    <el-option label="筒纱" value="筒纱"></el-option>
                   </el-select>
                 </div>
               </div>
             </div>
             <div class="colCtn">
-              <div class="label" v-if="index === 0">
-                <span class="text">单价/数量</span>
-                <span class="explanation">(必填)</span>
+              <div style="display: flex; align-items: center">
+                <div class="label" v-if="index === 0">
+                  <span class="text">单价/数量</span>
+                  <span class="explanation">(必填)</span>
+                </div>
+                <el-tooltip
+                  v-if="index === 0"
+                  style="cursor: pointer; margin-left: 10px"
+                  class="item"
+                  effect="dark"
+                  content="统一单价"
+                  placement="top"
+                >
+                  <svg class="iconFont copyIcon hoverBlue" aria-hidden="true" @click="copyInfo('price')">
+                    <use xlink:href="#icon-tongbushuju1"></use>
+                  </svg>
+                </el-tooltip>
               </div>
               <div class="content flexRow noPadInput">
                 <div class="elCtn">
@@ -186,7 +221,7 @@
             </div>
           </div>
           <div class="rowCtn">
-            <div class="colCtn" style="max-width: 224.67px">
+            <div class="colCtn">
               <div class="label">
                 <span class="text">交货日期</span>
                 <span class="explanation">(必选)</span>
@@ -203,7 +238,7 @@
                 </div>
               </div>
             </div>
-            <div class="colCtn">
+            <div class="colCtn" style="flex: 2.3">
               <div class="label">
                 <span class="text">备注信息</span>
                 <span class="explanation">(选填)</span>
@@ -264,11 +299,13 @@
             @click="saveOrder(1)"
             >{{ update ? '确认修改' : '确认采购' }}</span
           >
-          <span v-if="!update" class="btn backHoverGreen" style="margin-right: 20px" @click="saveOrder(2)">确认并入库</span>
+          <span v-if="!update" class="btn backHoverGreen" style="margin-right: 20px" @click="saveOrder(2)"
+            >确认并入库</span
+          >
         </div>
       </template>
       <template v-if="step === 2">
-        <div class="createCtn">
+        <div class="createCtn" style="max-height: 700px; overflow: scroll">
           <div class="rowCtn">
             <div class="colCtn">
               <div class="label">
@@ -333,10 +370,8 @@
                 </div>
                 <div class="tcolumn">
                   <el-select class="el" v-model="item.attribute" placeholder="属性">
-                    <el-option label="胚纱"
-                      value="胚纱"></el-option>
-                    <el-option label="筒纱"
-                      value="筒纱"></el-option>
+                    <el-option label="胚纱" value="胚纱"></el-option>
+                    <el-option label="筒纱" value="筒纱"></el-option>
                   </el-select>
                 </div>
                 <div class="tcolumn" style="flex: 2; flex-direction: row; align-items: center">
@@ -455,6 +490,20 @@ export default Vue.extend({
     update: {
       type: Boolean,
       default: false
+    },
+    child_data: {
+      type: Array,
+      default: function () {
+        return [
+          {
+            name: '',
+            weight: '',
+            color: '白胚',
+            attribute: '',
+            price: ''
+          }
+        ]
+      }
     }
   },
   data(): any {
@@ -469,15 +518,7 @@ export default Vue.extend({
         order_id: '',
         client_id: '',
         total_price: '',
-        child_data: [
-          {
-            name: '',
-            weight: '',
-            color: '白胚',
-            attribute: '',
-            price: ''
-          }
-        ],
+        child_data: this.child_data,
         order_time: this.$getDate(new Date()),
         // @ts-ignore
         delivery_time: this.$GetDateStr(5),
@@ -519,9 +560,9 @@ export default Vue.extend({
   },
   computed: {
     yarn_list() {
-      if(this.info.orderId){
+      if (this.info.orderId) {
         // console.log(this.info)
-        return this.info.child_data.map((item:any) => {
+        return this.info.child_data.map((item: any) => {
           return {
             label: item.name,
             value: item.name
@@ -553,6 +594,16 @@ export default Vue.extend({
     }
   },
   methods: {
+    copyInfo(type: string) {
+      let info = ''
+      this.order_yarn_info.child_data.forEach((item: any, index: number) => {
+        if (index === 0) {
+          info = item[type]
+        } else {
+          item[type] = info
+        }
+      })
+    },
     // 打开复制粘贴图片功能
     changeCVOpration(flag: boolean) {
       if (this.notify) {
@@ -731,13 +782,14 @@ export default Vue.extend({
       this.step = 1
     },
     cmpTotalPrice() {
-      this.order_yarn_info.total_price =
-        (this.order_yarn_info.child_data.reduce((total: any, current: any) => {
+      this.order_yarn_info.total_price = (
+        this.order_yarn_info.child_data.reduce((total: any, current: any) => {
           return total + Number(current.price) * Number(current.weight)
         }, 0) +
         (this.order_yarn_info.additional_fee as any[]).reduce((total, current) => {
           return total + Number(current.price)
-        }, 0)).toFixed(2)
+        }, 0)
+      ).toFixed(2)
     },
     beforeAvatarUpload(file: any) {
       const fileName = file.name.lastIndexOf('.') // 取到文件名开始到最后一个点的长度
@@ -857,7 +909,7 @@ export default Vue.extend({
       } else {
         yarnOrder
           .create({
-            data: [params],
+            data: [params]
           })
           .then((res) => {
             if (res.data.status) {
@@ -869,30 +921,31 @@ export default Vue.extend({
               if (step === 2) {
                 this.store_info.client_id = this.order_yarn_info.client_id
                 this.store_info.related_id = res.data.data[0]
-                yarnOrder.detail({
-                  id: res.data.data[0]
-                }).then(ress => {
-                  
-                  this.selfYarnArr = this.$mergeData(ress.data.data.child_data, {
-                    mainRule: 'name'
+                yarnOrder
+                  .detail({
+                    id: res.data.data[0]
                   })
+                  .then((ress) => {
+                    this.selfYarnArr = this.$mergeData(ress.data.data.child_data, {
+                      mainRule: 'name'
+                    })
 
-                  this.store_info.child_data = ress.data.data.child_data.map((item: any) => {
-                    return {
-                      action_weight: item.weight,
-                      attribute: item.attribute,
-                      color: item.color,
-                      name: item.name,
-                      price: item.price,
-                      batch_code: '',
-                      color_code: '',
-                      vat_code: '',
-                      item: '',
-                      related_info_id: item.id
-                    }
+                    this.store_info.child_data = ress.data.data.child_data.map((item: any) => {
+                      return {
+                        action_weight: item.weight,
+                        attribute: item.attribute,
+                        color: item.color,
+                        name: item.name,
+                        price: item.price,
+                        batch_code: '',
+                        color_code: '',
+                        vat_code: '',
+                        item: '',
+                        related_info_id: item.id
+                      }
+                    })
+                    this.step = 2
                   })
-                  this.step = 2
-                })
               }
             }
             this.loading = false
@@ -968,7 +1021,7 @@ export default Vue.extend({
         item.vat_code = item.vat_code || ''
       })
       // return
-      stock.create({ data: [this.store_info], }).then((res) => {
+      stock.create({ data: [this.store_info] }).then((res) => {
         if (res.data.status) {
           this.$message.success('入库成功')
           this.$emit('afterCreate')
@@ -984,15 +1037,18 @@ export default Vue.extend({
           order_id: this.orderId || '',
           client_id: '',
           total_price: '',
-          child_data: [
-            {
-              name: '',
-              weight: '',
-              color: '白胚',
-              attribute: '',
-              price: ''
-            }
-          ],
+          child_data:
+            this.child_data.length > 0
+              ? this.child_data
+              : [
+                  {
+                    name: '',
+                    weight: '',
+                    color: '白胚',
+                    attribute: '',
+                    price: ''
+                  }
+                ],
           order_time: this.$getDate(new Date()),
           delivery_time: this.$GetDateStr(5),
           additional_fee: [
@@ -1007,6 +1063,7 @@ export default Vue.extend({
           desc: ''
         }
       }
+      this.$forceUpdate()
     }
   },
   watch: {
@@ -1047,9 +1104,12 @@ export default Vue.extend({
 @import './shaxianAddPO.less';
 </style>
 <style lang="less">
-.noPadInput{
-  .el-input__inner{
+.noPadInput {
+  .el-input__inner {
     padding-right: 5px;
   }
+}
+.el-date-editor.el-input {
+  width: 100%;
 }
 </style>

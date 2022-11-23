@@ -293,6 +293,11 @@ const routes: RouteConfig[] = [
         name: 'orderPrint',
         component: () => import('@/views/print/orderPrint.vue')
       },
+      {// 发货单单
+        path: 'transPrint',
+        name: 'transPrint',
+        component: () => import('@/views/print/transPrint.vue')
+      },
       {// 新加工单
         path: 'processPrint',
         name: 'processPrint',

@@ -146,7 +146,9 @@
           <div class="tbody">
             <div class="trow" v-for="item in order_info.product_info" :key="item.id">
               <div class="tcolumn">
-                {{ item.product_name }}
+                <el-checkbox v-model="item.checked" @change="selectList($event, item)">{{
+                  item.product_name
+                }}</el-checkbox>
               </div>
               <div class="tcolumn noPad" style="flex: 7">
                 <div class="trow" style="height: 100%" v-for="itemChild in item.child_data" :key="itemChild.id">
@@ -255,7 +257,12 @@
     <div class="module" v-if="order_info.type == 1">
       <div class="titleCtn">
         <span class="title">发货信息</span>
-        <span class="addBtn btn btnMain" v-if="order_info.type == 1" @click="jiagongdanList.length>0?showProcessClient = true:$message.error('请先创建加工单')">加工单位发货</span>
+        <span
+          class="addBtn btn btnMain"
+          v-if="order_info.type == 1"
+          @click="jiagongdanList.length > 0 ? (showProcessClient = true) : $message.error('请先创建加工单')"
+          >加工单位发货</span
+        >
         <span class="addBtn btn btnMain" v-if="order_info.type == 1" @click="showStore = true">库存发货</span>
       </div>
       <div style="padding: 20px 32px">
@@ -265,46 +272,79 @@
               <div class="tcolumn">发货日期</div>
               <div class="tcolumn">发货单号</div>
               <div class="tcolumn">发货仓库</div>
-              <div class="tcolumn noPad" style="flex: 9">
+              <div class="tcolumn noPad" style="flex: 11">
                 <div class="trow">
                   <div class="tcolumn">纱线名称</div>
                   <div class="tcolumn">纱线颜色</div>
                   <div class="tcolumn">纱线属性</div>
-                  <!-- <div class="tcolumn">数量属性</div> -->
+                  <div class="tcolumn">数量属性</div>
                   <div class="tcolumn">批号/色号/缸号</div>
-                  <!-- <div class="tcolumn">发货单价(元)</div> -->
+                  <div class="tcolumn">发货单价(元)</div>
                   <div class="tcolumn">发货数量</div>
+                  <div class="tcolumn">小计</div>
                   <div class="tcolumn">发货件数</div>
                 </div>
               </div>
-              <!-- <div class="tcolumn">小计</div> -->
               <div class="tcolumn">备注信息</div>
               <div class="tcolumn">操作人</div>
-              <!-- <div class="tcolumn">操作</div> -->
+              <div class="tcolumn">操作</div>
             </div>
           </div>
           <div class="tbody">
             <div class="trow gray" v-if="final_out_log.length === 0" style="line-height: 46px">暂无发货信息</div>
             <div class="trow" v-for="item in final_out_log" :key="item.id">
               <div class="tcolumn">{{ item.complete_time }}</div>
-              <div class="tcolumn">{{ item.code }}</div>
-              <div class="tcolumn">{{ item.store_name }}/{{ item.second_store_name }}</div>
-              <div class="tcolumn noPad" style="flex: 9">
+              <div class="tcolumn" style="word-break: break-all">{{ item.code }}</div>
+              <div class="tcolumn" style="word-break: break-all">
+                {{ item.store_name || '无' }}/{{ item.second_store_name || '无' }}
+              </div>
+              <div class="tcolumn noPad" style="flex: 11">
                 <div class="trow" v-for="(itemChild, indexChild) in item.child_data" :key="indexChild">
                   <div class="tcolumn">{{ itemChild.name }}</div>
-                  <div class="tcolumn">{{ itemChild.color }}</div>
-                  <div class="tcolumn">{{ itemChild.attribute }}</div>
-                  <!-- <div class="tcolumn">{{ itemChild.number_attribute || '无' }}</div> -->
-                  <div class="tcolumn" style="word-break: break-all;">{{ itemChild.batch_code }}/{{ itemChild.color_code }}/{{ itemChild.vat_code }}</div>
-                  <!-- <div class="tcolumn">{{ itemChild.price || 0}}</div> -->
+                  <div class="tcolumn">{{ itemChild.color || '无' }}</div>
+                  <div class="tcolumn">{{ itemChild.attribute || '无' }}</div>
+                  <div class="tcolumn">{{ itemChild.number_attribute || '无' }}</div>
+                  <div class="tcolumn" style="word-break: break-all">
+                    {{ itemChild.batch_code || '无' }}/{{ itemChild.color_code || '无' }}/{{
+                      itemChild.vat_code || '无'
+                    }}
+                  </div>
+                  <div class="tcolumn">{{ itemChild.price || '0.00' }}</div>
                   <div class="tcolumn blue">{{ itemChild.action_weight }}kg</div>
+                  <div class="tcolumn">{{ ((itemChild.price || 0) * itemChild.action_weight).toFixed(2) }}元</div>
                   <div class="tcolumn blue">{{ itemChild.item || 0 }}</div>
                 </div>
               </div>
-              <!-- <div class="tcolumn">{{ item.total_price || 0 }}</div> -->
               <div class="tcolumn">{{ item.desc || '无' }}</div>
               <div class="tcolumn">{{ item.user_name }}</div>
-              <!-- <div class="tcolumn">打印</div> -->
+              <div
+                class="tcolumn hoverBlue"
+                style="cursor: pointer"
+                @click="$openUrl('/print/transPrint?id=' + item.id)"
+              >
+                打印
+              </div>
+            </div>
+            <div class="trow" style="background: #f4f4f4">
+              <div class="tcolumn">合计</div>
+              <div class="tcolumn"></div>
+              <div class="tcolumn"></div>
+              <div class="tcolumn noPad" style="flex: 11">
+                <div class="trow">
+                  <div class="tcolumn"></div>
+                  <div class="tcolumn"></div>
+                  <div class="tcolumn"></div>
+                  <div class="tcolumn"></div>
+                  <div class="tcolumn"></div>
+                  <div class="tcolumn"></div>
+                  <div class="tcolumn">{{ total_final_out_log.total_action_weight.toFixed(1) }}kg</div>
+                  <div class="tcolumn">{{ total_final_out_log.total_price.toFixed(2) }}元</div>
+                  <div class="tcolumn">{{ total_final_out_log.total_item }}</div>
+                </div>
+              </div>
+              <div class="tcolumn"></div>
+              <div class="tcolumn"></div>
+              <div class="tcolumn"></div>
             </div>
           </div>
         </div>
@@ -891,6 +931,7 @@
       @close="create_flag = false"
       @afterCreate="init()"
       :yarnList="yarnList"
+      :yarnInfoList="yarnInfoList"
       :orderId="'' + order_info.id"
     ></add-trans-process>
     <shaxianAddPO
@@ -898,6 +939,7 @@
       :update="false"
       @close="showAddPO = false"
       :info="shaxianInfo"
+      :child_data="childList"
       :orderId="'' + order_info.id"
       @afterCreate="init()"
     ></shaxianAddPO>
@@ -997,10 +1039,16 @@
       </div>
     </div>
     <div class="popup" v-show="showKucunFahuo">
-      <div class="main" style="min-width:1360px">
+      <div class="main" style="min-width: 1360px">
         <div class="titleCtn">
           <div class="text">从库存发货</div>
-          <i class="el-icon-close" @click="showKucunFahuo = false;fahuoList = []"></i>
+          <i
+            class="el-icon-close"
+            @click="
+              showKucunFahuo = false
+              fahuoList = []
+            "
+          ></i>
         </div>
         <div class="listCtn">
           <el-steps :active="1" process-status="finish" finish-status="success">
@@ -1010,7 +1058,7 @@
         </div>
         <div class="createCtn">
           <div class="rowCtn">
-            <div class="colCtn" style="flex:3">
+            <div class="colCtn" style="flex: 3">
               <div class="label">
                 <span class="text">库存纱线</span>
                 <span class="explanation">(必选)</span>
@@ -1041,8 +1089,9 @@
           </div>
           <div style="max-height: 600px; overflow: scroll">
             <div class="rowCtn" v-for="(item, index) in fahuoList" :key="index + '发货数量'">
-              <div class="colCtn" style="flex:3">
-                {{ item.store_name }} / {{ item.second_store_name }} / {{item.name}} / {{item.attribute}} / {{item.color}} / {{item.batch_code}} / {{item.color_code}} / {{item.vat_color}}
+              <div class="colCtn" style="flex: 3">
+                {{ item.store_name }} / {{ item.second_store_name }} / {{ item.name }} / {{ item.attribute }} /
+                {{ item.color }} / {{ item.batch_code }} / {{ item.color_code }} / {{ item.vat_color }}
               </div>
               <div class="colCtn">
                 <div class="elCtn">
@@ -1056,36 +1105,32 @@
               </div>
               <div class="colCtn">
                 <div class="elCtn">
-                  <el-input v-model="item.action_weight" type="number" @input="getTotalInfo()" placeholder="发货数量"><template slot="append">kg</template></el-input>
+                  <el-input v-model="item.action_weight" type="number" @input="getTotalInfo()" placeholder="发货数量"
+                    ><template slot="append">kg</template></el-input
+                  >
                 </div>
               </div>
               <div class="colCtn">
                 <div class="elCtn">
-                  <el-input v-model="item.item" type="number" @input="getTotalInfo()" placeholder="件数"><template slot="append">件</template></el-input>
+                  <el-input v-model="item.item" type="number" @input="getTotalInfo()" placeholder="件数"
+                    ><template slot="append">件</template></el-input
+                  >
                 </div>
               </div>
             </div>
             <div class="rowCtn">
-              <div class="colCtn" style="flex:3"></div>
+              <div class="colCtn" style="flex: 3"></div>
               <div class="colCtn">
-                <div class="elCtn">
-                  {{fahuoListObj.total_reality_weight}}kg
-                </div>
+                <div class="elCtn">{{ fahuoListObj.total_reality_weight }}kg</div>
               </div>
               <div class="colCtn">
-                <div class="elCtn">
-                  {{fahuoListObj.total_weight}}kg
-                </div>
+                <div class="elCtn">{{ fahuoListObj.total_weight }}kg</div>
               </div>
               <div class="colCtn">
-                <div class="elCtn">
-                  {{fahuoListObj.total_action_weight}}kg
-                </div>
+                <div class="elCtn">{{ fahuoListObj.total_action_weight }}kg</div>
               </div>
               <div class="colCtn">
-                <div class="elCtn">
-                  {{fahuoListObj.total_item}}件
-                </div>
+                <div class="elCtn">{{ fahuoListObj.total_item }}件</div>
               </div>
             </div>
           </div>
@@ -1096,15 +1141,11 @@
                 <span class="explanation">(必填)</span>
               </div>
               <div class="elCtn">
-                <el-date-picker
-                  v-model="fahuoObj.date"
-                  type="date"
-                  value-format="yyyy-MM-dd"
-                  placeholder="发货日期">
+                <el-date-picker v-model="fahuoObj.date" type="date" value-format="yyyy-MM-dd" placeholder="发货日期">
                 </el-date-picker>
               </div>
             </div>
-            <div class="colCtn" style="flex:4">
+            <div class="colCtn" style="flex: 4">
               <div class="label">
                 <span class="text">备注信息</span>
                 <span class="explanation">(选填)</span>
@@ -1116,21 +1157,29 @@
           </div>
         </div>
         <div class="oprCtn">
-          <div class="opr" @click="showKucunFahuo = false;fahuoList = []">取消</div>
+          <div
+            class="opr"
+            @click="
+              showKucunFahuo = false
+              fahuoList = []
+            "
+          >
+            取消
+          </div>
           <div class="opr backHoverBlue" @click="confirmFahuo(false)">确认发货</div>
           <div class="opr backHoverBlue" @click="confirmFahuo('print')">确认并打印</div>
         </div>
       </div>
     </div>
     <div class="popup" v-show="showProcessClient">
-      <div class="main" style="min-width:1360px">
+      <div class="main" style="min-width: 1360px">
         <div class="titleCtn">
           <div class="text">加工单位直接发货</div>
-          <i class="el-icon-close" @click="showProcessClient = false;jiagongdanList = []"></i>
+          <i class="el-icon-close" @click="init"></i>
         </div>
         <div class="createCtn">
           <div class="rowCtn">
-            <div class="colCtn">
+            <div class="colCtn" style="flex: 2">
               <div class="label">
                 <span class="text">库存纱线</span>
                 <span class="explanation">(必选)</span>
@@ -1138,13 +1187,28 @@
             </div>
             <div class="colCtn">
               <div class="label">
-                <span class="text">当前发货数量</span>
-                <span class="explanation">(必填)</span>
+                <span class="text">下单数量</span>
               </div>
             </div>
             <div class="colCtn">
               <div class="label">
+                <span class="text">发货数量</span>
+              </div>
+            </div>
+            <div class="colCtn">
+              <div class="label">
+                <span class="text">加工数量</span>
+              </div>
+            </div>
+            <div class="colCtn" style="flex: 1.5">
+              <div class="label">
                 <span class="text">批号/缸号/色号</span>
+              </div>
+            </div>
+            <div class="colCtn">
+              <div class="label">
+                <span class="text">当前发货数</span>
+                <span class="explanation">(必填)</span>
               </div>
             </div>
             <div class="colCtn">
@@ -1156,24 +1220,59 @@
           </div>
           <div style="max-height: 600px; overflow: scroll">
             <div class="rowCtn" v-for="(item, index) in jiagongdanList" :key="index + '发货数量'">
-              <div class="colCtn">
-                {{ item.client_name }} / {{item.name}} / {{item.color}} / {{item.attribute}}
+              <div class="colCtn" style="flex: 2">
+                {{ item.client_name }} / {{ item.name }} / {{ item.color }} / {{ item.attribute }}
               </div>
-              <div class="colCtn">
-                <div class="elCtn" style="display:flex">
-                  <el-input step="margin-left:10px" v-model="item.batch_code" placeholder="批号"></el-input>
-                  <el-input step="margin-left:10px" v-model="item.color_code" placeholder="色号"></el-input>
-                  <el-input step="margin-left:10px" v-model="item.vat_code" placeholder="缸号"></el-input>
+              <div class="colCtn">{{ (Number(item.xiadanNumber) || 0).toFixed(1) }}kg</div>
+              <div class="colCtn">{{ (Number(item.fahuoNumber) || 0).toFixed(1) }}kg</div>
+              <div class="colCtn">{{ (Number(item.jiagongNumber) || 0).toFixed(1) }}kg</div>
+              <div class="colCtn" style="flex: 1.5">
+                <div class="elCtn" style="display: flex; justify-content: space-between">
+                  <el-input style="width: 30%" v-model="item.batch_code" placeholder="批号"></el-input>
+                  <el-input style="width: 30%" v-model="item.color_code" placeholder="色号"></el-input>
+                  <el-input style="width: 30%" v-model="item.vat_code" placeholder="缸号"></el-input>
                 </div>
               </div>
               <div class="colCtn">
                 <div class="elCtn">
-                  <el-input v-model="item.action_weight" placeholder="发货数量"><template slot="append">kg</template></el-input>
+                  <el-input
+                    type="number"
+                    @input="getTotalJiaGongDan"
+                    v-model="item.action_weight"
+                    placeholder="发货数量"
+                    ><template slot="append">kg</template></el-input
+                  >
                 </div>
               </div>
               <div class="colCtn">
                 <div class="elCtn">
-                  <el-input v-model="item.item" placeholder="件数"><template slot="append">件</template></el-input>
+                  <el-input type="number" @input="getTotalJiaGongDan" v-model="item.item" placeholder="件数"
+                    ><template slot="append">件</template></el-input
+                  >
+                </div>
+              </div>
+            </div>
+            <div class="rowCtn">
+              <div class="colCtn" style="flex: 2"></div>
+              <div class="colCtn">
+                <div class="label">
+                  <span class="text">{{ totalJiaGongDan.totalXiadanNumber }}kg</span>
+                </div>
+              </div>
+              <div class="colCtn">
+                <div class="label">
+                  <span class="text">{{ totalJiaGongDan.totalFahuoNumber }}kg</span>
+                </div>
+              </div>
+              <div class="colCtn" style="flex: 1.5"></div>
+              <div class="colCtn">
+                <div class="label">
+                  <span class="text">{{ totalJiaGongDan.totalActionWeight }}kg</span>
+                </div>
+              </div>
+              <div class="colCtn">
+                <div class="label">
+                  <span class="text">{{ totalJiaGongDan.totalItem }}kg</span>
                 </div>
               </div>
             </div>
@@ -1189,11 +1288,12 @@
                   v-model="jiagongdanObj.date"
                   type="date"
                   value-format="yyyy-MM-dd"
-                  placeholder="发货日期">
+                  placeholder="发货日期"
+                >
                 </el-date-picker>
               </div>
             </div>
-            <div class="colCtn" style="flex:4">
+            <div class="colCtn" style="flex: 4">
               <div class="label">
                 <span class="text">备注信息</span>
                 <span class="explanation">(选填)</span>
@@ -1205,7 +1305,7 @@
           </div>
         </div>
         <div class="oprCtn">
-          <div class="opr" @click="showProcessClient = false;jiagongdanList = []">取消</div>
+          <div class="opr" @click="init">取消</div>
           <div class="opr backHoverBlue" @click="confirmJiaGong(false)">确认发货</div>
           <div class="opr backHoverBlue" @click="confirmJiaGong('print')">确认并打印</div>
         </div>
@@ -1217,7 +1317,7 @@
           <div class="text">关联单据</div>
           <i class="el-icon-close" @click="showGuanLian = false"></i>
         </div>
-        <div class="createCtn" style="max-height: 600px;overflow:scroll">
+        <div class="createCtn" style="max-height: 600px; overflow: scroll">
           <div class="tableCtn">
             <div class="thead">
               <div class="trow">
@@ -1231,73 +1331,75 @@
             <div class="tbody">
               <div class="trow">
                 <div class="tcolumn">采购并入库</div>
-                <div class="tcolumn noPad" style="flex:4.5">
-                  <div class="trow" v-for="item,index in caigouList" :key="index + '日志'">
-                    <div class="tcolumn">{{item.code}}</div>
-                    <div class="tcolumn">{{item.user_name}}</div>
-                    <div class="tcolumn">{{$getDate(item.created_at)}}</div>
-                    <div class="tcolumn hoverBlue" style="cursor:pointer" @click="$router.push('/directOrder/yarnDetail/'+item.related_id)">详情</div>
+                <div class="tcolumn noPad" style="flex: 4.5">
+                  <div class="trow" v-for="(item, index) in caigouList" :key="index + '日志'">
+                    <div class="tcolumn">{{ item.code }}</div>
+                    <div class="tcolumn">{{ item.user_name }}</div>
+                    <div class="tcolumn">{{ $getDate(item.created_at) }}</div>
+                    <div
+                      class="tcolumn hoverBlue"
+                      style="cursor: pointer"
+                      @click="$router.push('/directOrder/yarnDetail/' + item.related_id)"
+                    >
+                      详情
+                    </div>
                   </div>
-                  <div v-if="caigouList.length === 0" class="trow tc" style="align-items:center">
-                    暂无单据
-                  </div>
+                  <div v-if="caigouList.length === 0" class="trow tc" style="align-items: center">暂无单据</div>
                 </div>
               </div>
               <div class="trow">
                 <div class="tcolumn">库存发货</div>
-                <div class="tcolumn noPad" style="flex:4.5">
-                  <div class="trow" v-for="item,index in kucunList" :key="index + '日志1'">
-                    <div class="tcolumn">{{item.code}}</div>
-                    <div class="tcolumn">{{item.user_name}}</div>
-                    <div class="tcolumn">{{$getDate(item.created_at)}}</div>
+                <div class="tcolumn noPad" style="flex: 4.5">
+                  <div class="trow" v-for="(item, index) in kucunList" :key="index + '日志1'">
+                    <div class="tcolumn">{{ item.code }}</div>
+                    <div class="tcolumn">{{ item.user_name }}</div>
+                    <div class="tcolumn">{{ $getDate(item.created_at) }}</div>
                     <div class="tcolumn gray">暂无操作</div>
                   </div>
-                  <div v-if="kucunList.length === 0" class="trow tc" style="align-items:center">
-                    暂无单据
-                  </div>
+                  <div v-if="kucunList.length === 0" class="trow tc" style="align-items: center">暂无单据</div>
                 </div>
               </div>
               <div class="trow">
                 <div class="tcolumn">调取并加工</div>
-                <div class="tcolumn noPad" style="flex:4.5">
-                  <div class="trow" v-for="item,index in diaoquList" :key="index + '日志2'">
-                    <div class="tcolumn">{{item.code}}</div>
-                    <div class="tcolumn">{{item.user_name}}</div>
-                    <div class="tcolumn">{{$getDate(item.created_at)}}</div>
-                    <div class="tcolumn hoverBlue" style="cursor:pointer" @click="$router.push('/directProcess/yarnDetailNew/'+item.id)">详情</div>
+                <div class="tcolumn noPad" style="flex: 4.5">
+                  <div class="trow" v-for="(item, index) in diaoquList" :key="index + '日志2'">
+                    <div class="tcolumn">{{ item.code }}</div>
+                    <div class="tcolumn">{{ item.user_name }}</div>
+                    <div class="tcolumn">{{ $getDate(item.created_at) }}</div>
+                    <div
+                      class="tcolumn hoverBlue"
+                      style="cursor: pointer"
+                      @click="$router.push('/directProcess/yarnDetailNew/' + item.id)"
+                    >
+                      详情
+                    </div>
                   </div>
-                  <div v-if="kucunList.length === 0" class="trow tc" style="align-items:center">
-                    暂无单据
-                  </div>
+                  <div v-if="kucunList.length === 0" class="trow tc" style="align-items: center">暂无单据</div>
                 </div>
               </div>
               <div class="trow">
                 <div class="tcolumn">加工回库</div>
-                <div class="tcolumn noPad" style="flex:4.5">
-                  <div class="trow" v-for="item,index in huikuList" :key="index + '日志3'">
-                    <div class="tcolumn">{{item.code}}</div>
-                    <div class="tcolumn">{{item.user_name}}</div>
-                    <div class="tcolumn">{{$getDate(item.created_at)}}</div>
+                <div class="tcolumn noPad" style="flex: 4.5">
+                  <div class="trow" v-for="(item, index) in huikuList" :key="index + '日志3'">
+                    <div class="tcolumn">{{ item.code }}</div>
+                    <div class="tcolumn">{{ item.user_name }}</div>
+                    <div class="tcolumn">{{ $getDate(item.created_at) }}</div>
                     <div class="tcolumn gray">暂无操作</div>
                     <!-- <div class="tcolumn hoverBlue" style="cursor:pointer" v-if="item.action_type === 16" @click="$router.push('/directProcess/yarnDetailNew/'+item.id)">详情</div> -->
                   </div>
-                  <div v-if="huikuList.length === 0" class="trow tc" style="align-items:center">
-                    暂无单据
-                  </div>
+                  <div v-if="huikuList.length === 0" class="trow tc" style="align-items: center">暂无单据</div>
                 </div>
               </div>
               <div class="trow">
                 <div class="tcolumn">加工单发货</div>
-                <div class="tcolumn noPad" style="flex:4.5">
-                  <div class="trow" v-for="item,index in jiagsdjList" :key="index + '日志4'">
-                    <div class="tcolumn">{{item.code}}</div>
-                    <div class="tcolumn">{{item.user_name}}</div>
-                    <div class="tcolumn">{{$getDate(item.created_at)}}</div>
+                <div class="tcolumn noPad" style="flex: 4.5">
+                  <div class="trow" v-for="(item, index) in jiagsdjList" :key="index + '日志4'">
+                    <div class="tcolumn">{{ item.code }}</div>
+                    <div class="tcolumn">{{ item.user_name }}</div>
+                    <div class="tcolumn">{{ $getDate(item.created_at) }}</div>
                     <div class="tcolumn gray">暂无操作</div>
                   </div>
-                  <div v-if="jiagsdjList.length === 0" class="trow tc" style="align-items:center">
-                    暂无单据
-                  </div>
+                  <div v-if="jiagsdjList.length === 0" class="trow tc" style="align-items: center">暂无单据</div>
                 </div>
               </div>
             </div>
@@ -1331,27 +1433,30 @@ export default Vue.extend({
       showProcessClient: false,
       showGuanLian: false,
       yarnList: [],
+      yarnInfoList: [],
       fahuoList: [],
       jiagongdanList: [],
+      totalJiaGongDan: {},
       order_log_list: [],
       caigouList: [],
       kucunList: [],
       diaoquList: [],
       huikuList: [],
-      jiagsdjList:[],
-      fahuoListObj:{
-        total_reality_weight:0,
-        total_weight:0,
-        total_action_weight:0,
-        total_item:0,
+      jiagsdjList: [],
+      childList: [],
+      fahuoListObj: {
+        total_reality_weight: 0,
+        total_weight: 0,
+        total_action_weight: 0,
+        total_item: 0
       },
-      fahuoObj:{
-        desc:'',
-        date: this.$getDate(new Date()),
+      fahuoObj: {
+        desc: '',
+        date: this.$getDate(new Date())
       },
-      jiagongdanObj:{
-        desc:'',
-        date: this.$getDate(new Date()),
+      jiagongdanObj: {
+        desc: '',
+        date: this.$getDate(new Date())
       },
       shaxianInfo: {},
       process_info: {
@@ -1374,6 +1479,7 @@ export default Vue.extend({
         type: 1
       },
       final_out_log: [], // 发货出库信息
+      total_final_out_log: {},
       order_cancel_log: [], // 订单取消结余入库
       deduct_list: [],
       order_info: {
@@ -1390,6 +1496,7 @@ export default Vue.extend({
         product_info: [],
         total_additional_fee: 0
       },
+      orderInfoProChild: [],
       check_flag: false,
       check_detail_flag: false,
       total: {
@@ -1457,6 +1564,30 @@ export default Vue.extend({
     }
   },
   methods: {
+    selectList(bol: boolean, item: any) {
+      if (bol) {
+        let arr = item.child_data.map((itemChild: any) => {
+          return {
+            name: itemChild.name,
+            weight: itemChild.weight,
+            color: itemChild.color,
+            attribute: itemChild.attribute,
+            price: '',
+            id: itemChild.id
+          }
+        })
+        this.childList.push(...arr)
+      } else {
+        item.child_data.forEach((itenChild: any) => {
+          this.$deleteItem(
+            this.childList,
+            this.childList.findIndex((itemChild2: any) => {
+              return itenChild.id === itemChild2.id
+            })
+          )
+        })
+      }
+    },
     beforeAvatarUpload(file: any) {
       const fileName = file.name.lastIndexOf('.') // 取到文件名开始到最后一个点的长度
       const fileNameLength = file.name.length // 取到文件名长度
@@ -1490,6 +1621,8 @@ export default Vue.extend({
       this.check_detail_flag = true
     },
     init() {
+      this.showProcessClient = false
+      this.jiagongdanList = []
       this.loading = true
       Promise.all([
         order.detail({
@@ -1533,29 +1666,23 @@ export default Vue.extend({
           item.total_transfer_weight = item.child_data.reduce((a: any, b: any) => {
             return a + (b.transfer_weight || 0)
           }, 0)
+          this.order_info.product_info.forEach((item: any) => {
+            item.child_data.forEach((itemChild: any) => {
+              itemChild.name = item.product_name
+              this.orderInfoProChild.push(itemChild)
+            })
+          })
           // @ts-ignore
           this.order_info.transfer_log?.forEach((itemTrans: any) => {
             itemTrans.process_info.forEach((itemProcess: any) => {
               itemProcess.child_data.forEach((itemChild: any) => {
-                // let obj = this.order_info.product_info.find((item:any) => {
-                //   console.log(itemChild,item)
-                //   return (
-                //     itemChild.before_attribute === item.attribute &&
-                //     itemChild.before_color === item.color &&
-                //     itemChild.name === item.name
-                //   )
-                // })
-                // console.log(obj)
-                // if (obj) {
-                //   // obj.weight = obj.action_weight
-                //   // obj.action_weight = ''
-                //   // this.fahuoList.push(obj)
-                // } else {
-
-                // }
                 this.jiagongdanList.push({
-                  action_weight: '',
+                  action_weight: 0,
+                  related_info_id: '',
+                  jiagongNumber:itemChild.weight,
                   attribute: itemChild.after_attribute || itemChild.before_attribute,
+                  before_attribute: itemChild.before_attribute,
+                  before_color: itemChild.before_color,
                   color: itemChild.after_color || itemChild.before_color,
                   name: itemChild.name,
                   client_name: itemProcess.client_name,
@@ -1565,6 +1692,19 @@ export default Vue.extend({
                 copy.type = itemProcess.type
                 processArr.push(copy)
               })
+            })
+          })
+          this.jiagongdanList.forEach((item: any) => {
+            this.orderInfoProChild.forEach((itemOPC: any) => {
+              if (
+                itemOPC.attribute === item.before_attribute &&
+                itemOPC.color === item.before_color &&
+                itemOPC.name === item.name
+              ) {
+                item.xiadanNumber = itemOPC.weight
+                item.action_weight = itemOPC.weight
+                item.related_info_id = itemOPC.id
+              }
             })
           })
           processArr = processArr.filter((itemFind) => itemFind.name === item.product_name)
@@ -1608,14 +1748,66 @@ export default Vue.extend({
             Number(item.client_id) === Number(this.order_info.client_id) &&
             (item.action_type === 9 || item.action_type === 12 || item.action_type === 18)
         )
+
+        this.final_out_log.forEach((item: any) => {
+          item.child_data.forEach((itemChild: any) => {
+            this.jiagongdanList.forEach((itemJGD: any) => {
+              if (
+                itemChild.attribute === itemJGD.before_attribute &&
+                itemChild.color === itemJGD.before_color &&
+                itemChild.name === itemJGD.name
+              ) {
+                itemJGD.fahuoNumber = itemChild.action_weight
+                itemJGD.action_weight =
+                  itemJGD.xiadanNumber - itemJGD.fahuoNumber < 0 ? 0 : itemJGD.xiadanNumber - itemJGD.fahuoNumber
+              }
+            })
+            this.orderInfoProChild.forEach((itemOPC: any) => {
+              if (
+                itemOPC.attribute === itemChild.attribute &&
+                itemOPC.color === itemChild.color &&
+                itemOPC.name === itemChild.name
+              ) {
+                itemChild.number_attribute = itemOPC.number_attribute
+                itemChild.price = itemOPC.price
+              }
+            })
+          })
+        })
+        this.total_final_out_log = {
+          total_action_weight: this.final_out_log.reduce((a: any, b: any) => {
+            return (
+              a +
+              b.child_data.reduce((a1: any, b1: any) => {
+                return a1 + (Number(b1.action_weight) || 0)
+              }, 0)
+            )
+          }, 0),
+          total_item: this.final_out_log.reduce((a: any, b: any) => {
+            return (
+              a +
+              b.child_data.reduce((a1: any, b1: any) => {
+                return a1 + (Number(b1.item) || 0)
+              }, 0)
+            )
+          }, 0),
+          total_price: this.final_out_log.reduce((a: any, b: any) => {
+            return (
+              a +
+              b.child_data.reduce((a1: any, b1: any) => {
+                return a1 + ((Number(b1.action_weight) || 0) * Number(b1.price) || 0)
+              }, 0)
+            )
+          }, 0)
+        }
         this.order_cancel_log = res[2].data.data.items.filter(
           (item: any) => Number(item.client_id) === Number(this.order_info.client_id) && item.action_type === 15
         )
-        this.caigouList = res[2].data.data.items.filter((item: any) =>(item.action_type === 3))
-        this.kucunList = res[2].data.data.items.filter((item: any) =>(item.action_type === 9))
-        this.diaoquList = res[2].data.data.items.filter((item: any) =>(item.action_type === 16))
-        this.huikuList = res[2].data.data.items.filter((item: any) =>(item.action_type === 17))
-        this.jiagsdjList = res[2].data.data.items.filter((item: any) =>(item.action_type === 18))
+        this.caigouList = res[2].data.data.items.filter((item: any) => item.action_type === 3)
+        this.kucunList = res[2].data.data.items.filter((item: any) => item.action_type === 9)
+        this.diaoquList = res[2].data.data.items.filter((item: any) => item.action_type === 16)
+        this.huikuList = res[2].data.data.items.filter((item: any) => item.action_type === 17)
+        this.jiagsdjList = res[2].data.data.items.filter((item: any) => item.action_type === 18)
         this.order_log_list = res[2].data.data.items
         if (this.order_info.status === 4) {
           if (res[3].data.data) {
@@ -1640,9 +1832,19 @@ export default Vue.extend({
           child_data: []
         }
         this.yarnList = []
+        this.yarnInfoList = []
         this.order_info.product_info.forEach((item: any) => {
           this.yarnList.push({ label: item.product_name, value: item.product_name })
+          this.yarnInfoList.push({
+            name: item.product_name,
+            child_data:[]
+          })
           item.child_data.forEach((itemChild: any) => {
+            this.yarnInfoList[this.yarnInfoList.length - 1].child_data.push({
+              price:itemChild.price,
+              color:itemChild.color,
+              weight:itemChild.weight
+            })
             this.shaxianInfo.child_data.push({
               name: item.product_name,
               color: itemChild.color,
@@ -1652,8 +1854,33 @@ export default Vue.extend({
             })
           })
         })
+        this.getTotalJiaGongDan()
         this.loading = false
       })
+    },
+    getTotalJiaGongDan() {
+      this.totalJiaGongDan = {
+        totalXiadanNumber: this.jiagongdanList
+          .reduce((a: any, b: any) => {
+            return a + (Number(b.xiadanNumber) || 0)
+          }, 0)
+          .toFixed(1),
+        totalFahuoNumber: this.jiagongdanList
+          .reduce((a: any, b: any) => {
+            return a + (Number(b.fahuoNumber) || 0)
+          }, 0)
+          .toFixed(1),
+        totalActionWeight: this.jiagongdanList
+          .reduce((a: any, b: any) => {
+            return a + (Number(b.action_weight) || 0)
+          }, 0)
+          .toFixed(1),
+        totalItem: this.jiagongdanList
+          .reduce((a: any, b: any) => {
+            return a + (Number(b.item) || 0)
+          }, 0)
+          .toFixed(1)
+      }
     },
     // 打开扣款窗口
     openDeduct() {
@@ -1670,79 +1897,83 @@ export default Vue.extend({
       }
       this.deduct_show = true
     },
-    confirmFahuo(print:any){
-      if(!this.fahuoObj.date){
+    confirmFahuo(print: any) {
+      if (!this.fahuoObj.date) {
         this.$message.error('请选择发货日期')
         return
       }
-      this.fahuoList.find((item:any) => {
-        !item.action_weight?item.action_weight='0':''
+      this.fahuoList.forEach((item: any) => {
+        !item.action_weight ? (item.action_weight = '0') : ''
       })
-      this.fahuoList = this.fahuoList.filter((item:any) => {return item.action_weight !== '0' || !item.action_weight})
+      this.fahuoList = this.fahuoList.filter((item: any) => {
+        return item.action_weight !== '0' || !item.action_weight
+      })
       let params = {
-        second_store_id:this.fahuoList[0].second_store_id,
-        store_id:this.fahuoList[0].store_id,
+        second_store_id: this.fahuoList[0].second_store_id,
+        store_id: this.fahuoList[0].store_id,
         desc: this.fahuoObj.desc,
         complete_time: this.fahuoObj.date,
         // @ts-ignore
         order_id: this.order_info.id,
         // @ts-ignore
-        related_id:this.order_info.id,
+        related_id: this.order_info.id,
         client_id: this.order_info.client_id,
         child_data: this.fahuoList,
         action_type: 9
       }
-      stock.create({
-        // @ts-ignore
-        data:[params]
-      }).then(res => {
-        if(res.data.status){
-          this.$message.success('创建成功')
-          this.init()
-          this.showKucunFahuo = false
-          this.fahuoList = []
-        }
-      })
-      if(print){
-        // @ts-ignore
-        this.$openUrl('/print/orderPrint?id='+this.order_info.id +'&printA4Type=false')
-      }
+      stock
+        .create({
+          // @ts-ignore
+          data: [params]
+        })
+        .then((res) => {
+          if (res.data.status) {
+            this.$message.success('创建成功')
+            this.init()
+            this.showKucunFahuo = false
+            this.fahuoList = []
+            if (print) {
+              this.$openUrl('/print/transPrint?id=' + res.data.data[0])
+            }
+          }
+        })
     },
-    confirmJiaGong(print:any){
-      if(!this.jiagongdanObj.date){
+    confirmJiaGong(print: any) {
+      if (!this.jiagongdanObj.date) {
         this.$message.error('请选择发货日期')
         return
       }
-      this.jiagongdanList.find((item:any) => {
-        !item.action_weight?item.action_weight='0':''
+      this.jiagongdanList.find((item: any) => {
+        !item.action_weight ? (item.action_weight = '0') : ''
       })
-      this.jiagongdanList = this.jiagongdanList.filter((item:any) => {return item.action_weight !== '0' || !item.action_weight})
+      this.jiagongdanList = this.jiagongdanList.filter((item: any) => {
+        return item.action_weight !== '0' || !item.action_weight
+      })
       let params = {
         desc: this.jiagongdanObj.desc,
         complete_time: this.jiagongdanObj.date,
         // @ts-ignore
         order_id: this.order_info.id,
         // @ts-ignore
-        related_id:this.order_info.id,
+        related_id: this.order_info.id,
         client_id: this.order_info.client_id,
         child_data: this.jiagongdanList,
         action_type: 18
       }
-      stock.create({
-        // @ts-ignore
-        data:[params]
-      }).then(res => {
-        if(res.data.status){
-          this.$message.success('创建成功')
-          this.init()
-          this.showProcessClient = false
-          this.jiagongdanList = []
-        }
-      })
-      if(print){
-        // @ts-ignore
-        this.$openUrl('/print/orderPrint?id='+this.order_info.id +'&printA4Type=false')
-      }
+      stock
+        .create({
+          // @ts-ignore
+          data: [params]
+        })
+        .then((res) => {
+          if (res.data.status) {
+            this.$message.success('创建成功')
+            this.init()
+            if (print) {
+              this.$openUrl('/print/transPrint?id=' + res.data.data[0])
+            }
+          }
+        })
     },
     getYarnSelect(dataList: any) {
       // 库存发货
@@ -1771,33 +2002,38 @@ export default Vue.extend({
           )
         })
         let objOrder = arrOrder.find((itemArr: any) => {
-          return (
-            itemArr.attribute === item.attribute &&
-            item.color === itemArr.color &&
-            item.name === itemArr.name
-          )
+          return itemArr.attribute === item.attribute && item.color === itemArr.color && item.name === itemArr.name
         })
         if (obj) {
+          console.log()
           obj.store_name = item.store_name
           obj.second_store_name = item.second_store_name
           obj.store_id = item.store_id
           obj.second_store_id = item.second_store_id
           obj.reality_weight = objOrder.weight || 0
-          obj.weight = arr.reduce((a:any,b:any) => {
-            if(b.attribute === item.attribute &&
-            item.color === b.color &&
-            item.vat_code === b.vat_code &&
-            item.color_code === b.color_code &&
-            item.batch_code === b.batch_code &&
-            item.name === b.name){
-              return a + Number(b.action_weight)
-            }
-          },0)
-          obj.action_weight = ''
+          obj.related_info_id = objOrder.id || ''
+          obj.weight = arr
+            .reduce((a: any, b: any) => {
+              if (
+                b.attribute === item.attribute &&
+                item.color === b.color &&
+                item.vat_code === b.vat_code &&
+                item.color_code === b.color_code &&
+                item.batch_code === b.batch_code &&
+                item.name === b.name
+              ) {
+                return a + (Number(b.action_weight) || 0)
+              } else {
+                return a + 0
+              }
+            }, 0)
+            .toFixed(1)
+          obj.action_weight = obj.reality_weight - obj.weight
+          obj.action_weight = obj.action_weight < 0 ? 0 : obj.action_weight
           this.fahuoList.push(obj)
         } else {
           this.fahuoList.push({
-            action_weight: '',
+            action_weight: objOrder ? objOrder.weight : 0,
             attribute: item.attribute,
             color: item.color,
             batch_code: item.batch_code,
@@ -1808,20 +2044,29 @@ export default Vue.extend({
             second_store_name: item.second_store_name,
             store_id: item.store_id,
             second_store_id: item.second_store_id,
-            weight: 0,
-            reality_weight: objOrder?objOrder.weight : 0
+            related_info_id: objOrder ? objOrder.id : '',
+            weight: '0.0',
+            reality_weight: objOrder ? objOrder.weight : '0.0'
           })
         }
       })
       this.getTotalInfo()
       this.showKucunFahuo = true
     },
-    getTotalInfo(){
+    getTotalInfo() {
       this.fahuoListObj = {
-        total_reality_weight:this.fahuoList.reduce((a:any,b:any) => {return a+(Number(b.reality_weight) || 0)},0),
-        total_weight:this.fahuoList.reduce((a:any,b:any) => {return a+(Number(b.weight) || 0)},0),
-        total_action_weight:this.fahuoList.reduce((a:any,b:any) => {return a+(Number(b.action_weight) || 0)},0),
-        total_item:this.fahuoList.reduce((a:any,b:any) => {return a+(Number(b.item) || 0)},0),
+        total_reality_weight: this.fahuoList.reduce((a: any, b: any) => {
+          return a + (Number(b.reality_weight) || 0)
+        }, 0),
+        total_weight: this.fahuoList.reduce((a: any, b: any) => {
+          return a + (Number(b.weight) || 0)
+        }, 0),
+        total_action_weight: this.fahuoList.reduce((a: any, b: any) => {
+          return a + (Number(b.action_weight) || 0)
+        }, 0),
+        total_item: this.fahuoList.reduce((a: any, b: any) => {
+          return a + (Number(b.item) || 0)
+        }, 0)
       }
     },
     confirm() {
@@ -1971,7 +2216,7 @@ export default Vue.extend({
 </script>
 <style lang="less" scoped>
 @import '~@/assets/less/order/detail.less';
-.colCtn{
-  margin-right: 15px!important;
+.colCtn {
+  margin-right: 15px !important;
 }
 </style>

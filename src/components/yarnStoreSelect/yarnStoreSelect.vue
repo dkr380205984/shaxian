@@ -197,7 +197,9 @@ export default Vue.extend({
     },
     yarnList: {
       type: Array,
-      default: []
+      default: function(){
+        return []
+      }
     }
   },
   data(): any {

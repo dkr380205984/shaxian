@@ -97,7 +97,18 @@
                     <div class="tcolumn noPad" style="flex: 3.9">
                       <div class="trow">
                         <div class="tcolumn" style="flex: 1.2">纱线颜色</div>
-                        <div class="tcolumn">纱线属性</div>
+                        <div class="tcolumn" style="position: relative">
+                          纱线属性
+                          <el-tooltip class="item" effect="dark" content="统一属性" placement="top">
+                            <svg
+                              class="iconFont copyIcon hoverBlue"
+                              aria-hidden="true"
+                              @click="copyInfo('attribute')"
+                            >
+                              <use xlink:href="#icon-tongbushuju1"></use>
+                            </svg>
+                          </el-tooltip>
+                        </div>
                         <div class="tcolumn" style="position: relative">
                           数量属性
                           <el-tooltip class="item" effect="dark" content="统一属性" placement="top">
@@ -581,8 +592,12 @@ export default Vue.extend({
             errMsg: '请选择下单客户'
           },
           {
-            key: 'delivery_time',
+            key:'order_time',
             errMsg: '请选择下单日期'
+          },
+          {
+            key: 'delivery_time',
+            errMsg: '请选择交货日期'
           }
         ])
       ) {
@@ -741,21 +756,9 @@ export default Vue.extend({
       this.$forceUpdate()
     },
     copyInfo(type: string) {
-      let price = ''
-      let number_attribute = ''
-
       this.order_info.product_info.forEach((item: any, index: number) => {
         item.child_data.forEach((itemChild: any, indexChild: number) => {
-          if (index === 0 && indexChild === 0) {
-            price = itemChild.price
-            number_attribute = itemChild.number_attribute
-          } else {
-            if (type === 'number_attribute') {
-              itemChild.number_attribute = number_attribute
-            } else if (type === 'price') {
-              itemChild.price = price
-            }
-          }
+          itemChild[type] = item.child_data[0][type]
         })
       })
     },

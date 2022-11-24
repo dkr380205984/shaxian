@@ -146,9 +146,9 @@
           <div class="tbody">
             <div class="trow" v-for="item in order_info.product_info" :key="item.id">
               <div class="tcolumn">
-                <el-checkbox v-model="item.checked" @change="selectList($event, item)">{{
-                  item.product_name
-                }}</el-checkbox>
+                <el-checkbox v-model="item.checked" style="white-space: pre-wrap;" @change="selectList($event, item)">
+                  <div style="max-width:110px;">{{item.product_name}}</div>
+                </el-checkbox>
               </div>
               <div class="tcolumn noPad" style="flex: 7">
                 <div class="trow" style="height: 100%" v-for="itemChild in item.child_data" :key="itemChild.id">

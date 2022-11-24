@@ -123,6 +123,7 @@
                   </template>
                 </el-table-column>
               </el-table>
+              <div v-if="yarnInfoList.length > 0 && getYarnStoreObj.name">【{{getYarnStoreObj.name}}】预计调取加工数量：{{totalProcessWeight}}kg</div>
               <div class="pageCtn" style="margin-top: 20px">
                 <el-pagination
                   background
@@ -251,11 +252,6 @@
                     }}</span>
                     <span class="explanation">(必填)</span>
                     </div>
-                    <!-- <el-tooltip v-if="indexChild === 0 && item.type === '染色'" style="cursor:pointer;margin-left:10px" class="item" effect="dark" content="统一属性" placement="top">
-                      <svg class="iconFont copyIcon hoverBlue" aria-hidden="true" @click="copyInfo('attribute')">
-                        <use xlink:href="#icon-tongbushuju1"></use>
-                      </svg>
-                    </el-tooltip> -->
                   </div>
                   <div class="content flexRow">
                     <div class="elCtn" style="width: 100%" v-if="!item.type">
@@ -326,6 +322,16 @@
                   <div class="label" v-if="indexChild === 0">
                     <span class="text">单价/数量</span>
                     <span class="explanation">(必填)</span>
+                    <el-tooltip class="item" effect="dark" content="统一单价" placement="top">
+                      <svg
+                        class="iconFont copyIcon hoverBlue"
+                        aria-hidden="true"
+                        style="cursor:pointer"
+                        @click="copyInfo('price')"
+                      >
+                        <use xlink:href="#icon-tongbushuju1"></use>
+                      </svg>
+                    </el-tooltip>
                   </div>
                   <div class="content flexRow">
                     <div class="elCtn">
@@ -489,40 +495,7 @@
             <div
               class="btn backHoverBlue"
               v-if="!update_flag && step === 2"
-              @click="
-                $addItem(process_info, {
-                  transfer_id: process_info[0].transfer_id,
-                  client_id: '',
-                  type: '',
-                  price: '',
-                  desc: '',
-                  order_time: $getDate(new Date()),
-                  delivery_time: $getDate(new Date()),
-                  total_price: '',
-                  file_url: '',
-                  total_additional_fee: 0,
-                  additional_fee: [
-                    {
-                      name: '',
-                      price: '',
-                      desc: ''
-                    }
-                  ],
-                  child_data: [
-                    {
-                      name: '',
-                      transfer_info_id: '',
-                      before_attribute: '',
-                      after_attribute: '',
-                      before_color: '白胚',
-                      after_color: '',
-                      color: '',
-                      attribute: '',
-                      weight: ''
-                    }
-                  ]
-                })
-              "
+              @click="addChildData"
             >
               添加加工单
             </div>
@@ -549,7 +522,9 @@ export default Vue.extend({
     },
     yarnList: {
       type: Array,
-      default: []
+      default:function(){
+        return []
+      }
     },
     update_flag: {
       type: Boolean,
@@ -577,8 +552,10 @@ export default Vue.extend({
       dialogVisible: false,
       dialogImageUrl: '',
       step: 0,
+      totalProcessWeight: 0,
       total_number: 0,
       diaoquNumber: 0,
+      processData:{},
       storeList: [],
       getYarnStoreObj: {
         store_id: '',
@@ -677,7 +654,10 @@ export default Vue.extend({
       return this.$store.state.api.storeHouse.arr.filter((item: any) => item.store_type === 1)
     },
     client_arr() {
-      return this.$store.state.api.factory.arr
+      return this.$store.state.api.supplier.arr.filter(
+        (item: any) =>
+          item.client_type === '染色单位' || item.client_type === '膨纱单位' || item.client_type === '倒筒单位'
+      )
     },
     token() {
       return this.$store.state.status.token
@@ -689,10 +669,22 @@ export default Vue.extend({
         stock
           .delete({
             id:this.trans_id
+          }).then(res => {
+            if(res.data.status){
+              this.$message.success('已成功删除关联调取单')
+            }
           })
       }
       this.$emit('close')
       this.resetProcess()
+    },
+    copyInfo(type: string) {
+      this.process_info.forEach((item: any, index: number) => {
+        item.child_data.forEach((itemChild: any, indexChild: number) => {
+          itemChild[type] = item.child_data[0][type]
+        })
+      })
+      this.$forceUpdate()
     },
     getYarnWeight(index: number, indexChild: number) {
       let itemName = this.process_info[index].child_data[indexChild]
@@ -709,14 +701,16 @@ export default Vue.extend({
       // console.log(ev,item)
       item.child_data.forEach((itemChild: any) => {
         itemChild.before_attribute = itemChild.attributeName
-        itemChild.before_color = itemChild.colorName
+        itemChild.before_color = itemChild.colorName || '白胚'
         if (ev === '倒筒') {
+          itemChild.afterColor = itemChild.after_color?itemChild.after_color:itemChild.afterColor
           itemChild.after_attribute =
             itemChild.attributeName === '胚纱' ? '筒纱' : itemChild.attributeName === '筒纱' ? '胚纱' : ''
           itemChild.color = ''
           itemChild.attribute = ''
           itemChild.after_color = ''
         } else if (ev === '膨纱') {
+          itemChild.afterColor = itemChild.after_color?itemChild.after_color:itemChild.afterColor
           itemChild.color = '膨纱'
           itemChild.attribute = '膨纱'
           itemChild.after_attribute = ''
@@ -725,6 +719,7 @@ export default Vue.extend({
           itemChild.color = ''
           itemChild.attribute = ''
           itemChild.after_attribute = ''
+          itemChild.after_color = itemChild.after_color?itemChild.after_color:itemChild.afterColor
         }
       })
       this.$forceUpdate()
@@ -749,6 +744,7 @@ export default Vue.extend({
       this.trans_id = id
       stock.detail({ id }).then((res) => {
         let data = res.data.data
+        this.processData = res.data.data
         this.diaoquNumber = data.child_data[0].action_weight
         this.process_info[0] = {
           transfer_id: data.id,
@@ -801,8 +797,8 @@ export default Vue.extend({
               after_color: item.color,
               color: '',
               attribute: '',
-              colorName: item.color || '',
-              attributeName: item.attribute || '',
+              colorName: data.child_data[0].color || '',
+              attributeName: data.child_data[0].attribute || '',
               weight: item.weight
             })
           });
@@ -810,7 +806,74 @@ export default Vue.extend({
         this.child_data_info = data.child_data
       })
     },
+    addChildData(){
+      let data = this.processData
+      this.process_info.push({
+        transfer_id: data.id,
+        client_id: '',
+        type: '',
+        price: '',
+        desc: '',
+        order_time: this.$getDate(new Date()),
+        delivery_time: this.$getDate(new Date()),
+        total_price: '',
+        file_url: '',
+        total_additional_fee: 0,
+        additional_fee: [
+          {
+            name: '',
+            price: '',
+            desc: ''
+          }
+        ],
+        child_data: data.child_data.map((item: any) => {
+          return {
+            name: item.name,
+            transfer_info_id: item.id || '',
+            id: item.id || '',
+            before_attribute: '',
+            after_attribute: '',
+            before_color: '白胚',
+            after_color: '',
+            color: '',
+            attribute: '',
+            colorName: item.color || '',
+            attributeName: item.attribute || '',
+            weight: item.action_weight
+          }
+        })
+      })
+      if(this.yarnInfoList.length > 0){
+        let a = this.yarnInfoList.find((item:any) => {
+          return item.name === data.child_data[0].name
+        })
+        this.process_info[this.process_info.length - 1].child_data = []
+        a.child_data.forEach((item:any) => {
+          this.process_info[this.process_info.length - 1].child_data.push({
+            name: a.name,
+            transfer_info_id: item.id || '',
+            id: data.child_data[0].id || '',
+            before_attribute: '',
+            after_attribute: '',
+            before_color: data.child_data[0].color,
+            after_color: item.color,
+            color: '',
+            attribute: '',
+            colorName: data.child_data[0].color || '',
+            attributeName: data.child_data[0].attribute || '',
+            weight: item.weight
+          })
+        });
+      }
+    },
     getYarnStoreList() {
+      if(this.yarnInfoList.length > 0 && this.getYarnStoreObj.name) {
+        this.totalProcessWeight = this.yarnInfoList.find((item:any) => {
+          return item.name === this.getYarnStoreObj.name  
+        }).child_data.reduce((a:any,b:any) => {
+          return a + (Number(b.weight) || 0)
+        },0)
+      }
       if (!this.getYarnStoreObj.LV2_name) {
         return
       } else if (this.yarnList.length > 0 && !this.getYarnStoreObj.name) {
@@ -872,6 +935,16 @@ export default Vue.extend({
           err = true
           throw new Error('未选择必填项')
         }
+        item.total_weight = item.child_data.reduce((a:any,b:any) => {
+          return a + (Number(b.weight) || 0)
+        },0)
+
+        if(Number(this.diaoquNumber) !== Number(item.total_weight)){
+          this.$message.error('【'+ item.type +'】工序加工单，加工总数不等于库存调取总数'+Number(this.diaoquNumber)+'，无法提交。')
+          this.loading = false
+          err = true
+          throw new Error('【'+ item.type +'】工序加工单，加工总数不等于库存调取总数'+Number(this.diaoquNumber)+'，无法提交。')
+        }
         item.child_data.forEach((itemChild: any) => {
           if (!itemChild.name) {
             this.$message.error('请选择纱线名称')
@@ -896,10 +969,17 @@ export default Vue.extend({
       if (err) return
       this.loading = true
 
+      this.total_weight = this.process_info.reduce((a:any,b:any) => {
+        return a + b.child_data.reduce((a1:any,b1:any) => {
+          return a1 + (Number(b1.weight) || 0)
+        },0)
+      },0)
+
       this.process_info.forEach((item: any) => {
         item.child_data.forEach((itemChild: any) => {
           itemChild.name = itemChild.name.constructor === Array ? itemChild.name[1] : itemChild.name
         })
+        
         item.total_price =
           item.child_data.reduce((total: any, current: any) => {
             return total + current.weight * current.price
@@ -915,17 +995,7 @@ export default Vue.extend({
             ? JSON.stringify(item.additional_fee)
             : ''
       })
-      this.total_weight = this.process_info.reduce((a:any,b:any) => {
-        return a + b.child_data.reduce((a1:any,b1:any) => {
-          return a1 + (Number(b1.weight) || 0)
-        },0)
-      },0)
       
-      if(this.diaoquNumber < this.total_weight){
-        this.$message.error('总数量不能超过'+this.diaoquNumber)
-        this.loading = false
-        return
-      }
       yarnProcess
         .create({
           order_id: this.orderId || '',
@@ -943,6 +1013,7 @@ export default Vue.extend({
     },
     resetProcess() {
       this.step = 0
+      this.trans_id = ''
       this.getYarnStoreObj.LV2_name = ''
       this.storeList = []
       this.process_info = [

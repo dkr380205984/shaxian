@@ -230,6 +230,7 @@
                             item: '',
                             price: itemPro.price,
                             attribute: itemPro.attribute,
+                            color_list: itemPro.color_list,
                             color: ''
                           })
                         "

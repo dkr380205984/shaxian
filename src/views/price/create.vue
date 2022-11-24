@@ -109,8 +109,8 @@
                   <div class="content">
                     <el-select v-model="itemYarn.attr"
                       placeholder="请选择外形属性">
-                      <el-option label="胚纱"
-                        value="胚纱"></el-option>
+                      <el-option label="绞纱"
+                        value="绞纱"></el-option>
                       <el-option label="筒纱"
                         value="筒纱"></el-option>
                     </el-select>

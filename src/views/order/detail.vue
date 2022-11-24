@@ -1702,8 +1702,8 @@ export default Vue.extend({
           this.jiagongdanList.forEach((item: any) => {
             this.orderInfoProChild.forEach((itemOPC: any) => {
               if (
-                itemOPC.attribute === item.before_attribute &&
-                itemOPC.color === item.before_color &&
+                itemOPC.attribute === item.attribute &&
+                itemOPC.color === item.color &&
                 itemOPC.name === item.name
               ) {
                 item.xiadanNumber = itemOPC.weight

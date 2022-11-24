@@ -265,7 +265,7 @@
                         style="margin-right: 12px"
                         @change="daoTong($event, 'before_attribute', itemChild)"
                       >
-                        <el-option label="胚纱" value="胚纱"></el-option>
+                        <el-option label="绞纱" value="绞纱"></el-option>
                         <el-option label="筒纱" value="筒纱"></el-option>
                       </el-select>
                     </div>
@@ -275,7 +275,7 @@
                         placeholder="加工后"
                         @change="daoTong($event, 'after_attribute', itemChild)"
                       >
-                        <el-option label="胚纱" value="胚纱"></el-option>
+                        <el-option label="绞纱" value="绞纱"></el-option>
                         <el-option label="筒纱" value="筒纱"></el-option>
                       </el-select>
                     </div>
@@ -294,7 +294,7 @@
                         v-model="itemChild.attribute"
                         @change="$forceUpdate()"
                       >
-                        <el-option label="胚纱" value="胚纱"></el-option>
+                        <el-option label="绞纱" value="绞纱"></el-option>
                         <el-option label="筒纱" value="筒纱"></el-option>
                         <el-option label="膨纱" value="膨纱"></el-option>
                       </el-select>
@@ -315,7 +315,7 @@
                     </div>
                   </div>
                   <div v-if="itemChild.before_color.indexOf('白') === -1 && item.type === '染色'" style="color:red;margin-top:5px">
-                    该纱线不是白胚纱，可能无法进行染色
+                    该纱线不是白绞纱，可能无法进行染色
                   </div>
                 </div>
                 <div class="colCtn">
@@ -705,7 +705,7 @@ export default Vue.extend({
         if (ev === '倒筒') {
           itemChild.afterColor = itemChild.after_color?itemChild.after_color:itemChild.afterColor
           itemChild.after_attribute =
-            itemChild.attributeName === '胚纱' ? '筒纱' : itemChild.attributeName === '筒纱' ? '胚纱' : ''
+            itemChild.attributeName === '绞纱' ? '筒纱' : itemChild.attributeName === '筒纱' ? '绞纱' : ''
           itemChild.color = ''
           itemChild.attribute = ''
           itemChild.after_color = ''
@@ -727,13 +727,13 @@ export default Vue.extend({
     daoTong(ev: any, type: any, item: any) {
       if (type === 'before_attribute') {
         if (ev === '筒纱') {
-          item.after_attribute = '胚纱'
+          item.after_attribute = '绞纱'
         } else {
           item.after_attribute = '筒纱'
         }
       } else {
         if (ev === '筒纱') {
-          item.before_attribute = '胚纱'
+          item.before_attribute = '绞纱'
         } else {
           item.before_attribute = '筒纱'
         }
@@ -995,7 +995,8 @@ export default Vue.extend({
             ? JSON.stringify(item.additional_fee)
             : ''
       })
-      
+      // console.log(this.process_info)
+      // return 
       yarnProcess
         .create({
           order_id: this.orderId || '',

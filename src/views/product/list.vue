@@ -35,8 +35,8 @@
             </div>
             <div class="elCtn">
               <el-select v-model="attribute" placeholder="选择纱线属性" clearable @change="changeRouter(1)">
-                <el-option label="胚纱"
-                  value="胚纱"></el-option>
+                <el-option label="绞纱"
+                  value="绞纱"></el-option>
                 <el-option label="筒纱"
                   value="筒纱"></el-option>
               </el-select>

@@ -465,6 +465,7 @@ export default Vue.extend({
                 type: 'success',
                 message: `${(item.status === 1 && '禁用') || '启用'}成功!`
               })
+              location.reload()
               this.init()
             }
           })

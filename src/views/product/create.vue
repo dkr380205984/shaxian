@@ -293,7 +293,7 @@ export default Vue.extend({
       typeFlag: false,
       submit_form: [],
       name_flag: 'normal',
-      attributeArr: [{ value: '胚纱' }, { value: '筒纱' }]
+      attributeArr: [{ value: '绞纱' }, { value: '筒纱' }]
     }
   },
   computed: {

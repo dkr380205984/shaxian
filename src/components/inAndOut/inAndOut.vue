@@ -322,8 +322,8 @@
                     <el-select class="el"
                       v-model="item.attribute"
                       placeholder="属性">
-                      <el-option label="胚纱"
-                        value="胚纱"></el-option>
+                      <el-option label="绞纱"
+                        value="绞纱"></el-option>
                       <el-option label="筒纱"
                         value="筒纱"></el-option>
                     </el-select>
@@ -343,8 +343,8 @@
                       style="margin-right:4px">
                       <el-select v-model="item.before_attribute"
                         placeholder="加工前">
-                        <el-option label="胚纱"
-                        value="胚纱"></el-option>
+                        <el-option label="绞纱"
+                        value="绞纱"></el-option>
                         <el-option label="筒纱"
                           value="筒纱"></el-option>
                       </el-select>
@@ -353,8 +353,8 @@
                       v-if="storeInfo.type==='倒筒'">
                       <el-select v-model="item.after_attribute"
                         placeholder="加工后">
-                        <el-option label="胚纱"
-                          value="胚纱"></el-option>
+                        <el-option label="绞纱"
+                          value="绞纱"></el-option>
                         <el-option label="筒纱"
                           value="筒纱"></el-option>
                       </el-select>
@@ -991,6 +991,17 @@ export default class InAndOut extends Vue {
           })
           this.storeInfo.child_data.push(...a)
         });
+        // 先按照白胚进行判断的标准，之后在进行优化
+        let findColor = this.storeInfo.child_data.filter((item:any) => {
+          return item.color !== "白胚"
+        })
+        let findAttribute = this.storeInfo.child_data.filter((item:any) => {
+          return item.color === "白胚"
+        })
+        findColor.forEach((item:any,index:number) => {
+          item.attribute = findAttribute[index].attribute
+        })
+        this.storeInfo.child_data = findColor
         this.loading = false
       })
     }

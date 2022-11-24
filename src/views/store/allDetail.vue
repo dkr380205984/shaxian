@@ -226,7 +226,7 @@
                 @change="getStoreLogList(1)"
                 placeholder="选择纱线属性"
               >
-                <el-option label="胚纱" value="胚纱"></el-option>
+                <el-option label="绞纱" value="绞纱"></el-option>
                 <el-option label="筒纱" value="筒纱"></el-option>
               </el-select>
             </div>
@@ -830,7 +830,7 @@
                 <div class="column" style="max-width: 140px; box-sizing: border-box">
                   <div class="elCtn">
                     <el-select v-model="mergeData.attribute" clearable placeholder="选择纱线属性">
-                      <el-option label="胚纱" value="胚纱"></el-option>
+                      <el-option label="绞纱" value="绞纱"></el-option>
                       <el-option label="筒纱" value="筒纱"></el-option>
                     </el-select>
                   </div>

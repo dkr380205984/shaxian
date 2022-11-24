@@ -548,8 +548,8 @@
                     <el-select @change="commonInput($event,item,'attribute')"
                       placeholder="选择统一订购属性"
                       v-model="item.common_attr">
-                      <el-option label="胚纱"
-                        value="胚纱"></el-option>
+                      <el-option label="绞纱"
+                        value="绞纱"></el-option>
                       <el-option label="筒纱"
                         value="筒纱"></el-option>
                     </el-select>
@@ -840,8 +840,8 @@
                     <div class="from">
                       <el-select placeholder="属性"
                         v-model="itemChild.attribute">
-                        <el-option label="胚纱"
-                          value="胚纱"></el-option>
+                        <el-option label="绞纱"
+                          value="绞纱"></el-option>
                         <el-option label="筒纱"
                           value="筒纱"></el-option>
                       </el-select>
@@ -1292,15 +1292,15 @@
                     <el-select v-model="itemChild.before_attribute"
                       placeholder="加工前属性"
                       style="margin-right:12px">
-                      <el-option label="胚纱"
-                        value="胚纱"></el-option>
+                      <el-option label="绞纱"
+                        value="绞纱"></el-option>
                       <el-option label="筒纱"
                         value="筒纱"></el-option>
                     </el-select>
                     <el-select v-model="itemChild.after_attribute"
                       placeholder="加工后属性">
-                      <el-option label="胚纱"
-                        value="胚纱"></el-option>
+                      <el-option label="绞纱"
+                        value="绞纱"></el-option>
                       <el-option label="筒纱"
                         value="筒纱"></el-option>
                     </el-select>
@@ -1332,8 +1332,8 @@
                     </el-input>
                     <el-select v-model="itemChild.attribute"
                       placeholder="属性">
-                      <el-option label="胚纱"
-                        value="胚纱"></el-option>
+                      <el-option label="绞纱"
+                        value="绞纱"></el-option>
                       <el-option label="筒纱"
                         value="筒纱"></el-option>
                     </el-select>

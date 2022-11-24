@@ -700,25 +700,29 @@ export default Vue.extend({
     changeType(ev: any, item: any) {
       // console.log(ev,item)
       item.child_data.forEach((itemChild: any) => {
-        itemChild.before_attribute = itemChild.attributeName
-        itemChild.before_color = itemChild.colorName || '白胚'
         if (ev === '倒筒') {
           itemChild.afterColor = itemChild.after_color?itemChild.after_color:itemChild.afterColor
+          itemChild.before_attribute = itemChild.attributeName
           itemChild.after_attribute =
             itemChild.attributeName === '绞纱' ? '筒纱' : itemChild.attributeName === '筒纱' ? '绞纱' : ''
           itemChild.color = ''
           itemChild.attribute = ''
           itemChild.after_color = ''
+          itemChild.before_color = ''
         } else if (ev === '膨纱') {
           itemChild.afterColor = itemChild.after_color?itemChild.after_color:itemChild.afterColor
           itemChild.color = '膨纱'
           itemChild.attribute = '膨纱'
           itemChild.after_attribute = ''
+          itemChild.before_attribute = ''
           itemChild.after_color = ''
+          itemChild.before_color = ''
         } else if(ev === '染色') {
           itemChild.color = ''
           itemChild.attribute = ''
           itemChild.after_attribute = ''
+          itemChild.before_attribute = ''
+          itemChild.before_color = itemChild.colorName || '白胚'
           itemChild.after_color = itemChild.after_color?itemChild.after_color:itemChild.afterColor
         }
       })

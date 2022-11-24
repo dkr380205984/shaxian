@@ -554,6 +554,7 @@ export default Vue.extend({
           this.$message.success('添加成功')
           this.$emit('afterCreate')
           this.close()
+          location.reload()
           //   this.$confirm('继续添加新产品?', '提示', {
           //     confirmButtonText: '继续添加',
           //     cancelButtonText: '返回列表',

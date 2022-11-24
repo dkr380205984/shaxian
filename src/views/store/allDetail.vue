@@ -47,7 +47,7 @@
             </div>
             <div class="elCtn" style="width: 20px">
               <el-checkbox v-model="storeListFilter.isFilterZero" @change="getStoreInfoList"
-                >过滤库存为0的纱线</el-checkbox
+                >过滤库存数量&lt;=0的库存</el-checkbox
               >
             </div>
           </div>
@@ -722,7 +722,7 @@
                   <div class="column" style="max-width: 175px; word-break: break-all">
                     {{ item.batch_code }}/{{ item.color_code }}/{{ item.vat_code }}
                   </div>
-                  <div class="column" style="max-width: 175px; word-break: break-all">{{ item.use_weight }}kg</div>
+                  <div class="column" style="max-width: 175px; word-break: break-all">{{ item.total_weight }}kg</div>
                   <div class="column" style="flex: 0.3">
                     <el-checkbox v-model="item.check" @change="getMergeCheck($event, item)"></el-checkbox>
                   </div>
@@ -770,7 +770,7 @@
                   <div class="column" style="max-width: 160px; word-break: break-all">
                     {{ item.batch_code }}/{{ item.color_code }}/{{ item.vat_code }}
                   </div>
-                  <div class="column" style="max-width: 160px; word-break: break-all">{{ item.use_weight }}kg</div>
+                  <div class="column" style="max-width: 160px; word-break: break-all">{{ item.total_weight }}kg</div>
                   <div class="column" style="max-width: 160px; word-break: break-all">
                     <div class="oprCtn" style="border: unset">
                       <div

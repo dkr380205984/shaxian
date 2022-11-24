@@ -86,7 +86,7 @@
                 <div class="colCtn flex3">
                   <div class="label">
                     <span class="text">单位名称</span>
-                    <span class="explanation">(必选)</span>
+                    <span class="explanation" v-if="selfType[1]!==1&&selfType[1]!==2">(必选)</span>
                   </div>
                   <div class="content">
                     <div class="elCtn">
@@ -242,7 +242,21 @@
                   <div class="tcolumn"
                     v-if="storeInfo.type!=='染色'">纱线颜色</div>
                   <div class="tcolumn"
-                    v-if="storeInfo.type!=='倒筒'">纱线属性</div>
+                    v-if="storeInfo.type!=='倒筒'">
+                    <div style="display:flex;">
+                      纱线属性
+                      <el-tooltip v-if="selfType[1]===17" class="item" effect="dark" content="统一属性" placement="top">
+                        <svg
+                          class="iconFont copyIcon hoverBlue"
+                          style="cursor:pointer"
+                          aria-hidden="true"
+                          @click="copyInfo('attribute')"
+                        >
+                          <use xlink:href="#icon-tongbushuju1"></use>
+                        </svg>
+                      </el-tooltip>
+                    </div>
+                  </div>
                   <div class="tcolumn"
                     style="flex:1.5"
                     v-if="selfType&&selfType[0]==='无单据'&&(selfType[1]===13)&&storeInfo.type!=='膨纱'">加工前/加工后</div>
@@ -409,6 +423,7 @@
                   </div>
                   <div class="tcolumn">
                     <el-input class="el"
+                      @input="onlyInputNumber($event,item)"
                       v-model="item.action_weight"
                       placeholder="数量"></el-input>
                   </div>
@@ -873,6 +888,15 @@ export default class InAndOut extends Vue {
       this.relatedArr = []
     }
   }
+  onlyInputNumber(ev:any,item:any){
+    item.action_weight = ev.replace(/^\D*(\d*(?:\.\d{0,9})?).*$/g, '$1')
+  }
+  copyInfo(type:string){
+    this.storeInfo.child_data.forEach((item:any) => {
+      // @ts-ignore
+      item[type] = this.storeInfo.child_data[0][type]
+    })
+  }
   // 根据单据信息初始化列表
   initDetail(id: number) {
     this.loading = true
@@ -965,43 +989,30 @@ export default class InAndOut extends Vue {
         
         this.storeInfo.child_data = []
         data.process_info.forEach((itemPro:any) => {
-          let a = itemPro.child_data.map((itemChild:any) =>{
-            // let b = data.child_data.find((item:any) =>{
-            //   console.log(itemChild,item)
-            //   return item.id === itemChild.transfer_info_id && itemChild.type === item.type
-            // })
-            // console.log(b)
-            return {
-              name: itemChild.name,
-              action_weight: itemChild.weight,
-              color: itemChild.after_color || itemChild.color || '白胚',
-              attribute: itemChild.after_attribute || itemChild.before_attribute,
-              batch_code: itemChild.batch_code,
-              color_code: itemChild.color_code,
-              vat_code: itemChild.vat_code,
-              item: itemChild.item,
-              colorArr: [
-                {
-                  label: itemChild.after_color || itemChild.color || '白胚',
-                  value: itemChild.after_color || itemChild.color || '白胚',
-                  id:itemChild.id
-                }
-              ]
-            }
-          })
-          this.storeInfo.child_data.push(...a)
+          if(itemPro.type === '染色'){
+            let a = itemPro.child_data.map((itemChild:any) =>{
+              return {
+                name: itemChild.name,
+                action_weight: itemChild.weight,
+                color: itemChild.after_color || itemChild.color || '白胚',
+                attribute: '筒纱',
+                batch_code: itemChild.batch_code,
+                color_code: itemChild.color_code,
+                vat_code: itemChild.vat_code,
+                item: itemChild.item,
+                colorArr: [
+                  {
+                    label: itemChild.after_color || itemChild.color || '白胚',
+                    value: itemChild.after_color || itemChild.color || '白胚',
+                    id:itemChild.id
+                  }
+                ]
+              }
+            })
+            this.storeInfo.child_data.push(...a)
+          }
         });
-        // 先按照白胚进行判断的标准，之后在进行优化
-        let findColor = this.storeInfo.child_data.filter((item:any) => {
-          return item.color !== "白胚"
-        })
-        let findAttribute = this.storeInfo.child_data.filter((item:any) => {
-          return item.color === "白胚"
-        })
-        findColor.forEach((item:any,index:number) => {
-          item.attribute = findAttribute[index].attribute
-        })
-        this.storeInfo.child_data = findColor
+
         this.loading = false
       })
     }
@@ -1541,7 +1552,25 @@ export default class InAndOut extends Vue {
           itemChild.related_info_id = itemChild.colorName.id  
         })
       }
-      // return
+      let err = false
+      this.storeInfo.child_data.forEach((itemChild:any) => {
+        if (itemChild.color === '') {
+          this.$message.error('请填写颜色')
+          err = true
+          throw new Error('请填写颜色')
+        } else if (itemChild.attribute === '') {
+          this.$message.error('请填写属性')
+          err = true
+          throw new Error('请填写属性')
+        } else if(itemChild.action_weight === ''){
+          this.$message.error('请填写数量')
+          err = true
+          throw new Error('请填写数量')
+        }
+      })
+
+      if(err) return
+
       const formData: StoreCreate = {
         order_id: this.selfType[1] === 9 ? this.storeInfo.related_id : this.orderId || this.storeInfo.order_id,
         related_id: this.storeInfo.related_id,

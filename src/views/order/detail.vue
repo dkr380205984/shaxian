@@ -1179,10 +1179,24 @@
         </div>
         <div class="createCtn">
           <div class="rowCtn">
-            <div class="colCtn" style="flex: 2">
+            <div class="colCtn">
               <div class="label">
-                <span class="text">库存纱线</span>
-                <span class="explanation">(必选)</span>
+                <span class="text">纱线名称/纱线颜色</span>
+              </div>
+            </div>
+            <div class="colCtn">
+              <div class="label">
+                <span class="text">纱线属性</span>
+                <el-tooltip class="item" effect="dark" content="统一属性" placement="top">
+                  <svg
+                    class="iconFont copyIcon hoverBlue"
+                    style="cursor:pointer"
+                    aria-hidden="true"
+                    @click="copyInfoJiaGong('attribute')"
+                  >
+                    <use xlink:href="#icon-tongbushuju1"></use>
+                  </svg>
+                </el-tooltip>
               </div>
             </div>
             <div class="colCtn">
@@ -1202,7 +1216,7 @@
             </div>
             <div class="colCtn" style="flex: 1.5">
               <div class="label">
-                <span class="text">批号/缸号/色号</span>
+                <span class="text">批号/色号/缸号</span>
               </div>
             </div>
             <div class="colCtn">
@@ -1220,8 +1234,18 @@
           </div>
           <div style="max-height: 600px; overflow: scroll">
             <div class="rowCtn" v-for="(item, index) in jiagongdanList" :key="index + '发货数量'">
-              <div class="colCtn" style="flex: 2">
-                {{ item.client_name }} / {{ item.name }} / {{ item.color }} / {{ item.attribute }}
+              <div class="colCtn"> {{ item.name }}/{{ item.color }} </div>
+              <div class="colCtn">
+                <div class="elCtn">
+                  <el-select class="el"
+                    v-model="item.attribute"
+                    placeholder="属性">
+                    <el-option label="绞纱"
+                      value="绞纱"></el-option>
+                    <el-option label="筒纱"
+                      value="筒纱"></el-option>
+                  </el-select>
+                </div>
               </div>
               <div class="colCtn">{{ (Number(item.xiadanNumber) || 0).toFixed(1) }}kg</div>
               <div class="colCtn">{{ (Number(item.fahuoNumber) || 0).toFixed(1) }}kg</div>
@@ -1253,7 +1277,8 @@
               </div>
             </div>
             <div class="rowCtn">
-              <div class="colCtn" style="flex: 2"></div>
+              <div class="colCtn"></div>
+              <div class="colCtn"></div>
               <div class="colCtn">
                 <div class="label">
                   <span class="text">{{ totalJiaGongDan.totalXiadanNumber }}kg</span>
@@ -1593,6 +1618,11 @@ export default Vue.extend({
         })
       }
     },
+    copyInfoJiaGong(type:string){
+      this.jiagongdanList.forEach((item:any) => {
+        item[type] = this.jiagongdanList[0][type]
+      })
+    },
     beforeAvatarUpload(file: any) {
       const fileName = file.name.lastIndexOf('.') // 取到文件名开始到最后一个点的长度
       const fileNameLength = file.name.length // 取到文件名长度
@@ -1665,40 +1695,47 @@ export default Vue.extend({
           .toFixed(1)
         this.order_info.product_info.forEach((item: any) => {
           let processArr: any[] = []
+          // @ts-ignore
+          let a = this.order_info.transfer_log.find((itemTrans:any) => {
+            return itemTrans.child_data.find((itemChild:any) => {
+              return item.product_name === itemChild.name
+            })
+          })
+
           item.total_purchase_weight = item.child_data.reduce((a: any, b: any) => {
             return a + (b.purchase_weight || 0)
           }, 0)
           item.total_transfer_weight = item.child_data.reduce((a: any, b: any) => {
             return a + (b.transfer_weight || 0)
           }, 0)
-          this.order_info.product_info.forEach((item: any) => {
-            item.child_data.forEach((itemChild: any) => {
-              itemChild.name = item.product_name
-              this.orderInfoProChild.push(itemChild)
-            })
+          
+          item.child_data.forEach((itemChild: any) => {
+            itemChild.name = item.product_name
+            this.orderInfoProChild.push(itemChild)
+            if(a){
+              this.jiagongdanList.push({
+                action_weight: 0,
+                related_info_id: '',
+                jiagongNumber:itemChild.weight,
+                attribute: itemChild.attribute,
+                color: itemChild.color,
+                name: itemChild.name,
+                reality_weight: 0
+              })
+            }
           })
+
           // @ts-ignore
           this.order_info.transfer_log?.forEach((itemTrans: any) => {
             itemTrans.process_info.forEach((itemProcess: any) => {
               itemProcess.child_data.forEach((itemChild: any) => {
-                this.jiagongdanList.push({
-                  action_weight: 0,
-                  related_info_id: '',
-                  jiagongNumber:itemChild.weight,
-                  attribute: itemChild.after_attribute || itemChild.before_attribute,
-                  before_attribute: itemChild.before_attribute,
-                  before_color: itemChild.before_color,
-                  color: itemChild.after_color || itemChild.before_color,
-                  name: itemChild.name,
-                  client_name: itemProcess.client_name,
-                  reality_weight: 0
-                })
                 const copy = this.$clone(itemChild)
                 copy.type = itemProcess.type
                 processArr.push(copy)
               })
             })
           })
+
           this.jiagongdanList.forEach((item: any) => {
             this.orderInfoProChild.forEach((itemOPC: any) => {
               if (

@@ -291,15 +291,16 @@
           </div>
         </div>
         <div class="oprCtn">
-          <span class="btn borderBtn" style="margin-right: 20px" @click="close">取消</span>
+          <span class="btn borderBtn" @click="close">取消</span>
           <span
             class="btn"
+            style="margin-left: 20px"
             v-if="!orderId"
             :class="{ backHoverBlue: !update, backHoverOrange: update }"
             @click="saveOrder(1)"
             >{{ update ? '确认修改' : '确认采购' }}</span
           >
-          <span v-if="!update" class="btn backHoverGreen" style="margin-right: 20px" @click="saveOrder(2)"
+          <span v-if="!update" class="btn backHoverGreen" style="margin:0 20px" @click="saveOrder(2)"
             >确认并入库</span
           >
         </div>

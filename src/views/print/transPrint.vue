@@ -76,7 +76,7 @@
             </div>
             <div class="row_item center flex08">{{ itemSon.action_weight }}kg</div>
             <div class="row_item center flex07">{{ itemSon.order_info ? itemSon.order_info.price : '0.00' }}元</div>
-            <div class="row_item center flex08">{{ ((itemSon.order_info.price || 0) * (itemSon.order_info.weight || 0)).toFixed(2) }}元</div>
+            <div class="row_item center flex08">{{ (((itemSon.order_info ? itemSon.order_info.price : itemSon.priceNumber) || 0) * ((itemSon.order_info ? itemSon.order_info.weight : itemSon.action_weight) || 0)).toFixed(2) }}元</div>
             <div class="row_item center flex08">{{ itemSon.item || 0 }}</div>
           </div>
           <div class="print_row fz14" v-if="itemSon.isTotal" style="min-height: 39px; max-height: 39px">

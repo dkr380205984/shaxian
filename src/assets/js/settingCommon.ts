@@ -127,54 +127,54 @@ export const moduleList = [
       }
     ]
   },
-  {
-    id: '4',
-    label: '财务管理',
-    children: [
-      {
-        id: '4-0',
-        label: '客户财务',
-        icon: '&#xe611;',
-        url: '/finance/clientList?page=&page_size=&date=&sort_type=&sort_cloum='
-      },
-      {
-        id: '4-1',
-        label: '供货商财务',
-        icon: '&#xe611;',
-        url: '/finance/supplierList?page=&page_size=&date=&sort_type=&sort_cloum='
-      },
-      {
-        id: '4-2',
-        label: '加工厂财务',
-        icon: '&#xe611;',
-        url: '/finance/factoryList?page=&page_size=&date=&sort_type=&sort_cloum='
-      },
-      {
-        id: '4-3',
-        label: '发票列表',
-        icon: '&#xe611;',
-        url: '/finance/billList?page=&page_size=10'
-      },
-      {
-        id: '4-4',
-        label: '收款列表',
-        icon: '&#xe611;',
-        url: '/finance/collectionList?page=&page_size=10'
-      },
-      {
-        id: '4-5',
-        label: '付款列表',
-        icon: '&#xe611;',
-        url: '/finance/payList?page=&page_size=10'
-      },
-      {
-        id: '4-6',
-        label: '扣款列表',
-        icon: '&#xe611;',
-        url: '/finance/deductList?page=&page_size=10'
-      }
-    ]
-  },
+  // {
+  //   id: '4',
+  //   label: '财务管理',
+  //   children: [
+  //     {
+  //       id: '4-0',
+  //       label: '客户财务',
+  //       icon: '&#xe611;',
+  //       url: '/finance/clientList?page=&page_size=&date=&sort_type=&sort_cloum='
+  //     },
+  //     {
+  //       id: '4-1',
+  //       label: '供货商财务',
+  //       icon: '&#xe611;',
+  //       url: '/finance/supplierList?page=&page_size=&date=&sort_type=&sort_cloum='
+  //     },
+  //     {
+  //       id: '4-2',
+  //       label: '加工厂财务',
+  //       icon: '&#xe611;',
+  //       url: '/finance/factoryList?page=&page_size=&date=&sort_type=&sort_cloum='
+  //     },
+  //     {
+  //       id: '4-3',
+  //       label: '发票列表',
+  //       icon: '&#xe611;',
+  //       url: '/finance/billList?page=&page_size=10'
+  //     },
+  //     {
+  //       id: '4-4',
+  //       label: '收款列表',
+  //       icon: '&#xe611;',
+  //       url: '/finance/collectionList?page=&page_size=10'
+  //     },
+  //     {
+  //       id: '4-5',
+  //       label: '付款列表',
+  //       icon: '&#xe611;',
+  //       url: '/finance/payList?page=&page_size=10'
+  //     },
+  //     {
+  //       id: '4-6',
+  //       label: '扣款列表',
+  //       icon: '&#xe611;',
+  //       url: '/finance/deductList?page=&page_size=10'
+  //     }
+  //   ]
+  // },
   {
     id: '5',
     label: '系统设置',

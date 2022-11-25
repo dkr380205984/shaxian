@@ -57,7 +57,7 @@
           <div class="row_item center">{{totalCom}}</div>
           <div class="row_item center w180">{{(actionType === 10 || actionType === 11) ? '来源仓库' : `${actionName}仓库`}}</div>
           <div class="row_item center">{{`${stockInfo.second_store_name}/${stockInfo.store_name}`}}</div>
-          <div class="row_item center w180">{{(actionType === 10 || actionType === 11) ? '出库仓库' : `${actionName}仓库`}}</div>
+          <div class="row_item center w180">{{(actionType === 10 || actionType === 11) ? '出库仓库' : `${actionName}单位`}}</div>
           <div class="row_item center">{{(actionType === 10 || actionType === 11) ? `${stockInfo.move_second_store_name}/${stockInfo.move_store_name}` : stockInfo.client_name}}</div>
         </div>
         <div class="print_row">

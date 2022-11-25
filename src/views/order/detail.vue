@@ -146,7 +146,7 @@
           <div class="tbody">
             <div class="trow" v-for="item in order_info.product_info" :key="item.id">
               <div class="tcolumn">
-                <el-checkbox v-model="item.checked" style="white-space: pre-wrap;" @change="selectList($event, item)">
+                <el-checkbox v-model="item.checked" style="white-space: pre-wrap;word-break: break-all;" @change="selectList($event, item)">
                   <div style="max-width:110px;">{{item.product_name}}</div>
                 </el-checkbox>
               </div>
@@ -159,8 +159,13 @@
                   <div class="tcolumn">{{ itemChild.number_attribute }}</div>
                   <div class="tcolumn">{{ itemChild.price }}元</div>
                   <div class="tcolumn blue">{{ itemChild.weight }}kg</div>
-                  <div class="tcolumn blue">{{ itemChild.purchase_weight || 0 }}kg</div>
-                  <div class="tcolumn blue">{{ itemChild.transfer_weight || 0 }}kg</div>
+                  <div class="tcolumn blue">
+                    <div style="white-space: pre-wrap;word-break: break-all;" v-for="itemPurchase,indexPurchase in itemChild.purchase_info" :key='indexPurchase + itemPurchase.client + "采购数量"'>
+                      {{ itemPurchase.client}}：{{ itemPurchase.weight || 0 }}kg
+                    </div>
+                    <div class="once gray" v-if="itemChild.purchase_info.length === 0">暂无采购信息</div>
+                  </div>
+                  <div class="tcolumn blue">{{ itemChild.send_weight ? (itemChild.send_weight).toFixed(2) : '0.00' }}kg</div>
                 </div>
               </div>
               <div class="tcolumn blue">
@@ -317,12 +322,23 @@
               </div>
               <div class="tcolumn">{{ item.desc || '无' }}</div>
               <div class="tcolumn">{{ item.user_name }}</div>
-              <div
-                class="tcolumn hoverBlue"
-                style="cursor: pointer"
-                @click="$openUrl('/print/transPrint?id=' + item.id)"
-              >
-                打印
+              <div class="tcolumn">
+                <div style="display:flex;justify-content: space-around;">
+                  <span
+                    class="hoverBlue"
+                    style="cursor: pointer;"
+                    @click="$openUrl('/print/transPrint?id=' + item.id)"
+                  >
+                    打印
+                  </span>
+                  <span
+                    class="hoverRed"
+                    style="cursor: pointer;"
+                    @click="deleteFaHuo(item.id)"
+                  >
+                    删除
+                  </span>
+                </div>
               </div>
             </div>
             <div class="trow" style="background: #f4f4f4">
@@ -1603,7 +1619,12 @@ export default Vue.extend({
             color: itemChild.color,
             attribute: itemChild.attribute,
             price: '',
-            id: itemChild.id
+            order_info_id: itemChild.id,
+            item:{
+              id:itemChild.id,
+              label: itemChild.name,
+              value: itemChild.name,
+            },
           }
         })
         this.childList.push(...arr)
@@ -1684,13 +1705,11 @@ export default Vue.extend({
         // @ts-ignore
         this.order_info.total_purchase_weight = this.order_info.product_info
           .reduce((a: any, b: any) => {
-            return a + (Number(b.total_purchase_weight) || 0)
-          }, 0)
-          .toFixed(1)
-        // @ts-ignore
-        this.order_info.total_transfer_weight = this.order_info.product_info
-          .reduce((a: any, b: any) => {
-            return a + (Number(b.total_transfer_weight) || 0)
+            return a + b.child_data.reduce((a1:any,b1:any) => {
+              return a1 + b1.purchase_info.reduce((a2:any,b2:any) => {
+                return a2 + (Number(b2.weight) || 0)
+              },0)
+            },0)
           }, 0)
           .toFixed(1)
         this.order_info.product_info.forEach((item: any) => {
@@ -1711,6 +1730,7 @@ export default Vue.extend({
           
           item.child_data.forEach((itemChild: any) => {
             itemChild.name = item.product_name
+            itemChild.send_weight = 0
             this.orderInfoProChild.push(itemChild)
             if(a){
               this.jiagongdanList.push({
@@ -1763,8 +1783,7 @@ export default Vue.extend({
             }, 0)
           })
           item.process_info = processMerge
-        })
-        this.order_info.product_info.forEach((item: any) => {
+
           item.process_info.forEach((itemChild: any) => {
             if (itemChild.type === '倒筒') {
               this.total.daotong_weight += itemChild.total_weight
@@ -1780,6 +1799,7 @@ export default Vue.extend({
             }
           })
         })
+
         this.deduct_list = res[1].data.data
         this.deduct_list.forEach((item: any) => {
           item.deduct_content = JSON.parse(item.deduct_content) || []
@@ -1793,6 +1813,13 @@ export default Vue.extend({
 
         this.final_out_log.forEach((item: any) => {
           item.child_data.forEach((itemChild: any) => {
+            this.order_info.product_info.forEach((itemPro:any) => {
+              itemPro.child_data.forEach((itemProChild:any) => {
+                if(itemProChild.color === itemChild.color && itemProChild.attribute === itemChild.attribute && itemProChild.name === itemChild.name){
+                  itemProChild.send_weight += (Number(itemChild.action_weight) || 0)
+                }
+              });
+            })
             this.jiagongdanList.forEach((itemJGD: any) => {
               if (
                 itemChild.attribute === itemJGD.before_attribute &&
@@ -1816,6 +1843,16 @@ export default Vue.extend({
             })
           })
         })
+
+        // @ts-ignore
+        this.order_info.total_transfer_weight = this.order_info.product_info
+          .reduce((a: any, b: any) => {
+            return a + b.child_data.reduce((a1:any,b1:any) => {
+              return a1 + (b1.send_weight || 0)
+            },0)
+          }, 0)
+          .toFixed(1)
+
         this.total_final_out_log = {
           total_action_weight: this.final_out_log.reduce((a: any, b: any) => {
             return (
@@ -1891,6 +1928,7 @@ export default Vue.extend({
               name: item.product_name,
               color: itemChild.color,
               attribute: itemChild.attribute,
+              id:itemChild.id,
               weight: '',
               price: ''
             })
@@ -1899,6 +1937,28 @@ export default Vue.extend({
         this.getTotalJiaGongDan()
         this.loading = false
       })
+    },
+    deleteFaHuo(id:any){
+      this.$confirm('此操作将删除该发货单据, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        stock.delete({
+          id: id
+        }).then(res => {
+          if(res.data.status){
+            this.$message.success('删除成功')
+            this.init()
+          }
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        });          
+      });
+      
     },
     getTotalJiaGongDan() {
       this.totalJiaGongDan = {
@@ -2052,7 +2112,6 @@ export default Vue.extend({
           return itemArr.attribute === item.attribute && item.color === itemArr.color && item.name === itemArr.name
         })
         if (obj) {
-          console.log()
           obj.store_name = item.store_name
           obj.second_store_name = item.second_store_name
           obj.store_id = item.store_id

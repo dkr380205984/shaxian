@@ -65,16 +65,18 @@
                 <div class="elCtn">
                   <el-select
                     v-if="info.orderId"
-                    v-model="item.name"
+                    v-model="item.item"
+                    value-key='id'
                     filterable
+                    @change="changeProName(item,index)"
                     placeholder="请选择纱线"
                     :options="yarn_list"
                   >
                     <el-option
                       v-for="(itemYarn, indexYarn) in yarn_list"
-                      :key="indexYarn + '请选择纱线'"
+                      :key="indexYarn.id"
                       :label="itemYarn.label"
-                      :value="itemYarn.value"
+                      :value="itemYarn"
                     ></el-option>
                   </el-select>
                   <el-cascader
@@ -566,7 +568,8 @@ export default Vue.extend({
         return this.info.child_data.map((item: any) => {
           return {
             label: item.name,
-            value: item.name
+            value: item.name,
+            id: item.id
           }
         })
       } else {
@@ -812,6 +815,10 @@ export default Vue.extend({
     },
     successFile(response: any) {
       this.order_yarn_info.file_url = 'https://file.zwyknit.com/' + response.key
+    },
+    changeProName(item:any,index:number){
+      this.order_yarn_info.child_data[index].name = item.name
+      this.order_yarn_info.child_data[index].order_info_id = item.id
     },
     saveOrder(step: number) {
       if (

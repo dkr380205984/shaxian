@@ -339,7 +339,8 @@
                       </el-input>
                     </div>
                     <div class="elCtn">
-                      <el-input placeholder="数量" type="number" :disabled='item.type !== "染色"' @input="$forceUpdate()" v-model="itemChild.weight"></el-input>
+                      <el-input placeholder="数量" type="number" @input="$forceUpdate()" v-model="itemChild.weight"></el-input>
+                      <!-- <el-input placeholder="数量" type="number" :disabled='item.type !== "染色"' @input="$forceUpdate()" v-model="itemChild.weight"></el-input> -->
                     </div>
                   </div>
                   <div
@@ -1105,8 +1106,12 @@ export default Vue.extend({
       }
 
       if(this.yarnInfoList.length > 0){
-        if(this.selectList.length !== 1){
-          this.$message.error('只能填写一个调取数量')
+        let a = this.selectList.find((item:any) => {
+          return item.color === '白胚'
+        })
+
+        if(this.selectList.length > 1 && a){
+          this.$message.error('白胚纱只能填写一个调取数量')
           return
         }
       }

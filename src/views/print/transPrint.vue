@@ -140,7 +140,7 @@
           </div>
           <div
             class="print_row fz14"
-            style="max-height: 78px; position: absolute; bottom: 0"
+            style="max-height: 55px; position: absolute; bottom: 0;min-height:55px"
             v-if="itemSon.companyDesc"
           >
             <div class="row_item center bgGray flex05">公司声明</div>

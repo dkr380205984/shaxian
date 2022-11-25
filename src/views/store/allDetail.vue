@@ -383,81 +383,26 @@
                   </div>
                 </div>
                 <div class="bodyCtn">
-                  <div class="row" v-for="item in storeLogInfo.list" :key="item.id + 'storeLogInfoList'">
-                    <div class="column min120 blue" :style="{ height: 51 * item.child_data.length - 1 + 'px' }">
-                      {{ item.code }}
+                  <div class="row" v-for="item in storeLogInfo.list" :key="item.id + item.code">
+                      <div class="column min120">{{ item.code }}</div>
+                      <div class="column" style="min-width: 80px">{{ item.action_type }}</div>
+                      <div class="column" style="min-width: 200px">{{ item.client_name }}</div>
+                      <div class="column noPad" style="flex-direction: column;width:0;overflow:hidden">
+                        <div
+                          class="row"
+                          v-for="(itemChild, indexChild) in item.child_data"
+                          :key="indexChild + itemChild.name"
+                        >
+                          <div class="column min120">{{ itemChild.name }}</div>
+                          <div class="column min120">{{ itemChild.color }}</div>
+                          <div class="column min120">{{ itemChild.attribute }}</div>
+                          <div class="column min120 blue">{{ itemChild.action_weight }}</div>
+                          <div class="column min120">{{ itemChild.batch_code }}</div>
+                          <div class="column min120">{{ itemChild.color_code }}</div>
+                          <div class="column min120">{{ itemChild.vat_code }}</div>
+                        </div>
+                      </div>
                     </div>
-                    <div
-                      class="column"
-                      style="min-width: 80px"
-                      :style="{ height: 51 * item.child_data.length - 1 + 'px' }"
-                      :class="{
-                        blue:
-                          item.action_type === 1 ||
-                          item.action_type === 3 ||
-                          item.action_type === 5 ||
-                          item.action_type === 8 ||
-                          item.action_type === 11 ||
-                          item.action_type === 13 ||
-                          item.action_type === 14 ||
-                          item.action_type === 15 ||
-                          item.action_type === 17,
-                        green:
-                          item.action_type === 2 ||
-                          item.action_type === 4 ||
-                          item.action_type === 6 ||
-                          item.action_type === 7 ||
-                          item.action_type === 9 ||
-                          item.action_type === 10 ||
-                          item.action_type === 12 ||
-                          item.action_type === 16
-                      }"
-                    >
-                      {{ item.action_type | stockTypeFilter }}
-                    </div>
-                    <div
-                      class="column"
-                      style="min-width: 200px; max-width: 200px"
-                      :style="{ height: 51 * item.child_data.length - 1 + 'px' }"
-                    >
-                      <span
-                        v-if="
-                          item.action_type === 1 ||
-                          item.action_type === 3 ||
-                          item.action_type === 5 ||
-                          item.action_type === 8 ||
-                          item.action_type === 13 ||
-                          item.action_type === 14 ||
-                          item.action_type === 15 ||
-                          item.action_type === 17
-                        "
-                      >
-                        <span class="green">{{ item.client_name || '无来源' }}</span>
-                        <i class="el-icon-s-unfold orange" style="margin: 0 5px; font-size: 16px"></i>
-                        <span class="blue">{{ item.store_name }}/{{ item.second_store_name }}</span>
-                      </span>
-                      <span
-                        v-if="
-                          item.action_type === 2 ||
-                          item.action_type === 4 ||
-                          item.action_type === 6 ||
-                          item.action_type === 7 ||
-                          item.action_type === 9 ||
-                          item.action_type === 12 ||
-                          item.action_type === 16
-                        "
-                      >
-                        <span class="blue">{{ item.store_name }}/{{ item.second_store_name }}</span>
-                        <i class="el-icon-s-unfold orange" style="margin: 0 5px; font-size: 16px"></i>
-                        <span class="green">{{ item.client_name }}</span>
-                      </span>
-                      <span v-if="item.action_type === 10 || item.action_type === 11">
-                        <span class="green">{{ item.store_name }}/{{ item.second_store_name }}</span>
-                        <i class="el-icon-s-unfold orange" style="margin: 0 5px; font-size: 16px"></i>
-                        <span class="blue">{{ item.move_store_name }}/{{ item.move_second_store_name }}</span>
-                      </span>
-                    </div>
-                  </div>
                 </div>
               </div>
               <div class="floatR">
@@ -468,6 +413,21 @@
                 </div>
                 <div class="bodyCtn">
                   <div class="row" v-for="item in storeLogInfo.list" :key="item.id + 'sss'">
+                    <div class="column" style="width:0;overflow:hidden;flex-direction: column">
+                      <div
+                        class="row"
+                        v-for="(itemChild, indexChild) in item.child_data"
+                        :key="indexChild + itemChild.name"
+                      >
+                        <div class="column min120">{{ itemChild.name }}</div>
+                        <div class="column min120">{{ itemChild.color }}</div>
+                        <div class="column min120">{{ itemChild.attribute }}</div>
+                        <div class="column min120 blue">{{ itemChild.action_weight }}</div>
+                        <div class="column min120">{{ itemChild.batch_code }}</div>
+                        <div class="column min120">{{ itemChild.color_code }}</div>
+                        <div class="column min120">{{ itemChild.vat_code }}</div>
+                      </div>
+                    </div>
                     <div class="column min120" :style="{ height: 51 * item.child_data.length - 1 + 'px' }">
                       <span
                         class="blue opr"

@@ -99,7 +99,7 @@
               class="row_item"
               style="
                 border-right: unset;
-                flex: 4;
+                flex: 3.12;
                 display: -webkit-box;
                 overflow: hidden;
                 text-overflow: ellipsis;
@@ -148,7 +148,7 @@
               class="row_item"
               style="
                 border-right: unset;
-                flex: 4;
+                flex: 5.55;
                 display: -webkit-box;
                 overflow: hidden;
                 text-overflow: ellipsis;

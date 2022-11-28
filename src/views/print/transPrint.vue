@@ -64,8 +64,7 @@
             <div class="row_item center bgGray flex06">批号</div>
             <div class="row_item center bgGray flex06">色号</div>
             <div class="row_item center bgGray flex06">缸号</div>
-            <div class="row_item center bgGray flex15" v-if="orderInfo.action_type === 9">出库仓库</div>
-            <div class="row_item center bgGray flex15" v-if="orderInfo.action_type === 18">出库加工单位</div>
+            <div class="row_item center bgGray flex15">出库仓库</div>
             <div class="row_item center bgGray flex08">发货数量</div>
             <div class="row_item center bgGray flex07">发货单价</div>
             <div class="row_item center bgGray flex08">金额小计</div>
@@ -81,11 +80,7 @@
             <div class="row_item center flex06">{{ itemSon.batch_code || '无' }}</div>
             <div class="row_item center flex06">{{ itemSon.color_code || '无' }}</div>
             <div class="row_item center flex06">{{ itemSon.vat_code || '无' }}</div>
-            <div class="row_item center flex15" v-if="orderInfo.action_type === 9">
-              {{ orderInfo.store_name || '无' }} / {{ orderInfo.second_store_name || '无' }}
-            </div>
-            <!-- 加工单位 -->
-            <div class="row_item center flex15" v-if="orderInfo.action_type === 18">
+            <div class="row_item center flex15">
               {{ orderInfo.store_name || '无' }} / {{ orderInfo.second_store_name || '无' }}
             </div>
             <div class="row_item center flex08">{{ itemSon.action_weight }}kg</div>

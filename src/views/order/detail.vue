@@ -1339,6 +1339,22 @@
                 </el-date-picker>
               </div>
             </div>
+            <div class="colCtn">
+              <div class="label">
+                <span class="text">加工单位</span>
+                <span class="explanation">(必填)</span>
+              </div>
+              <div class="elCtn">
+                <el-select v-model="jiagongdanObj.jiagongClient" collapse-tags :multiple-limit='2' value-key='id' multiple placeholder="请选择加工单位">
+                  <el-option
+                    v-for="itemClient in client_arr"
+                    :key="itemClient.id"
+                    :value="itemClient"
+                    :label="itemClient.code + '-' + itemClient.name">
+                  </el-option>
+                </el-select>
+              </div>
+            </div>
             <div class="colCtn" style="flex: 4">
               <div class="label">
                 <span class="text">备注信息</span>
@@ -1502,6 +1518,7 @@ export default Vue.extend({
       },
       jiagongdanObj: {
         desc: '',
+        jiagongClient:'',
         date: this.$getDate(new Date())
       },
       shaxianInfo: {},
@@ -1604,6 +1621,12 @@ export default Vue.extend({
   computed: {
     token() {
       return this.$store.state.status.token
+    },
+    client_arr() {
+      return this.$store.state.api.supplier.arr.filter(
+        (item: any) =>
+          item.client_type === '染色单位' || item.client_type === '膨纱单位' || item.client_type === '倒筒单位'
+      )
     },
     store_list() {
       return this.$store.state.api.storeHouse.arr
@@ -2050,14 +2073,22 @@ export default Vue.extend({
         this.$message.error('请选择发货日期')
         return
       }
+      if(this.jiagongdanObj.jiagongClient.length === 0){
+        this.$message.error('请选择加工单位')
+        return
+      }
       this.jiagongdanList.find((item: any) => {
         !item.action_weight ? (item.action_weight = '0') : ''
       })
       this.jiagongdanList = this.jiagongdanList.filter((item: any) => {
         return item.action_weight !== '0' || !item.action_weight
       })
+      let desc = this.jiagongdanObj.jiagongClient.map((item:any) => {
+        return item.name
+      }).toString() + '直接发货。' + this.jiagongdanObj.desc
+
       let params = {
-        desc: this.jiagongdanObj.desc,
+        desc: desc,
         complete_time: this.jiagongdanObj.date,
         // @ts-ignore
         order_id: this.order_info.id,
@@ -2309,6 +2340,11 @@ export default Vue.extend({
         checkWhich: 'api/storeHouse',
         getInfoMethed: 'dispatch',
         getInfoApi: 'getStoreAsync'
+      },
+      {
+        checkWhich: 'api/client',
+        getInfoMethed: 'dispatch',
+        getInfoApi: 'getPartyBAsync'
       },
       {
         checkWhich: 'status/token',

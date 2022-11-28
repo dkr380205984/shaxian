@@ -2,9 +2,13 @@
   <div id='orderYarnFS'
     class='printHtml'>
     <div class="printTable">
+      <div class="print_head" style="height:unset">
+        <div style="width:100%;font-size: 31px;text-align: center;font-weight:bold">
+          {{ companyName }}纱线调取单
+        </div>
+      </div>
       <div class="print_head">
         <div class="left">
-          <span class="title">{{companyName}}纱线调取单</span>
           <span class="item">
             <span class="label">调取单号：</span>
             {{storeInfo.code}}
@@ -16,13 +20,6 @@
           <span class="item">
             <span class="label">打印人/时间：</span>
             {{print_user}},{{$getDate()}}
-          </span>
-        </div>
-        <div class="right">
-          <span class="text"></span>
-          <span class="qrCode_box">
-            <img src=""
-              alt="">
           </span>
         </div>
       </div>

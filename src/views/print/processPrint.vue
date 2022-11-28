@@ -14,9 +14,13 @@
         position: relative;
       "
     >
+      <div class="print_head" style="height:unset">
+        <div style="width:100%;font-size: 31px;text-align: center;font-weight:bold">
+          {{ companyName }}
+        </div>
+      </div>
       <div class="print_head" style="flex-direction: unset">
         <div class="left">
-          <span class="title" style="font-size: 31px">{{ companyName }}</span>
           <span style="font-size: 17px">
             <span class="label">订单编号：</span>
             {{ orderInfo.code }}
@@ -164,7 +168,6 @@ export default Vue.extend({
       printA4Type: false,
       orderArr: [],
       orderInfo: {},
-      qrCodeUrl: '',
       stockYarnArr: []
     }
   },

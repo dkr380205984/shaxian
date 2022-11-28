@@ -7,9 +7,13 @@
     @click="showMenu = false"
   >
     <div v-if="printA4Type" class="printTable">
+      <div class="print_head" style="height:unset">
+        <div style="width:100%;font-size: 31px;text-align: center;font-weight:bold">
+          {{ companyName }}
+        </div>
+      </div>
       <div class="print_head">
         <div class="left">
-          <span class="title" style="font-size: 31px">{{ companyName }}</span>
           <span class="item" style="font-size: 17px">
             <span class="label">订单编号：</span>
             {{ orderInfo.code }}
@@ -20,7 +24,6 @@
           </span>
         </div>
         <div class="left">
-          <span class="title" style="height: 41px"></span>
           <span class="item" style="font-size: 17px">
             <span class="label">公司地址：</span>
             {{ address }}
@@ -28,12 +31,6 @@
           <span class="item" style="font-size: 17px">
             <span class="label">电话手机：</span>
             {{ phone }}
-          </span>
-        </div>
-        <div class="right">
-          <span class="text"></span>
-          <span class="qrCode_box">
-            <img :src="qrCodeUrl || require('@/assets/image/noPic.jpg')" alt="" />
           </span>
         </div>
       </div>
@@ -150,20 +147,23 @@
           position: relative;
         "
       >
+        <div class="print_head">
+          <div style="width:100%;font-size: 31px;text-align: center;font-weight:bold">
+            {{ companyName }}
+          </div>
+        </div>
         <div class="print_head" style="flex-direction: unset">
           <div class="left">
-            <span class="title" style="font-size: 31px">{{ companyName }}</span>
             <span style="font-size: 17px">
               <span class="label">订单编号：</span>
               {{ orderInfo.code }}
             </span>
             <span style="font-size: 17px">
-              <span class="label">订单创建信息：</span>
-              {{ `${orderInfo.user_name},${$getDate(orderInfo.create_time)}` }}
+              <span class="label">收货客户：</span>
+              <span style="font-weight:bold">{{ orderInfo.client_name }}</span>
             </span>
           </div>
           <div class="left">
-            <span class="title" style="height: 41px"></span>
             <span style="font-size: 17px">
               <span class="label">公司地址：</span>
               {{ address }}
@@ -212,6 +212,20 @@
               </div>
               <div class="row_item center flex08">{{ itemSon.item }}</div>
             </div>
+            <div class="print_row fz14" v-if="itemSon.isHeJi" style="min-height: 39px; max-height: 39px">
+              <div class="row_item center bgGray flex15">合计</div>
+              <div class="row_item center bgGray flex15"></div>
+              <div class="row_item center bgGray flex07"></div>
+              <div class="row_item center bgGray flex07"></div>
+              <div class="row_item center bgGray flex06"></div>
+              <div class="row_item center bgGray flex06"></div>
+              <div class="row_item center bgGray flex06"></div>
+              <div class="row_item center bgGray flex15"></div>
+              <div class="row_item center bgGray flex08">{{ orderInfo.total_weight || 0 }}kg</div>
+              <div class="row_item center bgGray flex07"></div>
+              <div class="row_item center bgGray flex08">{{ orderInfo.total_price || 0 }}元</div>
+              <div class="row_item center bgGray flex08"></div>
+            </div>
             <div class="print_row fz14" style="min-height: 39px; max-height: 39px" v-if="itemSon.name">
               <div class="row_item center bgGray flex05">额外费用名称</div>
               <div class="row_item center">{{ itemSon.name }}</div>
@@ -237,7 +251,7 @@
                 <div v-html="orderInfo.desc"></div>
               </div>
             </div>
-            <div
+            <!-- <div
               class="print_row fz14"
               style="max-height: 78px; position: absolute; bottom: 78px"
               v-if="itemSon.companyDesc"
@@ -257,34 +271,55 @@
               >
                 <div v-html="desc"></div>
               </div>
-            </div>
+            </div> -->
             <div
               class="print_row fz14"
               v-if="itemSon.kehuqianzi"
-              style="min-height: 39px; max-height: 39px; position: absolute; bottom: 39px"
+              style="min-height: 39px; max-height: 39px; position: absolute; bottom: 94px"
             >
               <div class="row_item center bgGray flex05">客户单号</div>
               <div class="row_item center">{{ itemSon.order_code }}</div>
-              <div class="row_item center bgGray flex05">收货客户</div>
-              <div class="row_item center">{{ itemSon.client_name }}</div>
-              <div class="row_item center bgGray flex05">出库日期</div>
-              <div class="row_item center">{{ $getDate(itemSon.order_time) }}</div>
+              <div class="row_item center bgGray flex05">创建人</div>
+              <div class="row_item center">{{ orderInfo.user_name }}</div>
+              <div class="row_item center bgGray flex05">创建日期</div>
+              <div class="row_item center">{{ $getDate(orderInfo.create_time) }}</div>
               <div class="row_item center bgGray flex05">客户签字</div>
               <div class="row_item center"></div>
             </div>
             <div
               class="print_row fz14"
               v-if="itemSon.total_weight"
-              style="min-height: 39px; max-height: 39px; position: absolute; bottom: 0"
+              style="min-height: 39px; max-height: 39px; position: absolute; bottom: 55px"
             >
-              <div class="row_item center bgGray flex05">{{ orderInfo.type === 1 ? '下单' : '销售' }}总数</div>
-              <div class="row_item center">{{ orderInfo.total_weight || 0 }}kg</div>
-              <div class="row_item center bgGray flex05">{{ orderInfo.type === 1 ? '下单' : '销售' }}总价</div>
-              <div class="row_item center">{{ orderInfo.total_price || 0 }}元</div>
               <div class="row_item center bgGray flex05"></div>
               <div class="row_item center"></div>
+              <div class="row_item center bgGray flex05"></div>
+              <div class="row_item center"></div>
+              <div class="row_item center bgGray flex05">出库日期</div>
+              <div class="row_item center">{{ $getDate(itemSon.order_time) }}</div>
               <div class="row_item center bgGray flex05">签字日期</div>
               <div class="row_item center"></div>
+            </div>
+            <div
+              class="print_row fz14"
+              style="max-height: 55px; position: absolute; bottom: 0;min-height:55px"
+              v-if="itemSon.companyDesc"
+            >
+              <div class="row_item center bgGray flex05">公司声明</div>
+              <div
+                class="row_item"
+                style="
+                  border-right: unset;
+                  flex: 5.55;
+                  display: -webkit-box;
+                  overflow: hidden;
+                  text-overflow: ellipsis;
+                  -webkit-line-clamp: 2;
+                  -webkit-box-orient: vertical;
+                "
+              >
+                <div v-html="desc"></div>
+              </div>
             </div>
           </div>
         </div>
@@ -292,13 +327,13 @@
     </div>
     <div
       class="setting_sign_style"
-      v-if="showMenu && orderInfo.type == 2"
+      v-if="showMenu"
       :style="`left:${X_position || 0}px;top:${Y_position}px`"
       @click.stop
     >
       <div class="setting_item" @click="windowMethod(1)">刷新页面</div>
       <div class="setting_item" @click="windowMethod(2)">打印单据</div>
-      <div class="setting_item" @click="windowMethod(3)">切换格式</div>
+      <div class="setting_item" v-if="orderInfo.type == 2" @click="windowMethod(3)">切换格式</div>
     </div>
   </div>
 </template>
@@ -324,7 +359,6 @@ export default Vue.extend({
       printA4Type: true,
       orderArr: [],
       orderInfo: {},
-      qrCodeUrl: '',
       stockYarnArr: []
     }
   },
@@ -362,18 +396,6 @@ export default Vue.extend({
       this.settingFlag = false
     }
   },
-  mounted() {
-    const QRCode = require('qrcode')
-    QRCode.toDataURL(
-      window.location.origin + '/order/detail/' + this.$route.query.id,
-      { errorCorrectionLevel: 'H' },
-      (err: any, url: string) => {
-        if (!err) {
-          this.qrCodeUrl = url
-        }
-      }
-    )
-  },
   created() {
     printList(undefined, 10).then((res: any) => {
       this.desc = res.desc
@@ -389,6 +411,7 @@ export default Vue.extend({
           { name: ' ', price: '', desc: '' }
         ]
         let arr: any = ['proName'].concat(this.$clone(this.orderInfo.product_info))
+        arr.push({ total_price: this.orderInfo.total_price, total_weight: this.orderInfo.total_weight,isHeJi:true })
         arr = arr.concat(this.orderInfo.additional_fee)
         arr.push(
           { orderInfoDesc: this.orderInfo.desc || ' ' },
@@ -415,7 +438,6 @@ export default Vue.extend({
             return a + (b.weight || 0) * (b.price || 0)
           }, 0)
         })
-        arr.push({ total_price: this.orderInfo.total_price, total_weight: this.orderInfo.total_weight })
 
         // console.log(arr)
         if (arr.length > 13) {

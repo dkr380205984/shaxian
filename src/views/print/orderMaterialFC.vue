@@ -2,9 +2,13 @@
   <div id='orderYarnFC'
     class='printHtml'>
     <div class="printTable">
+      <div class="print_head" style="height:unset">
+        <div style="width:100%;font-size: 31px;text-align: center;font-weight:bold">
+          {{ companyName }}
+        </div>
+      </div>
       <div class="print_head">
         <div class="left">
-          <span class="title">{{companyName}}</span>
           <span class="item">
             <span class="label">采购单号：</span>
             {{documentInfo.code}}
@@ -16,13 +20,6 @@
           <span class="item">
             <span class="label">打印人/时间：</span>
             {{print_user}},{{$getDate()}}
-          </span>
-        </div>
-        <div class="right">
-          <span class="text"></span>
-          <span class="qrCode_box">
-            <img :src="qrCodeUrl || require('@/assets/image/noPic.jpg')"
-              alt="">
           </span>
         </div>
       </div>
@@ -141,7 +138,6 @@ export default Vue.extend({
       companyName: window.sessionStorage.getItem('full_name') + '毛条采购单',
       desc: '',
       print_user: window.sessionStorage.getItem('user_name'),
-      qrCodeUrl: '',
       orderInfo: {
         code: '',
         client_name: ''
@@ -194,20 +190,6 @@ export default Vue.extend({
         this.desc = (res[1] as any).desc
       })
     }
-  },
-  mounted() {
-    const QRCode = require('qrcode')
-    QRCode.toDataURL(
-      // this.$route.query.orderId
-      //   ? window.location.origin + '/orderProcessYarn/detail/' + this.$route.query.orderId:
-      window.location.origin + '/directOrder/materialDetail/' + this.$route.params.documentId,
-      { errorCorrectionLevel: 'H' },
-      (err: any, url: string) => {
-        if (!err) {
-          this.qrCodeUrl = url
-        }
-      }
-    )
   },
   computed: {
     totalCom(): {

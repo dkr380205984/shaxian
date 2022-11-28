@@ -13,7 +13,7 @@ export const printList = (option?: PrintListParams, type?: 1 | 2 | 3 | 4 | 5 | 6
     { id: null, name: '毛条采购单', type: 7, title: `${companyName}毛条采购单`, desc: '' },
     { id: null, name: '毛条入库打印单', type: 8, title: `${companyName}毛条入库单`, desc: '' },
     { id: null, name: '毛条出库打印单', type: 9, title: `${companyName}毛条出库单`, desc: '' },
-    { id: null, name: '销售出库单', type: 10, title: `${companyName}销售出库单`, desc: '' },
+    { id: null, name: '订单出库单', type: 10, title: `${companyName}订单出库单`, desc: '' },
   ]
   return new Promise((reject) => {
     print.list(option).then((res: any) => {

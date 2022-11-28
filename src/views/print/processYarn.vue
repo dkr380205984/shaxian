@@ -22,6 +22,12 @@
             {{print_user}},{{$getDate()}}
           </span>
         </div>
+        <div class="left">
+          <span class="item">
+            <span class="label">结算方式：</span>
+            {{settle_type}}
+          </span>
+        </div>
       </div>
       <div class="print_body">
         <div class="print_row has_marginBottom"
@@ -194,6 +200,7 @@ export default Vue.extend({
         // 获取打印标题信息
         this.companyName = (res[1] as any).title
         this.desc = (res[1] as any).desc
+        this.settle_type = (res[1] as any).settle_type
       })
     } else {
       // Promise.all([

@@ -104,6 +104,15 @@
           </el-input>
         </div>
       </div>
+      <div class="row">
+        <span class="label">结算方式：</span>
+        <div class="content">
+          <el-input placeholder="请输入结算方式"
+            class="input-item"
+            v-model="companyInfo.settle_type">
+          </el-input>
+        </div>
+      </div>
     </div>
     <div class="bottomFixBar">
       <div class="main">
@@ -133,6 +142,7 @@ export default Vue.extend({
         phone: window.sessionStorage.getItem('phone') || '',
         client_email: '',
         address: window.sessionStorage.getItem('address') || '',
+        settle_type: window.sessionStorage.getItem('settle_type') || '',
         file_logo: [],
         file_image: []
       }

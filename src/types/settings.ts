@@ -77,6 +77,7 @@ export interface PrintCreateParams {
   id: null | number
   type: number
   title: string
+  settle_type: string
   desc: string
 }
 export interface PrintDetailParams {

@@ -33,6 +33,12 @@
             {{ phone }}
           </span>
         </div>
+        <div class="left">
+          <span class="item" style="font-size: 17px">
+            <span class="label">结算方式：</span>
+            {{ settle_type }}
+          </span>
+        </div>
       </div>
       <div class="print_body">
         <div class="print_row">
@@ -173,6 +179,12 @@
               {{ phone }}
             </span>
           </div>
+          <div class="left">
+            <span style="font-size: 17px">
+              <span class="label">结算方式：</span>
+              {{ settle_type }}
+            </span>
+          </div>
           <div class="right">
             <span style="font-size: 17px">
               <span class="label">页码：</span>
@@ -182,7 +194,7 @@
         </div>
         <div class="print_body" style="position: relative">
           <div v-for="(itemSon, indexSon) in item" class="lastOneBorder" :key="indexSon + 'product_info'">
-            <div class="print_row fz14" v-if="itemSon === 'proName'" style="min-height: 39px; max-height: 39px">
+            <div class="print_row" v-if="itemSon === 'proName'" style="min-height: 39px; max-height: 39px">
               <div class="row_item center bgGray flex15">纱线名称</div>
               <div class="row_item center bgGray flex15">纱线颜色</div>
               <div class="row_item center bgGray flex07">纱线属性</div>
@@ -196,7 +208,7 @@
               <div class="row_item center bgGray flex08">金额小计</div>
               <div class="row_item center bgGray flex08">{{ orderInfo.type === 1 ? '下单' : '销售' }}件数</div>
             </div>
-            <div class="print_row fz14" v-if="itemSon.id" style="min-height: 39px; max-height: 39px">
+            <div class="print_row" v-if="itemSon.id" style="min-height: 39px; max-height: 39px">
               <div class="row_item center flex15">{{ itemSon.product_name }}</div>
               <div class="row_item center flex15">{{ itemSon.color }}</div>
               <div class="row_item center flex07">{{ itemSon.attribute }}</div>
@@ -212,7 +224,7 @@
               </div>
               <div class="row_item center flex08">{{ itemSon.item }}</div>
             </div>
-            <div class="print_row fz14" v-if="itemSon.isHeJi" style="min-height: 39px; max-height: 39px">
+            <div class="print_row" v-if="itemSon.isHeJi" style="min-height: 39px; max-height: 39px">
               <div class="row_item center bgGray flex15">合计</div>
               <div class="row_item center bgGray flex15"></div>
               <div class="row_item center bgGray flex07"></div>
@@ -226,7 +238,7 @@
               <div class="row_item center bgGray flex08">{{ orderInfo.total_price || 0 }}元</div>
               <div class="row_item center bgGray flex08"></div>
             </div>
-            <div class="print_row fz14" style="min-height: 39px; max-height: 39px" v-if="itemSon.name">
+            <div class="print_row" style="min-height: 39px; max-height: 39px" v-if="itemSon.name">
               <div class="row_item center bgGray flex05">额外费用名称</div>
               <div class="row_item center">{{ itemSon.name }}</div>
               <div class="row_item center bgGray flex05">额外费用金额</div>
@@ -234,7 +246,7 @@
               <div class="row_item center bgGray flex05">额外费用备注</div>
               <div class="row_item center">{{ itemSon.desc }}</div>
             </div>
-            <div class="print_row fz14" v-if="itemSon.orderInfoDesc" style="min-height: 39px; max-height: 39px">
+            <div class="print_row" v-if="itemSon.orderInfoDesc" style="min-height: 39px; max-height: 39px">
               <div class="row_item center bgGray flex05">备注信息</div>
               <div
                 class="row_item"
@@ -252,7 +264,7 @@
               </div>
             </div>
             <!-- <div
-              class="print_row fz14"
+              class="print_row"
               style="max-height: 78px; position: absolute; bottom: 78px"
               v-if="itemSon.companyDesc"
             >
@@ -273,9 +285,9 @@
               </div>
             </div> -->
             <div
-              class="print_row fz14"
+              class="print_row"
               v-if="itemSon.kehuqianzi"
-              style="min-height: 39px; max-height: 39px; position: absolute; bottom: 94px"
+              style="min-height: 39px; max-height: 39px; position: absolute; bottom: 99px"
             >
               <div class="row_item center bgGray flex05">客户单号</div>
               <div class="row_item center">{{ itemSon.order_code }}</div>
@@ -287,9 +299,9 @@
               <div class="row_item center"></div>
             </div>
             <div
-              class="print_row fz14"
-              v-if="itemSon.total_weight"
-              style="min-height: 39px; max-height: 39px; position: absolute; bottom: 55px"
+              class="print_row"
+              v-if="itemSon.isLast"
+              style="min-height: 39px; max-height: 39px; position: absolute; bottom: 60px"
             >
               <div class="row_item center bgGray flex05"></div>
               <div class="row_item center"></div>
@@ -301,8 +313,8 @@
               <div class="row_item center"></div>
             </div>
             <div
-              class="print_row fz14"
-              style="max-height: 55px; position: absolute; bottom: 0;min-height:55px"
+              class="print_row"
+              style="max-height: 55px; position: absolute; bottom: 0;min-height:60px"
               v-if="itemSon.companyDesc"
             >
               <div class="row_item center bgGray flex05">公司声明</div>
@@ -355,6 +367,7 @@ export default Vue.extend({
       X_position: 0,
       Y_position: 0,
       showMenu: false,
+      settle_type:'',
       desc: '',
       printA4Type: true,
       orderArr: [],
@@ -399,6 +412,7 @@ export default Vue.extend({
   created() {
     printList(undefined, 10).then((res: any) => {
       this.desc = res.desc
+      this.settle_type = res.settle_type
     })
     order
       .detail({
@@ -438,6 +452,8 @@ export default Vue.extend({
             return a + (b.weight || 0) * (b.price || 0)
           }, 0)
         })
+
+        arr.push({isLast: true})
 
         // console.log(arr)
         if (arr.length > 13) {

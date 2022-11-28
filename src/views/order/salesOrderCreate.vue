@@ -19,7 +19,29 @@
           <div class="colCtn flex3">
             <div class="label">
               <span class="text">下单客户</span>
-              <span class="explanation">(必选)</span>
+              <span class="explanation">
+                (必选)
+                <el-tooltip class="item"
+                  effect="dark"
+                  content="设置成功后请点击此按钮刷新数据"
+                  placement="top">
+                  <i class="el-icon-refresh hoverGreen"
+                    style="line-height:46px;font-size:18px;margin-left:8px;cursor:pointer"
+                    @click="$checkCommonInfo([{
+                      checkWhich: 'api/client',
+                      getInfoMethed: 'dispatch',
+                      getInfoApi: 'getPartyBAsync',
+                      forceUpdate:true
+                    }])"></i>
+                </el-tooltip>
+                <el-tooltip class="item" effect="dark" content="添加客户" placement="top">
+                  <i
+                    class="el-icon-upload hoverOrange"
+                    style="line-height: 38px; font-size: 18px; cursor: pointer; margin-left: 8px"
+                    @click="$openUrl('/settings/client')"
+                  ></i>
+                </el-tooltip>
+              </span>
             </div>
             <div class="content">
               <div class="elCtn">

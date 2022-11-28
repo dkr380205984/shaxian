@@ -31,7 +31,6 @@
           </span>
         </div>
         <div class="left">
-          <span class="title" style="height: 41px"></span>
           <span style="font-size: 17px">
             <span class="label">公司地址：</span>
             {{ address }}
@@ -39,6 +38,12 @@
           <span style="font-size: 17px">
             <span class="label">电话手机：</span>
             {{ phone }}
+          </span>
+        </div>
+        <div class="left">
+          <span style="font-size: 17px">
+            <span class="label">结算方式：</span>
+            {{ settle_type }}
           </span>
         </div>
         <div class="right">
@@ -174,6 +179,7 @@ export default Vue.extend({
   created() {
     printList(undefined, 3).then((res: any) => {
       this.desc = res.desc
+      this.settle_type = res.settle_type
     })
     yarnProcess
       .detail({

@@ -115,9 +115,6 @@ export default Vue.extend({
       this.storeInfo = res[1].data.data.find((itemF: any) => +itemF.id === +this.$route.query.purchaseId) || {}
     })
   },
-  mounted() {
-    const qrCode = require('qrcode')
-  }
 })
 </script>
 

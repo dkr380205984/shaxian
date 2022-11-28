@@ -71,6 +71,13 @@
             </div>
           </div>
           <div class="row">
+            <div class="label">结算方式：</div>
+            <div class="info">
+              <el-input placeholder="请输入结算方式"
+                v-model="printInfo.settle_type"></el-input>
+            </div>
+          </div>
+          <div class="row">
             <div class="label">公司声明：</div>
             <div class="info"
               ref="wangeditor">
@@ -108,6 +115,7 @@ export default Vue.extend({
         id: null,
         type: '',
         name: '',
+        settle_type:'',
         title: '',
         desc: ''
       },
@@ -150,6 +158,7 @@ export default Vue.extend({
         .create({
           id: this.printInfo.id || null,
           type: this.printInfo.type,
+          settle_type: this.printInfo.settle_type,
           title: this.printInfo.title,
           desc: this.printInfo.desc || ''
         })

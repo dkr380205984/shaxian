@@ -1215,17 +1215,17 @@
                 </el-tooltip>
               </div>
             </div>
-            <div class="colCtn">
+            <div class="colCtn" style="flex: 0.5">
               <div class="label">
                 <span class="text">下单数量</span>
               </div>
             </div>
-            <div class="colCtn">
+            <div class="colCtn" style="flex: 0.5">
               <div class="label">
                 <span class="text">发货数量</span>
               </div>
             </div>
-            <div class="colCtn">
+            <div class="colCtn" style="flex: 0.5">
               <div class="label">
                 <span class="text">加工数量</span>
               </div>
@@ -1235,7 +1235,7 @@
                 <span class="text">批号/色号/缸号</span>
               </div>
             </div>
-            <div class="colCtn">
+            <div class="colCtn" style="flex: 1.5">
               <div class="label">
                 <span class="text">当前发货数</span>
                 <span class="explanation">(必填)</span>
@@ -1263,9 +1263,9 @@
                   </el-select>
                 </div>
               </div>
-              <div class="colCtn">{{ (Number(item.xiadanNumber) || 0).toFixed(1) }}kg</div>
-              <div class="colCtn">{{ (Number(item.fahuoNumber) || 0).toFixed(1) }}kg</div>
-              <div class="colCtn">{{ (Number(item.jiagongNumber) || 0).toFixed(1) }}kg</div>
+              <div class="colCtn" style="flex: 0.5">{{ (Number(item.xiadanNumber) || 0).toFixed(1) }}kg</div>
+              <div class="colCtn" style="flex: 0.5">{{ (Number(item.fahuoNumber) || 0).toFixed(1) }}kg</div>
+              <div class="colCtn" style="flex: 0.5">{{ (Number(item.jiagongNumber) || 0).toFixed(1) }}kg</div>
               <div class="colCtn" style="flex: 1.5">
                 <div class="elCtn" style="display: flex; justify-content: space-between">
                   <el-input style="width: 30%" v-model="item.batch_code" placeholder="批号"></el-input>
@@ -1273,7 +1273,7 @@
                   <el-input style="width: 30%" v-model="item.vat_code" placeholder="缸号"></el-input>
                 </div>
               </div>
-              <div class="colCtn">
+              <div class="colCtn" style="flex: 1.5">
                 <div class="elCtn">
                   <el-input
                     type="number"
@@ -1295,23 +1295,23 @@
             <div class="rowCtn">
               <div class="colCtn"></div>
               <div class="colCtn"></div>
-              <div class="colCtn">
+              <div class="colCtn" style="flex: 0.5">
                 <div class="label">
                   <span class="text">{{ totalJiaGongDan.totalXiadanNumber }}kg</span>
                 </div>
               </div>
-              <div class="colCtn">
+              <div class="colCtn" style="flex: 0.5">
                 <div class="label">
                   <span class="text">{{ totalJiaGongDan.totalFahuoNumber }}kg</span>
                 </div>
               </div>
-              <div class="colCtn">
+              <div class="colCtn" style="flex: 0.5">
                 <div class="label">
                   <span class="text">{{ totalJiaGongDan.totalJiaGongNumber }}kg</span>
                 </div>
               </div>
               <div class="colCtn" style="flex: 1.5"></div>
-              <div class="colCtn">
+              <div class="colCtn" style="flex: 1.5">
                 <div class="label">
                   <span class="text">{{ totalJiaGongDan.totalActionWeight }}kg</span>
                 </div>

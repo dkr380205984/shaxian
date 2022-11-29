@@ -1073,6 +1073,7 @@
                     <div class="trow">
                       <div class="tcolumn">纱线颜色</div>
                       <div class="tcolumn">纱线属性</div>
+                      <div class="tcolumn">所属客户</div>
                       <div class="tcolumn">批号</div>
                       <div class="tcolumn">色号</div>
                       <div class="tcolumn">缸号</div>
@@ -1095,6 +1096,7 @@
                       :key="itemChild.id">
                       <div class="tcolumn">{{itemChild.color}}</div>
                       <div class="tcolumn">{{itemChild.attribute}}</div>
+                      <div class="tcolumn">{{itemChild.store_client_name || '无'}}</div>
                       <div class="tcolumn">{{itemChild.batch_code}}</div>
                       <div class="tcolumn">{{itemChild.color_code}}</div>
                       <div class="tcolumn">{{itemChild.vat_code}}</div>
@@ -1119,6 +1121,7 @@
                     <div class="column">纱线名称</div>
                     <div class="column">纱线颜色</div>
                     <div class="column">属性</div>
+                    <div class="column">所属客户</div>
                     <div class="column">批号</div>
                     <div class="column">色号</div>
                     <div class="column">缸号</div>
@@ -1131,6 +1134,7 @@
                     <div class="column">{{store_info.product_name}}</div>
                     <div class="column">{{store_info.color}}</div>
                     <div class="column">{{store_info.attribute}}</div>
+                    <div class="column">{{store_info.store_client_name}}</div>
                     <div class="column">{{store_info.batch_code}}</div>
                     <div class="column">{{store_info.color_code}}</div>
                     <div class="column">{{store_info.vat_code}}</div>

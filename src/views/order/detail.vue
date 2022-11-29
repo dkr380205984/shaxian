@@ -204,6 +204,7 @@
                   <div class="tcolumn">纱线颜色</div>
                   <div class="tcolumn">纱线属性</div>
                   <div class="tcolumn">数量属性</div>
+                  <div class="tcolumn">所属客户</div>
                   <div class="tcolumn">批号/色号/缸号</div>
                   <div class="tcolumn">销售仓库</div>
                   <div class="tcolumn">销售单价(元)</div>
@@ -226,6 +227,7 @@
                   </div>
                   <div class="tcolumn">{{ itemChild.attribute }}</div>
                   <div class="tcolumn">{{ itemChild.number_attribute }}</div>
+                  <div class="tcolumn">{{ itemChild.store_client_name || '无'}}</div>
                   <div class="tcolumn">
                     {{ itemChild.batch_code }}/{{ itemChild.color_code }}/{{ itemChild.vat_code }}
                   </div>
@@ -283,6 +285,7 @@
                   <div class="tcolumn">纱线颜色</div>
                   <div class="tcolumn">纱线属性</div>
                   <div class="tcolumn">数量属性</div>
+                  <div class="tcolumn">所属客户</div>
                   <div class="tcolumn">批号/色号/缸号</div>
                   <div class="tcolumn">发货单价(元)</div>
                   <div class="tcolumn">发货数量</div>
@@ -309,6 +312,7 @@
                   <div class="tcolumn">{{ itemChild.color || '无' }}</div>
                   <div class="tcolumn">{{ itemChild.attribute || '无' }}</div>
                   <div class="tcolumn">{{ itemChild.number_attribute || '无' }}</div>
+                  <div class="tcolumn">{{ itemChild.store_client_name || '无' }}</div>
                   <div class="tcolumn" style="word-break: break-all">
                     {{ itemChild.batch_code || '无' }}/{{ itemChild.color_code || '无' }}/{{
                       itemChild.vat_code || '无'
@@ -743,6 +747,7 @@
                     <div class="tcolumn" style="flex: 1.5">纱线名称</div>
                     <div class="tcolumn">纱线颜色</div>
                     <div class="tcolumn">纱线属性</div>
+                    <div class="tcolumn">所属客户</div>
                     <div class="tcolumn" style="flex: 2.2">批号/色号/缸号</div>
                     <div class="tcolumn">
                       <span
@@ -760,6 +765,7 @@
                     <div class="tcolumn" style="flex: 1.5">{{ item.name }}</div>
                     <div class="tcolumn">{{ item.color }}</div>
                     <div class="tcolumn">{{ item.attribute }}</div>
+                    <div class="tcolumn">{{ item.store_client_name || '无' }}</div>
                     <div class="tcolumn" style="flex: 2.2; flex-direction: row; align-items: center">
                       <el-input
                         class="el"
@@ -1106,7 +1112,7 @@
           <div style="max-height: 600px; overflow: scroll">
             <div class="rowCtn" v-for="(item, index) in fahuoList" :key="index + '发货数量'">
               <div class="colCtn" style="flex: 3">
-                {{ item.store_name }} / {{ item.second_store_name }} / {{ item.name }} / {{ item.attribute }} /
+                {{ item.store_name }} / {{ item.second_store_name }} / {{ item.name }} / {{ item.attribute }} / {{item.store_client_name}}/
                 {{ item.color }} / {{ item.batch_code }} / {{ item.color_code }} / {{ item.vat_color }}
               </div>
               <div class="colCtn">
@@ -1202,6 +1208,11 @@
             </div>
             <div class="colCtn">
               <div class="label">
+                <span class="text">所属客户</span>
+              </div>
+            </div>
+            <div class="colCtn">
+              <div class="label">
                 <span class="text">纱线属性</span>
                 <el-tooltip class="item" effect="dark" content="统一属性" placement="top">
                   <svg
@@ -1251,6 +1262,7 @@
           <div style="max-height: 600px; overflow: scroll">
             <div class="rowCtn" v-for="(item, index) in jiagongdanList" :key="index + '发货数量'">
               <div class="colCtn"> {{ item.name }}/{{ item.color }} </div>
+              <div class="colCtn"> {{ item.store_client_name || '无' }} </div>
               <div class="colCtn">
                 <div class="elCtn">
                   <el-select class="el"
@@ -1293,6 +1305,7 @@
               </div>
             </div>
             <div class="rowCtn">
+              <div class="colCtn"></div>
               <div class="colCtn"></div>
               <div class="colCtn"></div>
               <div class="colCtn" style="flex: 0.5">
@@ -2158,8 +2171,8 @@ export default Vue.extend({
           obj.second_store_name = item.second_store_name
           obj.store_id = item.store_id
           obj.second_store_id = item.second_store_id
-          obj.reality_weight = objOrder.weight || 0
-          obj.related_info_id = objOrder.id || ''
+          obj.reality_weight = objOrder?objOrder.weight : 0
+          obj.related_info_id = objOrder?objOrder.id : ''
           obj.weight = arr
             .reduce((a: any, b: any) => {
               if (

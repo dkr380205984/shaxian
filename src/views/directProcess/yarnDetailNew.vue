@@ -41,6 +41,7 @@
                 <div class="tcolumn">纱线名</div>
                 <div class="tcolumn">颜色</div>
                 <div class="tcolumn">纱线属性</div>
+                <div class="tcolumn">所属客户</div>
                 <div class="tcolumn">批号</div>
                 <div class="tcolumn">色号</div>
                 <div class="tcolumn">缸号</div>
@@ -53,6 +54,7 @@
                 <div class="tcolumn">{{ item.name }}</div>
                 <div class="tcolumn">{{ item.color }}</div>
                 <div class="tcolumn">{{ item.attribute }}</div>
+                <div class="tcolumn">{{ item.store_client_name || '无' }}</div>
                 <div class="tcolumn">{{ item.batch_code || '无' }}</div>
                 <div class="tcolumn">{{ item.color_code || '无' }}</div>
                 <div class="tcolumn">{{ item.vat_code || '无' }}</div>
@@ -97,7 +99,7 @@
                 <span class="text">{{ $getDate(item.create_time) }}</span>
               </div>
               <div class="colCtn">
-                <span class="label">交货单位：</span>
+                <span class="label">交货日期：</span>
                 <span class="text">{{ item.delivery_time }}</span>
               </div>
               <div class="colCtn">

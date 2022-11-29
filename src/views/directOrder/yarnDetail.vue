@@ -167,6 +167,7 @@
                         <div class="column min120">纱线名称</div>
                         <div class="column min120">订购颜色</div>
                         <div class="column min120">订购属性</div>
+                        <div class="column min120">所属客户</div>
                         <div class="column min120">已入库数量</div>
                         <div class="column min120">批号</div>
                         <div class="column min120">色号</div>
@@ -188,6 +189,7 @@
                         <div class="column min120">{{ itemChild.name }}</div>
                         <div class="column min120">{{ itemChild.color }}</div>
                         <div class="column min120">{{ itemChild.attribute }}</div>
+                        <div class="column min120">{{ itemChild.store_client_name }}</div>
                         <div class="column min120 blue">{{ itemChild.action_weight }}</div>
                         <div class="column min120">{{ itemChild.batch_code }}</div>
                         <div class="column min120">{{ itemChild.color_code }}</div>

@@ -367,6 +367,7 @@
                 <div class="tcolumn">纱线颜色</div>
                 <div class="tcolumn">纱线属性</div>
                 <div class="tcolumn" style="flex: 2">批号/色号/缸号</div>
+                <div class="tcolumn">所属客户</div>
                 <div class="tcolumn">数量(kg)</div>
                 <div class="tcolumn">件数(件)</div>
               </div>
@@ -413,6 +414,16 @@
                     style="margin-right: 4px"
                   ></el-input>
                   <el-input class="el" v-model="item.vat_code" placeholder="缸号" style="margin-right: 4px"></el-input>
+                </div>
+                <div class="tcolumn">
+                  <el-select class="el" placeholder="所属客户" v-model="item.store_client_id" filterable>
+                    <el-option
+                      v-for="item in clientArr"
+                      :key="item.id"
+                      :value="item.id"
+                      :label="(item.code || item.id) + ' - ' + item.name"
+                    ></el-option>
+                  </el-select>
                 </div>
                 <div class="tcolumn">
                   <el-input class="el" v-model="item.action_weight" placeholder="数量"></el-input>
@@ -611,6 +622,9 @@ export default Vue.extend({
     },
     store_list() {
       return this.$store.state.api.storeHouse.arr.filter((item: any) => item.store_type === 1)
+    },
+    clientArr(){
+      return this.$store.state.api.client.arr.filter((item: any) => (item.status as number) === 1)
     },
     client_arr() {
       return this.$store.state.api.factory.arr
@@ -1016,6 +1030,10 @@ export default Vue.extend({
           {
             key: 'name',
             errMsg: '请选择纱线名称'
+          },
+          {
+            key: 'store_client_id',
+            errMsg: '请选择所属客户'
           }
         ])
       })
@@ -1045,11 +1063,11 @@ export default Vue.extend({
       this.store_info.store_id = this.store_info.select_id[0]
       this.store_info.second_store_id = this.store_info.select_id[1]
       this.store_info.order_id = this.orderId
-      this.store_info.child_data.forEach((item: any) => {
-        item.batch_code = item.batch_code || ''
-        item.color_code = item.color_code || ''
-        item.vat_code = item.vat_code || ''
-      })
+      // this.store_info.child_data.forEach((item: any) => {
+      //   item.batch_code = item.batch_code || ''
+      //   item.color_code = item.color_code || ''
+      //   item.vat_code = item.vat_code || ''
+      // })
       // return
       stock.create({ data: [this.store_info] }).then((res) => {
         if (res.data.status) {

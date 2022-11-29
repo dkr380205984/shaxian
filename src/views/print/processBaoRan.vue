@@ -35,15 +35,15 @@
         </div>
       </div>
       <div class="print_body">
-        <div class="print_row">
-          <div class="row_item center bgGray flex06">订单号</div>
-          <div class="row_item center">{{ detail.order_code }}</div>
-          <div class="row_item center bgGray flex06">下单客户</div>
+        <div class="print_row has_marginBottom">
+          <div class="row_item center bgGray flex06">加工单号</div>
+          <div class="row_item center">{{ detail.code }}</div>
+          <div class="row_item center bgGray flex06">加工单位</div>
           <div class="row_item center">{{ detail.client_name }}</div>
           <div class="row_item center bgGray flex06">下单日期</div>
           <div class="row_item center">{{ $getDate(detail.create_time) }}</div>
-          <div class="row_item center bgGray flex06">负责人/小组</div>
-          <div class="row_item center"></div>
+          <div class="row_item center bgGray flex06">交货日期</div>
+          <div class="row_item center">{{ $getDate(detail.delivery_time) }}</div>
         </div>
         <div
           v-for="(item, index) in detail.yarnInfo"
@@ -64,7 +64,7 @@
             <div class="row_item center bgGray" style="flex: 2.38">原样颜色</div>
           </div>
           <div v-for="(itemChild, indexChild) in item.child_data" :key="indexChild + '序号' + index">
-            <div class="print_row">
+            <div class="print_row" style="height:100px">
               <div class="row_item center" style="flex: 0.535">{{ indexChild + 1 }}</div>
               <div class="row_item center" style="flex: 1.85">
                 <div v-if="detail.type === '倒筒'">
@@ -87,50 +87,6 @@
               <div class="row_item center flex05">{{ itemChild.weight }}</div>
               <div class="row_item center" style="flex: 2.38"></div>
             </div>
-          </div>
-        </div>
-        <div
-          v-for="(item, index) in detail.product_info"
-          :key="index"
-          style="margin-bottom: 16px; border-bottom: 1px solid rgba(0, 0, 0, 0.25)"
-        >
-          <div class="print_row">
-            <div class="row_item center bgGray flex05">纱线名称</div>
-            <div class="row_item flex20" style="padding-left: 20px">{{ item.product_name }}</div>
-            <div class="row_item center bgGray flex05">数量小计</div>
-            <div class="row_item center flex05">
-              {{ item.total_weight ? Number(item.total_weight).toFixed(1) : 0 }}kg
-            </div>
-            <div class="row_item center bgGray flex05">金额小计</div>
-            <div class="row_item center flex05">{{ item.total_price }}元</div>
-          </div>
-          <div class="print_row fz14">
-            <div class="row_item center bgGray flex15">纱线颜色</div>
-            <div class="row_item center bgGray flex07">纱线属性</div>
-            <div class="row_item center bgGray flex07">数量属性</div>
-            <div class="row_item center bgGray flex06" v-if="detail.type == 2">批号</div>
-            <div class="row_item center bgGray flex06" v-if="detail.type == 2">色号</div>
-            <div class="row_item center bgGray flex06" v-if="detail.type == 2">缸号</div>
-            <div class="row_item center bgGray flex07">{{ detail.type == 2 ? '销售' : '下单' }}单价(元)</div>
-            <div class="row_item center bgGray flex15" v-if="detail.type == 2">出库仓库</div>
-            <div class="row_item center bgGray flex08">{{ detail.type == 2 ? '销售' : '下单' }}数量</div>
-            <div class="row_item center bgGray flex08" v-if="detail.type == 2">销售件数</div>
-          </div>
-          <div
-            class="print_row fz14"
-            v-for="(itemChild, indexChild) in item.child_data"
-            :key="indexChild + 'child_data'"
-          >
-            <div class="row_item center flex15">{{ itemChild.color }}</div>
-            <div class="row_item center flex07">{{ itemChild.attribute }}</div>
-            <div class="row_item center flex07">{{ itemChild.number_attribute }}</div>
-            <div class="row_item center flex06" v-if="detail.type == 2">{{ itemChild.batch_code }}</div>
-            <div class="row_item center flex06" v-if="detail.type == 2">{{ itemChild.color_code }}</div>
-            <div class="row_item center flex06" v-if="detail.type == 2">{{ itemChild.vat_code }}</div>
-            <div class="row_item center flex07">{{ itemChild.price }}</div>
-            <div class="row_item center flex15" v-if="detail.type == 2">{{ itemChild.store }}</div>
-            <div class="row_item center flex08">{{ itemChild.weight }}</div>
-            <div class="row_item center flex08" v-if="detail.type == 2">{{ itemChild.item }}</div>
           </div>
         </div>
         <div class="print_row" v-for="(itemFee, indexFee) in detail.additional_fee" :key="'itemFee' + indexFee">
@@ -218,6 +174,7 @@ export default Vue.extend({
           mainRule: 'name',
           childrenName: 'child_data'
         })
+        this.detail.additional_fee = this.detail.additional_fee?JSON.parse(this.detail.additional_fee):['']
         this.detail.yarnInfo.forEach((item: any) => {
           item.total_weight = item.child_data
             .reduce((a: any, b: any) => {

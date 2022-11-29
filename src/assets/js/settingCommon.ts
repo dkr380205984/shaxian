@@ -4,16 +4,16 @@ export const printList = (option?: PrintListParams, type?: 1 | 2 | 3 | 4 | 5 | 6
   const companyName: string = window.sessionStorage.getItem('full_name') || ''
   const { print } = require('@/assets/js/api')
   const tableList = [
-    { id: null, name: '纱线采购单', type: 1, title: `${companyName}纱线采购单`, desc: '' },
-    { id: null, name: '纱线调取单', type: 2, title: `${companyName}纱线调取单`, desc: '' },
-    { id: null, name: '纱线加工出库单', type: 3, title: `${companyName}纱线加工出库单`, desc: '' },
-    { id: null, name: '入库打印单', type: 4, title: `${companyName}入库单`, desc: '' },
-    { id: null, name: '出库打印单', type: 5, title: `${companyName}出库单`, desc: '' },
-    { id: null, name: '毛条加工单', type: 6, title: `${companyName}`, desc: '' }, // 委托纱线加工合同与加工工艺单
-    { id: null, name: '毛条采购单', type: 7, title: `${companyName}毛条采购单`, desc: '' },
-    { id: null, name: '毛条入库打印单', type: 8, title: `${companyName}毛条入库单`, desc: '' },
-    { id: null, name: '毛条出库打印单', type: 9, title: `${companyName}毛条出库单`, desc: '' },
-    { id: null, name: '订单出库单', type: 10, title: `${companyName}订单出库单`, desc: '' },
+    { id: null, name: '纱线采购单', type: 1, title: `${companyName}纱线采购单`, desc: '',settle_type:'' },
+    { id: null, name: '纱线调取单', type: 2, title: `${companyName}纱线调取单`, desc: '',settle_type:'' },
+    { id: null, name: '纱线加工出库单', type: 3, title: `${companyName}纱线加工出库单`, desc: '',settle_type:'' },
+    { id: null, name: '入库打印单', type: 4, title: `${companyName}入库单`, desc: '',settle_type:'' },
+    { id: null, name: '出库打印单', type: 5, title: `${companyName}出库单`, desc: '',settle_type:'' },
+    { id: null, name: '毛条加工单', type: 6, title: `${companyName}`, desc: '',settle_type:'' }, // 委托纱线加工合同与加工工艺单
+    { id: null, name: '毛条采购单', type: 7, title: `${companyName}毛条采购单`, desc: '',settle_type:'' },
+    { id: null, name: '毛条入库打印单', type: 8, title: `${companyName}毛条入库单`, desc: '',settle_type:'' },
+    { id: null, name: '毛条出库打印单', type: 9, title: `${companyName}毛条出库单`, desc: '',settle_type:'' },
+    { id: null, name: '订单出库单', type: 10, title: `${companyName}订单出库单`, desc: '',settle_type:'' },
   ]
   return new Promise((reject) => {
     print.list(option).then((res: any) => {
@@ -24,6 +24,7 @@ export const printList = (option?: PrintListParams, type?: 1 | 2 | 3 | 4 | 5 | 6
             finded.title = itemF.title
             finded.id = itemF.id
             finded.desc = itemF.desc
+            finded.settle_type = itemF.settle_type
           }
         })
       }

@@ -264,6 +264,7 @@
                     v-if="selfType&&selfType[0]==='无单据'&&(selfType[1]===11)">数量属性</div>
                   <div class="tcolumn"
                     style="flex:2">批号/色号/缸号</div>
+                  <div class="tcolumn">所属客户</div>
                   <div class="tcolumn">数量(kg)</div>
                   <div class="tcolumn"
                     v-if="selfType&&selfType[0]==='无单据'&&(selfType[1]===11||selfType[1]===12||selfType[1]===13)">单价(元)</div>
@@ -420,6 +421,16 @@
                       v-model="item.vat_code"
                       placeholder="缸号"
                       style="margin-right:4px"></el-input>
+                  </div>
+                  <div class="tcolumn">
+                    <el-select class="el" placeholder="所属客户" v-model="item.store_client_id" filterable>
+                      <el-option
+                        v-for="item in clientArr"
+                        :key="item.id"
+                        :value="item.id"
+                        :label="(item.code || item.id) + ' - ' + item.name"
+                      ></el-option>
+                    </el-select>
                   </div>
                   <div class="tcolumn">
                     <el-input class="el"
@@ -696,8 +707,10 @@ export default class InAndOut extends Vue {
       ]
     }
   ]
+  clientArr:any[] = this.$store.state.api.client.arr.filter((item: any) => (item.status as number) === 1)
   // 单位
   get selfClientArr() {
+    this.clientArr = this.$store.state.api.client.arr.filter((item: any) => (item.status as number) === 1)
     if (
       this.selfType &&
       (this.selfType[0] === '采购单' ||
@@ -1238,6 +1251,9 @@ export default class InAndOut extends Vue {
           {
             key: 'name',
             errMsg: '请选择纱线名称'
+          },{
+            key: 'store_client_id',
+            errMsg: '请选择所属客户'
           }
         ])
       })
@@ -1389,6 +1405,7 @@ export default class InAndOut extends Vue {
               return {
                 name: Array.isArray(item.name) ? item.name[1] : item.name,
                 action_weight: item.action_weight,
+                store_client_id: item.store_client_id,
                 color: item.color,
                 attribute: item.attribute,
                 batch_code: item.batch_code || '',
@@ -1436,6 +1453,7 @@ export default class InAndOut extends Vue {
             name: Array.isArray(item.name) ? item.name[1] : item.name,
             weight: item.action_weight,
             color: item.color,
+            store_client_id: item.store_client_id,
             attribute: item.attribute,
             price: item.price
           }
@@ -1449,6 +1467,7 @@ export default class InAndOut extends Vue {
                 name: Array.isArray(item.name) ? item.name[1] : item.name,
                 action_weight: item.action_weight,
                 color: item.color,
+                store_client_id: item.store_client_id,
                 attribute: item.attribute,
                 batch_code: item.batch_code || '',
                 color_code: item.color_code || '',
@@ -1505,6 +1524,7 @@ export default class InAndOut extends Vue {
           return {
             name: Array.isArray(item.name) ? item.name[1] : item.name,
             weight: item.action_weight,
+            store_client_id: item.store_client_id,
             color: item.color || '',
             attribute: item.attribute || '',
             before_attribute: item.before_attribute || '',
@@ -1524,6 +1544,7 @@ export default class InAndOut extends Vue {
                 action_weight: item.action_weight,
                 color: this.storeInfo.type === '染色' ? item.after_color : item.color,
                 attribute: item.attribute,
+                store_client_id: item.store_client_id,
                 batch_code: item.batch_code || '',
                 color_code: item.color_code || '',
                 vat_code: item.vat_code || '',
@@ -1589,6 +1610,7 @@ export default class InAndOut extends Vue {
             action_weight: item.action_weight,
             color: item.color,
             attribute: item.attribute,
+            store_client_id: item.store_client_id,
             batch_code: item.batch_code || '',
             color_code: item.color_code || '',
             vat_code: item.vat_code || '',

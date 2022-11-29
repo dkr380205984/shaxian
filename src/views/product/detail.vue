@@ -57,6 +57,7 @@
               <div class="tcolumn">仓库信息</div>
               <div class="tcolumn">纱线颜色</div>
               <div class="tcolumn">纱线属性</div>
+              <div class="tcolumn">所属客户</div>
               <div class="tcolumn noPad"
                 style="flex:5">
                 <div class="trow">
@@ -75,6 +76,7 @@
               <div class="tcolumn">{{item.store_name}}/{{item.second_store_name || '-'}}</div>
               <div class="tcolumn">{{item.color}}</div>
               <div class="tcolumn">{{item.attribute}}</div>
+              <div class="tcolumn">{{item.store_client_name || '无'}}</div>
               <div class="tcolumn noPad"
                 style="flex: 5">
                 <div class="trow"
@@ -122,6 +124,7 @@
                 style="flex:4">
                 <div class="trow">
                   <div class="tcolumn">颜色/属性</div>
+                  <div class="tcolumn">所属客户</div>
                   <div class="tcolumn">批号</div>
                   <div class="tcolumn">色号</div>
                   <div class="tcolumn">缸号</div>
@@ -166,6 +169,7 @@
                   v-for="(itemChilid,indexChild) in item.child_data"
                   :key="indexChild">
                   <div class="tcolumn">{{itemChilid.color}}/{{itemChilid.attribute}}</div>
+                  <div class="tcolumn">{{itemChilid.store_client_name || '无'}}</div>
                   <div class="tcolumn">{{itemChilid.batch_code}}</div>
                   <div class="tcolumn">{{itemChilid.color_code}}</div>
                   <div class="tcolumn">{{itemChilid.vat_code}}</div>

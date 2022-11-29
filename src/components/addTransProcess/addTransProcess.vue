@@ -119,6 +119,11 @@
                 <el-table-column width="220" prop="name" label="纱线名"> </el-table-column>
                 <el-table-column prop="attribute" label="纱线属性"> </el-table-column>
                 <el-table-column prop="color" label="颜色"> </el-table-column>
+                <el-table-column prop="store_client_name" label="所属客户">
+                  <template slot-scope="scope">
+                    {{scope.row.store_client_name || '无'}}
+                  </template>
+                </el-table-column>
                 <el-table-column prop="batch_code" label="批号"> </el-table-column>
                 <el-table-column prop="vat_code" label="缸号"> </el-table-column>
                 <el-table-column prop="color_code" label="色号"> </el-table-column>
@@ -346,7 +351,7 @@
                       </el-input>
                     </div>
                   </div>
-                  <div v-if="itemChild.before_color.indexOf('白') === -1 && item.type === '染色'" style="color:red;margin-top:5px">
+                  <div v-if="itemChild.before_color && itemChild.before_color.indexOf('白') === -1 && item.type === '染色'" style="color:red;margin-top:5px">
                     该纱线不是白绞纱，可能无法进行染色
                   </div>
                 </div>
@@ -981,7 +986,7 @@ export default Vue.extend({
           return a + (Number(b.weight) || 0)
         },0)
 
-        if(Number(this.diaoquNumber) !== Number(item.total_weight)){
+        if(Number(this.diaoquNumber) !== Number(item.total_weight) && this.orderId){
           this.$message.error('【'+ item.type +'】工序加工单，加工总数不等于库存调取总数'+Number(this.diaoquNumber)+'，无法提交。')
           this.loading = false
           err = true
@@ -1177,6 +1182,7 @@ export default Vue.extend({
           return {
             name: Array.isArray(item.name) ? item.name[1] : item.name,
             action_weight: item.weight || 0,
+            store_client_id: item.store_client_id,
             color: item.color,
             attribute: item.attribute,
             batch_code: item.batch_code || '',

@@ -97,6 +97,7 @@
               <div class="tcolumn">纱线名称</div>
               <div class="tcolumn">纱线颜色</div>
               <div class="tcolumn">属性</div>
+              <div class="tcolumn">所属客户</div>
               <div class="tcolumn noPad" style="flex: 6">
                 <div class="trow">
                   <div class="tcolumn">批号</div>
@@ -139,6 +140,7 @@
               </div>
               <div class="tcolumn">{{ item.color }}</div>
               <div class="tcolumn">{{ item.attribute }}</div>
+              <div class="tcolumn">{{ item.store_client_name || '无' }}</div>
               <div class="tcolumn noPad" style="flex: 6">
                 <div class="trow" v-for="itemStore in item.store_info" :key="'store' + itemStore.id">
                   <div class="tcolumn">
@@ -162,6 +164,7 @@
             </div>
             <div class="trow bgGray noBorder">
               <div class="tcolumn">合计</div>
+              <div class="tcolumn"></div>
               <div class="tcolumn"></div>
               <div class="tcolumn"></div>
               <div class="tcolumn"></div>
@@ -344,6 +347,7 @@
                           <div class="column min120">颜色</div>
                           <div class="column min120">属性</div>
                           <div class="column min120">数量</div>
+                          <div class="column min120">所属客户</div>
                           <div class="column min120">批号</div>
                           <div class="column min120">色号</div>
                           <div class="column min120">缸号</div>
@@ -371,6 +375,7 @@
                           <div class="column min120">{{ itemChild.color }}</div>
                           <div class="column min120">{{ itemChild.attribute }}</div>
                           <div class="column min120 blue">{{ itemChild.action_weight }}</div>
+                          <div class="column min120">{{ itemChild.store_client_name || '无'}}</div>
                           <div class="column min120">{{ itemChild.batch_code }}</div>
                           <div class="column min120">{{ itemChild.color_code }}</div>
                           <div class="column min120">{{ itemChild.vat_code }}</div>
@@ -683,6 +688,7 @@
                   <div class="column">纱线名称</div>
                   <div class="column">纱线颜色</div>
                   <div class="column">纱线属性</div>
+                  <div class="column">所属客户</div>
                   <div class="column">批号/色号/缸号</div>
                   <div class="column">库存数量</div>
                   <div class="column" style="flex: 0.3">勾选</div>
@@ -699,6 +705,7 @@
                   <div class="column" style="max-width: 175px; word-break: break-all">{{ item.name }}</div>
                   <div class="column" style="max-width: 175px; word-break: break-all">{{ item.color }}</div>
                   <div class="column" style="max-width: 175px; word-break: break-all">{{ item.attribute }}</div>
+                  <div class="column" style="max-width: 175px; word-break: break-all">{{ item.store_client_name || '无' }}</div>
                   <div class="column" style="max-width: 175px; word-break: break-all">
                     {{ item.batch_code }}/{{ item.color_code }}/{{ item.vat_code }}
                   </div>
@@ -1288,7 +1295,7 @@ export default Vue.extend({
             reality_weight: this.storeList.map((itemM) => +itemM.total_weight).reduce((a, b) => a + b, 0),
             useable_weight: this.storeList.map((itemM) => +itemM.use_weight).reduce((a, b) => a + b, 0),
             data: this.$mergeData(this.storeList, {
-              mainRule: ['store_id', 'second_store_id', 'name', 'color', 'attribute'],
+              mainRule: ['store_id', 'second_store_id', 'name', 'color', 'attribute', 'store_client_name'],
               otherRule: [{ name: 'second_store_name' }, { name: 'store_name' }],
               childrenName: 'store_info',
               childrenRule: {

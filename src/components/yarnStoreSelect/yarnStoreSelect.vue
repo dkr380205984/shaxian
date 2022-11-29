@@ -106,6 +106,7 @@
                 <div class="tcolumn">纱线名称</div>
                 <div class="tcolumn">纱线颜色</div>
                 <div class="tcolumn">纱线属性</div>
+                <div class="tcolumn">所属客户</div>
                 <div class="tcolumn noPad" style="flex: 6">
                   <div class="trow">
                     <div class="tcolumn">批号</div>
@@ -141,6 +142,7 @@
                 <div class="tcolumn">{{ item.name }}</div>
                 <div class="tcolumn">{{ item.color }}</div>
                 <div class="tcolumn">{{ item.attribute }}</div>
+                <div class="tcolumn">{{ item.store_client_name || '无' }}</div>
                 <div class="tcolumn noPad" style="flex: 6">
                   <div class="trow" v-for="itemStore in item.store_info" :key="itemStore.id">
                     <div class="tcolumn">{{ itemStore.batch_code }}</div>

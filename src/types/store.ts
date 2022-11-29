@@ -20,6 +20,7 @@ export interface StoreListParams {
 export interface StoreDetailYarnListParams {
   store_id: string | null,
   second_store_id: string | null,
+  store_client_id?: string | number | null,
   name: string | null,
   color: string | null,
   weight: 0 | null

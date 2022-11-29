@@ -303,6 +303,11 @@ const routes: RouteConfig[] = [
         name: 'processPrint',
         component: () => import('@/views/print/processPrint.vue')
       },
+      {// 报染单
+        path: 'processBaoRan',
+        name: 'processBaoRan',
+        component: () => import('@/views/print/processBaoRan.vue')
+      },
       {// 加工单
         path: 'processYarn/:documentId',
         name: 'processYarn',

@@ -246,6 +246,10 @@
                   <i class="el-icon-printer"></i>
                   <span class="text">打印单据</span>
                 </div>
+                <div class="button btnBlue" @click="$openUrl(`/print/processBaoRan?id=${materialOrderIndex}`)">
+                  <i class="el-icon-printer"></i>
+                  <span class="text">打印报染单</span>
+                </div>
               </div>
             </div>
           </div>

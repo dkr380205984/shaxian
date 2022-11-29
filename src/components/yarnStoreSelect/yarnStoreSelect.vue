@@ -16,7 +16,7 @@
           <span style="font-weight: bold; font-size: 18px; color: red"> 请选择发货仓库、纱线名称，并勾选需要发货的纱线。勾选完毕后，点击下一步，填写发货数量。 </span>
         </div>
         <div class="filterCtn">
-          <div class="leftCtn" style="padding: unset">
+          <div class="leftCtn" style="padding: unset;max-width:unset">
             <div class="elCtn">
               <el-cascader
                 v-model="filterObj.LV2_name"
@@ -57,6 +57,16 @@
             </div>
             <div class="elCtn" style="width: 120px">
               <el-input v-model="filterObj.color" @change="getList" placeholder="纱线颜色"></el-input>
+            </div>
+            <div class="elCtn">
+              <el-select placeholder="所属客户" v-model="filterObj.store_client_id" @change="getList" filterable clearable>
+                <el-option
+                  v-for="item in clientArr"
+                  :key="item.id"
+                  :value="item.id"
+                  :label="(item.code || item.id) + ' - ' + item.name"
+                ></el-option>
+              </el-select>
             </div>
             <div class="elCtn" style="width: 120px">
               <el-input v-model="filterObj.batch_code" @change="getList" placeholder="批号"></el-input>
@@ -208,6 +218,7 @@ export default Vue.extend({
       filterObj: {
         LV2_name: '',
         name: '',
+        store_client_id: '',
         color: '',
         batch_code: '',
         color_code: '',
@@ -226,6 +237,9 @@ export default Vue.extend({
   computed: {
     store_list() {
       return this.$store.state.api.storeHouse.arr.filter((item: any) => item.store_type === 1)
+    },
+    clientArr() {
+      return this.$store.state.api.client.arr.filter((item: any) => item.status === 1 && item.type === 1)
     },
     yarn_list() {
       if (this.yarnList.length > 0) {
@@ -258,6 +272,7 @@ export default Vue.extend({
           store_id: this.filterObj.LV2_name ? this.filterObj.LV2_name[0] : '',
           second_store_id: this.filterObj.LV2_name ? this.filterObj.LV2_name[1] : '',
           name: this.yarnList.length > 0 ? this.filterObj.name : this.filterObj.name ? this.filterObj.name[1] : null,
+          store_client_id: this.filterObj.store_client_id || null,
           color: this.filterObj.color || null,
           weight: this.filterObj.isFilterZero ? 0 : null,
           vat_code: this.filterObj.vat_code || null,
@@ -376,6 +391,7 @@ export default Vue.extend({
         LV2_name: '',
         name: '',
         color: '',
+        store_client_id:'',
         batch_code: '',
         color_code: '',
         vat_code: '',

@@ -1560,6 +1560,7 @@ export default Vue.extend({
         total_additional_fee: 0
       },
       orderInfoProChild: [],
+      client_arr: [],
       check_flag: false,
       check_detail_flag: false,
       total: {
@@ -1621,12 +1622,6 @@ export default Vue.extend({
   computed: {
     token() {
       return this.$store.state.status.token
-    },
-    client_arr() {
-      return this.$store.state.api.supplier.arr.filter(
-        (item: any) =>
-          item.client_type === '染色单位' || item.client_type === '膨纱单位' || item.client_type === '倒筒单位'
-      )
     },
     store_list() {
       return this.$store.state.api.storeHouse.arr
@@ -1910,6 +1905,22 @@ export default Vue.extend({
         this.diaoquList = res[2].data.data.items.filter((item: any) => item.action_type === 16)
         this.huikuList = res[2].data.data.items.filter((item: any) => item.action_type === 17)
         this.jiagsdjList = res[2].data.data.items.filter((item: any) => item.action_type === 18)
+        
+        let jiaGongDanWeiArr:any = []
+        let client_arr = this.$store.state.api.supplier.arr
+        this.diaoquList.forEach((item:any) => {
+          jiaGongDanWeiArr.push(...item.process_info.map((itemProcess:any) => {
+            return itemProcess.client_id
+          }))
+        });
+        jiaGongDanWeiArr = [...new Set(jiaGongDanWeiArr)]
+        jiaGongDanWeiArr.forEach((item:any) => {
+          let itemClient = client_arr.find((itemClient:any) => {
+            return itemClient.id === item
+          })
+          this.client_arr.push(itemClient)
+        });
+
         this.order_log_list = res[2].data.data.items
         if (this.order_info.status === 4) {
           if (res[3].data.data) {

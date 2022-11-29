@@ -52,7 +52,7 @@
       </div>
       <div class="listCtn">
         <div class="filterCtn">
-          <div class="leftCtn">
+          <div class="leftCtn" style="padding-right:unset;max-width:unset">
             <div class="label">筛选条件：</div>
             <div class="elCtn">
               <el-select
@@ -70,6 +70,16 @@
             </div>
             <div class="elCtn" style="width: 120px">
               <el-input v-model="storeListFilter.color" @change="getStoreInfoList" placeholder="纱线颜色"></el-input>
+            </div>
+            <div class="elCtn" style="width: 120px">
+              <el-select placeholder="所属客户" v-model="storeListFilter.store_client_id" @change="getStoreInfoList" filterable clearable>
+                <el-option
+                  v-for="item in clientArr"
+                  :key="item.id"
+                  :value="item.id"
+                  :label="(item.code || item.id) + ' - ' + item.name"
+                ></el-option>
+              </el-select>
             </div>
             <div class="elCtn" style="width: 120px">
               <el-input v-model="storeListFilter.batch_code" @change="getStoreInfoList" placeholder="批号"></el-input>
@@ -258,6 +268,16 @@
               >
                 <el-option v-for="item in commonInit.typeArr" :key="item.id" :label="item.name" :value="item.id">
                 </el-option>
+              </el-select>
+            </div>
+            <div class="elCtn" style="width: 120px">
+              <el-select placeholder="所属客户" v-model="storeLogListFilter.store_client_id" @change="getStoreLogList(1)" filterable clearable>
+                <el-option
+                  v-for="item in clientArr"
+                  :key="item.id"
+                  :value="item.id"
+                  :label="(item.code || item.id) + ' - ' + item.name"
+                ></el-option>
               </el-select>
             </div>
             <div class="elCtn">
@@ -542,6 +562,7 @@ export default Vue.extend({
         LV2_name: '',
         name: '',
         color: '',
+        store_client_id: '',
         isFilterZero: true,
         page: 1,
         limit: 20,
@@ -559,6 +580,7 @@ export default Vue.extend({
       storeLogListFilter: {
         LV2_name: '',
         name: '',
+        store_client_id: '',
         color: '',
         attr: '',
         type: '',
@@ -679,6 +701,7 @@ export default Vue.extend({
           limit: this.storeListFilter.limit || 20,
           page: this.storeListFilter.page || 1,
           color: this.storeListFilter.color || null,
+          store_client_id: this.storeListFilter.store_client_id || null,
           weight: this.storeListFilter.isFilterZero ? 0 : null,
           vat_code: this.storeListFilter.vat_code || null,
           color_code: this.storeListFilter.color_code || null,
@@ -725,6 +748,7 @@ export default Vue.extend({
           LV2_name: '',
           name: '',
           color: '',
+          store_client_id: '',
           isFilterZero: true,
           page: 1,
           limit: 20,
@@ -738,6 +762,7 @@ export default Vue.extend({
         this.storeLogListFilter = {
           LV2_name: '',
           name: '',
+          store_client_id:'',
           color: '',
           attr: '',
           type: '',
@@ -766,6 +791,7 @@ export default Vue.extend({
           store_second_id: this.storeLogListFilter.LV2_name || null,
           name: this.storeLogListFilter.name || null,
           color: this.storeLogListFilter.color || null,
+          store_client_id: this.storeLogListFilter.store_client_id || null,
           attribute: this.storeLogListFilter.attr || null,
           action_type: this.storeLogListFilter.type || [],
           vat_code: this.storeLogListFilter.vat_code || null,
@@ -957,6 +983,11 @@ export default Vue.extend({
       this.store_info.show = true
       this.updateId = storeInfo.id
     }
+  },
+  computed: {
+    clientArr() {
+      return this.$store.state.api.client.arr.filter((item: any) => item.status === 1 && item.type === 1)
+    },
   },
   mounted() {
     this.$checkCommonInfo([

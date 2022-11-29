@@ -12,7 +12,7 @@
           {{ companyName }}
         </div>
       </div>
-      <div class="print_head">
+      <div class="print_head" style="height:unset">
         <div class="left">
           <span class="item" style="font-size: 17px">
             <span class="label">订单编号：</span>
@@ -158,7 +158,7 @@
             {{ companyName }}
           </div>
         </div>
-        <div class="print_head" style="flex-direction: unset">
+        <div class="print_head" style="flex-direction: unset;">
           <div class="left">
             <span style="font-size: 17px">
               <span class="label">订单编号：</span>
@@ -388,6 +388,7 @@ export default Vue.extend({
           }, 100)
         } else if (type === 3) {
           this.printA4Type = !this.printA4Type
+          window.sessionStorage.setItem('printA4Type',this.printA4Type)
         }
       })
     },
@@ -421,6 +422,9 @@ export default Vue.extend({
       .then((res) => {
         this.id = res.data.data.id
         this.orderInfo = res.data.data
+        if(this.orderInfo.type === 2){
+          this.printA4Type = window.sessionStorage.getItem('printA4Type') === 'true'
+        }
         this.orderInfo.additional_fee = JSON.parse(this.orderInfo.additional_fee) || [
           { name: ' ', price: '', desc: '' }
         ]

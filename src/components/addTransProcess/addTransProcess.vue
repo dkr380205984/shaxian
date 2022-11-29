@@ -21,7 +21,7 @@
                   }}，第二步填写调取数量，第三步填写加工单</span
                 >
               </div>
-              <div class="filterCtn" style="padding-bottom: 30px">
+              <div class="filterCtn" style="padding-bottom: 30px;max-height:unset">
                 <div class="leftCtn" style="padding-right: unset; max-width: unset">
                   <div class="elCtn">
                     <el-cascader
@@ -70,31 +70,41 @@
                       placeholder="纱线颜色"
                     ></el-input>
                   </div>
-                  <div class="elCtn" style="width: 10%">
+                  <div class="elCtn">
+                    <el-select placeholder="所属客户" v-model="getYarnStoreObj.store_client_id" @change="getYarnStoreList" filterable clearable>
+                      <el-option
+                        v-for="item in clientArr"
+                        :key="item.id"
+                        :value="item.id"
+                        :label="(item.code || item.id) + ' - ' + item.name"
+                      ></el-option>
+                    </el-select>
+                  </div>
+                  <div class="elCtn">
+                    <!-- <el-tooltip class="item" effect="dark" content="" placement="top-start"> -->
+                      <el-checkbox v-model="getYarnStoreObj.isFilterZero" @change="getYarnStoreList">过滤库存数量&lt;=0的库存</el-checkbox>
+                    <!-- </el-tooltip> -->
+                  </div>
+                  <div class="elCtn">
                     <el-input
                       v-model="getYarnStoreObj.batch_code"
                       @change="getYarnStoreList"
                       placeholder="批号"
                     ></el-input>
                   </div>
-                  <div class="elCtn" style="width: 10%">
+                  <div class="elCtn">
                     <el-input
                       v-model="getYarnStoreObj.color_code"
                       @change="getYarnStoreList"
                       placeholder="色号"
                     ></el-input>
                   </div>
-                  <div class="elCtn" style="width: 10%">
+                  <div class="elCtn">
                     <el-input
                       v-model="getYarnStoreObj.vat_code"
                       @change="getYarnStoreList"
                       placeholder="缸号"
                     ></el-input>
-                  </div>
-                  <div class="elCtn" style="width:9%">
-                    <el-tooltip class="item" effect="dark" content="过滤库存数量<=0的库存" placement="top-start">
-                      <el-checkbox v-model="getYarnStoreObj.isFilterZero" @change="getYarnStoreList"></el-checkbox>
-                    </el-tooltip>
                   </div>
                 </div>
               </div>
@@ -583,6 +593,7 @@ export default Vue.extend({
       getYarnStoreObj: {
         store_id: '',
         second_store_id: '',
+        store_client_id: '',
         name: '',
         LV2_name: '',
         color: '',
@@ -681,6 +692,9 @@ export default Vue.extend({
         (item: any) =>
           item.client_type === '染色单位' || item.client_type === '膨纱单位' || item.client_type === '倒筒单位'
       )
+    },
+    clientArr() {
+      return this.$store.state.api.client.arr.filter((item: any) => item.status === 1 && item.type === 1)
     },
     token() {
       return this.$store.state.status.token
@@ -920,6 +934,7 @@ export default Vue.extend({
               : null,
           page: this.getYarnStoreObj.storePage || 1,
           limit: this.getYarnStoreObj.limit || 10,
+          store_client_id: this.getYarnStoreObj.store_client_id || null,
           color: this.getYarnStoreObj.color || null,
           weight: this.getYarnStoreObj.isFilterZero ? 0 : null,
           vat_code: this.getYarnStoreObj.vat_code || null,
@@ -1043,6 +1058,7 @@ export default Vue.extend({
       this.step = 0
       this.trans_id = ''
       this.getYarnStoreObj.LV2_name = ''
+      this.getYarnStoreObj.store_client_id = ''
       this.storeList = []
       this.process_info = [
         {

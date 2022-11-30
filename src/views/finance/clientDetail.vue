@@ -1,7 +1,5 @@
 <template>
-  <div class="indexMain"
-    id="clientDetail"
-    v-loading="loading">
+  <div class="indexMain" id="clientDetail" v-loading="loading">
     <div class="module">
       <div class="titleCtn">
         <span class="title">基本信息</span>
@@ -10,35 +8,35 @@
         <div class="rowCtn">
           <div class="colCtn">
             <span class="label">客户名称：</span>
-            <span class="text blue">{{client_info.name}}</span>
+            <span class="text blue">{{ client_info.name }}</span>
           </div>
           <div class="colCtn">
             <span class="label">客户简称：</span>
-            <span class="text">{{client_info.abbreviation||'无'}}</span>
+            <span class="text">{{ client_info.abbreviation || '无' }}</span>
           </div>
           <div class="colCtn">
             <span class="label">负责人：</span>
-            <span class="text">{{client_info.user_name||'无'}}</span>
+            <span class="text">{{ client_info.user_name || '无' }}</span>
           </div>
         </div>
         <div class="rowCtn">
           <div class="colCtn">
             <span class="label">电话：</span>
-            <span class="text">{{client_info.phone}}</span>
+            <span class="text">{{ client_info.phone }}</span>
           </div>
           <div class="colCtn">
             <span class="label">联系人：</span>
-            <span class="text">{{client_info.contact||'无'}}</span>
+            <span class="text">{{ client_info.contact || '无' }}</span>
           </div>
           <div class="colCtn">
             <span class="label">手机号：</span>
-            <span class="text">{{client_info.contact_phone||'无'}}</span>
+            <span class="text">{{ client_info.contact_phone || '无' }}</span>
           </div>
         </div>
         <div class="rowCtn">
           <div class="colCtn">
             <span class="label">公司地址：</span>
-            <span class="text">{{client_info.address||'无'}}</span>
+            <span class="text">{{ client_info.address || '无' }}</span>
           </div>
         </div>
       </div>
@@ -47,111 +45,120 @@
       <div class="titleCtn">
         <span class="title">统计数据</span>
       </div>
-      <div class="tableCtn"
-        style="padding:20px 32px 0 32px;margin:0">
+      <div class="tableCtn" style="padding: 20px 32px 0 32px; margin: 0">
         <div class="thead">
           <div class="trow">
             <div class="tcolumn">总下单数量</div>
-            <div class="tcolumn">总下单金额</div>
+            <div class="tcolumn">总下单金额（含额外费用）</div>
             <div class="tcolumn">发货数量</div>
-            <div class="tcolumn">待发货数量</div>
-            <div class="tcolumn">总发货金额</div>
+            <div class="tcolumn">总发货金额（含额外费用）</div>
           </div>
         </div>
         <div class="tbody">
           <div class="trow">
-            <div class="tcolumn">{{$toFixed(client_info.financial_data.order_sum_total_weight)}}kg</div>
-            <div class="tcolumn">{{$toFixed(client_info.financial_data.order_sum_total_price)}}元</div>
-            <div class="tcolumn">{{$toFixed(client_info.financial_data.total_push_weight)}}kg</div>
-            <div class="tcolumn">{{$toFixed(client_info.financial_data.wait_push)}}kg</div>
-            <div class="tcolumn">{{$toFixed(client_info.financial_data.total_push_price)}}元</div>
+            <div class="tcolumn">{{ $toFixed(client_info.financial_data.order_sum_total_weight) }}kg</div>
+            <div class="tcolumn">{{ $toFixed(client_info.financial_data.order_sum_total_price) }}元</div>
+            <div class="tcolumn">{{ $toFixed(client_info.financial_data.total_push_weight) }}kg</div>
+            <div class="tcolumn">{{ $toFixed(client_info.financial_data.total_push_price) }}元</div>
           </div>
         </div>
       </div>
-      <div class="tableCtn"
-        style="padding:20px 32px 20px 32px;margin:0">
+      <div class="tableCtn" style="padding: 20px 32px 20px 32px; margin: 0">
         <div class="thead">
           <div class="trow">
             <div class="tcolumn">客户扣款</div>
-            <div class="tcolumn">我方开票</div>
-            <div class="tcolumn">我方待开票</div>
-            <div class="tcolumn">客户已付款</div>
+            <div class="tcolumn">开票总额</div>
+            <div class="tcolumn">收款总额</div>
             <div class="tcolumn">客户欠款</div>
           </div>
         </div>
         <div class="tbody">
           <div class="trow">
-            <div class="tcolumn red">{{$toFixed(client_info.financial_data.deduct_sum_total_price)}}元</div>
-            <div class="tcolumn">{{$toFixed(client_info.financial_data.collection_sum_collect_price)}}元</div>
-            <div class="tcolumn">{{$toFixed(client_info.financial_data.wait_collection)}}元</div>
-            <div class="tcolumn">{{$toFixed(client_info.financial_data.invoice_sum_invoice_price)}}元</div>
-            <div class="tcolumn red">{{$toFixed(client_info.financial_data.wait_invoice)}}元</div>
+            <div class="tcolumn red">{{ $toFixed(client_info.financial_data.deduct_sum_total_price) }}元</div>
+            <div class="tcolumn">{{ $toFixed(client_info.financial_data.collection_sum_collect_price) }}元</div>
+            <div class="tcolumn">{{ $toFixed(client_info.financial_data.invoice_sum_invoice_price) }}元</div>
+            <div class="tcolumn red">{{ $toFixed(client_info.financial_data.wait_invoice) }}元</div>
           </div>
         </div>
       </div>
     </div>
     <div class="module">
-      <div class="titleCtn">
-        <span class="title">下单信息</span>
-      </div>
-      <div class="listCtn">
-        <div class="filterCtn">
-          <div class="leftCtn">
-            <div class="label">筛选条件：</div>
-            <div class="elCtn">
-              <el-input v-model="order_code"
-                placeholder="输入订单号按回车键搜索"
-                @change="getOrderList"></el-input>
-            </div>
+      <el-tabs type="border-card">
+        <el-tab-pane label="发货信息">
+          <div class="titleCtn" style="padding: 0 17px">
+            <span class="title">发货信息</span>
           </div>
-        </div>
-        <div class="list">
-          <div class="headCtn">
-            <div class="row">
-              <div class="column">订单号</div>
-              <div class="column">订单状态</div>
-              <div class="column">下单数量</div>
-              <div class="column">下单金额</div>
-              <div class="column">发货数量</div>
-              <div class="column">发货金额</div>
-              <div class="column">额外费用</div>
-              <div class="column">扣款金额</div>
-              <div class="column">操作</div>
-            </div>
-          </div>
-          <div class="bodyCtn">
-            <div class="row"
-              v-for="item in order_list"
-              :key="item.id">
-              <div class="column">{{item.code}}</div>
-              <div class="column"> <span :class="{'orange':item.status===1,'blue':item.status===2,'green':item.status===3}">{{item.status | orderStatusFilter}}</span></div>
-              <div class="column blue">{{item.total_weight}}kg</div>
-              <div class="column blue">{{item.total_price}}元</div>
-              <div class="column green">{{item.reality_push_weight||'0'}}kg</div>
-              <div class="column green">{{item.related_push_price||'0'}}元</div>
-              <div class="column orange">{{item.total_additional_fee||'0'}}元</div>
-              <div class="column red">{{item.deduct_price||'0'}}元</div>
-              <div class="column">
-                <div class="oprCtn">
-                  <div class="opr blue"
-                    @click="$router.push('/order/detail/' + item.id)">详情</div>
+          <div class="listCtn" style="padding: 20px 17px">
+            <div class="filterCtn">
+              <div class="leftCtn">
+                <div class="label">筛选条件：</div>
+                <div class="elCtn">
+                  <el-input v-model="order_code" placeholder="输入订单号按回车键搜索" @change="getOrderList"></el-input>
                 </div>
               </div>
             </div>
+            <div class="list">
+              <div class="headCtn">
+                <div class="row">
+                  <div class="column">发货时间</div>
+                  <div class="column">发货单号</div>
+                  <div class="column">关联订单号</div>
+                  <div class="column">客户单号</div>
+                  <div class="column">纱线名称</div>
+                  <div class="column">纱线颜色</div>
+                  <div class="column">纱线属性</div>
+                  <div class="column">数量属性</div>
+                  <div class="column">批/色/缸号</div>
+                  <div class="column">发货仓库</div>
+                  <div class="column">单价</div>
+                  <div class="column">数量</div>
+                  <div class="column">件数</div>
+                  <div class="column">小计</div>
+                  <div class="column">发货备注</div>
+                  <div class="column">操作人</div>
+                  <div class="column">操作时间</div>
+                  <div class="column">操作</div>
+                </div>
+              </div>
+              <div class="bodyCtn">
+                <div class="row" v-for="item in order_list" :key="item.id">
+                  <div class="column">{{ item.code }}</div>
+                  <div class="column">
+                    <span :class="{ orange: item.status === 1, blue: item.status === 2, green: item.status === 3 }">{{
+                      item.status | orderStatusFilter
+                    }}</span>
+                  </div>
+                  <div class="column blue">{{ item.total_weight }}kg</div>
+                  <div class="column blue">{{ item.total_price }}元</div>
+                  <div class="column green">{{ item.reality_push_weight || '0' }}kg</div>
+                  <div class="column green">{{ item.related_push_price || '0' }}元</div>
+                  <div class="column orange">{{ item.total_additional_fee || '0' }}元</div>
+                  <div class="column red">{{ item.deduct_price || '0' }}元</div>
+                  <div class="column">
+                    <div class="oprCtn">
+                      <div class="opr blue" @click="$router.push('/order/detail/' + item.id)">详情</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="pageCtn">
+              <el-pagination
+                background
+                :current-page.sync="order_page"
+                :page-size="5"
+                layout="prev, pager, next"
+                :total="order_total"
+                @current-change="getOrderList"
+              >
+              </el-pagination>
+            </div>
           </div>
-        </div>
-        <div class="pageCtn">
-          <el-pagination background
-            :current-page.sync="order_page"
-            :page-size="5"
-            layout="prev, pager, next"
-            :total="order_total"
-            @current-change="getOrderList">
-          </el-pagination>
-        </div>
-      </div>
+        </el-tab-pane>
+        <el-tab-pane label="额外费用">额外费用</el-tab-pane>
+      </el-tabs>
     </div>
-    <div class="module">
+    <!-- <div class="module">
       <div class="titleCtn">
         <span class="title">出入库信息</span>
       </div>
@@ -257,27 +264,34 @@
                 <div class="row"
                   v-for="item in stock_list"
                   :key="item.id">
-                  <div class="column min120 blue"
-                    :style="{'height':50*item.child_data.length + 'px'}">{{item.code}}</div>
+                  <div class="column min120">{{item.code}}</div>
                   <div class="column"
-                    style="min-width:80px;max-width:80px"
-                    :style="{'height':50*item.child_data.length + 'px'}"
-                    :class="{'blue':item.action_type===1||item.action_type===3||item.action_type===5||item.action_type===8||item.action_type===11||item.action_type===13||item.action_type===14||item.action_type===15,'green':item.action_type===2||item.action_type===4||item.action_type===6||item.action_type===7||item.action_type===9||item.action_type===10||item.action_type===12}">{{item.action_type|stockTypeFilter}}</div>
+                    style="min-width:80px;max-width:80px">{{item.action_type|stockTypeFilter}}</div>
                   <div class="column"
-                    style="min-width:200px;max-width:200px"
-                    :style="{'height':50*item.child_data.length + 'px'}">
-                    <span v-if="item.action_type===1||item.action_type===3||item.action_type===5||item.action_type===8||item.action_type===13||item.action_type===14||item.action_type===15">
+                    style="min-width:200px;max-width:200px">
+                    <span v-if="item.action_type===1||item.action_type===3||item.action_type===5||item.action_type===8">
                       <span class="green">{{item.client_name ||'无来源'}}</span>
                       <i class="el-icon-s-unfold orange"
                         style="margin:0 5px;font-size:16px"></i>
                       <span class="blue">{{item.store_name}}/{{item.second_store_name}}</span>
                     </span>
-                    <span v-if="item.action_type===2||item.action_type===4||item.action_type===6||item.action_type===7||item.action_type===9 || item.action_type===12">
+                    <span v-if="item.action_type===2||item.action_type===4||item.action_type===6||item.action_type===7||item.action_type===9">
                       <span class="blue">{{item.store_name}}/{{item.second_store_name}}</span>
                       <i class="el-icon-s-unfold orange"
                         style="margin:0 5px;font-size:16px"></i>
                       <span class="green">{{item.client_name}}</span>
                     </span>
+                  </div>
+                  <div class="column noPad"
+                    style="flex-direction:column">
+                    <div class="row" style="width:0;overflow:hidden"
+                      v-for="(itemChild,indexChild) in item.child_data"
+                      :key="indexChild">
+                      <div class="column min120">{{itemChild.name}}</div>
+                      <div class="column min120">{{itemChild.color}}</div>
+                      <div class="column min120">{{itemChild.attribute}}</div>
+                      <div class="column min120">{{itemChild.store_client_name||'无'}}</div>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -290,9 +304,21 @@
               </div>
               <div class="bodyCtn">
                 <div class="row"
-                  v-for="item in stock_list"
-                  :key="item.id">
-                  <div class="column min120"
+                    v-for="item in stock_list"
+                    :key="item.id">
+                    <div class="column noPad"
+                      style="flex-direction:column">
+                      <div class="row"
+                        style="width:0;overflow:hidden"
+                        v-for="(itemChild,indexChild) in item.child_data"
+                        :key="indexChild">
+                        <div class="column min120">{{itemChild.name}}</div>
+                        <div class="column min120">{{itemChild.color}}</div>
+                        <div class="column min120">{{itemChild.attribute}}</div>
+                        <div class="column min120">{{itemChild.store_client_name||'无'}}</div>
+                      </div>
+                    </div>
+                    <div class="column min120"
                     :style="{'height':50*item.child_data.length + 'px'}">
                     <span class="blue opr"
                       @click="$openUrl(`/print/store/2/${item.id}?orderId=${$route.params.id}`)">打印</span>
@@ -322,21 +348,18 @@
           </el-pagination>
         </div>
       </div>
-    </div>
+    </div> -->
     <div class="module">
       <div class="titleCtn">
         <span class="title">开票单据</span>
-        <span class="addBtn btn btnMain"
-          @click="show_bill=true">新增开票</span>
+        <span class="addBtn btn btnMain" @click="show_bill = true">新增开票</span>
       </div>
       <div class="listCtn">
         <div class="filterCtn">
           <div class="leftCtn">
             <div class="label">筛选条件：</div>
             <div class="elCtn">
-              <el-input v-model="bill_code"
-                placeholder="输入单号按回车键搜索"
-                @change="getBillList"></el-input>
+              <el-input v-model="bill_code" placeholder="输入单号按回车键搜索" @change="getBillList"></el-input>
             </div>
           </div>
         </div>
@@ -354,40 +377,40 @@
             </div>
           </div>
           <div class="bodyCtn">
-            <div class="row"
-              v-for="item in bill_list"
-              :key="item.id">
-              <div class="column">{{item.code}}</div>
-              <div class="column">{{item.invoice_code}}</div>
-              <div class="column">{{item.invoice_price}}</div>
+            <div class="row" v-for="item in bill_list" :key="item.id">
+              <div class="column">{{ item.code }}</div>
+              <div class="column">{{ item.invoice_code }}</div>
+              <div class="column">{{ item.invoice_price }}</div>
               <div class="column">
-                <el-image style="width: 50px; height: 50px;line-height:50px;text-align:center;font-size:22px"
+                <el-image
+                  style="width: 50px; height: 50px; line-height: 50px; text-align: center; font-size: 22px"
                   :src="item.file_url"
-                  :preview-src-list="[item.file_url]">
-                  <div slot="error"
-                    class="image-slot">
+                  :preview-src-list="[item.file_url]"
+                >
+                  <div slot="error" class="image-slot">
                     <i class="el-icon-picture-outline"></i>
                   </div>
                 </el-image>
               </div>
-              <div class="column">{{item.desc}}</div>
-              <div class="column">{{item.invoice_date}}</div>
-              <div class="column">{{item.user_name}}</div>
+              <div class="column">{{ item.desc }}</div>
+              <div class="column">{{ item.invoice_date }}</div>
+              <div class="column">{{ item.user_name }}</div>
               <div class="column">
                 <div class="opr blue">打印</div>
-                <div class="opr red"
-                  @click="deleteLog('开票',item.id)">删除</div>
+                <div class="opr red" @click="deleteLog('开票', item.id)">删除</div>
               </div>
             </div>
           </div>
         </div>
         <div class="pageCtn">
-          <el-pagination background
+          <el-pagination
+            background
             :current-page.sync="bill_page"
             :page-size="10"
             layout="prev, pager, next"
             :total="bill_total"
-            @current-change="getBillList">
+            @current-change="getBillList"
+          >
           </el-pagination>
         </div>
       </div>
@@ -395,28 +418,24 @@
     <div class="module">
       <div class="titleCtn">
         <span class="title">收款单据</span>
-        <span class="addBtn btn btnMain"
-          @click="show_collection=true">新增收款</span>
+        <span class="addBtn btn btnMain" @click="show_collection = true">新增收款</span>
       </div>
       <div class="listCtn">
         <div class="filterCtn">
           <div class="leftCtn">
             <div class="label">筛选条件：</div>
             <div class="elCtn">
-              <el-input v-model="collection_code"
+              <el-input
+                v-model="collection_code"
                 placeholder="输入单号按回车键搜索"
-                @change="getCollectionList"></el-input>
+                @change="getCollectionList"
+              ></el-input>
             </div>
             <div class="elCtn">
-              <el-select @change="getCollectionList"
-                v-model="collection_type"
-                placeholder="请选择收款方式">
-                <el-option label="现金收款"
-                  value="现金收款"></el-option>
-                <el-option label="银行转账"
-                  value="银行转账"></el-option>
-                <el-option label="网银支付"
-                  value="网银支付"></el-option>
+              <el-select @change="getCollectionList" v-model="collection_type" placeholder="请选择收款方式">
+                <el-option label="现金收款" value="现金收款"></el-option>
+                <el-option label="银行转账" value="银行转账"></el-option>
+                <el-option label="网银支付" value="网银支付"></el-option>
               </el-select>
             </div>
           </div>
@@ -435,40 +454,40 @@
             </div>
           </div>
           <div class="bodyCtn">
-            <div class="row"
-              v-for="item in collection_list"
-              :key="item.id">
-              <div class="column">{{item.code}}</div>
-              <div class="column">{{item.type}}</div>
-              <div class="column">{{item.collect_price}}</div>
+            <div class="row" v-for="item in collection_list" :key="item.id">
+              <div class="column">{{ item.code }}</div>
+              <div class="column">{{ item.type }}</div>
+              <div class="column">{{ item.collect_price }}</div>
               <div class="column">
-                <el-image style="width: 50px; height: 50px;line-height:50px;text-align:center;font-size:22px"
+                <el-image
+                  style="width: 50px; height: 50px; line-height: 50px; text-align: center; font-size: 22px"
                   :src="item.file_url"
-                  :preview-src-list="[item.file_url]">
-                  <div slot="error"
-                    class="image-slot">
+                  :preview-src-list="[item.file_url]"
+                >
+                  <div slot="error" class="image-slot">
                     <i class="el-icon-picture-outline"></i>
                   </div>
                 </el-image>
               </div>
-              <div class="column">{{item.desc}}</div>
-              <div class="column">{{item.invoice_date}}</div>
-              <div class="column">{{item.user_name}}</div>
+              <div class="column">{{ item.desc }}</div>
+              <div class="column">{{ item.invoice_date }}</div>
+              <div class="column">{{ item.user_name }}</div>
               <div class="column">
                 <div class="opr blue">打印</div>
-                <div class="opr red"
-                  @click="deleteLog('收款',item.id)">删除</div>
+                <div class="opr red" @click="deleteLog('收款', item.id)">删除</div>
               </div>
             </div>
           </div>
         </div>
         <div class="pageCtn">
-          <el-pagination background
+          <el-pagination
+            background
             :current-page.sync="collection_page"
             :page-size="10"
             layout="prev, pager, next"
             :total="collection_total"
-            :current-change="getCollectionList">
+            :current-change="getCollectionList"
+          >
           </el-pagination>
         </div>
       </div>
@@ -476,17 +495,14 @@
     <div class="module">
       <div class="titleCtn">
         <span class="title">扣款单据</span>
-        <span class="addBtn btn btnMain"
-          @click="show_deduct=true">新增扣款</span>
+        <span class="addBtn btn btnMain" @click="show_deduct = true">新增扣款</span>
       </div>
       <div class="listCtn">
         <div class="filterCtn">
           <div class="leftCtn">
             <div class="label">筛选条件：</div>
             <div class="elCtn">
-              <el-input v-model="deduct_code"
-                placeholder="输入单号按回车键搜索"
-                @change="getDeductList"></el-input>
+              <el-input v-model="deduct_code" placeholder="输入单号按回车键搜索" @change="getDeductList"></el-input>
             </div>
           </div>
         </div>
@@ -504,60 +520,55 @@
             </div>
           </div>
           <div class="bodyCtn">
-            <div class="row"
-              v-for="item in deduct_list"
-              :key="item.id">
-              <div class="column blue">{{item.code}}</div>
+            <div class="row" v-for="item in deduct_list" :key="item.id">
+              <div class="column blue">{{ item.code }}</div>
               <div class="column">
-                <div class="sortContainer"
-                  v-if="item.deduct_content && item.deduct_content.length>0">
+                <div class="sortContainer" v-if="item.deduct_content && item.deduct_content.length > 0">
                   <div class="sort">
-                    <i class="el-icon-caret-top hover"
-                      @click="changeIndex(item,'add')"></i>
-                    <div class="number">
-                      {{(item.index||0)+1}}/{{item.deduct_content.length}}
-                    </div>
-                    <i class="el-icon-caret-bottom hover"
-                      @click="changeIndex(item,'delete')"></i>
+                    <i class="el-icon-caret-top hover" @click="changeIndex(item, 'add')"></i>
+                    <div class="number">{{ (item.index || 0) + 1 }}/{{ item.deduct_content.length }}</div>
+                    <i class="el-icon-caret-bottom hover" @click="changeIndex(item, 'delete')"></i>
                   </div>
-                  <span>{{item.deduct_content[item.index||0].yarn}}</span>
+                  <span>{{ item.deduct_content[item.index || 0].yarn }}</span>
                 </div>
-                <div class="gray"
-                  v-else>暂无信息</div>
+                <div class="gray" v-else>暂无信息</div>
               </div>
               <div class="column">
-                <span v-if="item.deduct_content && item.deduct_content.length>0">{{item.deduct_content[item.index||0].price}}元</span>
-                <span v-else
-                  class="gray">暂无信息</span>
+                <span v-if="item.deduct_content && item.deduct_content.length > 0"
+                  >{{ item.deduct_content[item.index || 0].price }}元</span
+                >
+                <span v-else class="gray">暂无信息</span>
               </div>
               <div class="column">
-                <el-image style="width: 50px; height: 50px;line-height:50px;text-align:center;font-size:22px"
+                <el-image
+                  style="width: 50px; height: 50px; line-height: 50px; text-align: center; font-size: 22px"
                   :src="item.deduct_file"
-                  :preview-src-list="[item.deduct_file]">
-                  <div slot="error"
-                    class="image-slot">
+                  :preview-src-list="[item.deduct_file]"
+                >
+                  <div slot="error" class="image-slot">
                     <i class="el-icon-picture-outline"></i>
                   </div>
                 </el-image>
               </div>
-              <div class="column red">{{item.total_price}}元</div>
-              <div class="column">{{item.desc}}</div>
-              <div class="column">{{item.date}}</div>
+              <div class="column red">{{ item.total_price }}元</div>
+              <div class="column">{{ item.desc }}</div>
+              <div class="column">{{ item.date }}</div>
               <div class="column">
                 <div class="opr blue">打印</div>
-                <div class="opr red"
-                  @click="deleteLog('扣款',item.id)">删除</div>
+                <div class="opr red" @click="deleteLog('扣款', item.id)">删除</div>
               </div>
             </div>
           </div>
         </div>
         <div class="pageCtn">
-          <el-pagination background
+          <el-pagination
+            background
             :current-page.sync="deduct_page"
             :page-size="10"
             layout="prev, pager, next"
             :total="deduct_total"
-            :current-change="getDeductList">
+            :current-change="getDeductList"
+          >
           </el-pagination>
         </div>
       </div>
@@ -565,38 +576,32 @@
     <div class="bottomFixBar">
       <div class="main">
         <div class="btnCtn">
-          <div class="btn btnGray"
-            @click="$router.go(-1)">返回</div>
-          <div class="buttonList"
-            style="margin-left:12px">
+          <div class="btn btnGray" @click="$router.go(-1)">返回</div>
+          <div class="buttonList" style="margin-left: 12px">
             <div class="showButton">
               <i class="el-icon-s-grid"></i>
               <span class="text">导出报表</span>
             </div>
             <div class="otherInfoCtn">
               <div class="otherInfo">
-                <div class="button btnBlue"
-                  @click="exportExcel('order')">
+                <div class="button btnBlue" @click="exportExcel('order')">
                   <i class="iconfont">&#xe636;</i>
-                  <span class="text">下单报表</span>
+                  <span class="text">发货报表</span>
                 </div>
-                <div class="button btnBlue"
+                <!-- <div class="button btnBlue"
                   @click="exportExcel('store')">
                   <i class="iconfont">&#xe636;</i>
                   <span class="text">仓库报表</span>
-                </div>
-                <div class="button btnBlue"
-                  @click="exportExcel('invoice')">
+                </div> -->
+                <div class="button btnBlue" @click="exportExcel('invoice')">
                   <i class="iconfont">&#xe636;</i>
                   <span class="text">开票报表</span>
                 </div>
-                <div class="button btnBlue"
-                  @click="exportExcel('collection')">
+                <div class="button btnBlue" @click="exportExcel('collection')">
                   <i class="iconfont">&#xe636;</i>
                   <span class="text">付款报表</span>
                 </div>
-                <div class="button btnBlue"
-                  @click="exportExcel('deduct')">
+                <div class="button btnBlue" @click="exportExcel('deduct')">
                   <i class="iconfont">&#xe636;</i>
                   <span class="text">扣款报表</span>
                 </div>
@@ -606,46 +611,42 @@
         </div>
       </div>
     </div>
-    <div class="popup"
-      v-show="excel_flag">
+    <div class="popup" v-show="excel_flag">
       <div class="main">
         <div class="titleCtn">
           <span class="text">导出Excel</span>
-          <i class="close_icon el-icon-close"
-            @click="excel_flag = false"></i>
+          <i class="close_icon el-icon-close" @click="excel_flag = false"></i>
         </div>
         <div class="contentCtn">
           <div class="content">
             <div class="label">请选择要导出的时间段：</div>
-            <el-date-picker v-model="excel_date"
+            <el-date-picker
+              v-model="excel_date"
               type="daterange"
               value-format="yyyy-MM-dd"
               :picker-options="pickerOptions"
               range-separator="至"
               start-placeholder="开始日期"
               end-placeholder="结束日期"
-              align="right">
+              align="right"
+            >
             </el-date-picker>
           </div>
         </div>
         <div class="oprCtn">
-          <div class="opr"
-            @click="excel_flag = false">取消</div>
-          <div class="opr blue"
-            @click="getExcel">导出</div>
+          <div class="opr" @click="excel_flag = false">取消</div>
+          <div class="opr blue" @click="getExcel">导出</div>
         </div>
       </div>
     </div>
-    <bill :data="{type:5,client_id:$route.params.id}"
-      :show.sync="show_bill"
-      @afterBill="init"></bill>
-    <deduct :data="{type:5,client_id:$route.params.id}"
-      :show.sync="show_deduct"
-      @afterDeduct="init"></deduct>
-    <collection :data="{type:5,client_id:$route.params.id}"
+    <bill :data="{ type: 5, client_id: $route.params.id }" :show.sync="show_bill" @afterBill="init"></bill>
+    <deduct :data="{ type: 5, client_id: $route.params.id }" :show.sync="show_deduct" @afterDeduct="init"></deduct>
+    <collection
+      :data="{ type: 5, client_id: $route.params.id }"
       :show.sync="show_collection"
       @afterCollection="init"
-      :collectType="1"></collection>
+      :collectType="1"
+    ></collection>
   </div>
 </template>
 
@@ -777,6 +778,7 @@ export default Vue.extend({
         }),
         stock.list({
           client_id: this.$route.params.id,
+          action_type: [18, 9],
           limit: 5,
           page: this.stock_page
         })
@@ -793,9 +795,10 @@ export default Vue.extend({
         this.client_info = res[3].data.data
         this.order_list = res[4].data.data.items
         this.order_total = res[4].data.data.total
-        this.stock_list = res[5].data.data.data.items
-        this.stock_total = res[5].data.data.data.total
-        this.stock_statistics = res[5].data.data.others_data
+        this.stock_list = res[5].data.data.items
+        console.log(this.stock_list)
+        this.stock_total = res[5].data.data.total
+        this.stock_statistics = res[5].data.data.additional
         this.loading = false
       })
     },
@@ -936,8 +939,8 @@ export default Vue.extend({
           code: this.stock_code
         })
         .then((res) => {
-          this.stock_list = res.data.data.data.items
-          this.stock_total = res.data.data.data.total
+          this.stock_list = res.data.data.items
+          this.stock_total = res.data.data.total
           this.loading = false
         })
     },

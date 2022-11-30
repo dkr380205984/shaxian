@@ -249,6 +249,7 @@
                   <div class="tcolumn"></div>
                   <div class="tcolumn"></div>
                   <div class="tcolumn"></div>
+                  <div class="tcolumn"></div>
                   <div class="tcolumn">{{ order_info.total_weight }}kg</div>
                   <div class="tcolumn"></div>
                   <div class="tcolumn">
@@ -357,6 +358,7 @@
                   <div class="tcolumn"></div>
                   <div class="tcolumn"></div>
                   <div class="tcolumn"></div>
+                  <div class="tcolumn"></div>
                   <div class="tcolumn">{{ total_final_out_log.total_action_weight.toFixed(1) }}kg</div>
                   <div class="tcolumn">{{ total_final_out_log.total_price.toFixed(2) }}元</div>
                   <div class="tcolumn">{{ total_final_out_log.total_item }}</div>
@@ -373,6 +375,11 @@
     <div class="module" v-if="order_info.status === 4">
       <div class="titleCtn">
         <span class="title">结余入库</span>
+        <span
+          class="addBtn btn btnMain"
+          @click="openInStore"
+          >结余入库</span
+        >
       </div>
       <div style="padding: 20px 32px">
         <div class="tableCtn">
@@ -697,8 +704,17 @@
       :show.sync="store_info.show"
       @close="init"
     ></in-and-out>
+    <in-and-out
+      :noChange="true"
+      :relatedId="$route.params.id"
+      :relatedCode="order_info.code"
+      :type="15"
+      :initData="initData"
+      :show.sync="showIn"
+      @close="init"
+    ></in-and-out>
     <div class="popup" v-show="cancel_flag">
-      <div class="main">
+      <div class="main" style="width:1300px">
         <div class="titleCtn">
           <div class="text">取消订单</div>
           <i class="el-icon-close" @click="cancel_flag = false"></i>
@@ -765,7 +781,16 @@
                     <div class="tcolumn" style="flex: 1.5">{{ item.name }}</div>
                     <div class="tcolumn">{{ item.color }}</div>
                     <div class="tcolumn">{{ item.attribute }}</div>
-                    <div class="tcolumn">{{ item.store_client_name || '无' }}</div>
+                    <div class="tcolumn">
+                      <el-select class="el" placeholder="所属客户" v-model="item.store_client_id" filterable clearable>
+                        <el-option
+                          v-for="item in clientArr"
+                          :key="item.id"
+                          :value="item.id"
+                          :label="(item.code || item.id) + ' - ' + item.name"
+                        ></el-option>
+                      </el-select>
+                    </div>
                     <div class="tcolumn" style="flex: 2.2; flex-direction: row; align-items: center">
                       <el-input
                         class="el"
@@ -1355,7 +1380,7 @@
             <div class="colCtn">
               <div class="label">
                 <span class="text">加工单位</span>
-                <span class="explanation">(必填)</span>
+                <span class="explanation">(选填)</span>
               </div>
               <div class="elCtn">
                 <el-select v-model="jiagongdanObj.jiagongClient" collapse-tags :multiple-limit='2' value-key='id' multiple placeholder="请选择加工单位">
@@ -1507,6 +1532,7 @@ export default Vue.extend({
       showKucunFahuo: false,
       showProcessClient: false,
       showGuanLian: false,
+      showIn: false,
       yarnList: [],
       yarnInfoList: [],
       fahuoList: [],
@@ -1518,6 +1544,7 @@ export default Vue.extend({
       diaoquList: [],
       huikuList: [],
       jiagsdjList: [],
+      initData: [],
       childList: [],
       fahuoListObj: {
         total_reality_weight: 0,
@@ -1531,7 +1558,7 @@ export default Vue.extend({
       },
       jiagongdanObj: {
         desc: '',
-        jiagongClient:'',
+        jiagongClient:[],
         date: this.$getDate(new Date())
       },
       shaxianInfo: {},
@@ -1609,6 +1636,7 @@ export default Vue.extend({
                 action_weight: '',
                 color: '',
                 attribute: '',
+                store_client_id: '',
                 batch_code: '',
                 color_code: '',
                 vat_code: '',
@@ -1635,6 +1663,9 @@ export default Vue.extend({
   computed: {
     token() {
       return this.$store.state.status.token
+    },
+    clientArr() {
+      return this.$store.state.api.client.arr.filter((item: any) => item.status === 1 && item.type === 1)
     },
     store_list() {
       return this.$store.state.api.storeHouse.arr
@@ -2097,17 +2128,13 @@ export default Vue.extend({
         this.$message.error('请选择发货日期')
         return
       }
-      if(this.jiagongdanObj.jiagongClient.length === 0){
-        this.$message.error('请选择加工单位')
-        return
-      }
       this.jiagongdanList.find((item: any) => {
         !item.action_weight ? (item.action_weight = '0') : ''
       })
       this.jiagongdanList = this.jiagongdanList.filter((item: any) => {
         return item.action_weight !== '0' || !item.action_weight
       })
-      let desc = this.jiagongdanObj.jiagongClient.map((item:any) => {
+      let desc = this.jiagongdanObj.jiagongClient.length === 0?this.desc : this.jiagongdanObj.jiagongClient.map((item:any) => {
         return item.name
       }).toString() + '直接发货。' + this.jiagongdanObj.desc
 
@@ -2197,6 +2224,7 @@ export default Vue.extend({
             action_weight: objOrder ? objOrder.weight : 0,
             attribute: item.attribute,
             color: item.color,
+            store_client_id: item.store_client_id,
             batch_code: item.batch_code,
             vat_code: item.vat_code,
             color_code: item.color_code,
@@ -2261,6 +2289,31 @@ export default Vue.extend({
       this.getStoreInPro()
       this.cancel_flag = true
     },
+    openInStore(){
+      this.getStoreInPro()
+    // second_store_id: number
+    // name: string
+    // color: string
+    // attribute: string
+    // store_info: Array<{
+    //   color_code: string
+    //   vat_code: string
+    //   batch_code: string
+    //   weight: number
+    // }>
+      let arr = this.cancel_order_info.store_data![0].child_data.map((item:any) => {
+        item.store_info= [{
+          color_code:'',
+          vat_code:'',
+          batch_code: '',
+          store_client_id:'',
+          weight: item.action_weight,
+        }]
+        return item
+      })
+      this.initData = arr
+      this.showIn = true
+    },
     // 确认取消
     cancelOrder() {
       // 结余入库数据过滤
@@ -2270,6 +2323,7 @@ export default Vue.extend({
         childData = this.cancel_order_info.store_data![0].child_data.filter(
           (item: any) => Number(item.action_weight) > 0
         )
+        
         if (childData.length > 0) {
           storeData = [
             {
@@ -2327,6 +2381,7 @@ export default Vue.extend({
             attribute: itemChild.attribute,
             batch_code: '',
             color_code: '',
+            store_client_id: '',
             vat_code: '',
             item: ''
           })

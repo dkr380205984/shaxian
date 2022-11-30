@@ -101,7 +101,7 @@
                   </div>
                 </div>
               </template>
-              <template v-else-if="selfType[1]===17"></template>
+              <template v-else-if="selfType[1]===17 || selfType[1]===15"></template>
               <template v-else-if="selfType[1]===10">
                 <div class="colCtn flex3">
                   <div class="label">
@@ -554,6 +554,7 @@ export default class InAndOut extends Vue {
       vat_code: string
       batch_code: string
       weight: number
+      store_client_id?: number | string
     }>
   }>
   @Prop() orderId?: string
@@ -703,14 +704,17 @@ export default class InAndOut extends Vue {
         {
           label: '发货',
           value: 9
+        },
+        {
+          label: '结余入库',
+          value: 15
         }
       ]
     }
   ]
-  clientArr:any[] = this.$store.state.api.client.arr.filter((item: any) => (item.status as number) === 1)
+  clientArr:any[] = []
   // 单位
   get selfClientArr() {
-    this.clientArr = this.$store.state.api.client.arr.filter((item: any) => (item.status as number) === 1)
     if (
       this.selfType &&
       (this.selfType[0] === '采购单' ||
@@ -1197,6 +1201,8 @@ export default class InAndOut extends Vue {
       this.selfType = ['无单据', 11]
     } else if (this.type === 12) {
       this.selfType = ['无单据', 12]
+    } else if (this.type === 15) {
+      this.selfType = ['订单', 15]
     } else if (this.type === 17) {
       this.selfType = ['调取单', 17]
       this.relatedId?this.initDetail(this.relatedId as number):''
@@ -1593,7 +1599,7 @@ export default class InAndOut extends Vue {
       if(err) return
 
       const formData: StoreCreate = {
-        order_id: this.selfType[1] === 9 ? this.storeInfo.related_id : this.orderId || this.storeInfo.order_id,
+        order_id: (this.selfType[1] === 9 || this.selfType[1] === 15) ? this.storeInfo.related_id : this.orderId || this.storeInfo.order_id,
         related_id: this.storeInfo.related_id,
         action_type: this.selfType[1],
         complete_time: this.storeInfo.complete_time,
@@ -1664,6 +1670,7 @@ export default class InAndOut extends Vue {
         }
       ])
       this.getType()
+      this.clientArr = this.$store.state.api.client.arr.filter((item: any) => (item.status as number) === 1)
       if (this.relatedId) {
         this.storeInfo.related_id = this.relatedId
         this.storeInfo.client_id = this.clientId
@@ -1674,12 +1681,11 @@ export default class InAndOut extends Vue {
         if (this.yarnName) {
           this.getColor(this.yarnName)
         }
-        if (this.type === 9) {
+        if (this.type === 9 || this.type === 15) {
           this.initDetail(this.relatedId as number)
         }
       }
       if (this.initData && this.initData.length > 0) {
-        console.log(this.initData)
         this.storeInfo.child_data = []
         this.storeInfo.select_id = [Number(this.firstStoreId), this.initData[0].second_store_id]
         this.initData.forEach((item) => {

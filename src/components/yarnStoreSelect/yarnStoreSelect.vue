@@ -292,7 +292,7 @@ export default Vue.extend({
               otherRule: [{ name: 'second_store_name' }, { name: 'store_name' }],
               childrenName: 'store_info',
               childrenRule: {
-                mainRule: ['color_code', 'vat_code', 'batch_code'],
+                mainRule: ['color_code', 'vat_code', 'batch_code','store_client_id'],
                 otherRule: [
                   { name: 'id' },
                   { name: 'total_weight/reality_weight', type: 'add' },

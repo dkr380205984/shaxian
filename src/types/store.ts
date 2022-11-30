@@ -85,6 +85,7 @@ export interface StoreCreateChild {
   batch_code?: string
   color_code?: string
   vat_code?: string
+  store_client_id?: string
   item: string // 件数
   related_info_id?: string
   desc?: string

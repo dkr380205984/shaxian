@@ -2,65 +2,6 @@
   <div class="indexMain"
     v-loading='loading'>
     <div class="module">
-      <div class="stsCtn"
-        style="margin-top:0">
-        <div class="box">
-          <div class="title">下单总量</div>
-          <div class="number">{{(total_sts.order_sum_total_weight/1000).toFixed(2)}}
-            <span class="unit">吨</span>
-          </div>
-        </div>
-        <div class="box">
-          <div class="title">下单总额</div>
-          <div class="number">{{(total_sts.order_sum_total_price/10000).toFixed(2)}}
-            <span class="unit">万元</span>
-          </div>
-        </div>
-        <div class="box">
-          <div class="title">发货总量</div>
-          <div class="number">{{(total_sts.total_push_weight/1000).toFixed(2)}}
-            <span class="unit">吨</span>
-          </div>
-        </div>
-        <div class="box">
-          <div class="title">发货总额</div>
-          <div class="number">{{(total_sts.total_push_price/10000).toFixed(2)}}
-            <span class="unit">万元</span>
-          </div>
-        </div>
-        <div class="box">
-          <div class="title">开票总额</div>
-          <div class="number">{{(total_sts.collection_sum_collect_price/10000).toFixed(2)}}
-            <span class="unit">万元</span>
-          </div>
-        </div>
-        <div class="box">
-          <div class="title">待开票总额</div>
-          <div class="number">{{(total_sts.wait_collection/10000).toFixed(2)}}
-            <span class="unit">万元</span>
-          </div>
-        </div>
-        <div class="box">
-          <div class="title">付款总额</div>
-          <div class="number">{{(total_sts.invoice_sum_invoice_price/10000).toFixed(2)}}
-            <span class="unit">万元</span>
-          </div>
-        </div>
-        <div class="box">
-          <div class="title">扣款总额</div>
-          <div class="number">{{(total_sts.deduct_sum_total_price/10000).toFixed(2)}}
-            <span class="unit">万元</span>
-          </div>
-        </div>
-        <div class="box">
-          <div class="title">欠款总额</div>
-          <div class="number">{{(total_sts.wait_invoice/10000).toFixed(2)}}
-            <span class="unit">万元</span>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="module">
       <div class="titleCtn">
         <span class="title hasBorder">客户财务列表</span>
       </div>
@@ -105,12 +46,11 @@
               </div>
               <div class="column">发货数量</div>
               <div class="column">发货金额</div>
-              <div class="column">我方已开票
+              <div class="column">开票总额
                 <sort v-model="invoice_sum_invoice_price"
                   @beforeChange="getSort($event,'invoice_sum_invoice_price')"></sort>
               </div>
-              <div class="column">我方待开票</div>
-              <div class="column">对方已付款
+              <div class="column">收款总额
                 <sort v-model="collection_sum_collect_price"
                   @beforeChange="getSort($event,'collection_sum_collect_price')"></sort>
               </div>
@@ -127,19 +67,30 @@
               v-for="item in clientList"
               :key="item.id">
               <div class="column">{{item.name}}</div>
-              <div class="column">{{item.financial_data.order_sum_total_weight}}kg</div>
-              <div class="column">{{item.financial_data.order_sum_total_price}}元</div>
-              <div class="column">{{item.financial_data.total_push_weight}}kg</div>
-              <div class="column">{{item.financial_data.total_push_price}}元</div>
-              <div class="column">{{item.financial_data.collection_sum_collect_price || 0}}元</div>
-              <div class="column">{{item.financial_data.wait_collection || 0}}元</div>
-              <div class="column">{{item.financial_data.invoice_sum_invoice_price || 0}}元</div>
-              <div class="column">{{item.financial_data.deduct_sum_total_price || 0}}元</div>
-              <div class="column">{{item.financial_data.wait_invoice || 0}}元</div>
+              <div class="column">{{$toFixed(item.financial_data.order_sum_total_weight/1000,2,true)}}吨</div>
+              <div class="column">{{$toFixed(item.financial_data.order_sum_total_price/10000,2,true)}}万元</div>
+              <div class="column">{{$toFixed(item.financial_data.total_push_weight/1000,2,true)}}吨</div>
+              <div class="column">{{$toFixed(item.financial_data.total_push_price/10000,2,true)}}万元</div>
+              <div class="column">{{$toFixed((item.financial_data.collection_sum_collect_price/10000|| 0),2,true)}}万元</div>
+              <div class="column">{{$toFixed((item.financial_data.invoice_sum_invoice_price|| 0)/10000,2,true)}}万元</div>
+              <div class="column">{{$toFixed((item.financial_data.deduct_sum_total_price|| 0)/10000,2,true)}}万元</div>
+              <div class="column">{{$toFixed((item.financial_data.wait_invoice || 0)/10000,2,true)}}万元</div>
               <div class="column">
                 <span class="col_btn blue"
                   @click="$router.push('/finance/clientDetail/'+item.id)">详情</span>
               </div>
+            </div>
+            <div class="row">
+              <div class="column green">合计</div>
+              <div class="column green">{{$toFixed(total_sts.order_sum_total_weight/1000,2,true)}}吨</div>
+              <div class="column green">{{$toFixed(total_sts.order_sum_total_price/10000,2,true)}}万元</div>
+              <div class="column green">{{$toFixed(total_sts.total_push_weight/1000,2,true)}}吨</div>
+              <div class="column green">{{$toFixed((total_sts.total_push_price/10000),2,true)}}万元</div>
+              <div class="column green">{{$toFixed((total_sts.collection_sum_collect_price/10000),2,true)}}万元</div>
+              <div class="column green">{{$toFixed((total_sts.invoice_sum_invoice_price/10000),2,true)}}万元</div>
+              <div class="column green">{{$toFixed((total_sts.deduct_sum_total_price/10000),2,true)}}万元</div>
+              <div class="column green">{{$toFixed((total_sts.wait_invoice/10000),2,true)}}万元</div>
+              <div class="column green"></div>
             </div>
           </div>
         </div>

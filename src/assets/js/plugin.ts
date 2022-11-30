@@ -465,16 +465,54 @@ const GetDateStr = (AddDayCount: number, formatStr: string = 'YYYY-MM-DD') => {
 /**
  * @param { number | string[number]} num:需要处理的数据
  * @param {number} precision 精度
+ * @param {boolean} changeToPrice 是否转金额显示（带逗号显示）
  * @returns {number}
  */
-const toFixedAuto = (num: number, precision: number = 2): number => {
+const toFixedAuto = (num: number, precision: number = 2, changeToPrice?: false): number | string => {
   if (isNaN(Number(num))) {
     return NaN
   }
   if (precision === 0) {
-    return Math.round(num)
+    if (changeToPrice) {
+      const realNumStr = Math.round(num).toString().replace(/[^0-9|.]/gi, '')
+      const numArr = realNumStr.split('.')
+      const numStrArr = numArr[0].split('')
+      const length = Number(numStrArr.length)
+      for (let i = length, j = 0; i > 0; i--) {
+        j++
+        if (j % 3 === 0 && i !== 1) {
+          numStrArr.splice(i - 1, 0, ',')
+        }
+      }
+      if (numArr.length === 2) {
+        return numStrArr.join('') + '.' + numArr[1]
+      } else {
+        return numStrArr.join('')
+      }
+    } else {
+      return Math.round(num)
+    }
   } else if (precision) {
-    return Math.round(num * Math.pow(10, precision)) / Math.pow(10, precision)
+    if (changeToPrice) {
+      const realNumStr = (Math.round(num * Math.pow(10, precision)) / Math.pow(10, precision)).toString().replace(/[^0-9|.]/gi, '')
+      const numArr = realNumStr.split('.')
+      const numStrArr = numArr[0].split('')
+      const length = Number(numStrArr.length)
+      for (let i = length, j = 0; i > 0; i--) {
+        j++
+        if (j % 3 === 0 && i !== 1) {
+          numStrArr.splice(i - 1, 0, ',')
+        }
+      }
+      if (numArr.length === 2) {
+        return numStrArr.join('') + '.' + numArr[1]
+      } else {
+        return numStrArr.join('')
+      }
+    } else {
+      return Math.round(num * Math.pow(10, precision)) / Math.pow(10, precision)
+    }
+
   } else {
     return num
   }

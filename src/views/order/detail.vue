@@ -421,7 +421,7 @@
         </div>
       </div>
     </div>
-    <div class="module" v-show="deduct_list.length > 0">
+    <!-- <div class="module" v-show="deduct_list.length > 0">
       <div class="titleCtn">
         <span class="title">扣款信息</span>
       </div>
@@ -483,7 +483,7 @@
           </div>
         </div>
       </div>
-    </div>
+    </div> -->
     <div class="module" v-if="order_info.type == 1">
       <div class="titleCtn">
         <span class="title">财务概览</span>

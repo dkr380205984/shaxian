@@ -37,28 +37,37 @@
             <div class="row">
               <div class="column">客户名称</div>
               <div class="column">下单数量
-                <sort v-model="order_sum_total_weight"
-                  @beforeChange="getSort($event,'order_sum_total_weight')"></sort>
+                <sort v-model="total_weight"
+                  @beforeChange="getSort($event,'total_weight')"></sort>
               </div>
               <div class="column">下单金额
-                <sort v-model="order_sum_total_price"
-                  @beforeChange="getSort($event,'order_sum_total_price')"></sort>
+                <sort v-model="total_price"
+                  @beforeChange="getSort($event,'total_price')"></sort>
               </div>
-              <div class="column">发货数量</div>
-              <div class="column">发货金额</div>
+              <div class="column">发货数量
+                <sort v-model="real_total_weight"
+                  @beforeChange="getSort($event,'real_total_weight')"></sort>
+              </div>
+              <div class="column">发货金额
+                <sort v-model="real_total_price"
+                  @beforeChange="getSort($event,'real_total_price')"></sort>
+              </div>
               <div class="column">开票总额
-                <sort v-model="invoice_sum_invoice_price"
-                  @beforeChange="getSort($event,'invoice_sum_invoice_price')"></sort>
+                <sort v-model="collection_total_price"
+                  @beforeChange="getSort($event,'collection_total_price')"></sort>
               </div>
               <div class="column">收款总额
-                <sort v-model="collection_sum_collect_price"
-                  @beforeChange="getSort($event,'collection_sum_collect_price')"></sort>
+                <sort v-model="invoice_total_price"
+                  @beforeChange="getSort($event,'invoice_total_price')"></sort>
               </div>
               <div class="column">对方扣款
-                <sort v-model="deduct_sum_total_price"
-                  @beforeChange="getSort($event,'deduct_sum_total_price')"></sort>
+                <sort v-model="deduct_total_price"
+                  @beforeChange="getSort($event,'deduct_total_price')"></sort>
               </div>
-              <div class="column">对方欠款</div>
+              <div class="column">对方欠款
+                <sort v-model="invoice_wait"
+                  @beforeChange="getSort($event,'invoice_wait')"></sort>
+              </div>
               <div class="column">操作</div>
             </div>
           </div>
@@ -66,30 +75,30 @@
             <div class="row"
               v-for="item in clientList"
               :key="item.id">
-              <div class="column">{{item.name}}</div>
-              <div class="column">{{$toFixed(item.financial_data.order_sum_total_weight/1000,2,true)}}吨</div>
-              <div class="column">{{$toFixed(item.financial_data.order_sum_total_price/10000,2,true)}}万元</div>
-              <div class="column">{{$toFixed(item.financial_data.total_push_weight/1000,2,true)}}吨</div>
-              <div class="column">{{$toFixed(item.financial_data.total_push_price/10000,2,true)}}万元</div>
-              <div class="column">{{$toFixed((item.financial_data.collection_sum_collect_price/10000|| 0),2,true)}}万元</div>
-              <div class="column">{{$toFixed((item.financial_data.invoice_sum_invoice_price|| 0)/10000,2,true)}}万元</div>
-              <div class="column">{{$toFixed((item.financial_data.deduct_sum_total_price|| 0)/10000,2,true)}}万元</div>
-              <div class="column">{{$toFixed((item.financial_data.wait_invoice || 0)/10000,2,true)}}万元</div>
+              <div class="column">{{item.client_name}}</div>
+              <div class="column">{{$toFixed(item.total_weight/1000,2,true)}}吨</div>
+              <div class="column">{{$toFixed(item.total_price/10000,2,true)}}万元</div>
+              <div class="column">{{$toFixed(item.real_total_weight/1000,2,true)}}吨</div>
+              <div class="column">{{$toFixed(item.real_total_price/10000,2,true)}}万元</div>
+              <div class="column">{{$toFixed((item.collection_total_price/10000|| 0),2,true)}}万元</div>
+              <div class="column">{{$toFixed((item.invoice_total_price|| 0)/10000,2,true)}}万元</div>
+              <div class="column">{{$toFixed((item.deduct_total_price|| 0)/10000,2,true)}}万元</div>
+              <div class="column">{{$toFixed(((item.invoice_wait) || 0)/10000,2,true)}}万元</div>
               <div class="column">
                 <span class="col_btn blue"
-                  @click="$router.push('/finance/clientDetail/'+item.id)">详情</span>
+                  @click="$router.push('/finance/clientDetail/'+item.client_id)">详情</span>
               </div>
             </div>
             <div class="row">
               <div class="column green">合计</div>
-              <div class="column green">{{$toFixed(total_sts.order_sum_total_weight/1000,2,true)}}吨</div>
-              <div class="column green">{{$toFixed(total_sts.order_sum_total_price/10000,2,true)}}万元</div>
-              <div class="column green">{{$toFixed(total_sts.total_push_weight/1000,2,true)}}吨</div>
-              <div class="column green">{{$toFixed((total_sts.total_push_price/10000),2,true)}}万元</div>
-              <div class="column green">{{$toFixed((total_sts.collection_sum_collect_price/10000),2,true)}}万元</div>
-              <div class="column green">{{$toFixed((total_sts.invoice_sum_invoice_price/10000),2,true)}}万元</div>
-              <div class="column green">{{$toFixed((total_sts.deduct_sum_total_price/10000),2,true)}}万元</div>
-              <div class="column green">{{$toFixed((total_sts.wait_invoice/10000),2,true)}}万元</div>
+              <div class="column green">{{$toFixed(total_sts.total_weight/1000,2,true)}}吨</div>
+              <div class="column green">{{$toFixed(total_sts.total_price/10000,2,true)}}万元</div>
+              <div class="column green">{{$toFixed(total_sts.real_total_weight/1000,2,true)}}吨</div>
+              <div class="column green">{{$toFixed((total_sts.real_total_price/10000),2,true)}}万元</div>
+              <div class="column green">{{$toFixed((total_sts.collection_total_price/10000),2,true)}}万元</div>
+              <div class="column green">{{$toFixed((total_sts.invoice_total_price/10000),2,true)}}万元</div>
+              <div class="column green">{{$toFixed((total_sts.deduct_total_price/10000),2,true)}}万元</div>
+              <div class="column green">{{$toFixed(((total_sts.invoice_wait) || 0)/10000,2,true)}}万元</div>
               <div class="column green"></div>
             </div>
           </div>
@@ -97,7 +106,7 @@
         <div class="pageCtn">
           <el-pagination background
             :current-page.sync="page"
-            @current-change="changeRouter"
+            @current-change="changePage"
             :page-size="10"
             layout="prev, pager, next"
             :total="total">
@@ -125,23 +134,24 @@ export default Vue.extend({
       total: 1,
       name: '',
       date: [],
-      order_sum_total_price: '',
-      order_sum_total_weight: '',
-      deduct_sum_total_price: '',
-      invoice_sum_invoice_price: '',
-      collection_sum_collect_price: '',
+      allList:[],
+      total_price: '',
+      total_weight: '',
+      real_total_weight: '',
+      real_total_price: '',
+      deduct_total_price: '',
+      invoice_total_price: '',
+      collection_total_price: '',
+      invoice_wait: '',
       total_sts: {
-        collection_sum_collect_price: 0,
-        deduct_sum_total_price: 0,
-        invoice_sum_invoice_price: 0,
-        order_sum_total_price: 0,
-        order_sum_total_weight: 0,
-        purchase_sum_total_price: 0,
-        total_push_price: 0,
-        total_push_weight: 0,
-        wait_collection: 0,
-        wait_invoice: 0,
-        wait_push: 0
+        total_weight: 0,
+        total_price: 0,
+        real_total_weight: 0,
+        real_total_price: 0,
+        collection_total_price: 0,
+        invoice_total_price: 0,
+        deduct_total_price: 0,
+        invoice_wait: 0,
       },
       sort_type: '',
       sort_cloum: '',
@@ -223,6 +233,9 @@ export default Vue.extend({
       }
       this.getList(Number(this.$route.query.pages) || 1)
     },
+    changePage(page:any){
+      this.clientList = this.$clone(this.allList).splice((page - 1)*10,page*10)
+    },
     getList(pages: number = 1) {
       this.loading = true
       finance
@@ -238,10 +251,42 @@ export default Vue.extend({
           status: null
         })
         .then((res: any) => {
-          if (res.data.staus !== false) {
-            this.clientList = res.data.data.items
-            this.total_sts = res.data.data.additional
-            this.total = res.data.data.total
+          if (res.data.status !== false) {
+            res.data.data.forEach((item:any) => {
+              item.invoice_wait = item.real_total_price-item.invoice_total_price
+            })
+
+            this.allList = res.data.data
+            this.total = res.data.data.length
+            this.clientList = this.$clone(this.allList).splice(0,10)
+
+            this.total_sts = {
+              total_weight: this.allList.reduce((a:any,b:any) => {
+              return a + (Number(b.total_weight) || 0)
+            },0),
+              total_price: this.allList.reduce((a:any,b:any) => {
+                return a + (Number(b.total_price) || 0)
+              },0),
+              real_total_weight: this.allList.reduce((a:any,b:any) => {
+                return a + (Number(b.real_total_weight) || 0)
+              },0),
+              real_total_price: this.allList.reduce((a:any,b:any) => {
+                return a + (Number(b.real_total_price) || 0)
+              },0),
+              collection_total_price: this.allList.reduce((a:any,b:any) => {
+                return a + (Number(b.collection_total_price) || 0)
+              },0),
+              invoice_total_price: this.allList.reduce((a:any,b:any) => {
+                return a + (Number(b.invoice_total_price) || 0)
+              },0),
+              deduct_total_price: this.allList.reduce((a:any,b:any) => {
+                return a + (Number(b.deduct_total_price) || 0)
+              },0),
+              invoice_wait: this.allList.reduce((a:any,b:any) => {
+                return a + (Number(b.invoice_wait) || 0)
+              },0),
+            }
+
             this.loading = false
             // 更新页码
             if (pages !== this.page) {
@@ -254,20 +299,35 @@ export default Vue.extend({
       const filterArr = ['', 'asc', 'desc']
       this.sort_cloum = type
       this.sort_type = filterArr[ev]
-      this.order_sum_total_price = ''
-      this.order_sum_total_weight = ''
-      this.deduct_sum_total_price = ''
-      this.invoice_sum_invoice_price = ''
-      this.collection_sum_collect_price = ''
+      this.total_price = ''
+      this.total_weight = ''
+      this.real_total_weight = ''
+      this.real_total_price = ''
+      this.deduct_total_price = ''
+      this.invoice_total_price = ''
+      this.invoice_wait = ''
+      this.collection_total_price = ''
       this[type] = ev
-      this.changeRouter()
+      if(this.sort_type === 'asc'){
+        this.allList.sort((a:any,b:any) => {
+            return a[this.sort_cloum] - b[this.sort_cloum]
+        })
+      } else if (this.sort_type === 'desc'){
+        this.allList.sort((a:any,b:any) => {
+            return b[this.sort_cloum] - a[this.sort_cloum]
+        })
+      }
+      this.changePage(this.page)
     },
     resetFilter() {
-      this.order_sum_total_price = ''
-      this.order_sum_total_weight = ''
+      this.total_price = ''
+      this.total_weight = ''
+      this.real_total_weight = ''
+      this.real_total_price = ''
       this.deduct_sum_total_price = ''
-      this.invoice_sum_invoice_price = ''
-      this.collection_sum_collect_price = ''
+      this.invoice_total_price = ''
+      this.collection_total_price = ''
+      this.invoice_wait = ''
       this.sort_type = ''
       this.sort_cloum = ''
       this.name = ''

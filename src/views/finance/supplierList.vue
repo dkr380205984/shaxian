@@ -1,65 +1,5 @@
 <template>
-  <div class="indexMain"
-    v-loading='loading'>
-    <div class="module">
-      <div class="stsCtn"
-        style="margin-top:0">
-        <div class="box">
-          <div class="title">采购总量</div>
-          <div class="number">{{(total_sts.purchase_sum_total_weight/1000).toFixed(2)}}
-            <span class="unit">吨</span>
-          </div>
-        </div>
-        <div class="box">
-          <div class="title">采购总额</div>
-          <div class="number">{{(total_sts.purchase_sum_total_price/10000).toFixed(2)}}
-            <span class="unit">万元</span>
-          </div>
-        </div>
-        <div class="box">
-          <div class="title">入库总量</div>
-          <div class="number">{{(total_sts.total_push_weight/1000).toFixed(2)}}
-            <span class="unit">吨</span>
-          </div>
-        </div>
-        <div class="box">
-          <div class="title">入库总额</div>
-          <div class="number">{{(total_sts.total_push_price/10000).toFixed(2)}}
-            <span class="unit">万元</span>
-          </div>
-        </div>
-        <div class="box">
-          <div class="title">开票总额</div>
-          <div class="number">{{(total_sts.collection_sum_collect_price/10000).toFixed(2)}}
-            <span class="unit">万元</span>
-          </div>
-        </div>
-        <div class="box">
-          <div class="title">待开票总额</div>
-          <div class="number">{{(total_sts.wait_collection/10000).toFixed(2)}}
-            <span class="unit">万元</span>
-          </div>
-        </div>
-        <div class="box">
-          <div class="title">付款总额</div>
-          <div class="number">{{(total_sts.invoice_sum_invoice_price/10000).toFixed(2)}}
-            <span class="unit">万元</span>
-          </div>
-        </div>
-        <div class="box">
-          <div class="title">扣款总额</div>
-          <div class="number">{{(total_sts.deduct_sum_total_price/10000).toFixed(2)}}
-            <span class="unit">万元</span>
-          </div>
-        </div>
-        <div class="box">
-          <div class="title">欠款总额</div>
-          <div class="number">{{(total_sts.wait_invoice/10000).toFixed(2)}}
-            <span class="unit">万元</span>
-          </div>
-        </div>
-      </div>
-    </div>
+  <div class="indexMain" v-loading='loading'>
     <div class="module">
       <div class="titleCtn">
         <span class="title hasBorder">供货商财务列表</span>
@@ -69,26 +9,17 @@
           <div class="leftCtn">
             <div class="label">筛选条件：</div>
             <div class="elCtn">
-              <el-input v-model="name"
-                @change="changeRouter(1)"
-                placeholder="搜索供货商名称"></el-input>
+              <el-input v-model="name" @change="changeRouter(1)" placeholder="搜索供货商名称"></el-input>
             </div>
-            <div class="elCtn"
-              style="width:350px;">
-              <el-date-picker v-model="date"
-                type="daterange"
-                value-format="yyyy-MM-dd"
-                range-separator="至"
-                start-placeholder="开始日期"
-                end-placeholder="结束日期"
-                @change="changeRouter(1)"
+            <div class="elCtn" style="width:350px;">
+              <el-date-picker v-model="date" type="daterange" value-format="yyyy-MM-dd" range-separator="至"
+                start-placeholder="开始日期" end-placeholder="结束日期" @change="changeRouter(1)"
                 :picker-options="pickerOptions">
               </el-date-picker>
             </div>
           </div>
           <div class="rightCtn">
-            <div class="btn btnGray fr"
-              @click="resetFilter">重置</div>
+            <div class="btn btnGray fr" @click="resetFilter">重置</div>
           </div>
         </div>
         <div class="list">
@@ -96,58 +27,71 @@
             <div class="row">
               <div class="column">客户名称</div>
               <div class="column">采购数量
+                <sort v-model="total_weight" @beforeChange="getSort($event, 'total_weight')">
+                </sort>
               </div>
               <div class="column">采购金额
-                <sort v-model="purchase_sum_total_price"
-                  @beforeChange="getSort($event,'purchase_sum_total_price')"></sort>
+                <sort v-model="total_price" @beforeChange="getSort($event, 'total_price')">
+                </sort>
               </div>
-              <div class="column">入库数量</div>
-              <div class="column">入库金额</div>
-              <div class="column">对方已开票
-                <sort v-model="invoice_sum_invoice_price"
-                  @beforeChange="getSort($event,'invoice_sum_invoice_price')"></sort>
+              <div class="column">入库数量
+                <sort v-model="real_total_weight" @beforeChange="getSort($event, 'real_total_weight')">
+                </sort>
               </div>
-              <div class="column">对方待开票</div>
-              <div class="column">我方已付款
-                <sort v-model="collection_sum_collect_price"
-                  @beforeChange="getSort($event,'collection_sum_collect_price')"></sort>
+              <div class="column">入库金额
+                <sort v-model="real_total_price" @beforeChange="getSort($event, 'real_total_price')">
+                </sort>
+              </div>
+              <div class="column">开票总额
+                <sort v-model="collection_total_price" @beforeChange="getSort($event, 'collection_total_price')">
+                </sort>
+              </div>
+              <div class="column">付款总额
+                <sort v-model="invoice_total_price"
+                  @beforeChange="getSort($event, 'invoice_total_price')"></sort>
               </div>
               <div class="column">我方扣款
-                <sort v-model="deduct_sum_total_price"
-                  @beforeChange="getSort($event,'deduct_sum_total_price')"></sort>
+                <sort v-model="deduct_total_price" @beforeChange="getSort($event, 'deduct_total_price')"></sort>
               </div>
-              <div class="column">我方欠款</div>
+              <div class="column">我方欠款
+                <sort v-model="invoice_wait" @beforeChange="getSort($event, 'invoice_wait')">
+                </sort>
+              </div>
               <div class="column">操作</div>
             </div>
           </div>
           <div class="bodyCtn">
-            <div class="row"
-              v-for="item in clientList"
-              :key="item.id">
-              <div class="column">{{item.name}}</div>
-              <div class="column">{{item.financial_data.purchase_sum_total_weight}}kg</div>
-              <div class="column">{{item.financial_data.purchase_sum_total_price||0}}元</div>
-              <div class="column">{{item.financial_data.total_push_weight}}kg</div>
-              <div class="column">{{item.financial_data.total_push_price}}元</div>
-              <div class="column">{{item.financial_data.collection_sum_collect_price || 0}}元</div>
-              <div class="column">{{item.financial_data.wait_collection || 0}}元</div>
-              <div class="column">{{item.financial_data.invoice_sum_invoice_price || 0}}元</div>
-              <div class="column">{{item.financial_data.deduct_sum_total_price || 0}}元</div>
-              <div class="column">{{item.financial_data.wait_invoice || 0}}元</div>
+            <div class="row" v-for="item in clientList" :key="item.client_id + '客户名称'">
+              <div class="column">{{ item.client_name }}</div>
+              <div class="column">{{ $toFixed(item.total_weight/1000 , 2, true) || 0 }}吨</div>
+              <div class="column">{{ $toFixed(item.total_price/10000 , 2, true) || 0 }}万元</div>
+              <div class="column">{{ $toFixed(item.real_total_weight/1000 , 2, true) || 0 }}吨</div>
+              <div class="column">{{ $toFixed(item.real_total_price/10000 , 2, true) || 0 }}万元</div>
+              <div class="column">{{ $toFixed(item.collection_total_price/10000 , 2, true) || 0 }}万元</div>
+              <div class="column">{{ $toFixed(item.invoice_total_price/10000 , 2, true) || 0 }}万元</div>
+              <div class="column">{{ $toFixed(item.deduct_total_price/10000 , 2, true) || 0 }}万元</div>
+              <div class="column">{{ $toFixed(item.invoice_wait/10000 , 2, true) || 0 }}万元</div>
               <div class="column">
-                <span class="col_btn blue"
-                  @click="$router.push('/finance/supplierDetail/'+item.id)">详情</span>
+                <span class="col_btn blue" @click="$router.push('/finance/supplierDetail/' + item.client_id)">详情</span>
               </div>
+            </div>
+            <div class="row green">
+              <div class="column">合计</div>
+              <div class="column">{{ $toFixed(total_sts.total_weight/1000 , 2, true) || 0 }}吨</div>
+              <div class="column">{{ $toFixed(total_sts.total_price/10000 , 2, true) || 0 }}万元</div>
+              <div class="column">{{ $toFixed(total_sts.real_total_weight/1000 , 2, true) || 0 }}吨</div>
+              <div class="column">{{ $toFixed(total_sts.real_total_price/10000 , 2, true) || 0 }}万元</div>
+              <div class="column">{{ $toFixed(total_sts.collection_total_price/10000 , 2, true) || 0 }}万元</div>
+              <div class="column">{{ $toFixed(total_sts.invoice_total_price/10000 , 2, true) || 0 }}万元</div>
+              <div class="column">{{ $toFixed(total_sts.deduct_total_price/10000 , 2, true) || 0 }}万元</div>
+              <div class="column">{{ $toFixed(total_sts.invoice_wait/10000 , 2, true) || 0 }}万元</div>
+              <div class="column"></div>
             </div>
           </div>
         </div>
         <div class="pageCtn">
-          <el-pagination background
-            :current-page.sync="page"
-            @current-change="changeRouter"
-            :page-size="10"
-            layout="prev, pager, next"
-            :total="total">
+          <el-pagination background :current-page.sync="page" @current-change="changePage" :page-size="10"
+            layout="prev, pager, next" :total="total">
           </el-pagination>
         </div>
       </div>
@@ -172,23 +116,23 @@ export default Vue.extend({
       total: 1,
       name: '',
       date: [],
-      purchase_sum_total_price: '',
-      purchase_sum_total_weight: '',
-      deduct_sum_total_price: '',
-      invoice_sum_invoice_price: '',
-      collection_sum_collect_price: '',
+      total_weight:'',
+      total_price:'',
+      real_total_weight:'',
+      real_total_price:'',
+      collection_total_price:'',
+      invoice_total_price:'',
+      deduct_total_price:'',
+      invoice_wait:'',
       total_sts: {
-        collection_sum_collect_price: 0,
-        deduct_sum_total_price: 0,
-        invoice_sum_invoice_price: 0,
-        order_sum_total_price: 0,
-        purchase_sum_total_weight: 0,
-        purchase_sum_total_price: 0,
-        total_push_price: 0,
-        total_push_weight: 0,
-        wait_collection: 0,
-        wait_invoice: 0,
-        wait_push: 0
+        total_weight: 0,
+        total_price: 0,
+        real_total_weight: 0,
+        real_total_price: 0,
+        collection_total_price: 0,
+        invoice_total_price: 0,
+        deduct_total_price: 0,
+        invoice_wait: 0,
       },
       sort_type: '',
       sort_cloum: '',
@@ -248,10 +192,12 @@ export default Vue.extend({
   methods: {
     changeRouter(pages: number = 1) {
       this.$router.replace(
-        `/finance/supplierList?pages=${pages}&name=${this.name || ''}&sort_type=${this.sort_type || ''}&sort_cloum=${
-          this.sort_cloum || ''
+        `/finance/supplierList?pages=${pages}&name=${this.name || ''}&sort_type=${this.sort_type || ''}&sort_cloum=${this.sort_cloum || ''
         }&date=${this.date || ''}`
       )
+    },
+    changePage(page: any) {
+      this.clientList = this.$clone(this.allList).splice((page - 1) * 10, 10)
     },
     init() {
       this.name = this.$route.query.name || ''
@@ -286,9 +232,40 @@ export default Vue.extend({
         })
         .then((res: any) => {
           if (res.data.staus !== false) {
-            this.clientList = res.data.data.items
-            this.total_sts = res.data.data.additional
-            this.total = res.data.data.total
+            res.data.data.forEach((item: any) => {
+              item.invoice_wait = item.real_total_price - item.invoice_total_price
+            })
+            this.allList = res.data.data
+            this.clientList = this.$clone(this.allList).splice(0, 10)
+            this.total = res.data.data.length
+
+            this.total_sts = {
+              total_weight: this.allList.reduce((a: any, b: any) => {
+                return a + (Number(b.total_weight) || 0)
+              }, 0),
+              total_price: this.allList.reduce((a: any, b: any) => {
+                return a + (Number(b.total_price) || 0)
+              }, 0),
+              real_total_weight: this.allList.reduce((a: any, b: any) => {
+                return a + (Number(b.real_total_weight) || 0)
+              }, 0),
+              real_total_price: this.allList.reduce((a: any, b: any) => {
+                return a + (Number(b.real_total_price) || 0)
+              }, 0),
+              collection_total_price: this.allList.reduce((a: any, b: any) => {
+                return a + (Number(b.collection_total_price) || 0)
+              }, 0),
+              invoice_total_price: this.allList.reduce((a: any, b: any) => {
+                return a + (Number(b.invoice_total_price) || 0)
+              }, 0),
+              deduct_total_price: this.allList.reduce((a: any, b: any) => {
+                return a + (Number(b.deduct_total_price) || 0)
+              }, 0),
+              invoice_wait: this.allList.reduce((a: any, b: any) => {
+                return a + (Number(b.invoice_wait) || 0)
+              }, 0),
+            }
+            
             this.loading = false
             // 更新页码
             if (pages !== this.page) {
@@ -301,13 +278,25 @@ export default Vue.extend({
       const filterArr = ['', 'asc', 'desc']
       this.sort_cloum = type
       this.sort_type = filterArr[ev]
-      this.purchase_sum_total_price = ''
-      this.purchase_sum_total_weight = ''
-      this.deduct_sum_total_price = ''
-      this.invoice_sum_invoice_price = ''
-      this.collection_sum_collect_price = ''
+      this.total_price = ''
+      this.total_weight = ''
+      this.real_total_weight = ''
+      this.real_total_price = ''
+      this.deduct_total_price = ''
+      this.invoice_total_price = ''
+      this.invoice_wait = ''
+      this.collection_total_price = ''
       this[type] = ev
-      this.changeRouter()
+      if (this.sort_type === 'asc') {
+        this.allList.sort((a: any, b: any) => {
+          return a[this.sort_cloum] - b[this.sort_cloum]
+        })
+      } else if (this.sort_type === 'desc') {
+        this.allList.sort((a: any, b: any) => {
+          return b[this.sort_cloum] - a[this.sort_cloum]
+        })
+      }
+      this.changePage(this.page)
     },
     resetFilter() {
       this.purchase_sum_total_price = ''

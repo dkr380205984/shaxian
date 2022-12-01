@@ -26,6 +26,16 @@ export interface YarnType {
 }
 
 export interface PartyB {
+  client_id?: any
+  total_weight?: any
+  total_price?: any
+  real_total_weight?: any
+  real_total_price?: any
+  collection_total_price?: any
+  invoice_total_price?: any
+  deduct_total_price?: any
+  invoice_wait?: any
+  client_name?: string
   id: number | null
   name: string
   code?: string
@@ -76,6 +86,8 @@ export interface MaterialType {
 
 // 扣款信息
 export interface DeductInfo {
+  id?: any
+  index?:any
   code?: string
   deduct_type: 1 | 2 | 3 | 4 | 5 // 1纱线定够 2沙县加工 3毛条定够 4毛条加工 5订单
   pid: string | number
@@ -89,6 +101,9 @@ export interface DeductInfo {
 
 // 开票信息
 export interface BillInfo {
+  id?: any
+  code?:any
+  user_name?:any
   invoice_code?: string
   client_id: string | number | undefined
   invoice_type: 1 | 2 | 3 | 4 | 5
@@ -100,6 +115,10 @@ export interface BillInfo {
 }
 // 收款信息
 export interface CollectionInfo {
+  id?: any
+  invoice_date?:any
+  user_name?: any
+  code?: any
   client_id: string | number | undefined
   collect_type: 1 | 2 | 3 | 4 | 5
   pid: string[]

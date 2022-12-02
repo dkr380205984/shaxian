@@ -265,6 +265,10 @@
                 </div>
               </div>
             </div>
+            <div class="green" style="display:flex;font-weight: bold;">
+              <div>合计总价：{{$toFixed(stock_statistics.total_price,2,true)}} 元</div>
+              <div style="margin-left:20px">合计总数：{{$toFixed(stock_statistics.total_number,2,true)}} kg</div>
+            </div>
             <div class="pageCtn">
               <el-pagination background
                 :current-page.sync="stock_page"
@@ -923,7 +927,9 @@ export default Vue.extend({
       stock_code: '',
       stock_statistics: {
         total_pop: 0,
-        total_push: 0
+        total_push: 0,
+        total_price:0,
+        total_number:0,
       }
     }
   },

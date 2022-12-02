@@ -1025,7 +1025,7 @@ export default Vue.extend({
         return
       }
 
-      this.store_info.child_data.some((item: any) => {
+      if(this.store_info.child_data.some((item: any) => {
         return this.$formCheck(item, [
           {
             key: 'name',
@@ -1036,7 +1036,9 @@ export default Vue.extend({
             errMsg: '请选择所属客户'
           }
         ])
-      })
+      })){
+        return
+      }
 
       if (
         this.store_info.child_data.some((item: any) => {
@@ -1059,15 +1061,15 @@ export default Vue.extend({
         return
       }
 
-      // console.log(this.store_info.select_id)
       this.store_info.store_id = this.store_info.select_id[0]
       this.store_info.second_store_id = this.store_info.select_id[1]
       this.store_info.order_id = this.orderId
-      // this.store_info.child_data.forEach((item: any) => {
-      //   item.batch_code = item.batch_code || ''
-      //   item.color_code = item.color_code || ''
-      //   item.vat_code = item.vat_code || ''
-      // })
+      this.store_info.child_data.forEach((item: any) => {
+        console.log(item)
+        item.batch_code = item.batch_code || ''
+        item.color_code = item.color_code || ''
+        item.vat_code = item.vat_code || ''
+      })
       // return
       stock.create({ data: [this.store_info] }).then((res) => {
         if (res.data.status) {

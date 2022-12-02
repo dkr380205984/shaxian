@@ -94,7 +94,7 @@
                 </div>
                 <div class="tbody">
                   <div class="trow" v-for="(item, index) in order_yarn_info.additional_fee" :key="index">
-                    <div class="tcolumn">{{ item.name }}</div>
+                    <div class="tcolumn">{{ item.name || '无'}}</div>
                     <div class="tcolumn">{{ item.price }}元</div>
                     <div class="tcolumn">{{ item.desc || '无' }}</div>
                   </div>
@@ -141,7 +141,7 @@
                 <div>计划:{{(+order_yarn_info.total_price - +order_yarn_info.total_additional_fee).toFixed(2)}} 元</div>
                 <div class="green">实际:{{ order_yarn_info.total_push_price }} 元</div>
               </div>
-              <div class="tcolumn blue">{{ (order_yarn_info.total_weight).toFixed(1) }}kg</div>
+              <div class="tcolumn blue">{{ (order_yarn_info.total_weight || 0).toFixed(1) }}kg</div>
               <div class="tcolumn green">{{ order_yarn_info.push_weight }} kg</div>
               <div class="tcolumn red">{{ order_yarn_info.total_weight - order_yarn_info.push_weight }}kg</div>
             </div>

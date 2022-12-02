@@ -210,10 +210,10 @@
                             <div class="column min120">{{itemChild.number_attribute || '无'}}</div>
                             <div class="column min120">{{itemChild.batch_code}}/{{itemChild.color_code}}/{{itemChild.vat_code}}</div>
                             <div class="column min120">{{item.store_name}}/{{item.second_store_name}}</div>
-                            <div class="column min120">{{itemChild.price || '0.00'}}</div>
+                            <div class="column min120">{{itemChild.purchase_info ? itemChild.purchase_info.price : '0.00'}}</div>
                             <div class="column min120">{{itemChild.action_weight}}</div>
                             <div class="column min120">{{itemChild.item || 0}}</div>
-                            <div class="column min120">{{((itemChild.action_weight || 0) * (itemChild.price||'0.00')).toFixed(2)}}</div>
+                            <div class="column min120">{{((itemChild.action_weight || 0) * (itemChild.purchase_info ? itemChild.purchase_info.price : 0)).toFixed(2)}}</div>
                           </div>
                         </div>
                         <div class="column min120">{{item.desc || '无'}}</div>
@@ -270,6 +270,10 @@
                 </div>
               </div>
             </div>
+            <div class="green" style="display:flex;font-weight: bold;">
+              <div>合计总价：{{$toFixed(stock_statistics.total_price,2,true)}} 元</div>
+              <div style="margin-left:20px">合计总数：{{$toFixed(stock_statistics.total_number,2,true)}} kg</div>
+            </div>
             <div class="pageCtn">
               <el-pagination background
                 :current-page.sync="stock_page"
@@ -291,8 +295,7 @@
                 <div class="table">
                   <div class="headCtn">
                     <div class="row">
-                      <div class="column">订单号</div>
-                      <div class="column">订单类型</div>
+                      <div class="column">采购单号</div>
                       <div class="column">下单时间</div>
                       <div class="column noPad" style="flex:3">
                         <div class="row">
@@ -306,7 +309,6 @@
                   <div class="bodyCtn">
                     <div class="row" v-for="item,index in client_info.others_fee" :key="index+'额外费用'">
                       <div class="column">{{item.code}}</div>
-                      <div class="column">{{item.type === 1?'生产单':item.type === 2?'销售单':'未识别单据'}}</div>
                       <div class="column">{{item.order_time}}</div>
                       <div class="column noPad" style="flex:3;flex-direction: column">
                         <div class="row" v-for="itemFee,indexFee in item.others_fee" :key="indexFee + '额外费用子集'">
@@ -318,7 +320,6 @@
                     </div>
                     <div class="row" style="background: #F4F4F4;">
                       <div class="column">合计</div>
-                      <div class="column"></div>
                       <div class="column"></div>
                       <div class="column noPad" style="flex:3">
                         <div class="column"></div>
@@ -921,7 +922,9 @@ export default Vue.extend({
       stock_code: '',
       stock_statistics: {
         total_pop: 0,
-        total_push: 0
+        total_push: 0,
+        total_price:0,
+        total_number:0,
       }
     }
   },
@@ -1129,7 +1132,7 @@ export default Vue.extend({
 
       stock
         .list({
-          action_type:[1,3,8,11,13,15,17],
+          action_type:[1,3,8,11,13,15],
           client_id: this.$route.params.id,
           limit: 5,
           name:this.stockObj.name[1] || '',

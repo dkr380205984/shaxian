@@ -64,23 +64,31 @@
         <div class="row">
           <div class="label">发票图片：</div>
           <div class="info">
+            <el-checkbox v-model="cvFlag"
+              @change="(ev)=>{return changeCVOpration(ev)}">{{cvFlag?'关闭复制粘贴图片上传功能':'开启复制粘贴图片上传功能'}}
+            </el-checkbox>
             <el-upload class="upload"
               action="https://upload.qiniup.com/"
               accept="image/jpeg,image/gif,image/png,image/bmp"
               :before-upload="beforeAvatarUpload"
-              :multiple="false"
               :data="postData"
+              :file-list="file_list"
+              :before-remove="beforeRemove"
               :limit="1"
               :on-success="successFile"
+              :on-preview="handlePictureCardPreview"
               ref="uploada"
-              list-type="picture">
+              list-type="picture-card">
               <div class="uploadBtn">
                 <i class="el-icon-upload"></i>
-                <span>上传文件</span>
+                <span>上传图片</span>
               </div>
               <div slot="tip"
-                class="el-upload__tip">只能上传一张jpg/png图片文件，且不超过10M</div>
+                class="el-upload__tip">只能上传一张jpg/png图片文件，且不超过10M(请勿上传带特殊字符的图片)</div>
             </el-upload>
+            <el-dialog :visible.sync="dialogVisible" append-to-body>
+              <img width="100%" :src="dialogImageUrl" alt="">
+            </el-dialog>
           </div>
         </div>
         <div class="row">
@@ -113,6 +121,7 @@ export default class Deduct extends Vue {
     pid?: string // pid一般是关联单据号
     pcode?: string
     type: 1 | 2 | 3 | 4 | 5
+    myType: 1 | 2
   }
   number: string = ''
   date: string = this.$getDate(new Date()) // 日期
@@ -121,10 +130,158 @@ export default class Deduct extends Vue {
   postData = { key: '', token: this.token }
   desc: string = ''
   price: number | string = ''
+  notify: any = ''
+  dialogImageUrl: string = ''
+  dialogVisible: boolean = false
+  loading: boolean = false
+  cvFlag: boolean = false
+  file_list: Array<any> = []
+  image_data: Array<any> = []
   searchLoading: boolean = false
   searchList: any[] = []
   get token() {
     return this.$store.state.status.token
+  }
+  handlePictureCardPreview(file:any) {
+    this.dialogImageUrl = file.url;
+    this.dialogVisible = true;
+  }
+  beforeRemove(file:any, fileList:any){
+    // 上传超过10M自动删除
+    if(file.size && !(file.size / 1024 / 1024 < 10)){
+      return
+    }
+
+    this.$confirm('即将删除图片, 是否继续?', '提示', {
+      confirmButtonText: '确定',
+      cancelButtonText: '取消',
+      type: 'warning'
+      }).then(() => {
+        //执行删除操作,找到相同的删除
+        let fileIndex = fileList.findIndex((item: any) => {
+          if (item.id) {
+            return item.id === file.id
+          } else if (item.response) {
+            return item.response.key === file.response.key
+          } else {
+            return item.uid === file.uid
+          }
+        })
+
+        this.$deleteItem(fileList, fileIndex)
+
+        this.$message({
+          type: 'success',
+          message: '删除成功'
+        })
+
+        this.removeFile(file)
+      }).catch(() => {
+        this.$message({
+            type: 'info',
+            message: '已取消删除'
+        });          
+      });
+      return false;
+  }
+  removeFile(file: { response: { hash: string; key: string }; url: string }) {
+    if (this.file_list!.find((item) => item.url === file.url)) {
+      this.$deleteItem(
+        this.file_list!,
+        this.file_list!.map((item) => item.url).indexOf(file.url)
+      )
+      this.$deleteItem(
+        this.image_data,
+        this.image_data.indexOf(file.url)
+      )
+    } else {
+      this.$deleteItem(
+        this.image_data,
+        this.image_data.indexOf('https://file.zwyknit.com/' + file.response.key)
+      )
+    }
+  }
+  // 打开复制粘贴图片功能
+  changeCVOpration(flag: boolean) {
+    if (this.notify) {
+      this.notify.close()
+      this.deletePasteImage()
+    }
+    if (flag) {
+      this.notify = this.$notify({
+        title: '警告！',
+        message:
+          '已开启复制粘贴图片上传功能，请勿在其余文字/数字输入框使用复制粘贴或使用ctrl+v键操作,操作完成后请关闭复制粘贴图片上传功能',
+        type: 'warning',
+        duration: 0,
+        showClose: false
+      })
+      this.addPasteImage()
+    }
+    this.$forceUpdate()
+  }
+  // 复制粘贴图片
+  pasteImage(event: any) {
+    let _this = this
+    // 只处理图片格式数据
+    if (event.clipboardData || event.originalEvent) {
+      let clipboardData = event.clipboardData || event.originalEvent.clipboardData
+      if (clipboardData.items) {
+        let blob
+        for (let i = 0; i < clipboardData.items.length; i++) {
+          if (clipboardData.items[i].type.indexOf('image') !== -1) {
+            blob = clipboardData.items[i].getAsFile()
+          }
+        }
+        let render = new FileReader()
+        render.onload = function (evt: any) {
+          //输出base64编码
+          const base64 = evt.target.result
+          // @ts-ignore
+          // document.getElementById('cvImg' + _this.productInfo.cvImageLength).setAttribute('src', base64)
+          var url = 'https://upload.qiniup.com/'
+          var xhr = new XMLHttpRequest()
+          let formData = new FormData()
+          formData.append('token', _this.token)
+          _this.loading = true
+          // @ts-ignore
+          let filename = Date.parse(new Date()) + '.jpg'
+          formData.append('key', filename)
+          formData.append('file', _this.dataURLtoFile(base64, filename))
+          xhr.open('POST', url, true)
+          xhr.send(formData)
+          xhr.onreadystatechange = function () {
+            _this.loading = false
+            if (xhr.readyState === 4) {
+              _this.$message.success('上传成功')
+              _this.file_list = [{name: JSON.parse(xhr.responseText).key, url: 'https://file.zwyknit.com/' + JSON.parse(xhr.responseText).key}]
+              _this.image_data = ['https://file.zwyknit.com/' + JSON.parse(xhr.responseText).key]
+            }
+          }
+        }
+        if (render.readAsDataURL && blob) {
+          render.readAsDataURL(blob)
+        }
+      }
+    }
+  }
+  dataURLtoFile(dataurl: string, filename: string) {
+    var arr = dataurl.split(',')
+    // @ts-ignore
+    var mime = arr[0].match(/:(.*?);/)[1]
+    var bstr = atob(arr[1])
+    var n = bstr.length
+    var u8arr = new Uint8Array(n)
+    while (n--) {
+      u8arr[n] = bstr.charCodeAt(n)
+    }
+    return new File([u8arr], filename, { type: mime })
+  }
+  addPasteImage() {
+    document.addEventListener('paste', this.pasteImage)
+  }
+  deletePasteImage() {
+    document.removeEventListener('paste', this.pasteImage)
   }
   beforeAvatarUpload(file: any) {
     const fileName = file.name.lastIndexOf('.') // 取到文件名开始到最后一个点的长度
@@ -150,9 +307,13 @@ export default class Deduct extends Vue {
   }
 
   reset() {
-    this.price = 0
+    this.price = ''
     this.desc = ''
     this.$emit('update:show', false)
+    this.cvFlag = false
+    this.file_list = []
+    this.notify.close()
+    this.deletePasteImage()
   }
   // filter不知道咋用，只能用methods凑合
   typeFilter(type: number) {
@@ -162,16 +323,18 @@ export default class Deduct extends Vue {
   saveBill() {
     this.$emit('beforeBill')
     const formData: BillInfo = {
+      id: null,
       invoice_code: this.number,
       invoice_price: this.price,
       client_id: this.data.client_id,
       invoice_type: this.data.type,
       pid: this.data.pid ? [this.data.pid] : this.code,
       invoice_date: this.date,
-      file_url: this.file || null,
-      desc: this.desc
+      file_url: this.image_data[0] || this.file || null,
+      desc: this.desc,
+      type: this.data.myType
     }
-    bill.create(formData).then((res) => {
+    bill.create({data: [formData]}).then((res) => {
       if (res.data.status) {
         this.$message.success('添加发票成功')
         this.$emit('afterBill')

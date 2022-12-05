@@ -31,18 +31,18 @@
           <div class="headCtn">
             <div class="row">
               <div class="column">加工厂名称</div>
-              <div class="column">采购数量
+              <div class="column">计划加工数量
                 <sort v-model="total_weight" @beforeChange="getSort($event, 'total_weight')"></sort>
               </div>
-              <div class="column">采购金额
+              <div class="column">加工金额
                 <sort v-model="total_price" @beforeChange="getSort($event, 'total_price')"></sort>
               </div>
-              <div class="column">入库数量
+              <!-- <div class="column">入库数量
                 <sort v-model="real_total_weight" @beforeChange="getSort($event, 'real_total_weight')"></sort>
               </div>
               <div class="column">入库金额
                 <sort v-model="real_total_price" @beforeChange="getSort($event, 'real_total_price')"></sort>
-              </div>
+              </div> -->
               <div class="column">开票总额
                 <sort v-model="collection_total_price" @beforeChange="getSort($event, 'collection_total_price')"></sort>
               </div>
@@ -63,8 +63,8 @@
               <div class="column">{{ item.client_name }}</div>
               <div class="column">{{ $toFixed(item.total_weight / 1000, 2, true) }}吨</div>
               <div class="column">{{ $toFixed(item.total_price / 10000, 2, true) }}万元</div>
-              <div class="column">{{ $toFixed(item.real_total_weight / 1000, 2, true) }}吨</div>
-              <div class="column">{{ $toFixed(item.real_total_price / 10000, 2, true) }}万元</div>
+              <!-- <div class="column">{{ $toFixed(item.real_total_weight / 1000, 2, true) }}吨</div>
+              <div class="column">{{ $toFixed(item.real_total_price / 10000, 2, true) }}万元</div> -->
               <div class="column">{{ $toFixed((item.collection_total_price / 10000 || 0), 2, true) }}万元</div>
               <div class="column">{{ $toFixed((item.invoice_total_price || 0) / 10000, 2, true) }}万元</div>
               <div class="column">{{ $toFixed((item.deduct_total_price || 0) / 10000, 2, true) }}万元</div>
@@ -77,8 +77,8 @@
               <div class="column green">合计</div>
               <div class="column green">{{ $toFixed(total_sts.total_weight / 1000, 2, true) }}吨</div>
               <div class="column green">{{ $toFixed(total_sts.total_price / 10000, 2, true) }}万元</div>
-              <div class="column green">{{ $toFixed(total_sts.real_total_weight / 1000, 2, true) }}吨</div>
-              <div class="column green">{{ $toFixed((total_sts.real_total_price / 10000), 2, true) }}万元</div>
+              <!-- <div class="column green">{{ $toFixed(total_sts.real_total_weight / 1000, 2, true) }}吨</div>
+              <div class="column green">{{ $toFixed((total_sts.real_total_price / 10000), 2, true) }}万元</div> -->
               <div class="column green">{{ $toFixed((total_sts.collection_total_price / 10000), 2, true) }}万元</div>
               <div class="column green">{{ $toFixed((total_sts.invoice_total_price / 10000), 2, true) }}万元</div>
               <div class="column green">{{ $toFixed((total_sts.deduct_total_price / 10000), 2, true) }}万元</div>
@@ -277,6 +277,7 @@ export default Vue.extend({
                 return a + (Number(b.invoice_wait) || 0)
               }, 0),
             }
+            this.getSort(2, 'total_price')
 
             this.loading = false
             // 更新页码

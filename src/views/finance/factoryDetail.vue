@@ -48,7 +48,7 @@
         <span class="title">统计数据</span>
       </div>
       <div class="tableCtn"
-        style="padding:20px 32px 0 32px;margin:0">
+        style="padding:20px 32px 0 32px;margin:0;">
         <div class="thead">
           <div class="trow">
             <div class="tcolumn">总下单数量</div>
@@ -57,17 +57,17 @@
             <div class="tcolumn">总入库金额（含额外费用）</div>
           </div>
         </div>
-        <div class="tbody">
+        <div class="tbody" style="font-weight:bold;font-size:16px">
           <div class="trow">
-            <div class="tcolumn">{{ $toFixed(client_info.total_weight) }}kg</div>
-            <div class="tcolumn">{{ $toFixed(client_info.total_price) }}元 (含额外费用 {{client_info.total_other_fee}}元)</div>
-            <div class="tcolumn">{{ $toFixed(client_info.real_total_weight) }}kg</div>
-            <div class="tcolumn">{{ $toFixed(client_info.real_total_price) }}元 (含额外费用 {{client_info.total_other_fee}}元)</div>
+            <div class="tcolumn">{{ $toFixed(client_info.total_weight,2,true) }}kg</div>
+            <div class="tcolumn">{{ $toFixed(client_info.total_price,2,true) }}元 (含额外费用 {{$toFixed(client_info.total_other_fee,2,true)}}元)</div>
+            <div class="tcolumn">{{ $toFixed(client_info.real_total_weight,2,true) }}kg</div>
+            <div class="tcolumn">{{ $toFixed(client_info.real_total_price,2,true) }}元 (含额外费用 {{$toFixed(client_info.total_other_fee,2,true)}}元)</div>
           </div>
         </div>
       </div>
       <div class="tableCtn"
-        style="padding:20px 32px 20px 32px;margin:0">
+        style="padding:20px 32px 20px 32px;margin:0;">
         <div class="thead">
           <div class="trow">
             <div class="tcolumn">客户扣款</div>
@@ -76,12 +76,12 @@
             <div class="tcolumn">客户欠款</div>
           </div>
         </div>
-        <div class="tbody">
+        <div class="tbody" style="font-weight:bold;font-size:16px">
           <div class="trow">
-            <div class="tcolumn red">{{ $toFixed(client_info.deduct_total_price) }}元</div>
-            <div class="tcolumn">{{ $toFixed(client_info.invoice_total_price) }}元</div>
-            <div class="tcolumn">{{ $toFixed(client_info.deduct_total_price) }}元</div>
-            <div class="tcolumn red">{{ $toFixed(client_info.real_total_price-client_info.invoice_total_price) }}元</div>
+            <div class="tcolumn red">{{ $toFixed(client_info.deduct_total_price,2,true) }}元</div>
+            <div class="tcolumn">{{ $toFixed(client_info.invoice_total_price,2,true) }}元</div>
+            <div class="tcolumn">{{ $toFixed(client_info.deduct_total_price,2,true) }}元</div>
+            <div class="tcolumn red">{{ $toFixed(client_info.real_total_price-client_info.invoice_total_price,2,true) }}元</div>
           </div>
         </div>
       </div>
@@ -615,10 +615,8 @@
           <div class="headCtn">
             <div class="row">
               <div class="column">扣款单号</div>
-              <div class="column">纱线信息</div>
-              <div class="column">扣款单价</div>
+              <div class="column">扣款金额</div>
               <div class="column">图片说明</div>
-              <div class="column">扣款总价</div>
               <div class="column">备注信息</div>
               <div class="column">日期</div>
               <div class="column">操作</div>
@@ -629,28 +627,7 @@
               v-for="item in deduct_list"
               :key="item.id">
               <div class="column blue">{{item.code}}</div>
-              <div class="column">
-                <div class="sortContainer"
-                  v-if="item.deduct_content.length>0">
-                  <div class="sort">
-                    <i class="el-icon-caret-top hover"
-                      @click="changeIndex(item,'add')"></i>
-                    <div class="number">
-                      {{(item.index||0)+1}}/{{item.deduct_content.length}}
-                    </div>
-                    <i class="el-icon-caret-bottom hover"
-                      @click="changeIndex(item,'delete')"></i>
-                  </div>
-                  <span>{{item.deduct_content[item.index||0].yarn}}</span>
-                </div>
-                <div class="gray"
-                  v-else>暂无信息</div>
-              </div>
-              <div class="column">
-                <span v-if="item.deduct_content.length>0">{{item.deduct_content[item.index||0].price}}元</span>
-                <span v-else
-                  class="gray">暂无信息</span>
-              </div>
+              <div class="column red">{{item.total_price}}元</div>
               <div class="column">
                 <el-image style="width: 50px; height: 50px;line-height:50px;text-align:center;font-size:22px"
                   :src="item.deduct_file"
@@ -661,7 +638,6 @@
                   </div>
                 </el-image>
               </div>
-              <div class="column red">{{item.total_price}}元</div>
               <div class="column">{{item.desc}}</div>
               <div class="column">{{item.date}}</div>
               <div class="column">
@@ -757,10 +733,10 @@
         </div>
       </div>
     </div>
-    <bill :data="{type:2,client_id:$route.params.id}"
+    <bill :data="{type:2,client_id:$route.params.id,myType:2}"
       :show.sync="show_bill"
       @afterBill="init"></bill>
-    <deduct :data="{type:2,client_id:$route.params.id}"
+    <deduct :data="{type:2,client_id:$route.params.id,myType:2}"
       :show.sync="show_deduct"
       @afterDeduct="init"></deduct>
     <collection :data="{type:2,client_id:$route.params.id}"
@@ -901,19 +877,11 @@ export default Vue.extend({
         }),
         yarnProcess.list({
           client_id: this.$route.params.id,
-          limit: 2,
-          page: this.order_page
-        }),
-        yarnProcess.list({
-          client_id: this.$route.params.id,
           limit: 5,
           page: this.stock_page
         })
       ]).then((res) => {
         this.deduct_list = res[0].data.data.items
-        this.deduct_list.forEach((item) => {
-          item.deduct_content = JSON.parse(item.deduct_content)
-        })
         this.deduct_total = res[0].data.data.total
         this.bill_list = res[1].data.data.items
         this.bill_total = res[1].data.data.total
@@ -925,11 +893,11 @@ export default Vue.extend({
           },0)
         },0)
         this.client_info = res[3].data.data
-        this.order_list = res[4].data.data.items
-        this.order_total = res[4].data.data.total
-        this.stock_list = res[5].data.data.items
-        this.stock_total = res[5].data.data.total
-        this.stock_statistics = res[5].data.data.additional
+        this.order_list = res[4].data.data?.items
+        this.order_total = res[4].data.data?.total
+        this.stock_list = res[4].data.data.items
+        this.stock_total = res[4].data.data.total
+        this.stock_statistics = res[4].data.data.additional
         this.loading = false
       })
     },

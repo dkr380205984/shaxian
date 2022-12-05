@@ -8,7 +8,7 @@
         <div class="rowCtn">
           <div class="colCtn">
             <span class="label">客户名称：</span>
-            <span class="text blue">{{ client_info.name }}</span>
+            <span class="text blue">{{ client_info.client_name }}</span>
           </div>
           <div class="colCtn">
             <span class="label">客户简称：</span>
@@ -22,7 +22,7 @@
         <div class="rowCtn">
           <div class="colCtn">
             <span class="label">电话：</span>
-            <span class="text">{{ client_info.phone }}</span>
+            <span class="text">{{ client_info.phone || '无'}}</span>
           </div>
           <div class="colCtn">
             <span class="label">联系人：</span>
@@ -45,7 +45,7 @@
       <div class="titleCtn">
         <span class="title">统计数据</span>
       </div>
-      <div class="tableCtn" style="padding: 20px 32px 0 32px; margin: 0">
+      <div class="tableCtn" style="padding: 20px 32px 0 32px; margin: 0;">
         <div class="thead">
           <div class="trow">
             <div class="tcolumn">总下单数量</div>
@@ -54,16 +54,16 @@
             <div class="tcolumn">总发货金额（含额外费用）</div>
           </div>
         </div>
-        <div class="tbody">
+        <div class="tbody" style="font-weight:bold; font-size:16px">
           <div class="trow">
-            <div class="tcolumn">{{ $toFixed(client_info.total_weight) }}kg</div>
-            <div class="tcolumn">{{ $toFixed(client_info.total_price) }}元 (含额外费用 {{client_info.total_other_fee}}元)</div>
-            <div class="tcolumn">{{ $toFixed(client_info.real_total_weight) }}kg</div>
-            <div class="tcolumn">{{ $toFixed(client_info.real_total_price) }}元 (含额外费用 {{client_info.total_other_fee}}元)</div>
+            <div class="tcolumn">{{ $toFixed(client_info.total_weight,2,true) }}kg</div>
+            <div class="tcolumn">{{ $toFixed(client_info.total_price,2,true) }}元 (含额外费用 {{$toFixed(client_info.total_other_fee,2,true)}}元)</div>
+            <div class="tcolumn">{{ $toFixed(client_info.real_total_weight,2,true) }}kg</div>
+            <div class="tcolumn">{{ $toFixed(client_info.real_total_price,2,true) }}元 (含额外费用 {{$toFixed(client_info.total_other_fee,2,true)}}元)</div>
           </div>
         </div>
       </div>
-      <div class="tableCtn" style="padding: 20px 32px 20px 32px; margin: 0">
+      <div class="tableCtn" style="padding: 20px 32px 20px 32px; margin: 0;">
         <div class="thead">
           <div class="trow">
             <div class="tcolumn">客户扣款</div>
@@ -72,12 +72,12 @@
             <div class="tcolumn">客户欠款</div>
           </div>
         </div>
-        <div class="tbody">
+        <div class="tbody" style="font-weight:bold; font-size:16px">
           <div class="trow">
-            <div class="tcolumn red">{{ $toFixed(client_info.deduct_total_price) }}元</div>
-            <div class="tcolumn">{{ $toFixed(client_info.invoice_total_price) }}元</div>
-            <div class="tcolumn">{{ $toFixed(client_info.deduct_total_price) }}元</div>
-            <div class="tcolumn red">{{ $toFixed(client_info.real_total_price-client_info.invoice_total_price) }}元</div>
+            <div class="tcolumn red">{{ $toFixed(client_info.deduct_total_price,2,true) }}元</div>
+            <div class="tcolumn">{{ $toFixed(client_info.invoice_total_price,2,true) }}元</div>
+            <div class="tcolumn">{{ $toFixed(client_info.deduct_total_price,2,true) }}元</div>
+            <div class="tcolumn red">{{ $toFixed(client_info.real_total_price-client_info.invoice_total_price,2,true) }}元</div>
           </div>
         </div>
       </div>
@@ -207,7 +207,7 @@
                             <div class="column min120">{{itemChild.number_attribute || '无'}}</div>
                             <div class="column min120">{{itemChild.batch_code}}/{{itemChild.color_code}}/{{itemChild.vat_code}}</div>
                             <div class="column min120">{{item.store_name}}/{{item.second_store_name}}</div>
-                            <div class="column min120">{{itemChild.order_info?itemChild.order_info.price:'0.00'}}</div>
+                            <div class="column min120">{{itemChild.order_info ? itemChild.order_info.price : '0.00'}}</div>
                             <div class="column min120">{{itemChild.action_weight}}</div>
                             <div class="column min120">{{itemChild.item || 0}}</div>
                             <div class="column min120">{{((itemChild.action_weight || 0) * (itemChild.order_info?itemChild.order_info.price:'0.00')).toFixed(2)}}</div>
@@ -685,10 +685,8 @@
           <div class="headCtn">
             <div class="row">
               <div class="column">扣款单号</div>
-              <div class="column">纱线信息</div>
-              <div class="column">扣款单价</div>
+              <div class="column">扣款金额</div>
               <div class="column">图片说明</div>
-              <div class="column">扣款总价</div>
               <div class="column">备注信息</div>
               <div class="column">日期</div>
               <div class="column">操作</div>
@@ -697,23 +695,7 @@
           <div class="bodyCtn">
             <div class="row" v-for="item in deduct_list" :key="item.id">
               <div class="column blue">{{ item.code }}</div>
-              <div class="column">
-                <div class="sortContainer" v-if="item.deduct_content && item.deduct_content.length > 0">
-                  <div class="sort">
-                    <i class="el-icon-caret-top hover" @click="changeIndex(item, 'add')"></i>
-                    <div class="number">{{ (item.index || 0) + 1 }}/{{ item.deduct_content.length }}</div>
-                    <i class="el-icon-caret-bottom hover" @click="changeIndex(item, 'delete')"></i>
-                  </div>
-                  <span>{{ item.deduct_content[item.index || 0].yarn }}</span>
-                </div>
-                <div class="gray" v-else>暂无信息</div>
-              </div>
-              <div class="column">
-                <span v-if="item.deduct_content && item.deduct_content.length > 0"
-                  >{{ item.deduct_content[item.index || 0].price }}元</span
-                >
-                <span v-else class="gray">暂无信息</span>
-              </div>
+              <div class="column red">{{ item.total_price }}元</div>
               <div class="column">
                 <el-image
                   style="width: 50px; height: 50px; line-height: 50px; text-align: center; font-size: 22px"
@@ -725,7 +707,6 @@
                   </div>
                 </el-image>
               </div>
-              <div class="column red">{{ item.total_price }}元</div>
               <div class="column">{{ item.desc }}</div>
               <div class="column">{{ item.date }}</div>
               <div class="column">
@@ -814,8 +795,8 @@
         </div>
       </div>
     </div>
-    <bill :data="{ type: 5, client_id: $route.params.id }" :show.sync="show_bill" @afterBill="init"></bill>
-    <deduct :data="{ type: 5, client_id: $route.params.id }" :show.sync="show_deduct" @afterDeduct="init"></deduct>
+    <bill :data="{ type: 5, client_id: $route.params.id,myType:1 }" :show.sync="show_bill" @afterBill="init"></bill>
+    <deduct :data="{ type: 5, client_id: $route.params.id, myType:1 }" :show.sync="show_deduct" @afterDeduct="init"></deduct>
     <collection
       :data="{ type: 5, client_id: $route.params.id }"
       :show.sync="show_collection"
@@ -970,18 +951,15 @@ export default Vue.extend({
         })
       ]).then((res) => {
         this.deduct_list = res[0].data.data.items
-        this.deduct_list.forEach((item) => {
-          item.deduct_content = JSON.parse(item.deduct_content)
-        })
         this.deduct_total = res[0].data.data.total
         this.bill_list = res[1].data.data.items
         this.bill_total = res[1].data.data.total
         this.collection_list = res[2].data.data.items
         this.collection_total = res[2].data.data.total
         res[3].data.data.total_other_fee = res[3].data.data.others_fee.reduce((a:any,b:any) => {
-          return a + b.others_fee.reduce((a1:any,b1:any) => {
+          return a + b.others_fee?b.others_fee?.reduce((a1:any,b1:any) => {
             return a1 + (Number(b1.price) || 0)
-          },0)
+          },0) : 0
         },0)
         this.client_info = res[3].data.data
         this.order_list = res[4].data.data.items

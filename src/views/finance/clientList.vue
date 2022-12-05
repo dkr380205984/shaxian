@@ -88,6 +88,96 @@
           </el-pagination>
         </div>
       </div>
+      <!-- <div class="bottomFixBar">
+        <div class="main">
+          <div class="btnCtn"
+            style="float:left">
+            <div class="buttonList">
+              <div class="btn backHoverBlue">
+                <i class="el-icon-s-grid"></i>
+                <span class="text">批量导入单据</span>
+              </div>
+              <div class="otherInfoCtn">
+                <div class="otherInfo">
+                  <div class="btn backHoverOrange"
+                    @click="importExcelData('开票单据')">
+                    <svg class="iconFont"
+                      aria-hidden="true">
+                      <use xlink:href="#icon-xiugaidingdan"></use>
+                    </svg>
+                    <span class="text">开票单据</span>
+                  </div>
+                  <div class="btn backHoverRed"
+                    @click="importExcelData('对方扣款单据')">
+                    <svg class="iconFont"
+                      aria-hidden="true">
+                      <use xlink:href="#icon-xiugaidingdan"></use>
+                    </svg>
+                    <span class="text">扣款单据</span>
+                  </div>
+                  <div class="btn backHoverBlue"
+                    @click="importExcelData('收款单据','元')">
+                    <svg class="iconFont"
+                      aria-hidden="true">
+                      <use xlink:href="#icon-xiugaidingdan"></use>
+                    </svg>
+                    <span class="text">收款单据</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="buttonList">
+              <div class="btn backHoverBlue">
+                <i class="el-icon-s-grid"></i>
+                <span class="text">下载导入模板</span>
+              </div>
+              <div class="otherInfoCtn">
+                <div class="otherInfo">
+                  <div class="btn backHoverOrange"
+                    @click="downloadExcel('开票单据模板')">
+                    <svg class="iconFont"
+                      aria-hidden="true">
+                      <use xlink:href="#icon-xiugaidingdan"></use>
+                    </svg>
+                    <span class="text">开票单据</span>
+                  </div>
+                  <div class="btn backHoverBlue"
+                    @click="downloadExcel('收款单据模板')">
+                    <svg class="iconFont"
+                      aria-hidden="true">
+                      <use xlink:href="#icon-xiugaidingdan"></use>
+                    </svg>
+                    <span class="text">收款单据</span>
+                  </div>
+                  <div class="btn backHoverRed"
+                    @click="downloadExcel('扣款单据模板')">
+                    <svg class="iconFont"
+                      aria-hidden="true">
+                      <use xlink:href="#icon-xiugaidingdan"></use>
+                    </svg>
+                    <span class="text">扣款单据</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <span class="btn hoverBlue">
+              <el-tooltip class="item"
+                effect="dark"
+                placement="top">
+                <div slot="content">
+                  第一步：下载导入模板。<br />
+                  第二步：填写模板信息。注意：请填写客户或单位简称，且填写的简称必须与系统添加的简称保持一致；金额字段必须为数字；日期字段的格式必须为yyyy-mm-dd（2022-01-01）；订单号必须为系统订单编号；关联单据编号必须为系统关联编号；否则会出现无法导入或者导入错误的情况。<br />
+                  第三步：导入模板，完成导入
+                </div>
+                <span>导入教程</span>
+              </el-tooltip>
+            </span>
+          </div>
+          <div class="btnCtn">
+            <div class="borderBtn" @click="$router.go(-1)">返回</div>
+          </div>
+        </div>
+      </div> -->
     </div>
   </div>
 </template>
@@ -128,8 +218,8 @@ export default Vue.extend({
         deduct_total_price: 0,
         invoice_wait: 0,
       },
-      sort_type: '',
-      sort_cloum: '',
+      sort_type: 'desc',
+      sort_cloum: 'real_total_price',
       statusArr: [
         {
           id: '0',
@@ -190,6 +280,197 @@ export default Vue.extend({
         }&date=${this.date || ''}`
       )
     },
+    // downloadExcel(type: string) {
+    //   if (type === '开票单据模板') {
+    //     this.$downloadExcel(
+    //       [],
+    //       [
+    //         { title: '客户/单位名称(必填，系统简称)', key: 'client_zh' },
+    //         { title: '关联单号(选填)', key: 'doc_code' },
+    //         { title: '发票代码(选填)', key: 'invoice_number' },
+    //         { title: '发票号码(选填)', key: 'invoice_code' },
+    //         { title: '发票类型(默认专票)', key: 'type' },
+    //         { title: '税率(必填)', key: 'tax_rate' },
+    //         { title: '开票金额(税价合计，必填)', key: 'price' },
+    //         { title: '备注信息(选填)', key: 'desc' }
+    //       ],
+    //       type
+    //     )
+    //   } else if (type === '扣款单据模板') {
+    //     this.$downloadExcel(
+    //       [],
+    //       [
+    //         { title: '扣款单位(必填，简称)', key: 'client_zh' },
+    //         { title: '关联单号(选填)', key: 'doc_code' },
+    //         { title: '扣款金额(必填)', key: 'price' },
+    //         { title: '扣款原因(选填)', key: 'reason' }
+    //       ],
+    //       type
+    //     )
+    //   } else if (type === '收款单据模板') {
+    //     this.$downloadExcel(
+    //       [],
+    //       [
+    //         { title: '收款单位(必填，简称)', key: 'client_zh' },
+    //         { title: '关联单号(选填)', key: 'doc_code' },
+    //         { title: '收款金额(必填)', key: 'price' },
+    //         { title: '备注信息(选填)', key: 'desc' },
+    //         { title: '收款日期(必填)', key: 'complete_time' }
+    //       ],
+    //       type
+    //     )
+    //   }
+    // },
+    // importExcelData(type: string, settle_unit?: string) {
+    //   this.settle_excel_unit = settle_unit
+    //   const inputFile = document.createElement('input')
+    //   inputFile.type = 'file'
+    //   inputFile.accept = '.xlsx,.xls'
+    //   inputFile.addEventListener('change', (e) => {
+    //     this.getExcelData(e, this.saveImportData, type)
+    //   })
+    //   let click = document.createEvent('MouseEvents')
+    //   click.initEvent('click', true, true)
+    //   inputFile.dispatchEvent(click)
+    // },
+    // getExcelData(file: any, callBack: any, type: string) {
+    //   const _this = this
+    //   const XLSX = require('xlsx')
+    //   const files = file.target.files
+    //   const fileReader = new FileReader()
+    //   fileReader.onload = function (e: any) {
+    //     try {
+    //       const data = e.target.result
+    //       const bytes = new Uint8Array(data) // 无符号整型数组
+    //       const len = bytes.byteLength
+    //       const binarys = new Array(len) // 创建定长数组，存储文本
+    //       for (let i = 0; i < len; i++) {
+    //         binarys[i] = String.fromCharCode(bytes[i])
+    //       }
+    //       const workbook = XLSX.read(binarys.join(''), { type: 'binary' })
+    //       if (!workbook) {
+    //         return null
+    //       }
+    //       const r: any = {}
+    //       workbook.SheetNames.forEach((name: string) => {
+    //         // 遍历每张纸数据
+    //         r[name] = XLSX.utils.sheet_to_json(workbook.Sheets[name])
+    //       })
+    //       callBack && callBack(r, type)
+    //     } catch (e) {
+    //       _this.$message.error('文件类型不正确')
+    //     }
+    //   }
+    //   fileReader.readAsArrayBuffer(files[0])
+    // },
+    // saveImportData(data: any, type: string) {
+    //   let typeObj: any = {}
+    //   if (type === '开票单据') {
+    //     typeObj = {
+    //       doc_code: ['关联单号(选填)', ''],
+    //       client_zh: ['客户/单位名称(必填，系统简称)'],
+    //       invoice_number: ['发票代码(选填)',''],
+    //       invoice_code: ['发票号码(选填)',''],
+    //       type: ['发票类型(默认专票)','专票'],
+    //       tax_rate: ['税率(必填)'],
+    //       price: ['开票金额(税价合计，必填)'],
+    //       desc: ['备注信息(选填)', ''],
+    //     }
+    //   } else if (type === '收款单据') {
+    //     typeObj = {
+    //       doc_code: ['关联单号(选填)', ''],
+    //       client_zh: ['收款单位(必填)'],
+    //       price: ['收款金额(必填)'],
+    //       desc: ['备注信息(选填)', ''],
+    //       complete_time: ['收款日期(必填)']
+    //     }
+    //   } else if (type === '对方扣款单据') {
+    //     typeObj = {
+    //       doc_code: ['关联单号(选填)', ''],
+    //       client_zh: ['扣款单位(必填)'],
+    //       price: ['扣款金额(必填)'],
+    //       reason: ['扣款原因(选填)', ''],
+    //       file_url: [false, null]
+    //     }
+    //   }
+    //   let submitData = []
+    //   for (const prop in data) {
+    //     for (const key in data[prop]) {
+    //       let obj: any = {}
+    //       for (const indexType in typeObj) {
+    //         if (typeObj[indexType][0]) {
+    //           obj[indexType] = data[prop][key][typeObj[indexType][0]] || typeObj[indexType][1]
+    //           if (obj[indexType] === undefined) {
+    //             this.$message.error('解析失败，请使用标准模板或检测必填数据是否存在空的情况！！！')
+    //             return
+    //           }
+    //         } else {
+    //           obj[indexType] = typeObj[indexType][1]
+    //         }
+    //       }
+    //       submitData.push(obj)
+    //     }
+    //   }
+    //   if (submitData.length === 0) {
+    //     this.$message.warning('未读取到可用参数')
+    //     return
+    //   }
+    //   if (type === '开票单据') {
+    //     invoice
+    //       .create({
+    //         id: '',
+    //         doc_type: '',
+    //         client_id: '',
+    //         invoice_type: 1,
+    //         data: submitData
+    //       })
+    //       .then((res) => {
+    //         if (res.data.status) {
+    //           this.$message.success('导入成功')
+    //           this.getList()
+    //         }
+    //       })
+    //   } else if (type === '收款单据') {
+    //     // excel日期格式转前端日期格式
+    //     submitData.forEach((item) => {
+    //       const time: any = new Date((item.complete_time - 1) * 24 * 3600000 + 1)
+    //       time.setYear(time.getFullYear() - 70)
+    //       const year = time.getFullYear()
+    //       const month = time.getMonth() + 1
+    //       const date = time.getDate() - 1
+    //       item.complete_time = year + '-' + (month < 10 ? '0' + month : month) + '-' + (date < 10 ? '0' + date : date)
+    //     })
+    //     collection
+    //       .create({
+    //         id: '',
+    //         doc_type: '',
+    //         client_id: '',
+    //         settle_unit: this.settle_excel_unit,
+    //         data: submitData
+    //       })
+    //       .then((res) => {
+    //         if (res.data.status) {
+    //           this.$message.success('导入成功')
+    //           this.getList()
+    //         }
+    //       })
+    //   } else if (type === '对方扣款单据') {
+    //     deduct
+    //       .create({
+    //         id: '',
+    //         doc_type: '',
+    //         client_id: '',
+    //         deduct_type: 2,
+    //         data: submitData
+    //       })
+    //       .then((res) => {
+    //         if (res.data.status) {
+    //           this.$message.success('导入成功')
+    //           this.getList()
+    //         }
+    //       })
+    //   }
+    // },
     init() {
       this.name = this.$route.query.name || ''
       this.sort_cloum = this.$route.query.sort_cloum || ''
@@ -231,6 +512,7 @@ export default Vue.extend({
             })
 
             this.allList = res.data.data
+            this.getSort(2,'real_total_price')
             this.total = res.data.data.length
             this.clientList = this.$clone(this.allList).splice(0, 10)
 
@@ -302,8 +584,8 @@ export default Vue.extend({
       this.invoice_total_price = ''
       this.collection_total_price = ''
       this.invoice_wait = ''
-      this.sort_type = ''
-      this.sort_cloum = ''
+      this.sort_type = 'desc'
+      this.sort_cloum = 'real_total_price'
       this.name = ''
       this.changeRouter()
     }

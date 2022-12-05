@@ -265,6 +265,7 @@ export default Vue.extend({
                 return a + (Number(b.invoice_wait) || 0)
               }, 0),
             }
+            this.getSort(2, 'real_total_price')
             
             this.loading = false
             // 更新页码

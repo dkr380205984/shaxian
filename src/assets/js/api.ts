@@ -183,7 +183,7 @@ const craft = {
 // 扣款
 import { DeductInfo } from '@/types/common'
 const deduct = {
-  create: (params: DeductInfo) => http.post(`${baseUrl}/financial/deduct/save`, params, 'application/json'),
+  create: (params:{data: Array<DeductInfo>}) => http.post(`${baseUrl}/financial/deduct/save`, params, 'application/json'),
   list: (params: ListParam) => http.get(`${baseUrl}/financial/deduct/lists`, params),
   delete: (params: DeleteParam) => http.post(`${baseUrl}/financial/deduct/delete`, params, 'application/json')
 }
@@ -191,7 +191,7 @@ const deduct = {
 // 开票
 import { BillInfo } from '@/types/common'
 const bill = {
-  create: (params: BillInfo) => http.post(`${baseUrl}/financial/invoice/save`, params, 'application/json'),
+  create: (params: {data: Array<BillInfo>}) => http.post(`${baseUrl}/financial/invoice/save`, params, 'application/json'),
   list: (params: ListParam) => http.get(`${baseUrl}/financial/invoice/lists`, params),
   delete: (params: DeleteParam) => http.post(`${baseUrl}/financial/invoice/delete`, params, 'application/json')
 }
@@ -199,7 +199,7 @@ const bill = {
 // 收款
 import { CollectionInfo } from '@/types/common'
 const collection = {
-  create: (params: CollectionInfo) => http.post(`${baseUrl}/financial/collection/save`, params, 'application/json'),
+  create: (params: {data: Array<CollectionInfo>}) => http.post(`${baseUrl}/financial/collection/save`, params, 'application/json'),
   list: (params: ListParam) => http.get(`${baseUrl}/financial/collection/lists`, params),
   delete: (params: DeleteParam) => http.post(`${baseUrl}/financial/collection/delete`, params, 'application/json')
 }

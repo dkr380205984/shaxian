@@ -89,14 +89,16 @@ export interface DeductInfo {
   id?: any
   index?:any
   code?: string
-  deduct_type: 1 | 2 | 3 | 4 | 5 // 1纱线定够 2沙县加工 3毛条定够 4毛条加工 5订单
-  pid: string | number
+  reason?: string
+  deduct_type?: 1 | 2 | 3 | 4 | 5 // 1纱线定够 2沙县加工 3毛条定够 4毛条加工 5订单
+  pid?: string | number
+  type?: 1 | 2
   client_id?: string | number | undefined
-  total_price: string | number
-  deduct_content: string
-  deduct_file: string
-  date: string
-  desc: string
+  total_price?: string | number
+  deduct_content?: string
+  deduct_file?: string
+  date?: string
+  desc?: string
 }
 
 // 开票信息
@@ -107,6 +109,7 @@ export interface BillInfo {
   invoice_code?: string
   client_id: string | number | undefined
   invoice_type: 1 | 2 | 3 | 4 | 5
+  type?: 1 | 2
   pid: string[]
   invoice_price: string | number
   invoice_date: string

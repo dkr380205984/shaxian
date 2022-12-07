@@ -319,7 +319,6 @@
           <span
             class="btn"
             style="margin-left: 20px"
-            v-if="!orderId"
             :class="{ backHoverBlue: !update, backHoverOrange: update }"
             @click="saveOrder(1)"
             >{{ update ? '确认修改' : '确认采购' }}</span

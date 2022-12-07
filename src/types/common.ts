@@ -93,7 +93,10 @@ export interface DeductInfo {
   deduct_type?: 1 | 2 | 3 | 4 | 5 // 1纱线定够 2沙县加工 3毛条定够 4毛条加工 5订单
   pid?: string | number
   type?: 1 | 2
-  client_id?: string | number | undefined
+  // 1 采购单,2 加工单,3 毛条采购单,4 毛条加工单,5 订单,6 扣款单,7 调取单,8 报价单,9 开票单,10 结算单,
+  rel_doc_type?: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10
+  rel_doc_id?: number | string | undefined | null
+  client_id?: string | number | undefined | null
   total_price?: string | number
   deduct_content?: string
   deduct_file?: string

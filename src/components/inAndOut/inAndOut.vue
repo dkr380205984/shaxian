@@ -243,12 +243,12 @@
                     v-if="storeInfo.type!=='染色'">纱线颜色</div>
                   <div class="tcolumn"
                     v-if="storeInfo.type!=='倒筒'">
-                    <div style="display:flex;">
+                    <div style="display:flex;align-items:center">
                       纱线属性
                       <el-tooltip v-if="selfType[1]===17" class="item" effect="dark" content="统一属性" placement="top">
                         <svg
                           class="iconFont copyIcon hoverBlue"
-                          style="cursor:pointer"
+                          style="cursor:pointer;margin-left:5px"
                           aria-hidden="true"
                           @click="copyInfo('attribute')"
                         >
@@ -264,7 +264,21 @@
                     v-if="selfType&&selfType[0]==='无单据'&&(selfType[1]===11)">数量属性</div>
                   <div class="tcolumn"
                     style="flex:2">批号/色号/缸号</div>
-                  <div class="tcolumn">所属客户</div>
+                  <div class="tcolumn">
+                    <div style="display:flex;align-items:center">
+                      所属客户
+                      <el-tooltip v-if="selfType[1]===17" class="item" effect="dark" content="统一属性" placement="top">
+                        <svg
+                          class="iconFont copyIcon hoverBlue"
+                          style="cursor:pointer;margin-left:5px"
+                          aria-hidden="true"
+                          @click="copyInfo('store_client_id')"
+                        >
+                          <use xlink:href="#icon-tongbushuju1"></use>
+                        </svg>
+                      </el-tooltip>
+                    </div>
+                  </div>
                   <div class="tcolumn">数量(kg)</div>
                   <div class="tcolumn"
                     v-if="selfType&&selfType[0]==='无单据'&&(selfType[1]===11||selfType[1]===12||selfType[1]===13)">单价(元)</div>
@@ -913,6 +927,7 @@ export default class InAndOut extends Vue {
       // @ts-ignore
       item[type] = this.storeInfo.child_data[0][type]
     })
+    this.$forceUpdate()
   }
   // 根据单据信息初始化列表
   initDetail(id: number) {
@@ -1013,6 +1028,27 @@ export default class InAndOut extends Vue {
                 action_weight: itemChild.weight,
                 color: itemChild.after_color || itemChild.color || '白胚',
                 attribute: '筒纱',
+                batch_code: itemChild.batch_code,
+                color_code: itemChild.color_code,
+                vat_code: itemChild.vat_code,
+                item: itemChild.item,
+                colorArr: [
+                  {
+                    label: itemChild.after_color || itemChild.color || '白胚',
+                    value: itemChild.after_color || itemChild.color || '白胚',
+                    id:itemChild.id
+                  }
+                ]
+              }
+            })
+            this.storeInfo.child_data.push(...a)
+          } else if (itemPro.type === '倒筒'){
+            let a = itemPro.child_data.map((itemChild:any) =>{
+              return {
+                name: itemChild.name,
+                action_weight: itemChild.weight,
+                color: itemChild.after_color || itemChild.color || '白胚',
+                attribute: itemChild.after_attribute,
                 batch_code: itemChild.batch_code,
                 color_code: itemChild.color_code,
                 vat_code: itemChild.vat_code,

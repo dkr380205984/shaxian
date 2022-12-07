@@ -27,7 +27,7 @@ export interface Order {
   additional_fee: string | AditionalFee[]
   total_additional_fee: number
   desc: HTMLElement | string
-  process_log?: any[] // 统计加工信息用的加工日志
+  process_log?: any[] | undefined// 统计加工信息用的加工日志
   product_info: OrderPro[]
   file_url?: string,
   reduce_store_data?: Array<{

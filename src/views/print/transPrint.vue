@@ -129,7 +129,7 @@
           <div
             class="print_row"
             v-if="itemSon.kehuqianzi"
-            style="min-height: 39px; max-height: 39px; position: absolute; bottom: 99px"
+            style="min-height: 39px; max-height: 39px;"
           >
             <div class="row_item center bgGray flex05">客户单号</div>
             <div class="row_item center">{{ orderInfo.related_info ? orderInfo.related_info.code : '无' }}</div>
@@ -142,8 +142,8 @@
           </div>
           <div
             class="print_row"
-            v-if="itemSon.isLast"
-            style="min-height: 39px; max-height: 39px; position: absolute; bottom: 60px"
+            v-if="itemSon.fahuoDate"
+            style="min-height: 39px; max-height: 39px;"
           >
             <div class="row_item center bgGray flex05"></div>
             <div class="row_item center"></div>
@@ -236,7 +236,6 @@ export default Vue.extend({
         arr.push(
           { total_price: this.orderInfo.total_price, total_weight: this.orderInfo.total_weight, isTotal: true },
           { orderInfoDesc: this.orderInfo.desc || ' ' },
-          { companyDesc: this.desc || ' ' },
           {
             order_code: this.orderInfo.order_code,
             client_name: this.orderInfo.client_name,
@@ -244,11 +243,11 @@ export default Vue.extend({
             kehuqianzi: true
           },
           {
-            isLast: true
-          }
+            fahuoDate: true
+          },
+          { companyDesc: this.desc || ' ' },
         )
 
-        // console.log(arr)
         if (arr.length > 13) {
           arr.forEach((item: any, index: number) => {
             if (index % 13 === 0) {

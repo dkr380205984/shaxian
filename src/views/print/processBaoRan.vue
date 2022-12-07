@@ -1,5 +1,11 @@
 <template>
-  <div id="processBaoRan" class="printHtml" style="font-size: 16px">
+  <div
+    id="processBaoRan"
+    class="printHtml"
+    style="font-size: 16px"
+    @click.right="handleClickRight"
+    @click="showMenu = false"
+  >
     <div class="printTable">
       <div class="print_head" style="height: unset">
         <div style="width: 100%; font-size: 31px; text-align: center; font-weight: bold">
@@ -54,7 +60,7 @@
             <div class="row_item center bgGray flex05">原料名称</div>
             <div class="row_item center" style="flex: 2.19">{{ item.name }}</div>
             <div class="row_item center" style="flex: 1.34">{{ item.total_weight || 0 }}kg</div>
-            <div class="row_item center" style="flex: 1.34">{{ item.total_price || 0 }}元</div>
+            <div class="row_item center" style="flex: 1.34">{{ showPrice ? (item.total_price || 0) + '元' : '' }}</div>
           </div>
           <div class="print_row">
             <div class="row_item center bgGray" style="flex: 0.535">序号</div>
@@ -64,7 +70,7 @@
             <div class="row_item center bgGray" style="flex: 2.38">原样颜色</div>
           </div>
           <div v-for="(itemChild, indexChild) in item.child_data" :key="indexChild + '序号' + index">
-            <div class="print_row" style="height:100px">
+            <div class="print_row" style="height: 100px">
               <div class="row_item center" style="flex: 0.535">{{ indexChild + 1 }}</div>
               <div class="row_item center" style="flex: 1.85">
                 <div v-if="detail.type === '倒筒'">
@@ -83,7 +89,7 @@
                   {{ itemChild.attribute }}
                 </div>
               </div>
-              <div class="row_item center flex05">{{ itemChild.price }}</div>
+              <div class="row_item center flex05">{{ showPrice ? itemChild.price : '' }}</div>
               <div class="row_item center flex05">{{ itemChild.weight }}</div>
               <div class="row_item center" style="flex: 2.38"></div>
             </div>
@@ -120,6 +126,16 @@
         </div>
       </div>
     </div>
+    <div
+      class="setting_sign_style"
+      v-if="showMenu"
+      :style="`left:${X_position || 0}px;top:${Y_position}px`"
+      @click.stop
+    >
+      <div class="setting_item" @click="windowMethod(1)">刷新页面</div>
+      <div class="setting_item" @click="windowMethod(2)">打印单据</div>
+      <div class="setting_item" @click="windowMethod(3)">价格{{ showPrice ? '隐藏' : '显示' }}</div>
+    </div>
   </div>
 </template>
 
@@ -140,6 +156,7 @@ export default Vue.extend({
       X_position: 0,
       Y_position: 0,
       showMenu: false,
+      showPrice: true,
       settle_type: '',
       desc: '',
       detail: {},
@@ -148,6 +165,28 @@ export default Vue.extend({
     }
   },
   methods: {
+    windowMethod(type: number) {
+      this.showPrintSetting = false
+      window.requestAnimationFrame(() => {
+        if (type === 1) {
+          window.location.reload()
+        } else if (type === 2) {
+          this.showMenu = false
+          setTimeout(() => {
+            window.print()
+          }, 100)
+        } else if (type === 3) {
+          this.showPrice = !this.showPrice
+        }
+      })
+    },
+    handleClickRight(e: any, type = true) {
+      this.showMenu = type
+      this.X_position = e.clientX
+      this.Y_position = e.clientY
+      e.preventDefault()
+      e.stopPropagation()
+    },
     saveSetting() {
       const realSave = {
         editor: '',
@@ -174,7 +213,7 @@ export default Vue.extend({
           mainRule: 'name',
           childrenName: 'child_data'
         })
-        this.detail.additional_fee = this.detail.additional_fee?JSON.parse(this.detail.additional_fee):['']
+        this.detail.additional_fee = this.detail.additional_fee ? JSON.parse(this.detail.additional_fee) : ['']
         this.detail.yarnInfo.forEach((item: any) => {
           item.total_weight = item.child_data
             .reduce((a: any, b: any) => {

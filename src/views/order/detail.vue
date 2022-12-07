@@ -169,7 +169,7 @@
                 </div>
               </div>
               <div class="tcolumn blue">
-                <div class="once gray" v-if="item.process_info.length === 0">暂无加工信息</div>
+                <div class="once gray" v-if="item.process_info && item.process_info.length === 0">暂无加工信息</div>
                 <div class="once" v-for="(item, index) in item.process_info" :key="item.type + index">
                   <span class="green" style="margin-right: 5px">{{ item.type }}</span>
                   <span class="blue">{{ item.total_weight }}kg</span>
@@ -421,75 +421,12 @@
         </div>
       </div>
     </div>
-    <!-- <div class="module" v-show="deduct_list.length > 0">
-      <div class="titleCtn">
-        <span class="title">扣款信息</span>
-      </div>
-      <div class="listCtn">
-        <div class="list">
-          <div class="headCtn">
-            <div class="row">
-              <div class="column">扣款单号</div>
-              <div class="column">纱线信息</div>
-              <div class="column">扣款单价</div>
-              <div class="column">图片说明</div>
-              <div class="column">扣款总价</div>
-              <div class="column">备注信息</div>
-              <div class="column">扣款日期</div>
-              <div class="column">操作人</div>
-              <div class="column">操作</div>
-            </div>
-          </div>
-          <div class="bodyCtn">
-            <div class="row" v-for="item in deduct_list" :key="item.id">
-              <div class="column blue">{{ item.code }}</div>
-              <div class="column">
-                <div class="sortContainer" v-if="item.deduct_content.length > 0">
-                  <div class="sort">
-                    <i class="el-icon-caret-top hover" @click="changeIndex(item, 'add')"></i>
-                    <div class="number">{{ (item.index || 0) + 1 }}/{{ item.deduct_content.length }}</div>
-                    <i class="el-icon-caret-bottom hover" @click="changeIndex(item, 'delete')"></i>
-                  </div>
-                  <span>{{ item.deduct_content[item.index || 0].yarn }}</span>
-                </div>
-                <div class="gray" v-else>暂无纱线</div>
-              </div>
-              <div class="column">
-                <template v-if="item.deduct_content.length.length > 0"
-                  >{{ item.deduct_content[item.index || 0].price }}元</template
-                >
-                <div class="gray" v-else>暂无单价</div>
-              </div>
-              <div class="column">
-                <el-image
-                  style="width: 50px; height: 50px; line-height: 50px; text-align: center; font-size: 22px"
-                  :src="item.deduct_file"
-                  :preview-src-list="[item.deduct_file]"
-                >
-                  <div slot="error" class="image-slot">
-                    <i class="el-icon-picture-outline"></i>
-                  </div>
-                </el-image>
-              </div>
-              <div class="column red">{{ item.total_price }}元</div>
-              <div class="column">{{ item.desc }}</div>
-              <div class="column">{{ item.related_info.create_time.slice(0, 10) }}</div>
-              <div class="column">{{ item.related_info.user_name }}</div>
-              <div class="column">
-                <div class="opr blue">打印</div>
-                <div class="opr red">删除</div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div> -->
     <div class="module">
       <div class="titleCtn">
         <span class="title">财务概览</span>
       </div>
-      <div style="padding: 20px 32px">
-        <!-- <div class="tableCtn">
+      <div style="padding: 20px 32px" v-if="order_info.type == 1">
+        <div class="tableCtn">
           <div class="thead">
             <div class="trow">
               <div class="tcolumn">额外费用</div>
@@ -498,6 +435,118 @@
               <div class="tcolumn">实际发货数量</div>
               <div class="tcolumn">计划总额（含额外、扣款）</div>
               <div class="tcolumn">实际总额（含额外、扣款）</div>
+            </div>
+          </div>
+          <div class="tbody">
+            <div class="trow">
+              <div class="tcolumn">{{ $toFixed(order_info.total_additional_fee,2,true)}}元</div>
+              <div class="tcolumn">{{ $toFixed(order_info.total_deduct_price,2,true) }}元</div>
+              <div class="tcolumn">{{ $toFixed(order_info.total_weight,1) }}kg</div>
+              <div class="tcolumn">{{ $toFixed(total_final_out_log.total_action_weight,1) }}kg</div>
+              <div class="tcolumn">{{ $toFixed(+order_info.total_price + +order_info.total_additional_fee + +order_info.total_deduct_price,2,true) }}元</div>
+              <div class="tcolumn">{{ $toFixed(+total_final_out_log.total_price + +order_info.total_additional_fee + +order_info.total_deduct_price,2,true) }}元</div>
+            </div>
+          </div>
+        </div>
+        <div class="label">采购费用</div>
+        <div class="tableCtn">
+          <div class="thead">
+            <div class="trow">
+              <div class="tcolumn">额外费用</div>
+              <div class="tcolumn">我方扣款金额</div>
+              <div class="tcolumn">计划采购数量</div>
+              <div class="tcolumn">实际入库数量</div>
+              <div class="tcolumn">计划总额（含额外、扣款）</div>
+              <div class="tcolumn">实际总额（含额外、扣款）</div>
+              <div class="tcolumn">操作</div>
+            </div>
+          </div>
+          <div class="tbody">
+            <div class="trow">
+              <div class="tcolumn">{{$toFixed(total_purchase_info.total_additional_fee,2,true)}}元</div>
+              <div class="tcolumn">{{$toFixed(total_purchase_info.total_deduct_price,2,true)}}元</div>
+              <div class="tcolumn">{{$toFixed(total_purchase_info.total_number,2,true)}}元</div>
+              <div class="tcolumn">{{$toFixed(total_purchase_info.total_real_number,2,true)}}元</div>
+              <div class="tcolumn">{{$toFixed(total_purchase_info.total_price + total_purchase_info.total_deduct_price + total_purchase_info.total_additional_fee,2,true)}}元</div>
+              <div class="tcolumn">{{$toFixed(total_purchase_info.total_real_price + total_purchase_info.total_deduct_price + total_purchase_info.total_additional_fee,2,true)}}元</div>
+              <div class="tcolumn blue" style="cursor:pointer" @click="openCaiGou = !openCaiGou">{{openCaiGou?'收起':'展开'}}</div>
+            </div>
+            <div v-if="openCaiGou">
+              <div class="trow" style="background:#F4F4F4" >
+              <div class="tcolumn">额外费用</div>
+              <div class="tcolumn">我方扣款金额</div>
+              <div class="tcolumn">计划采购数量</div>
+              <div class="tcolumn">实际入库数量</div>
+              <div class="tcolumn">计划总额（含额外、扣款）</div>
+              <div class="tcolumn">实际总额（含额外、扣款）</div>
+              <div class="tcolumn"></div>
+            </div>
+            <div class="trow" v-for="item,index in order_info.purchase_log" :key="index + '采购单财务详情'">
+              <div class="tcolumn">{{$toFixed(item.total_additional_fee,2,true)}}元</div>
+              <div class="tcolumn">{{$toFixed(item.total_deduct_price,2,true)}}元</div>
+              <div class="tcolumn">{{$toFixed(item.total_number,2,true)}}元</div>
+              <div class="tcolumn">{{$toFixed(item.total_real_number,2,true)}}元</div>
+              <div class="tcolumn">{{$toFixed(item.total_price + item.total_deduct_price + (Number(item.total_additional_fee) || 0),2,true)}}元</div>
+              <div class="tcolumn">{{$toFixed(item.total_real_price + item.total_deduct_price + (Number(item.total_additional_fee) || 0),2,true)}}元</div>
+              <div class="tcolumn"></div>
+            </div>
+            </div>
+          </div>
+        </div>
+        <div class="label">加工费用</div>
+        <div class="tableCtn">
+          <div class="thead">
+            <div class="trow">
+              <div class="tcolumn">额外费用</div>
+              <div class="tcolumn">我方扣款金额</div>
+              <div class="tcolumn">加工数量</div>
+              <div class="tcolumn">实际回库数量</div>
+              <div class="tcolumn">计划总额（含额外、扣款）</div>
+              <div class="tcolumn">实际总额（含额外、扣款）</div>
+              <div class="tcolumn">操作</div>
+            </div>
+          </div>
+          <div class="tbody">
+            <div class="trow">
+              <div class="tcolumn">{{$toFixed(total_process_info.total_additional_fee,2,true)}}元</div>
+              <div class="tcolumn">{{$toFixed(total_process_info.total_deduct_price,2,true)}}元</div>
+              <div class="tcolumn">{{$toFixed(total_process_info.total_number,2,true)}}元</div>
+              <div class="tcolumn">{{$toFixed(total_process_info.total_real_number,2,true)}}元</div>
+              <div class="tcolumn">{{$toFixed(total_process_info.total_price + total_process_info.total_deduct_price + total_process_info.total_additional_fee,2,true)}}元</div>
+              <div class="tcolumn">{{$toFixed(total_process_info.total_real_price + total_process_info.total_deduct_price + total_process_info.total_additional_fee,2,true)}}元</div>
+              <div class="tcolumn blue" style="cursor:pointer" @click="openJiaGong = !openJiaGong">{{openJiaGong?'收起':'展开'}}</div>
+            </div>
+            <div v-if="openJiaGong">
+              <div class="trow" style="background:#F4F4F4" >
+                <div class="tcolumn">额外费用</div>
+                <div class="tcolumn">我方扣款金额</div>
+                <div class="tcolumn">加工数量</div>
+                <div class="tcolumn">实际回库数量</div>
+                <div class="tcolumn">计划总额（含额外、扣款）</div>
+                <div class="tcolumn">实际总额（含额外、扣款）</div>
+                <div class="tcolumn"></div>
+              </div>
+              <div class="trow" v-for="item,index in order_info.process_log" :key="index + '加工单财务详情'">
+                <div class="tcolumn">{{$toFixed(item.total_additional_fee,2,true)}}元</div>
+                <div class="tcolumn">{{$toFixed(item.total_deduct_price,2,true)}}元</div>
+                <div class="tcolumn">{{$toFixed(item.total_number,2,true)}}元</div>
+                <div class="tcolumn">{{$toFixed(item.total_real_number,2,true)}}元</div>
+                <div class="tcolumn">{{$toFixed(item.total_price + item.total_deduct_price + (Number(item.total_additional_fee) || 0),2,true)}}元</div>
+                <div class="tcolumn">{{$toFixed(item.total_real_price + item.total_deduct_price + (Number(item.total_additional_fee) || 0),2,true)}}元</div>
+                <div class="tcolumn"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div style="padding: 20px 32px" v-if="order_info.type == 2">
+        <div class="tableCtn">
+          <div class="thead">
+            <div class="trow">
+              <div class="tcolumn">额外费用</div>
+              <div class="tcolumn">对方扣款金额</div>
+              <div class="tcolumn">销售数量</div>
+              <div class="tcolumn">销售总额（含额外、扣款）</div>
               <div class="tcolumn">操作</div>
             </div>
           </div>
@@ -507,8 +556,6 @@
               <div class="tcolumn">对方扣款金额</div>
               <div class="tcolumn">计划生产数量</div>
               <div class="tcolumn">实际发货数量</div>
-              <div class="tcolumn">计划总额（含额外、扣款）</div>
-              <div class="tcolumn">实际总额（含额外、扣款）</div>
               <div class="tcolumn blue" style="cursor:pointer" @click="openShengChan = !openShengChan">{{openShengChan?'收起':'展开'}}</div>
             </div>
             <div class="trow" style="background:#F4F4F4" v-show="openShengChan">
@@ -516,8 +563,6 @@
               <div class="tcolumn">对方扣款金额</div>
               <div class="tcolumn">计划生产数量</div>
               <div class="tcolumn">实际发货数量</div>
-              <div class="tcolumn">计划总额（含额外、扣款）</div>
-              <div class="tcolumn">实际总额（含额外、扣款）</div>
               <div class="tcolumn"></div>
             </div>
             <div class="trow" v-show="openShengChan">
@@ -525,13 +570,11 @@
               <div class="tcolumn">对方扣款金额</div>
               <div class="tcolumn">计划生产数量</div>
               <div class="tcolumn">实际发货数量</div>
-              <div class="tcolumn">计划总额（含额外、扣款）</div>
-              <div class="tcolumn">实际总额（含额外、扣款）</div>
               <div class="tcolumn"></div>
             </div>
           </div>
-        </div> -->
-        <div class="tableCtn">
+        </div>
+        <!-- <div class="tableCtn">
           <div class="thead">
             <div class="trow">
               <div class="tcolumn">费用名称</div>
@@ -615,7 +658,7 @@
               </div>
             </div>
           </div>
-        </div>
+        </div> -->
       </div>
     </div>
     <div class="bottomFixBar">
@@ -1427,8 +1470,8 @@
               <div class="elCtn">
                 <el-select v-model="jiagongdanObj.jiagongClient" collapse-tags :multiple-limit='2' value-key='id' multiple placeholder="请选择加工单位">
                   <el-option
-                    v-for="itemClient in client_arr"
-                    :key="itemClient.id"
+                    v-for="itemClient,indexClient in client_arr"
+                    :key="itemClient.id || indexClient + '加工单位'"
                     :value="itemClient"
                     :label="itemClient.code + '-' + itemClient.name">
                   </el-option>
@@ -1576,6 +1619,8 @@ export default Vue.extend({
       showGuanLian: false,
       showIn: false,
       openShengChan: false,
+      openCaiGou: false,
+      openJiaGong: false,
       yarnList: [],
       yarnInfoList: [],
       fahuoList: [],
@@ -1589,6 +1634,8 @@ export default Vue.extend({
       jiagsdjList: [],
       initData: [],
       childList: [],
+      total_process_info:{},
+      total_purchase_info:{},
       fahuoListObj: {
         total_reality_weight: 0,
         total_weight: 0,
@@ -1817,14 +1864,82 @@ export default Vue.extend({
             },0)
           }, 0)
           .toFixed(1)
+        // @ts-ignore
+        this.order_info.total_deduct_price = this.order_info.deduct.reduce((a:any,b:any) => {
+          return a + (Number(b.total_price) || 0)
+        },0)
+        // @ts-ignore
+        this.order_info.process_log.forEach((item:any) => {
+          item.total_deduct_price = item.deduct_log ? item.deduct_log.reduce((a1:any,b1:any) => {
+              return a1 + b1.total_price
+            },0) : 0
+        });
+        // @ts-ignore
+        this.order_info.purchase_log.forEach((item:any) => {
+          item.total_deduct_price = item.deduct_log ? item.deduct_log.reduce((a1:any,b1:any) => {
+              return a1 + b1.total_price
+            },0) : 0
+        });
+        this.total_process_info = {
+          // @ts-ignore
+          total_additional_fee: this.order_info.process_log.reduce((a:any,b:any) => {
+            return a + Number(b.total_additional_fee)
+          },0),
+          // @ts-ignore
+          total_number: this.order_info.process_log.reduce((a:any,b:any) => {
+            return a + Number(b.total_number)
+          },0),
+          // @ts-ignore
+          total_real_number: this.order_info.process_log.reduce((a:any,b:any) => {
+            return a + Number(b.total_real_number)
+          },0),
+          // @ts-ignore
+          total_price: this.order_info.process_log.reduce((a:any,b:any) => {
+            return a + Number(b.total_price)
+          },0),
+          // @ts-ignore
+          total_real_price: this.order_info.process_log.reduce((a:any,b:any) => {
+            return a + Number(b.total_real_price)
+          },0),
+          // @ts-ignore
+          total_deduct_price: this.order_info.process_log.reduce((a:any,b:any) => {
+            return a + Number(b.total_deduct_price)
+          },0)
+        }
+        this.total_purchase_info = {
+          // @ts-ignore
+          total_additional_fee: this.order_info.purchase_log.reduce((a:any,b:any) => {
+            return a + Number(b.total_additional_fee)
+          },0),
+          // @ts-ignore
+          total_number: this.order_info.purchase_log.reduce((a:any,b:any) => {
+            return a + Number(b.total_number)
+          },0),
+          // @ts-ignore
+          total_real_number: this.order_info.purchase_log.reduce((a:any,b:any) => {
+            return a + Number(b.total_real_number)
+          },0),
+          // @ts-ignore
+          total_price: this.order_info.purchase_log.reduce((a:any,b:any) => {
+            return a + Number(b.total_price)
+          },0),
+          // @ts-ignore
+          total_real_price: this.order_info.purchase_log.reduce((a:any,b:any) => {
+            return a + Number(b.total_real_price)
+          },0),
+          // @ts-ignore
+          total_deduct_price: this.order_info.purchase_log.reduce((a:any,b:any) => {
+            return a + Number(b.total_deduct_price)
+          },0)
+        }
         this.order_info.product_info.forEach((item: any) => {
           let processArr: any[] = []
           // @ts-ignore
-          let a = this.order_info.transfer_log.find((itemTrans:any) => {
+          let a = this.order_info.transfer_log ? this.order_info.transfer_log.find((itemTrans:any) => {
             return itemTrans.child_data.find((itemChild:any) => {
               return item.product_name === itemChild.name
             })
-          })
+          }) : false
 
           item.total_purchase_weight = item.child_data.reduce((a: any, b: any) => {
             return a + (b.purchase_weight || 0)
@@ -2005,7 +2120,9 @@ export default Vue.extend({
           let itemClient = client_arr.find((itemClient:any) => {
             return itemClient.id === item
           })
-          this.client_arr.push(itemClient)
+          if(itemClient){
+            this.client_arr.push(itemClient)
+          }
         });
 
         this.order_log_list = res[2].data.data.items

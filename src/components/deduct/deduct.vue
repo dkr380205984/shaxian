@@ -9,12 +9,12 @@
       </div>
       <div class="contentCtn">
         <!-- 父级给关联单号 -->
-        <!-- <div class="row"
+        <div class="row"
           v-if="data.pcode">
           <div class="label">{{typeFilter(data.type)}}单号：</div>
           <div class="info text"
             style="color:#1a95ff">{{data.pcode}}</div>
-        </div> -->
+        </div>
         <!-- 自选关联单号 -->
         <!-- <div class="row"
           v-if="!data.pcode">
@@ -351,10 +351,12 @@ export default class Deduct extends Vue {
       total_price: this.price,
       type: this.data.myType,
       date: this.date,
+      rel_doc_type: this.data.type || null,
+      rel_doc_id: this.data.pid || null,
       id: null,
       reason:'',
       deduct_file: this.image_data[0] || this.file || null,
-      client_id: this.data.client_id,
+      client_id: this.data.client_id || null,
       desc: this.desc
     }
     deduct.create({data:[formData]}).then((res) => {

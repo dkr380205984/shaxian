@@ -645,7 +645,7 @@
                 </el-image>
               </div>
               <div class="column">{{ item.desc }}</div>
-              <div class="column">{{ item.invoice_date }}</div>
+              <div class="column">{{ item.collect_date }}</div>
               <div class="column">{{ item.user_name }}</div>
               <div class="column">
                 <div class="opr blue">打印</div>

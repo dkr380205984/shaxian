@@ -27,6 +27,7 @@
             <div class="row">
               <div class="column">打印页面</div>
               <div class="column">页面标题</div>
+              <div class="column">结算方式</div>
               <div class="column">操作</div>
             </div>
           </div>
@@ -36,6 +37,7 @@
               :key="item.id">
               <div class="column">{{item.name}}</div>
               <div class="column">{{item.title || '/'}}</div>
+              <div class="column">{{item.settle_type || '无'}}</div>
               <div class="column">
                 <span class="col_btn orange"
                   @click="changePrint(item)">修改</span>

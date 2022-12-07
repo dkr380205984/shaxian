@@ -24,7 +24,7 @@
             <span class="text">
               <span class="text">计划：{{ order_yarn_info.total_price }}元</span>
               <br/>
-              <span class="text">实际：{{ (+order_yarn_info.total_push_price + +order_yarn_info.total_additional_fee).toFixed(2)}}元</span>
+              <span class="text">实际：{{ order_yarn_info.total_push_price }}元</span>
             </span>
           </div>
         </div>
@@ -137,8 +137,8 @@
               <div class="tcolumn">合计</div>
               <div class="tcolumn"></div>
               <div class="tcolumn"></div>
-              <div class="tcolumn">
-                <div>计划:{{(+order_yarn_info.total_price - +order_yarn_info.total_additional_fee).toFixed(2)}} 元</div>
+              <div class="tcolumn"> 
+                <div>计划:{{order_yarn_info.total_price}} 元</div>
                 <div class="green">实际:{{ order_yarn_info.total_push_price }} 元</div>
               </div>
               <div class="tcolumn blue">{{ (order_yarn_info.total_weight || 0).toFixed(1) }}kg</div>
@@ -264,7 +264,7 @@
             <div class="row" v-for="item in deduct_list" :key="item.id">
               <div class="column blue">{{ item.code }}</div>
               <div class="column">
-                <div class="sortContainer" v-if="item.deduct_content.length > 0">
+                <div class="sortContainer" v-if="item.deduct_content && item.deduct_content.length > 0">
                   <div class="sort">
                     <i class="el-icon-caret-top hover" @click="changeIndex(item, 'add')"></i>
                     <div class="number">{{ (item.index || 0) + 1 }}/{{ item.deduct_content.length }}</div>
@@ -275,7 +275,7 @@
                 <div class="gray" v-else>暂无纱线</div>
               </div>
               <div class="column">
-                <template v-if="item.deduct_content.length.length > 0"
+                <template v-if="item.deduct_content && item.deduct_content.length.length > 0"
                   >{{ item.deduct_content[item.index || 0].price }}元</template
                 >
                 <div class="gray" v-else>暂无单价</div>
@@ -662,6 +662,9 @@ export default Vue.extend({
         this.order_yarn_info.additional_fee = this.order_yarn_info.additional_fee
           ? JSON.parse(this.order_yarn_info.additional_fee as string)
           : []
+        this.order_yarn_info.total_price = this.order_yarn_info.child_data.reduce((total, current) => {
+          return total + ((Number(current.price) || 0) * (Number(current.weight) || 0))
+        }, 0).toFixed(2)
         this.order_yarn_info.total_weight = this.order_yarn_info.child_data.reduce((total, current) => {
           return total + Number(current.weight)
         }, 0)
@@ -674,7 +677,7 @@ export default Vue.extend({
         this.order_in_log = res[1].data.data.items
         this.deduct_list = res[2].data.data
         this.deduct_list.forEach((item: any) => {
-          item.deduct_content = JSON.parse(item.deduct_content) || []
+          item.deduct_content = item.deduct_content ? JSON.parse(item.deduct_content) : []
         })
         if (this.order_yarn_info.status === 4) {
           this.cancel_reason = res[3].data.data.cancel_reason

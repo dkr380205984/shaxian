@@ -194,6 +194,7 @@ export default Vue.extend({
     },
     editChild(detail: ProductDetail) {
       if (detail.edit) {
+        console.log(detail.id)
         if (detail.color && detail.attribute) {
           let arr = this.$mergeData(this.submit_form,{
             mainRule:['color','attribute','price','desc']
@@ -203,6 +204,7 @@ export default Vue.extend({
             return
           }
           this.loading = true
+          console.log(detail.id)
           product
             .editProChild({
               id: detail.id,

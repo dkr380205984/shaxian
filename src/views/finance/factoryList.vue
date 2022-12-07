@@ -94,12 +94,102 @@
         </div>
       </div>
     </div>
+    <div class="bottomFixBar">
+      <div class="main">
+        <div class="btnCtn"
+          style="float:left">
+          <div class="buttonList">
+            <div class="btn backHoverBlue">
+              <i class="el-icon-s-grid"></i>
+              <span class="text">批量导入单据</span>
+            </div>
+            <div class="otherInfoCtn">
+              <div class="otherInfo">
+                <div class="btn backHoverOrange"
+                  @click="importExcelData('开票单据')">
+                  <svg class="iconFont"
+                    aria-hidden="true">
+                    <use xlink:href="#icon-xiugaidingdan"></use>
+                  </svg>
+                  <span class="text">开票单据</span>
+                </div>
+                <div class="btn backHoverRed"
+                  @click="importExcelData('扣款单据')">
+                  <svg class="iconFont"
+                    aria-hidden="true">
+                    <use xlink:href="#icon-xiugaidingdan"></use>
+                  </svg>
+                  <span class="text">扣款单据</span>
+                </div>
+                <div class="btn backHoverBlue"
+                  @click="importExcelData('收款单据','元')">
+                  <svg class="iconFont"
+                    aria-hidden="true">
+                    <use xlink:href="#icon-xiugaidingdan"></use>
+                  </svg>
+                  <span class="text">收款单据</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="buttonList">
+            <div class="btn backHoverBlue">
+              <i class="el-icon-s-grid"></i>
+              <span class="text">下载导入模板</span>
+            </div>
+            <div class="otherInfoCtn">
+              <div class="otherInfo">
+                <div class="btn backHoverOrange"
+                  @click="downloadExcel('开票单据模板')">
+                  <svg class="iconFont"
+                    aria-hidden="true">
+                    <use xlink:href="#icon-xiugaidingdan"></use>
+                  </svg>
+                  <span class="text">开票单据</span>
+                </div>
+                <div class="btn backHoverBlue"
+                  @click="downloadExcel('收款单据模板')">
+                  <svg class="iconFont"
+                    aria-hidden="true">
+                    <use xlink:href="#icon-xiugaidingdan"></use>
+                  </svg>
+                  <span class="text">收款单据</span>
+                </div>
+                <div class="btn backHoverRed"
+                  @click="downloadExcel('扣款单据模板')">
+                  <svg class="iconFont"
+                    aria-hidden="true">
+                    <use xlink:href="#icon-xiugaidingdan"></use>
+                  </svg>
+                  <span class="text">扣款单据</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <span class="btn hoverBlue">
+            <el-tooltip class="item"
+              effect="dark"
+              placement="top">
+              <div slot="content">
+                第一步：下载导入模板。<br />
+                第二步：填写模板信息。注意：请填写客户或单位全称；金额字段必须为数字；日期字段的格式必须为yyyy-mm-dd（2022-01-01）；订单号必须为系统订单编号；关联单据编号必须为系统关联编号；否则会出现无法导入或者导入错误的情况。<br />
+                第三步：导入模板，完成导入
+              </div>
+              <span>导入教程</span>
+            </el-tooltip>
+          </span>
+        </div>
+        <div class="btnCtn">
+          <div class="borderBtn" @click="$router.go(-1)">返回</div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
-import { finance } from '@/assets/js/api'
+import { finance,bill,collection,deduct } from '@/assets/js/api'
 import { PartyB } from '@/types/common'
 export default Vue.extend({
   data(): {
@@ -205,6 +295,241 @@ export default Vue.extend({
     }
   },
   methods: {
+    downloadExcel(type: string) {
+      if (type === '开票单据模板') {
+        this.$downloadExcel(
+          [],
+          [
+            { title: '开票客户/单位名称(必填，全称)', key: 'client_name' },
+            { title: '发票号码(必填)', key: 'invoice_code' },
+            { title: '开票金额(必填)', key: 'invoice_price' },
+            { title: '开票日期(选填)', key: 'invoice_date' },
+            { title: '开票备注(选填)', key: 'desc' }
+          ],
+          type
+        )
+      } else if (type === '扣款单据模板') {
+        this.$downloadExcel(
+          [],
+          [
+            { title: '扣款单位(必填，全称)', key: 'client_name' },
+            { title: '扣款金额(必填)', key: 'total_price' },
+            { title: '扣款备注(选填)', key: 'desc' },
+            { title: '扣款日期(选填)', key: 'date' }
+          ],
+          type
+        )
+      } else if (type === '收款单据模板') {
+        this.$downloadExcel(
+          [],
+          [
+            { title: '收款单位(必填，全称)', key: 'client_name' },
+            { title: '收款方式(必填，现金收款、银行转账、网银支付三选一)', key: 'type' },
+            { title: '收款金额(必填)', key: 'collect_price' },
+            { title: '收款备注(选填)', key: 'desc' },
+            { title: '收款日期(选填)', key: 'collect_date' }
+          ],
+          type
+        )
+      }
+    },
+    importExcelData(type: string, settle_unit?: string) {
+      this.settle_excel_unit = settle_unit
+      const inputFile = document.createElement('input')
+      inputFile.type = 'file'
+      inputFile.accept = '.xlsx,.xls'
+      inputFile.addEventListener('change', (e) => {
+        this.getExcelData(e, this.saveImportData, type)
+      })
+      let click = document.createEvent('MouseEvents')
+      click.initEvent('click', true, true)
+      inputFile.dispatchEvent(click)
+    },
+    getExcelData(file: any, callBack: any, type: string) {
+      const _this = this
+      const XLSX = require('xlsx')
+      const files = file.target.files
+      const fileReader = new FileReader()
+      fileReader.onload = function (e: any) {
+        try {
+          const data = e.target.result
+          const bytes = new Uint8Array(data) // 无符号整型数组
+          const len = bytes.byteLength
+          const binarys = new Array(len) // 创建定长数组，存储文本
+          for (let i = 0; i < len; i++) {
+            binarys[i] = String.fromCharCode(bytes[i])
+          }
+          const workbook = XLSX.read(binarys.join(''), { type: 'binary' })
+          if (!workbook) {
+            return null
+          }
+          const r: any = {}
+          workbook.SheetNames.forEach((name: string) => {
+            // 遍历每张纸数据
+            r[name] = XLSX.utils.sheet_to_json(workbook.Sheets[name])
+          })
+          callBack && callBack(r, type)
+        } catch (e) {
+          console.log(e)
+          _this.$message.error('文件类型不正确')
+        }
+      }
+      fileReader.readAsArrayBuffer(files[0])
+    },
+    saveImportData(data: any, type: string) {
+      let typeObj: any = {}
+      if (type === '开票单据') {
+        typeObj = {
+          client_name: ['开票客户/单位名称(必填，全称)'],
+          invoice_code: ['发票号码(必填)'],
+          invoice_price: ['开票金额(必填)'],
+          invoice_date: ['开票日期(选填)', this.$getDate(new Date())],
+          desc: ['开票备注(选填)', ''],
+          file_url: [false, null],
+          id: [false, null],
+          invoice_type: [false,2],
+          type: [false, 2],
+          pid: [false, []],
+        }
+      } else if (type === '收款单据') {
+        typeObj = {
+          type: ['收款方式(必填，现金收款、银行转账、网银支付三选一)'],
+          client_name: ['收款单位(必填，全称)'],
+          collect_price: ['收款金额(必填)'],
+          collect_date: ['收款日期(选填)', this.$getDate(new Date())],
+          desc: ['收款备注(选填)', ''],
+          collect_or_pay: [false,2],
+          collect_type: [false,2],
+          file_url: [false, null],
+          id: [false, null],
+          pid: [false, []],
+        }
+      } else if (type === '扣款单据') {
+        typeObj = {
+          client_name: ['扣款单位(必填，全称)'],
+          total_price: ['扣款金额(必填)'],
+          desc: ['扣款备注(选填)',''],
+          date: ['扣款日期(选填)', this.$getDate(new Date())],
+          deduct_file: [false, null],
+          type: [false, 2],
+          id: [false, null],
+          reason: [false, ''],
+        }
+      }
+      let submitData = []
+      for (const prop in data) {
+        for (const key in data[prop]) {
+          let obj: any = {}
+          for (const indexType in typeObj) {
+            if (typeObj[indexType][0]) {
+              obj[indexType] = data[prop][key][typeObj[indexType][0]] || typeObj[indexType][1]
+              if (obj[indexType] === undefined) {
+                this.$message.error('解析失败，请使用标准模板或检测必填数据是否存在空的情况！！！')
+                return
+              }
+            } else {
+              obj[indexType] = typeObj[indexType][1]
+            }
+          }
+          submitData.push(obj)
+        }
+      }
+      if (submitData.length === 0) {
+        this.$message.warning('未读取到可用参数')
+        return
+      }
+      if (type === '开票单据') {
+        let err = false
+        // excel日期格式转前端日期格式
+        submitData.forEach((item) => {
+          let obj = this.client_list.find((itemClient:any) => {
+            console.log(itemClient.name , item.client_name)
+            return itemClient.name == item.client_name
+          })
+          if(!obj) {
+            this.$message.error('解析失败，有所填单位非加工厂单位全称，或者该单位不存在，请仔细检查')
+            err = true
+          } else {
+            item.client_id = obj.id
+          }
+          delete item.client_name
+          const time: any = new Date((item.invoice_date - 1) * 24 * 3600000 + 1)
+          time.setYear(time.getFullYear() - 70)
+          const year = time.getFullYear()
+          const month = time.getMonth() + 1
+          const date = time.getDate()
+          if(typeof item.invoice_date === 'number') {
+            item.invoice_date = year + '-' + (month < 10 ? '0' + month : month) + '-' + (date < 10 ? '0' + date : date)
+          }
+        })
+        if(err) return
+        bill.create({data: submitData}).then((res) => {
+          if (res.data.status) {
+            this.$message.success('导入成功')
+            this.getList()
+          }
+        })
+      } else if (type === '收款单据') {
+        let err = false
+        // excel日期格式转前端日期格式
+        submitData.forEach((item) => {
+          let obj = this.client_list.find((itemClient:any) => {
+            return itemClient.name == item.client_name
+          })
+          if(!obj) {
+            this.$message.error('解析失败，有所填单位非加工厂单位全称，或者该单位不存在，请仔细检查')
+            err = true
+          } else {
+            item.client_id = obj.id
+          }
+          delete item.client_name
+          const time: any = new Date((item.collect_date - 1) * 24 * 3600000 + 1)
+          time.setYear(time.getFullYear() - 70)
+          const year = time.getFullYear()
+          const month = time.getMonth() + 1
+          const date = time.getDate()
+          if(typeof item.collect_date === 'number') {
+            item.collect_date = year + '-' + (month < 10 ? '0' + month : month) + '-' + (date < 10 ? '0' + date : date)
+          }
+        })
+        if(err) return
+        collection.create({data: submitData}).then((res) => {
+          if (res.data.status) {
+            this.$message.success('导入成功')
+            this.getList()
+          }
+        })
+      } else if (type === '扣款单据') {
+        let err = false
+        // excel日期格式转前端日期格式
+        submitData.forEach((item) => {
+          let obj = this.client_list.find((itemClient:any) => {
+            return itemClient.name == item.client_name
+          })
+          if(!obj) {
+            this.$message.error('解析失败，有所填单位非加工厂单位全称，或者该单位不存在，请仔细检查')
+            err = true
+          } else {
+            item.client_id = obj.id
+          }
+          const time: any = new Date((item.date - 1) * 24 * 3600000 + 1)
+          time.setYear(time.getFullYear() - 70)
+          const year = time.getFullYear()
+          const month = time.getMonth() + 1
+          const date = time.getDate()
+          if(typeof item.date === 'number') {
+            item.date = year + '-' + (month < 10 ? '0' + month : month) + '-' + (date < 10 ? '0' + date : date)
+          }
+        })
+        if(err) return
+        deduct.create({data:submitData}).then((res) => {
+          if (res.data.status) {
+            this.$message.success('导入成功')
+            this.getList()
+          }
+        })
+      }
+    },
     changeRouter(pages: number = 1) {
       this.$router.replace(
         `/finance/factoryList?pages=${pages}&name=${this.name || ''}&sort_type=${this.sort_type || ''}&sort_cloum=${this.sort_cloum || ''
@@ -323,7 +648,19 @@ export default Vue.extend({
       this.changeRouter()
     }
   },
+  computed: {
+    client_list() {
+      return this.$store.state.api.supplier.arr
+    },
+  },
   mounted() {
+    this.$checkCommonInfo([
+      {
+        checkWhich: 'api/client',
+        getInfoMethed: 'dispatch',
+        getInfoApi: 'getPartyBAsync'
+      },
+    ])
     this.init()
   },
   watch: {

@@ -58,13 +58,13 @@
           </div>
         </div>
         <div class="row">
-          <div class="label">开票日期：</div>
+          <div class="label">收款日期：</div>
           <div class="info">
             <el-date-picker style="width:100%"
               v-model="date"
               type="date"
               value-format="yyyy-MM-dd"
-              placeholder="选择开票日期">
+              placeholder="选择收款日期">
             </el-date-picker>
           </div>
         </div>

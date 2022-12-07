@@ -873,6 +873,7 @@ export default Vue.extend({
       }
       if (
         this.order_yarn_info.child_data.some((item: any) => {
+          item.name = item.item ? item.item.label : item.name
           return this.$formCheck(item, [
             {
               key: 'name',

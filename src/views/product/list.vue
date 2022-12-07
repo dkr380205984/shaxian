@@ -71,7 +71,8 @@
                 <sort v-model="sort_store" @change="changeRouter(1)"></sort>
               </div>
               <div class="column">创建人</div>
-              <div class="column">操作</div>
+              <div class="column">更新时间</div>
+              <div class="column" style="flex:2">操作</div>
             </div>
           </div>
           <div class="bodyCtn">
@@ -83,7 +84,8 @@
               <div class="column">{{ item.child_data | fiterPrice }}</div>
               <div class="column">{{ item.store || 0 }}</div>
               <div class="column">{{ item.user_name }}</div>
-              <div class="column">
+              <div class="column">{{ item.updated_at ? $getDate(item.updated_at) : item.created_at ? $getDate(item.created_at) : '无'}}</div>
+              <div class="column" style="flex:2">
                 <div class="opr blue" @click="$router.push('/product/detail/' + item.id)">详情</div>
                 <div class="opr orange" @click="$router.push('/product/update/' + item.id)">修改</div>
                 <div class="opr red" @click="deletePro(item.id)">删除</div>

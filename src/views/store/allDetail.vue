@@ -363,8 +363,8 @@
                   <div class="bodyCtn">
                     <div class="row" v-for="item in storeLogInfo.list" :key="item.id + item.code">
                       <div class="column min120">{{ item.code }}</div>
-                      <div class="column" style="min-width: 80px">{{ item.action_type }}</div>
-                      <div class="column" style="min-width: 200px">{{ item.client_name }}</div>
+                      <div class="column" style="min-width: 80px;max-width:80px">{{ item.action_type }}</div>
+                      <div class="column" style="min-width: 200px">{{ item.client_name || '无'}}</div>
                       <div class="column" style="flex: 10; flex-direction: column">
                         <div
                           class="row"
@@ -410,8 +410,35 @@
                 <div class="bodyCtn">
                   <div class="row" v-for="item in storeLogInfo.list" :key="item.id + item.code">
                       <div class="column min120">{{ item.code }}</div>
-                      <div class="column" style="min-width: 80px">{{ item.action_type }}</div>
-                      <div class="column" style="min-width: 200px">{{ item.client_name }}</div>
+                      <div
+                        class="column"
+                        style="min-width: 80px;max-width:80px"
+                        :class="{
+                          blue:
+                            item.action_type === 1 ||
+                            item.action_type === 3 ||
+                            item.action_type === 5 ||
+                            item.action_type === 8 ||
+                            item.action_type === 11 ||
+                            item.action_type === 13 ||
+                            item.action_type === 14 ||
+                            item.action_type === 15 || 
+                            item.action_type === 17 , 
+                          green:
+                            item.action_type === 2 ||
+                            item.action_type === 4 ||
+                            item.action_type === 6 ||
+                            item.action_type === 7 ||
+                            item.action_type === 9 ||
+                            item.action_type === 10 ||
+                            item.action_type === 12 || 
+                            item.action_type === 16 || 
+                            item.action_type === 18
+                        }"
+                      >
+                        {{ item.action_type | stockTypeFilter }}
+                      </div>
+                      <div class="column" style="min-width: 200px">{{ item.client_name || '无'}}</div>
                       <div class="column noPad" style="flex-direction: column;width:0;overflow:hidden">
                         <div
                           class="row"
@@ -461,9 +488,9 @@
                       >
                       <!-- <span class="opr"
                         :class="{'green':item.related_id,'orange':!item.related_id}"
-                        @click="bindCode(item)">{{item.related_id?'已绑':'绑定'}}</span>
+                        @click="bindCode(item)">{{item.related_id?'已绑':'绑定'}}</span> -->
                       <span class="red opr"
-                        @click="deleteLog(item.id)">删除</span> -->
+                        @click="deleteLog(item.id)">删除</span>
                     </div>
                   </div>
                 </div>

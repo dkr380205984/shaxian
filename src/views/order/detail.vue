@@ -359,8 +359,8 @@
                   <div class="tcolumn"></div>
                   <div class="tcolumn"></div>
                   <div class="tcolumn"></div>
-                  <div class="tcolumn">{{ total_final_out_log.total_action_weight.toFixed(1) }}kg</div>
-                  <div class="tcolumn">{{ total_final_out_log.total_price.toFixed(2) }}元</div>
+                  <div class="tcolumn">{{ $toFixed(total_final_out_log.total_action_weight,1) }}kg</div>
+                  <div class="tcolumn">{{ $toFixed(total_final_out_log.total_price,2,true) }}元</div>
                   <div class="tcolumn">{{ total_final_out_log.total_item }}</div>
                 </div>
               </div>
@@ -484,11 +484,53 @@
         </div>
       </div>
     </div> -->
-    <div class="module" v-if="order_info.type == 1">
+    <div class="module">
       <div class="titleCtn">
         <span class="title">财务概览</span>
       </div>
       <div style="padding: 20px 32px">
+        <!-- <div class="tableCtn">
+          <div class="thead">
+            <div class="trow">
+              <div class="tcolumn">额外费用</div>
+              <div class="tcolumn">对方扣款金额</div>
+              <div class="tcolumn">计划生产数量</div>
+              <div class="tcolumn">实际发货数量</div>
+              <div class="tcolumn">计划总额（含额外、扣款）</div>
+              <div class="tcolumn">实际总额（含额外、扣款）</div>
+              <div class="tcolumn">操作</div>
+            </div>
+          </div>
+          <div class="tbody">
+            <div class="trow">
+              <div class="tcolumn">额外费用</div>
+              <div class="tcolumn">对方扣款金额</div>
+              <div class="tcolumn">计划生产数量</div>
+              <div class="tcolumn">实际发货数量</div>
+              <div class="tcolumn">计划总额（含额外、扣款）</div>
+              <div class="tcolumn">实际总额（含额外、扣款）</div>
+              <div class="tcolumn blue" style="cursor:pointer" @click="openShengChan = !openShengChan">{{openShengChan?'收起':'展开'}}</div>
+            </div>
+            <div class="trow" style="background:#F4F4F4" v-show="openShengChan">
+              <div class="tcolumn">额外费用</div>
+              <div class="tcolumn">对方扣款金额</div>
+              <div class="tcolumn">计划生产数量</div>
+              <div class="tcolumn">实际发货数量</div>
+              <div class="tcolumn">计划总额（含额外、扣款）</div>
+              <div class="tcolumn">实际总额（含额外、扣款）</div>
+              <div class="tcolumn"></div>
+            </div>
+            <div class="trow" v-show="openShengChan">
+              <div class="tcolumn">额外费用</div>
+              <div class="tcolumn">对方扣款金额</div>
+              <div class="tcolumn">计划生产数量</div>
+              <div class="tcolumn">实际发货数量</div>
+              <div class="tcolumn">计划总额（含额外、扣款）</div>
+              <div class="tcolumn">实际总额（含额外、扣款）</div>
+              <div class="tcolumn"></div>
+            </div>
+          </div>
+        </div> -->
         <div class="tableCtn">
           <div class="thead">
             <div class="trow">
@@ -520,13 +562,13 @@
               <div class="tcolumn gray">暂无</div>
               <div class="tcolumn gray">暂无操作</div>
             </div>
-            <!-- <div class="trow">
+            <div class="trow">
               <div class="tcolumn">纱线成本</div>
               <div class="tcolumn">费用数量</div>
               <div class="tcolumn orange">{{total.chengben_price.toFixed(1)}}</div>
               <div class="tcolumn">均价</div>
               <div class="tcolumn">操作</div>
-            </div> -->
+            </div>
             <div class="trow">
               <div class="tcolumn">倒筒加工</div>
               <div class="tcolumn">{{ total.daotong_weight.toFixed(1) }}kg</div>
@@ -1533,6 +1575,7 @@ export default Vue.extend({
       showProcessClient: false,
       showGuanLian: false,
       showIn: false,
+      openShengChan: false,
       yarnList: [],
       yarnInfoList: [],
       fahuoList: [],
@@ -1864,7 +1907,7 @@ export default Vue.extend({
 
         this.deduct_list = res[1].data.data
         this.deduct_list.forEach((item: any) => {
-          item.deduct_content = JSON.parse(item.deduct_content) || []
+          item.deduct_content = item.deduct_content ? JSON.parse(item.deduct_content) : []
         })
         //  跟订单相关的有三种数据，一种是普通发货action_type:9,一种是无单据生成的订单，action_type:12，一种加工厂发货,还有订单结余入库action_type:15
         this.final_out_log = res[2].data.data.items.filter(

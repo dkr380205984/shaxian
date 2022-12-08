@@ -125,7 +125,11 @@
           </div>
           <div class="tbody">
             <div class="trow" v-for="(item, index) in order_yarn_info.child_data" :key="index">
-              <div class="tcolumn">{{ item.name }}</div>
+              <div class="tcolumn">
+                <el-checkbox v-model="item.checked" style="white-space: pre-wrap;word-break: break-all;" @change="selectList($event, item)">
+                  <div>{{item.name}}</div>
+                </el-checkbox>
+              </div>
               <div class="tcolumn">{{ item.color }}</div>
               <div class="tcolumn">{{ item.attribute }}</div>
               <div class="tcolumn">{{ item.price }}元</div>
@@ -392,7 +396,7 @@
     <in-and-out
       :relatedCode="order_yarn_info.code"
       :relatedId="$route.params.id"
-      :yarnArr="store_info.yarn_arr"
+      :yarnArr="childList"
       :outClientArr="store_info.out_client_arr"
       :clientId="store_info.client_id"
       :show.sync="store_info.show"
@@ -583,6 +587,7 @@ export default Vue.extend({
         }
       },
       store_data: [],
+      childList: [],
       cancel_step: 2,
       check_flag: false,
       check_detail_flag: false,
@@ -639,6 +644,21 @@ export default Vue.extend({
     }
   },
   methods: {
+    selectList(bol: boolean, item: any) {
+      if (bol) {
+        this.childList.push(item)
+      } else {
+        item.child_data.forEach((itenChild: any) => {
+          this.$deleteItem(
+            this.childList,
+            this.childList.findIndex((itemChild2: any) => {
+              return itenChild.id === itemChild2.id
+            })
+          )
+        })
+      }
+      console.log(this.childList)
+    },
     init() {
       this.loading = true
       Promise.all([

@@ -787,7 +787,7 @@ export default class InAndOut extends Vue {
       this.selfType[0] === '订单' ||
       this.selfType[0] === '工艺单'
     ) {
-      return this.yarnArr || this.initYarnArr
+      return this.yarnArr && this.yarnArr.length > 0 ? this.yarnArr : this.initYarnArr
     } else {
       return this.$store.state.api.yarnType.arr.map((item: any) => {
         return {
@@ -949,7 +949,16 @@ export default class InAndOut extends Vue {
           this.initYarnArr = this.$mergeData(data.child_data, {
             mainRule: 'name'
           })
-          console.log(this.initYarnArr)
+          if(this.yarnArr && this.yarnArr.length > 0) {
+            this.yarnArr.forEach((item:any) => {
+              item.colorName = item.color
+              item.action_weight = item.weight
+            })
+            this.storeInfo.child_data = this.$clone(this.yarnArr)
+            this.yarnArr = this.$mergeData(this.yarnArr, {
+              mainRule: 'name'
+            })
+          }
           this.loading = false
         })
     }
@@ -1220,6 +1229,7 @@ export default class InAndOut extends Vue {
       this.selfType = ['无单据', 2]
     } else if (this.type === 3) {
       this.selfType = ['采购单', 3]
+      this.relatedId?this.initDetail(this.relatedId as number):''
     } else if (this.type === 4) {
       this.selfType = ['调取单', 4]
       this.relatedId?this.initDetail(this.relatedId as number):''
@@ -1647,17 +1657,18 @@ export default class InAndOut extends Vue {
         // @ts-ignore
         client_id: Array.isArray(this.storeInfo.client_id) ? this.storeInfo.client_id[1] : this.storeInfo.client_id,
         child_data: this.storeInfo.child_data.map((item: any) => {
+          console.log(item)
           return {
             name: Array.isArray(item.name) ? item.name[1] : item.name,
             action_weight: item.action_weight,
-            color: item.color,
+            color: item.colorName || item.color,
             attribute: item.attribute,
             store_client_id: item.store_client_id,
             batch_code: item.batch_code || '',
             color_code: item.color_code || '',
             vat_code: item.vat_code || '',
             item: item.item,
-            related_info_id: item.related_info_id || '',
+            related_info_id: item.related_info_id || item.id || '',
             desc: ''
           }
         })

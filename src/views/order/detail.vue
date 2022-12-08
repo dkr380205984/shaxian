@@ -547,30 +547,16 @@
               <div class="tcolumn">对方扣款金额</div>
               <div class="tcolumn">销售数量</div>
               <div class="tcolumn">销售总额（含额外、扣款）</div>
-              <div class="tcolumn">操作</div>
             </div>
           </div>
           <div class="tbody">
             <div class="trow">
-              <div class="tcolumn">额外费用</div>
-              <div class="tcolumn">对方扣款金额</div>
-              <div class="tcolumn">计划生产数量</div>
-              <div class="tcolumn">实际发货数量</div>
-              <div class="tcolumn blue" style="cursor:pointer" @click="openShengChan = !openShengChan">{{openShengChan?'收起':'展开'}}</div>
-            </div>
-            <div class="trow" style="background:#F4F4F4" v-show="openShengChan">
-              <div class="tcolumn">额外费用</div>
-              <div class="tcolumn">对方扣款金额</div>
-              <div class="tcolumn">计划生产数量</div>
-              <div class="tcolumn">实际发货数量</div>
-              <div class="tcolumn"></div>
-            </div>
-            <div class="trow" v-show="openShengChan">
-              <div class="tcolumn">额外费用</div>
-              <div class="tcolumn">对方扣款金额</div>
-              <div class="tcolumn">计划生产数量</div>
-              <div class="tcolumn">实际发货数量</div>
-              <div class="tcolumn"></div>
+              <div class="tcolumn">{{ $toFixed(order_info.total_additional_fee,2,true)}}元</div>
+              <div class="tcolumn">{{ $toFixed(order_info.total_deduct_price,2,true) }}元</div>
+              <div class="tcolumn">{{ $toFixed(order_info.total_weight,1) }}kg</div>
+              <div class="tcolumn">
+                {{ $toFixed(+order_info.total_price + +order_info.total_deduct_price,2,true) }}元
+              </div>
             </div>
           </div>
         </div>

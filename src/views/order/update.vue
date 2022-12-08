@@ -181,9 +181,10 @@
                         <div class="tcolumn flexRow"
                           style="flex:0.5">
                           <span class="opr red"
-                            style="margin-right:12px"
+                            style="margin: 0px 4px;"
                             @click="deleteOnce(itemPro.child_data,indexChild,indexPro,itemChild.id)">删除</span>
                           <span class="opr blue"
+                            style="margin: 0px 4px;"
                             @click="$addItem(itemPro.child_data,{
                               number_attribute: '',
                               weight: '',

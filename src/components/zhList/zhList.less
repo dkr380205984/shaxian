@@ -1,0 +1,74 @@
+@import '../../assets/less/common.less';
+@import '../../assets/less/fixedTable.less';
+
+.zhList {
+  .column {
+    &.orderProcess {
+      max-width: 290px;
+      min-width: 290px;
+    }
+
+    &.sampleOrderProcess {
+      max-width: 210px;
+      min-width: 210px;
+    }
+  }
+
+  .processCtn {
+    display: flex;
+    align-items: center;
+
+    .process {
+      margin-right: 4px;
+
+      .iconFont {
+        font-size: 26px;
+      }
+    }
+
+    .circle {
+      border: 1px solid;
+      text-align: center;
+      cursor: pointer;
+
+      &.green {
+        color: @green;
+      }
+
+      &.gray {
+        color: @font45;
+      }
+
+      &.blue {
+        color: @blue;
+      }
+    }
+  }
+
+  .circle {
+    max-width: 20px;
+    min-width: 20px;
+    height: 20px;
+    text-align: center;
+    line-height: 19px;
+    border-radius: 50%;
+    color: #fff;
+    font-size: 12px;
+    margin-right: 4px;
+  }
+
+  .text {
+    white-space: normal !important;
+    word-wrap: break-word;
+    overflow: auto;
+  }
+
+  .check {
+    max-width: 20px !important;
+    min-width: 20px !important;
+
+    span {
+      cursor: pointer;
+    }
+  }
+}

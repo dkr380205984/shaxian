@@ -39,7 +39,7 @@ Vue.filter('stockTypeFilter', (val: 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 16 |
 })
 // 票据类型
 Vue.filter('ticketFilter', (val: 1 | 2 | 3 | 4 | 5) => {
-  const statusArr = ['', '纱线订购', '纱线加工', '毛条订购', '毛条加工', '订单票据']
+  const statusArr = ['', '订单扣款', '其它扣款', '毛条订购', '毛条加工', '订单票据']
   return statusArr[val]
 })
 // 纱线类型

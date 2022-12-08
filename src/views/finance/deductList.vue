@@ -85,12 +85,12 @@
                     v-for="item in list"
                     :key="item.id">
                     <div class="column  min120"
-                      :class="{'blue':item.deduct_type===5,'orange':item.deduct_type!==5}">{{item.deduct_type | ticketFilter}}</div>
-                    <div class="column min120">{{item.client_name}}</div>
+                      :class="{'blue':item.type===5,'orange':item.type!==5}">{{item.type | ticketFilter}}</div>
+                    <div class="column min120">{{item.client_name || '无'}}</div>
                     <div class="column min120">{{item.code}}</div>
                     <div class="column min120">{{item.deduct_price}}元</div>
-                    <div class="column min120">{{item.desc}}</div>
-                    <div class="column min120">{{item.deduct_date}}</div>
+                    <div class="column min120">{{item.desc || '无'}}</div>
+                    <div class="column min120">{{item.date || '无'}}</div>
                     <div class="column min120">
                       <el-image style="width: 50px; height: 50px;line-height:50px;text-align:center;font-size:22px"
                         :src="item.file_url"
@@ -126,7 +126,7 @@
                   v-for="item in list"
                   :key="item.id">
                   <div class="column  min120"
-                    :class="{'blue':item.deduct_type===5,'orange':item.deduct_type!==5}">{{item.deduct_type | ticketFilter}}</div>
+                    :class="{'blue':item.type===5,'orange':item.type!==5}">{{item.type | ticketFilter}}</div>
                 </div>
               </div>
             </div>
@@ -136,10 +136,8 @@
                   <div class="column min120">操作</div>
                 </div>
               </div>
-              <div class="bodyCtn"
-                v-for="item in list"
-                :key="item.id">
-                <div class="row">
+              <div class="bodyCtn">
+                <div class="row" v-for="item in list" :key="item.id">
                   <div class="column min120">
                     <div class="opr blue">打印</div>
                     <div class="opr red"

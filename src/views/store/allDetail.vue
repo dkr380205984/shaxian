@@ -154,10 +154,10 @@
                     {{ (itemStore.reality_weight && $formatNum(itemStore.reality_weight)) || '-' }}
                   </div>
                   <div class="tcolumn flexRow" style="flex: 2">
-                    <span class="opr green" @click="goLogEl(item, itemStore)">日志</span>
-                    <span class="opr green" @click="openStore(1, item)">入库</span>
-                    <span class="opr red" @click="openStore(2, item)">出库</span>
-                    <span class="opr blue" @click="openStore(3, item)">移库</span>
+                    <span style="margin: 0 6px;" class="opr green" @click="goLogEl(item, itemStore)">日志</span>
+                    <span style="margin: 0 6px;" class="opr green" @click="openStore(1, item)">入库</span>
+                    <span style="margin: 0 6px;" class="opr red" @click="openStore(2, item)">出库</span>
+                    <span style="margin: 0 6px;" class="opr blue" @click="openStore(3, item)">移库</span>
                   </div>
                 </div>
               </div>

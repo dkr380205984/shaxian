@@ -50,69 +50,8 @@
             <div class="btn btnGray fr" @click="reset">重置</div>
           </div>
         </div>
-        <div class="list">
-          <el-table :data="list" style="width: 100%" ref="table">
-            <el-table-column fixed prop="code" label="采购单号" width="120"> </el-table-column>
-            <el-table-column fixed prop="client_name" label="采购单位" width="140"> </el-table-column>
-            <el-table-column prop="status" label="采购单状态" width="120">
-              <template slot-scope="scope">
-                <span
-                  :class="{
-                    orange: scope.row.status === 1,
-                    blue: scope.row.status === 2,
-                    green: scope.row.status === 3,
-                    gray: scope.row.status === 4
-                  }"
-                  >{{ scope.row.status | orderStatusFilter }}</span
-                >
-              </template>
-            </el-table-column>
-            <el-table-column prop="is_check" label="审核信息" width="120">
-              <template slot-scope="scope">
-                <span
-                  :class="{
-                    orange: !scope.row.is_check,
-                    green: scope.row.is_check === 1,
-                    red: scope.row.is_check === 2
-                  }"
-                  >{{ scope.row.is_check | orderCheckFilter }}</span
-                >
-              </template>
-            </el-table-column>
-            <el-table-column label="纱线名称" width="200">
-              <template slot-scope="scope">
-                <div class="sortContainer">
-                  <div class="sort">
-                    <i class="el-icon-caret-top hover" @click="changeIndex(scope.row, 'add')"></i>
-                    <div class="number">{{ (scope.row.index || 0) + 1 }}/{{ scope.row.child_data.length }}</div>
-                    <i class="el-icon-caret-bottom hover" @click="changeIndex(scope.row, 'delete')"></i>
-                  </div>
-                  <span>{{ scope.row.child_data[scope.row.index || 0].name }}</span>
-                </div>
-              </template>
-            </el-table-column>
-            <el-table-column prop="total_price" label="颜色" width="120">
-              <template slot-scope="scope">
-                <span>{{ scope.row.child_data[scope.row.index || 0].color }}</span>
-              </template>
-            </el-table-column>
-            <el-table-column prop="total_price" label="采购数量(kg)" width="120">
-              <template slot-scope="scope">
-                <span>{{ scope.row.child_data[scope.row.index || 0].weight }}</span>
-              </template>
-            </el-table-column>
-            <el-table-column prop="total_weight" label="采购总数(kg)" width="120">
-              <template slot-scope="scope">
-                <span class="blue">{{ scope.row.total_weight }}</span>
-              </template>
-            </el-table-column>
-            <el-table-column prop="push_weight" label="入库总数(kg)" width="120">
-              <template slot-scope="scope">
-                <span class="green">{{ scope.row.push_weight }}</span>
-              </template>
-            </el-table-column>
-            <el-table-column prop="total_price" label="下单总价(元)" width="120"> </el-table-column>
-            <el-table-column prop="delivery_time" label="交货日期" width="120">
+        <!-- 
+          <el-table-column prop="delivery_time" label="交货日期" width="120">
               <template slot-scope="scope">
                 <div v-if="scope.row.status !== 3" style="display: flex; flex-direction: column">
                   <span>{{ scope.row.delivery_time }}</span>
@@ -136,32 +75,28 @@
                 </div>
               </template>
             </el-table-column>
-            <el-table-column prop="order_time" label="下单日期" width="120"> </el-table-column>
-            <el-table-column label="补充说明">
-              <template slot-scope="scope">
-                <div class="column">
-                  <el-image
-                    style="width: 50px; height: 50px; line-height: 50px; text-align: center; font-size: 22px"
-                    :src="scope.row.file_url"
-                    :preview-src-list="[scope.row.file_url]"
-                  >
-                    <div slot="error" class="image-slot">
-                      <i class="el-icon-picture-outline"></i>
-                    </div>
-                  </el-image>
-                </div>
-              </template>
-            </el-table-column>
-            <el-table-column prop="user_name" label="操作人" width="120"> </el-table-column>
-            <el-table-column fixed="right" label="操作" width="150">
-              <template slot-scope="scope">
-                <span class="opr blue" @click="$router.push('/directOrder/yarnDetail/' + scope.row.id)">详情</span>
-                <span class="opr orange" @click="openUpdate(scope.row)">修改</span>
-                <span class="opr red" @click="openDelete(scope.row.id)">删除</span>
-              </template>
-            </el-table-column>
-          </el-table>
+        -->
+        <div class="filterCtn" style="min-height: 33px; justify-content: unset; margin-bottom: 18px">
+          <div class="btn backHoverOrange" @click="showSetting = true" style="margin-left: 0">列表设置</div>
+          <div
+            class="btn backHoverGreen"
+            style="margin-left: 20px"
+            @click="
+              getFilters()
+              getList()
+            "
+          >
+            刷新列表
+          </div>
         </div>
+        <zh-list
+          :list="list"
+          :check="true"
+          :checkedCount="checkedCount"
+          :listKey="listKey"
+          :loading="loading"
+          :oprList="oprList"
+        ></zh-list>
         <div class="pageCtn">
           <el-pagination
             background
@@ -175,12 +110,22 @@
       </div>
     </div>
     <shaxianAddPO :show="showAddPO" :update="update_flag" @close="resetInfo" :info="order_yarn_info" @afterCreate="afterCreate"></shaxianAddPO>
+    <!-- 列表设置 -->
+    <zh-list-setting
+      @close="showSetting = false"
+      @afterSave="getListSetting"
+      :show="showSetting"
+      :id="listSettingId"
+      :type="2"
+      :data.sync="listKey"
+      :originalData="originalSetting"
+    ></zh-list-setting>
   </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
-import { product, yarnOrder } from '@/assets/js/api'
+import { product, yarnOrder, listSetting } from '@/assets/js/api'
 import { OrderYarn } from '@/types/orderProcessYarn'
 export default Vue.extend({
   data(): {
@@ -202,6 +147,150 @@ export default Vue.extend({
       showAddPO: false,
       update_flag: false,
       select_loading: false,
+      showSetting: false,
+      listSettingId: null,
+      listKey: [],
+      checkedCount: [],
+      originalSetting: [
+        {
+          key: 'code',
+          name: '采购单号',
+          ifShow: true,
+          ifLock: true,
+          index: 0
+        },
+        {
+          key: 'client_name',
+          name: '采购单位',
+          ifShow: true,
+          ifLock: true,
+          index: 1
+        },
+        {
+          key: 'status',
+          name: '采购单状态',
+          filterArr: ['未知', '已创建', '进行中', '已完成', '已取消'],
+          classArr: ['', 'orange', 'blue','green','gray'],
+          ifShow: true,
+          ifLock: false,
+          index: 2,
+          isStatus: true
+        },
+        {
+          key: 'is_check',
+          name: '审核信息',
+          filterArr: ['待审核', '已通过', '已驳回'],
+          classArr: ['orange', 'green', 'red'],
+          ifShow: true,
+          ifLock: false,
+          index: 3,
+          isStatus: true
+        },
+        {
+          key: 'name',
+          name: '纱线名称',
+          ifShow: true,
+          ifLock: false,
+          index: 4,
+          from: 'child_data',
+          mark: true
+        },
+        {
+          key: 'color',
+          name: '颜色',
+          ifShow: true,
+          ifLock: false,
+          index: 5,
+          from: 'child_data',
+        },
+        {
+          key: 'weight',
+          name: '采购数量(kg)',
+          ifShow: true,
+          ifLock: false,
+          index: 6,
+          from: 'child_data',
+          numberToString: true
+        },
+        {
+          key: 'total_weight',
+          name: '采购总数(kg)',
+          ifShow: true,
+          ifLock: false,
+          index: 7,
+          numberToString: true
+        },
+        {
+          key: 'push_weight',
+          name: '入库总数(kg)',
+          ifShow: true,
+          ifLock: false,
+          index: 8,
+          numberToString: true
+        },
+        {
+          key: 'total_price',
+          name: '下单总价（元）',
+          ifShow: true,
+          ifLock: false,
+          index: 9,
+          numberToString: true
+        },
+        {
+          key: 'delivery_time',
+          name: '交货日期',
+          ifShow: true,
+          ifLock: false,
+          index: 10
+        },
+        {
+          key: 'order_time',
+          name: '下单日期',
+          ifShow: true,
+          ifLock: false,
+          index: 11
+        },
+        {
+          key: 'image_data',
+          name: '补充说明',
+          ifShow: true,
+          ifLock: false,
+          ifImage: true,
+          index: 12
+        },
+        {
+          key: 'user_name',
+          name: '操作人',
+          ifShow: true,
+          ifLock: false,
+          index: 13
+        }
+      ],
+      oprList: [
+        {
+          name: '详情',
+          class: 'hoverBlue',
+          fn: (item: any) => {
+            this.$router.push('/directOrder/yarnDetail/' + item.id)
+          }
+        },
+        {
+          name: '修改',
+          class: 'hoverOrange',
+          fn: (item: any) => {
+            // @ts-ignore
+            this.openUpdate(item)
+          }
+        },
+        {
+          name: '删除',
+          class: 'hoverRed',
+          fn: (item: any) => {
+            // @ts-ignore
+            this.openDelete(item.id)
+          }
+        }
+      ],
       order_yarn_info: {
         order_id: '',
         client_id: '',
@@ -244,6 +333,13 @@ export default Vue.extend({
     page(newVal) {
       this.changeRouter(newVal)
     },
+    checkedCount(newVal) {
+      if (newVal.length > 0) {
+        this.checked = true
+      } else {
+        this.checked = false
+      }
+    },
     $route() {
       // 点击返回的时候更新下筛选条件
       this.getFilters()
@@ -251,6 +347,21 @@ export default Vue.extend({
     }
   },
   methods: {
+    getListSetting() {
+      this.listKey = []
+      listSetting
+        .detail({
+          type: 2
+        })
+        .then((res) => {
+          this.listSettingId = res.data.data ? res.data.data.id : null
+          this.listKey = res.data.data
+            ? JSON.parse(res.data.data.content).length > 0
+              ? JSON.parse(res.data.data.content)
+              : this.$clone(this.originalSetting)
+            : this.$clone(this.originalSetting)
+        })
+    },
     changeRouter(page: string) {
       const pages = page || 1
       this.$router.push(
@@ -455,6 +566,9 @@ export default Vue.extend({
           limit: this.page_size
         })
         .then((res) => {
+          res.data.data.items.forEach((item:any) => {
+            item.image_data = item.file_url?[item.file_url]:[]
+          });
           this.list = res.data.data.items
           this.total = res.data.data.total
           this.list.forEach((item: any) => {
@@ -492,10 +606,6 @@ export default Vue.extend({
     }
   },
   mounted() {
-    //@ts-ignore id为scoll已经被el-table使用，可以使el-table滚动
-    let domObj = this.$refs.table.bodyWrapper
-    domObj.id = 'scrollBar'
-    this.scrollFunction(domObj, 'scrollBar')
     this.$checkCommonInfo([
       {
         checkWhich: 'api/client',
@@ -513,7 +623,7 @@ export default Vue.extend({
         getInfoApi: 'getYarnTypeAsync'
       },
     ])
-
+    this.getListSetting()
     this.getFilters()
     this.getList()
   }

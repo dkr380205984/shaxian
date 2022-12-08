@@ -72,138 +72,53 @@
             <div class="btn btnGray fr" @click="reset">重置</div>
           </div>
         </div>
-        <div class="list">
-          <el-table :data="list" style="width: 100%" ref="table">
-            <el-table-column fixed prop="code" label="订单号" width="120"> </el-table-column>
-            <el-table-column fixed prop="order_code" label="客户单号" width="120"> </el-table-column>
-            <el-table-column prop="client_name" label="客户名称" width="140"> </el-table-column>
-            <el-table-column prop="type" label="订单类型" width="120">
-              <template slot-scope="scope">
-                <span>{{ scope.row.type === 1 ? '生产单' : '销售单' }}</span>
-              </template>
-            </el-table-column>
-            <el-table-column prop="status" label="订单状态" width="120">
-              <template slot-scope="scope">
+        <!-- 
+          <el-table-column prop="delivery_time" label="交货日期" width="120">
+            <template slot-scope="scope">
+              <div v-if="scope.row.status !== 3" style="display: flex; flex-direction: column">
+                <span>{{ scope.row.delivery_time }}</span>
                 <span
                   :class="{
-                    orange: scope.row.status === 1,
-                    blue: scope.row.status === 2,
-                    green: scope.row.status === 3,
-                    gray: scope.row.status === 4
+                    red: $diffByDate(scope.row.delivery_time) <= 0,
+                    green: $diffByDate(scope.row.delivery_time) > 7,
+                    orange: $diffByDate(scope.row.delivery_time) <= 7 && $diffByDate(scope.row.delivery_time) > 0
                   }"
-                  >{{ scope.row.status | orderStatusFilter }}</span
                 >
-              </template>
-            </el-table-column>
-            <el-table-column prop="is_check" label="审核信息" width="120">
-              <template slot-scope="scope">
-                <span
-                  :class="{
-                    orange: scope.row.is_check === 0,
-                    green: scope.row.is_check === 1,
-                    red: scope.row.is_check === 2
-                  }"
-                  >{{ scope.row.is_check | orderCheckFilter }}</span
-                >
-              </template>
-            </el-table-column>
-            <el-table-column label="纱线名称" width="170">
-              <template slot-scope="scope">
-                <div class="sortContainer">
-                  <div class="sort">
-                    <i class="el-icon-caret-top hover" @click="changeIndex(scope.row, 'delete')"></i>
-                    <div class="number">{{ (scope.row.index || 0) + 1 }}/{{ scope.row.product_info.length }}</div>
-                    <i class="el-icon-caret-bottom hover" @click="changeIndex(scope.row, 'add')"></i>
-                  </div>
-                  <span>{{ scope.row.product_info[scope.row.index || 0]?scope.row.product_info[scope.row.index || 0].product_name : '无' }}</span>
-                </div>
-              </template>
-            </el-table-column>
-            <el-table-column prop="total_price" label="颜色/属性" width="150">
-              <template slot-scope="scope">
-                <span
-                  >{{ scope.row.product_info[scope.row.index || 0]?scope.row.product_info[scope.row.index || 0].color : '无' }}/{{
-                    scope.row.product_info[scope.row.index || 0]?scope.row.product_info[scope.row.index || 0]?scope.row.product_info[scope.row.index || 0].attribute : '无':'无'
-                  }}</span
-                >
-              </template>
-            </el-table-column>
-            <el-table-column prop="total_price" label="数量属性" width="120">
-              <template slot-scope="scope">
-                <span>{{ scope.row.product_info[scope.row.index || 0]?scope.row.product_info[scope.row.index || 0].number_attribute : '无' }}</span>
-              </template>
-            </el-table-column>
-            <el-table-column prop="total_price" label="下单数量" width="120">
-              <template slot-scope="scope">
-                <span>{{ scope.row.product_info[scope.row.index || 0]?scope.row.product_info[scope.row.index || 0].weight : '无' }}</span>
-              </template>
-            </el-table-column>
-            <el-table-column prop="total_weight" label="下单总数(kg)" width="120"> </el-table-column>
-            <el-table-column prop="reality_push_weight" label="发货总数(kg)" width="120"> </el-table-column>
-            <el-table-column prop="total_price" label="下单总价(元)" width="120"> </el-table-column>
-            <el-table-column prop="delivery_time" label="交货日期" width="120">
-              <template slot-scope="scope">
-                <div v-if="scope.row.status !== 3" style="display: flex; flex-direction: column">
-                  <span>{{ scope.row.delivery_time }}</span>
-                  <span
-                    :class="{
-                      red: $diffByDate(scope.row.delivery_time) <= 0,
-                      green: $diffByDate(scope.row.delivery_time) > 7,
-                      orange: $diffByDate(scope.row.delivery_time) <= 7 && $diffByDate(scope.row.delivery_time) > 0
-                    }"
-                  >
-                    {{
-                      $diffByDate(scope.row.delivery_time) > 0
-                        ? '交货还剩' + $diffByDate(scope.row.delivery_time) + '天'
-                        : '延期发货' + Math.abs($diffByDate(scope.row.delivery_time)) + '天'
-                    }}
-                  </span>
-                </div>
-                <div v-if="scope.row.status === 3" style="display: flex; flex-direction: column">
-                  <span>{{ scope.row.delivery_time }}</span>
-                  <span class="green">已发货</span>
-                </div>
-              </template>
-            </el-table-column>
-            <el-table-column prop="order_time" label="下单日期" width="120"> </el-table-column>
-            <el-table-column prop="file_url" label="补充说明" width="120">
-              <template slot-scope="scope">
-                <div class="column">
-                  <el-image
-                    style="width: 50px; height: 50px; line-height: 50px; text-align: center; font-size: 22px"
-                    :src="scope.row.file_url"
-                    :preview-src-list="[scope.row.file_url]"
-                  >
-                    <div slot="error" class="image-slot">
-                      <i class="el-icon-picture-outline"></i>
-                    </div>
-                  </el-image>
-                </div>
-              </template>
-            </el-table-column>
-            <el-table-column prop="user_name" label="操作人" width="120"> </el-table-column>
-            <el-table-column fixed="right" label="操作" width="150">
-              <template slot-scope="scope">
-                <span class="blue opr" @click="$router.push('/order/detail/' + scope.row.id)">详情</span>
-                <span class="orange opr" v-if='scope.row.type == 1' @click="$router.push('/order/update/' + scope.row.id)">修改</span>
-                <!-- <el-dropdown>
-                  <span class="green" style="margin-left: 8px; cursor: pointer">更多</span>
-                  <el-dropdown-menu slot="dropdown">
-                    <el-dropdown-item @click.native="$router.push('/orderProcessYarn/detail/' + scope.row.id)">
-                      <span class="blue">订购加工</span>
-                    </el-dropdown-item>
-                    <el-dropdown-item @click.native="$router.push('/inAndOut/detail/' + scope.row.id)">
-                      <span class="blue">出入库</span>
-                    </el-dropdown-item>
-                    <el-dropdown-item @click.native="deleteOrder(scope.row.id)">
-                      <span class="red">删除订单</span>
-                    </el-dropdown-item>
-                  </el-dropdown-menu>
-                </el-dropdown> -->
-              </template>
-            </el-table-column>
-          </el-table>
+                  {{
+                    $diffByDate(scope.row.delivery_time) > 0
+                      ? '交货还剩' + $diffByDate(scope.row.delivery_time) + '天'
+                      : '延期发货' + Math.abs($diffByDate(scope.row.delivery_time)) + '天'
+                  }}
+                </span>
+              </div>
+              <div v-if="scope.row.status === 3" style="display: flex; flex-direction: column">
+                <span>{{ scope.row.delivery_time }}</span>
+                <span class="green">已发货</span>
+              </div>
+            </template>
+          </el-table-column> 
+        -->
+        <div class="filterCtn" style="min-height: 33px; justify-content: unset; margin-bottom: 18px">
+          <div class="btn backHoverOrange" @click="showSetting = true" style="margin-left: 0">列表设置</div>
+          <div
+            class="btn backHoverGreen"
+            style="margin-left: 20px"
+            @click="
+              getFilters()
+              getList()
+            "
+          >
+            刷新列表
+          </div>
         </div>
+        <zh-list
+          :list="list"
+          :check="true"
+          :checkedCount="checkedCount"
+          :listKey="listKey"
+          :loading="loading"
+          :oprList="oprList"
+        ></zh-list>
         <div class="pageCtn">
           <el-pagination
             background
@@ -216,12 +131,22 @@
         </div>
       </div>
     </div>
+    <!-- 列表设置 -->
+    <zh-list-setting
+      @close="showSetting = false"
+      @afterSave="getListSetting"
+      :show="showSetting"
+      :id="listSettingId"
+      :type="1"
+      :data.sync="listKey"
+      :originalData="originalSetting"
+    ></zh-list-setting>
   </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
-import { order } from '@/assets/js/api'
+import { order, listSetting } from '@/assets/js/api'
 export default Vue.extend({
   data(): {
     [propName: string]: any
@@ -234,6 +159,178 @@ export default Vue.extend({
       user_id: '',
       type: '',
       loading: true,
+      showSetting: false,
+      listSettingId: null,
+      listKey: [],
+      checkedCount: [],
+      originalSetting: [
+        {
+          key: 'code',
+          name: '订单号',
+          ifShow: true,
+          ifLock: true,
+          index: 0
+        },
+        {
+          key: 'order_code',
+          name: '客户单号',
+          ifShow: true,
+          ifLock: true,
+          index: 1
+        },
+        {
+          key: 'client_name',
+          name: '客户名称',
+          ifShow: true,
+          ifLock: false,
+          index: 2
+        },
+        {
+          key: 'type',
+          name: '订单类型',
+          filterArr: ['', '生产单', '销售单'],
+          classArr: ['', '', ''],
+          ifShow: true,
+          ifLock: false,
+          index: 3,
+          isStatus: true
+        },
+        {
+          key: 'status',
+          name: '订单状态',
+          filterArr: ['未知', '已创建', '进行中', '已完成', '已取消'],
+          classArr: ['', 'orange', 'blue', 'green', 'gray'],
+          ifShow: true,
+          ifLock: false,
+          index: 4,
+          isStatus: true
+        },
+        {
+          key: 'is_check',
+          name: '审核信息',
+          filterArr: ['待审核', '已通过', '已驳回'],
+          classArr: ['orange', 'green', 'red'],
+          ifShow: true,
+          ifLock: false,
+          index: 5,
+          isStatus: true
+        },
+        {
+          key: 'product_name',
+          name: '纱线名称',
+          ifShow: true,
+          ifLock: false,
+          index: 6,
+          from: 'product_info',
+          mark: true
+        },
+        {
+          key: 'color',
+          name: '颜色',
+          ifShow: true,
+          ifLock: false,
+          index: 7,
+          from: 'product_info',
+        },
+        {
+          key: 'attribute',
+          name: '属性',
+          ifShow: true,
+          ifLock: false,
+          index: 8,
+          from: 'product_info',
+        },
+        {
+          key: 'number_attribute',
+          name: '数量属性',
+          ifShow: true,
+          ifLock: false,
+          index: 9,
+          from: 'product_info',
+        },
+        {
+          key: 'weight',
+          name: '下单数量（kg）',
+          ifShow: true,
+          ifLock: false,
+          index: 10,
+          from: 'product_info',
+          numberToString: true
+        },
+        {
+          key: 'total_number',
+          name: '下单总数（kg）',
+          ifShow: true,
+          ifLock: false,
+          index: 11,
+          numberToString: true
+        },
+        {
+          key: 'reality_push_weight',
+          name: '发货总数（kg）',
+          ifShow: true,
+          ifLock: false,
+          index: 12,
+          numberToString: true
+        },
+        {
+          key: 'total_price',
+          name: '下单总价（元）',
+          ifShow: true,
+          ifLock: false,
+          index: 13,
+          numberToString: true
+        },
+        {
+          key: 'delivery_time',
+          name: '交货日期',
+          ifShow: true,
+          ifLock: false,
+          index: 14
+        },
+        {
+          key: 'order_time',
+          name: '下单日期',
+          ifShow: true,
+          ifLock: false,
+          index: 15
+        },
+        {
+          key: 'image_data',
+          name: '补充说明',
+          ifShow: true,
+          ifLock: false,
+          ifImage: true,
+          index: 16
+        },
+        {
+          key: 'user_name',
+          name: '操作人',
+          ifShow: true,
+          ifLock: false,
+          index: 17
+        }
+      ],
+      oprList: [
+        {
+          name: '详情',
+          class: 'hoverBlue',
+          fn: (item: any) => {
+            this.$router.push('/order/detail/' + item.id)
+          }
+        },
+        {
+          name: '修改',
+          class: 'hoverOrange',
+          fn: (item: any) => {
+            if(item.type === 2){
+              this.$message.error('销售订单不可更改')
+              return
+            }
+            this.$router.push('/order/update/' + item.id)
+          }
+        }
+      ],
       page: 1,
       total: 100,
       page_size: 10,
@@ -245,6 +342,13 @@ export default Vue.extend({
   watch: {
     page(newVal) {
       this.changeRouter(newVal)
+    },
+    checkedCount(newVal) {
+      if (newVal.length > 0) {
+        this.checked = true
+      } else {
+        this.checked = false
+      }
     },
     $route() {
       // 点击返回的时候更新下筛选条件
@@ -376,6 +480,21 @@ export default Vue.extend({
         obj.scrollLeft = obj.scrollLeft + step
       }
     },
+    getListSetting() {
+      this.listKey = []
+      listSetting
+        .detail({
+          type: 1
+        })
+        .then((res) => {
+          this.listSettingId = res.data.data ? res.data.data.id : null
+          this.listKey = res.data.data
+            ? JSON.parse(res.data.data.content).length > 0
+              ? JSON.parse(res.data.data.content)
+              : this.$clone(this.originalSetting)
+            : this.$clone(this.originalSetting)
+        })
+    },
     reset() {
       this.$router.push(
         '/order/list?page=1&order_code=&product_name=&client_id=&user_id=&page_size=10&date=&type=&productName=,'
@@ -435,11 +554,14 @@ export default Vue.extend({
           page: this.page
         })
         .then((res) => {
-          if(res.data.status){
+          if (res.data.status) {
+            res.data.data.items.forEach((item:any) => {
+              item.image_data = item.file_url?[item.file_url]:[]
+            });
             this.list = res.data.data.items
             this.total = res.data.data.total
           }
-            this.loading = false
+          this.loading = false
         })
     },
     deleteOrder(id: number) {
@@ -467,12 +589,6 @@ export default Vue.extend({
         })
     }
   },
-  mounted() {
-    //@ts-ignore id为scoll已经被el-table使用，可以使el-table滚动
-    let domObj = this.$refs.table.bodyWrapper
-    domObj.id = 'scrollBar'
-    this.scrollFunction(domObj, 'scrollBar')
-  },
   created() {
     this.$checkCommonInfo([
       {
@@ -491,6 +607,7 @@ export default Vue.extend({
         getInfoApi: 'getYarnTypeAsync'
       }
     ])
+    this.getListSetting()
     this.getFilters()
     this.getList()
   }

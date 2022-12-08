@@ -247,6 +247,43 @@
   }
 }
 
+.opr{
+  margin: 0 8px;
+  cursor: pointer;
+  border-bottom: 1px solid transparent;
+  position: relative;
+  text-decoration: none;
+  &::after {
+    content: "";
+    height: 15px;
+    background: #e9e9e9;
+    width: 1px;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    margin: auto;
+    right: -8px
+  }
+  &:last-child:after {
+    content: "";
+    height: 15px;
+    background: transparent;
+    width: 1px;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    margin: auto;
+    right: -8px;
+}
+}
+
+.borderBtn {
+  line-height: 30px;
+  border: 1px solid #e9e9e9;
+  color: rgba(0,0,0,.45);
+  border-radius: 4px;
+}
+
 .boxCtn {
   display: flex;
   flex-wrap: wrap;

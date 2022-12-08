@@ -21,6 +21,12 @@ const index = {
   notifyList: (params?: ListParam) => http.get(`${baseUrl}/notify/lists`, params)
 }
 
+// 列表设置信息 type 1:报价单列表 , 2:样单列表
+const listSetting = {
+  create: (params: { id: number | null, type: number, content: string }) => http.post(`${baseUrl}/list/setting/save`, params, 'application/json'),
+  detail: (params: { type: number }) => http.get(`${baseUrl}/list/setting/detail`, params)
+}
+
 const cancelOpr = {
   cancel: (params: CancelOrder) => http.post(`${baseUrl}/document/cancel`, params, 'application/json'),
   detail: (params: DetailParam) => http.get(`${baseUrl}/document/cancel/log`, params)
@@ -275,5 +281,6 @@ export {
   check,
   print,
   allList,
-  finance
+  finance,
+  listSetting
 }

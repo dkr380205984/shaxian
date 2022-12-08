@@ -380,13 +380,13 @@
                 </div>
                 <div class="bodyCtn">
                   <div class="row" v-for="item in storeLogInfo.list" :key="item.id">
-                    <div class="column min120 blue" :style="{ height: 50 * item.child_data.length + 'px' }">
+                    <div class="column min120 blue" :style="{ height: 50.6 * item.child_data.length + 'px' }">
                       {{ item.code }}
                     </div>
                     <div
                       class="column"
                       style="min-width: 80px"
-                      :style="{ height: 50 * item.child_data.length + 'px' }"
+                      :style="{ height: 50.6 * item.child_data.length + 'px' }"
                       :class="{
                         blue:
                           item.action_type === 1 ||
@@ -414,7 +414,7 @@
                     <div
                       class="column"
                       style="min-width: 200px; max-width: 200px"
-                      :style="{ height: 50 * item.child_data.length + 'px' }"
+                      :style="{ height: 50.6 * item.child_data.length + 'px' }"
                     >
                       <span
                         v-if="
@@ -464,19 +464,19 @@
                 </div>
                 <div class="bodyCtn">
                   <div class="row" v-for="item in storeLogInfo.list" :key="item.id">
-                    <div class="column min120" :style="{ height: 50 * item.child_data.length + 'px' }">
+                    <div class="column min120" :style="{ height: 50.6 * item.child_data.length + 'px' }">
                       <span
-                        class="blue opr"
+                        class="blue opr" style="margin: 0 6px;"
                         @click="$openUrl(`/print/store/${item.action_type}/${item.id}?orderId=${$route.params.id}`)"
                         >打印</span
                       >
                       <span
-                        class="opr"
+                        class="opr" style="margin: 0 6px;"
                         :class="{ green: item.related_id, orange: !item.related_id }"
                         @click="bindCode(item)"
                         >{{ item.related_id ? '已绑' : '绑定' }}</span
                       >
-                      <span class="red opr" @click="deleteLog(item.id, item.action_type, item.related_id)">删除</span>
+                      <span class="red opr" style="margin: 0 6px;" @click="deleteLog(item.id, item.action_type, item.related_id)">删除</span>
                     </div>
                   </div>
                 </div>

@@ -15,6 +15,7 @@ import yarnStoreSelect from './yarnStoreSelect/yarnStoreSelect.vue'
 import addTransProcess from './addTransProcess/addTransProcess.vue'
 import zhList from './zhList/zhList.vue'
 import zhListSetting from './zhListSetting/zhListSetting.vue'
+import othersFeeData from './othersFeeData/othersFeeData.vue'
 export default {
   install: (vue: any) => {
     vue.component('sort', sort)
@@ -35,5 +36,6 @@ export default {
     vue.component('zhList', zhList)
     vue.component('zhListSetting', zhListSetting)
     vue.component('addTransProcess', addTransProcess)
+    vue.component('othersFeeData', othersFeeData)
   }
 }

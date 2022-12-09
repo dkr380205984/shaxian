@@ -1041,6 +1041,9 @@ export default class InAndOut extends Vue {
                 color_code: itemChild.color_code,
                 vat_code: itemChild.vat_code,
                 item: itemChild.item,
+                id:data.child_data.find((itemFind:any) => {
+                  return itemFind.name === itemChild.name
+                })?.id || null,
                 colorArr: [
                   {
                     label: itemChild.after_color || itemChild.color || '白胚',
@@ -1056,16 +1059,43 @@ export default class InAndOut extends Vue {
               return {
                 name: itemChild.name,
                 action_weight: itemChild.weight,
-                color: itemChild.after_color || itemChild.color || '白胚',
+                color: itemChild.after_color || itemChild.before_color || itemChild.color || '白胚',
                 attribute: itemChild.after_attribute,
                 batch_code: itemChild.batch_code,
                 color_code: itemChild.color_code,
                 vat_code: itemChild.vat_code,
                 item: itemChild.item,
+                id:data.child_data.find((itemFind:any) => {
+                  return itemFind.name === itemChild.name
+                })?.id || null,
                 colorArr: [
                   {
-                    label: itemChild.after_color || itemChild.color || '白胚',
-                    value: itemChild.after_color || itemChild.color || '白胚',
+                    label: itemChild.after_color || itemChild.before_color || itemChild.color || '白胚',
+                    value: itemChild.after_color || itemChild.before_color || itemChild.color || '白胚',
+                    id:itemChild.id
+                  }
+                ]
+              }
+            })
+            this.storeInfo.child_data.push(...a)
+          } else {
+            let a = itemPro.child_data.map((itemChild:any) =>{
+              return {
+                name: itemChild.name,
+                action_weight: itemChild.weight,
+                color: itemChild.after_color || itemChild.before_color || itemChild.color || '白胚',
+                attribute: itemChild.after_attribute || itemChild.before_attribute || itemChild.attribute,
+                batch_code: itemChild.batch_code,
+                color_code: itemChild.color_code,
+                vat_code: itemChild.vat_code,
+                item: itemChild.item,
+                id:data.child_data.find((itemFind:any) => {
+                  return itemFind.name === itemChild.name
+                })?.id || null,
+                colorArr: [
+                  {
+                    label: itemChild.after_color || itemChild.before_color || itemChild.color || '白胚',
+                    value: itemChild.after_color || itemChild.before_color || itemChild.color || '白胚',
                     id:itemChild.id
                   }
                 ]
@@ -1644,6 +1674,7 @@ export default class InAndOut extends Vue {
 
       if(err) return
 
+      // console.log(this.storeInfo)
       const formData: StoreCreate = {
         order_id: (this.selfType[1] === 9 || this.selfType[1] === 15) ? this.storeInfo.related_id : this.orderId || this.storeInfo.order_id,
         related_id: this.storeInfo.related_id,

@@ -835,7 +835,9 @@ export default Vue.extend({
           a.child_data.forEach((item:any) => {
             this.process_info[0].child_data.push({
               name: a.name,
-              transfer_info_id: item.id || '',
+              transfer_info_id: data.child_data.find((item:any) => {
+                return item.name === a.name
+              })?.id || '',
               id: data.child_data[0].id || '',
               before_attribute: '',
               after_attribute: '',

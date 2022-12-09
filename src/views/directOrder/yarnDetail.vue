@@ -578,8 +578,8 @@ export default Vue.extend({
         deduct_data: {
           deduct_content: '',
           total_price: '',
-          deduct_type: 1,
-          pid: '',
+          rel_doc_type: 1,
+          rel_doc_id: '',
           date: '',
           deduct_file: '',
           client_id: '',
@@ -594,7 +594,7 @@ export default Vue.extend({
       deduct_show: false,
       deduct_info: {
         yarn: [],
-        pid: 1,
+        rel_doc_type: 1,
         pcode: '',
         type: 2
       },
@@ -670,8 +670,8 @@ export default Vue.extend({
           action_type: [3]
         }),
         deduct.list({
-          pid: this.$route.params.id,
-          deduct_type: 1
+          rel_doc_id: this.$route.params.id,
+          rel_doc_type: 1
         }),
         yarnOrder.cancelDetail({
           pid: this.$route.params.id,
@@ -859,8 +859,8 @@ export default Vue.extend({
         deduct_data: {
           deduct_content: '',
           total_price: (Number(this.order_yarn_info.total_price) - Number(this.cancel_info.client_fee)).toFixed(1),
-          deduct_type: 1,
-          pid: this.$route.params.id,
+          rel_doc_type: 1,
+          rel_doc_id: this.$route.params.id,
           date: this.cancel_info.cancel_date,
           deduct_file: this.cancel_info.file,
           client_id: this.order_yarn_info.client_id,

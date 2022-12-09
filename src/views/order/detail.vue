@@ -473,22 +473,26 @@
             </div>
             <div v-if="openCaiGou">
               <div class="trow" style="background:#F4F4F4" >
-              <div class="tcolumn">额外费用</div>
-              <div class="tcolumn">我方扣款金额</div>
+              <div class="tcolumn">采购单位</div>
+              <div class="tcolumn">纱线名称</div>
+              <div class="tcolumn">颜色属性</div>
               <div class="tcolumn">计划采购数量</div>
               <div class="tcolumn">实际入库数量</div>
-              <div class="tcolumn">计划总额（含额外、扣款）</div>
-              <div class="tcolumn">实际总额（含额外、扣款）</div>
-              <div class="tcolumn"></div>
+              <div class="tcolumn">计划总额</div>
+              <div class="tcolumn">实际总额</div>
             </div>
             <div class="trow" v-for="item,index in order_info.purchase_log" :key="index + '采购单财务详情'">
-              <div class="tcolumn">{{$toFixed(item.total_additional_fee,2,true)}}元</div>
-              <div class="tcolumn">{{$toFixed(item.total_deduct_price,2,true)}}元</div>
-              <div class="tcolumn">{{$toFixed(item.total_number,2,true)}}元</div>
-              <div class="tcolumn">{{$toFixed(item.total_real_number,2,true)}}元</div>
-              <div class="tcolumn">{{$toFixed(item.total_price + item.total_deduct_price + (Number(item.total_additional_fee) || 0),2,true)}}元</div>
-              <div class="tcolumn">{{$toFixed(item.total_real_price + item.total_deduct_price + (Number(item.total_additional_fee) || 0),2,true)}}元</div>
-              <div class="tcolumn"></div>
+              <div class="tcolumn">{{item.client_name}}</div>
+              <div class="tcolumn noPad" style="flex:6.75">
+                <div class="trow" v-for="itemChild,indexChild in item.child_data" :key="indexChild + '采购单财务子集'">
+                  <div class="tcolumn">{{itemChild.name}}</div>
+                  <div class="tcolumn">{{itemChild.color}}/{{itemChild.attribute}}</div>
+                  <div class="tcolumn">{{$toFixed(itemChild.weight,2,true)}}kg</div>
+                  <div class="tcolumn">{{$toFixed(itemChild.push_weight,2,true)}}kg</div>
+                  <div class="tcolumn">{{$toFixed(itemChild.weight * itemChild.price,2,true)}}元</div>
+                  <div class="tcolumn">{{$toFixed(itemChild.push_weight * itemChild.price,2,true)}}元</div>
+                </div>
+              </div>
             </div>
             </div>
           </div>
@@ -510,30 +514,34 @@
             <div class="trow">
               <div class="tcolumn">{{$toFixed(total_process_info.total_additional_fee,2,true)}}元</div>
               <div class="tcolumn">{{$toFixed(total_process_info.total_deduct_price,2,true)}}元</div>
-              <div class="tcolumn">{{$toFixed(total_process_info.total_number,2,true)}}元</div>
-              <div class="tcolumn">{{$toFixed(total_process_info.total_real_number,2,true)}}元</div>
-              <div class="tcolumn">{{$toFixed(total_process_info.total_price + total_process_info.total_deduct_price + total_process_info.total_additional_fee,2,true)}}元</div>
+              <div class="tcolumn">{{$toFixed(total_process_info.total_number,2,true)}}kg</div>
+              <div class="tcolumn">{{$toFixed(total_process_info.total_real_number,2,true)}}kg</div>
+              <div class="tcolumn">{{$toFixed(total_process_info.total_price + total_process_info.total_deduct_price,2,true)}}元</div>
               <div class="tcolumn">{{$toFixed(total_process_info.total_real_price + total_process_info.total_deduct_price + total_process_info.total_additional_fee,2,true)}}元</div>
               <div class="tcolumn blue" style="cursor:pointer" @click="openJiaGong = !openJiaGong">{{openJiaGong?'收起':'展开'}}</div>
             </div>
             <div v-if="openJiaGong">
               <div class="trow" style="background:#F4F4F4" >
-                <div class="tcolumn">额外费用</div>
-                <div class="tcolumn">我方扣款金额</div>
+                <div class="tcolumn">加工单位</div>
+                <div class="tcolumn">纱线名称</div>
+                <div class="tcolumn">颜色属性</div>
                 <div class="tcolumn">加工数量</div>
                 <div class="tcolumn">实际回库数量</div>
-                <div class="tcolumn">计划总额（含额外、扣款）</div>
-                <div class="tcolumn">实际总额（含额外、扣款）</div>
-                <div class="tcolumn"></div>
+                <div class="tcolumn">计划总额</div>
+                <div class="tcolumn">实际总额</div>
               </div>
               <div class="trow" v-for="item,index in order_info.process_log" :key="index + '加工单财务详情'">
-                <div class="tcolumn">{{$toFixed(item.total_additional_fee,2,true)}}元</div>
-                <div class="tcolumn">{{$toFixed(item.total_deduct_price,2,true)}}元</div>
-                <div class="tcolumn">{{$toFixed(item.total_number,2,true)}}元</div>
-                <div class="tcolumn">{{$toFixed(item.total_real_number,2,true)}}元</div>
-                <div class="tcolumn">{{$toFixed(item.total_price + item.total_deduct_price + (Number(item.total_additional_fee) || 0),2,true)}}元</div>
-                <div class="tcolumn">{{$toFixed(item.total_real_price + item.total_deduct_price + (Number(item.total_additional_fee) || 0),2,true)}}元</div>
-                <div class="tcolumn"></div>
+                <div class="tcolumn">{{item.client_name}}</div>
+                <div class="tcolumn noPad" style="flex:6.75">
+                  <div class="trow" v-for="itemChild,indexChild in item.child_data" :key="indexChild + '加工单财务详情子集'">
+                    <div class="tcolumn">{{itemChild.name}}</div>
+                    <div class="tcolumn">{{itemChild.color || itemChild.after_color || itemChild.before_color}}/{{itemChild.attribute || itemChild.after_attribute || itemChild.before_attribute}}</div>
+                    <div class="tcolumn">{{$toFixed(itemChild.weight,2,true)}}kg</div>
+                    <div class="tcolumn">{{$toFixed(itemChild.total_real_number,2,true) }}kg</div>
+                    <div class="tcolumn">{{$toFixed(itemChild.price * itemChild.weight,2,true)}}元</div>
+                    <div class="tcolumn">{{$toFixed(itemChild.price * itemChild.total_real_number,2,true)}}元</div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -1585,7 +1593,7 @@
 import Vue from 'vue'
 import { Order, CancelOrder } from '@/types/order'
 import { StoreCreate } from '@/types/store'
-import { order, deduct, stock, check } from '@/assets/js/api'
+import { order, deduct, stock, check, yarnOrder } from '@/assets/js/api'
 
 export default Vue.extend({
   data(): {
@@ -1673,7 +1681,9 @@ export default Vue.extend({
         additional_fee: '',
         is_check: 0,
         product_info: [],
-        total_additional_fee: 0
+        total_additional_fee: 0,
+        purchase_log:[],
+        process_log:[],
       },
       orderInfoProChild: [],
       client_arr: [],
@@ -1823,8 +1833,8 @@ export default Vue.extend({
           id: this.$route.params.id
         }),
         deduct.list({
-          pid: this.$route.params.id,
-          deduct_type: 5
+          rel_doc_id: this.$route.params.id,
+          rel_doc_type: 1
         }),
         stock.list({
           order_id: this.$route.params.id
@@ -1832,7 +1842,10 @@ export default Vue.extend({
         order.cancelDetail({
           pid: this.$route.params.id,
           document_type: 5
-        })
+        }),
+        yarnOrder.list({
+          order_id: this.$route.params.id
+        }),
       ]).then((res) => {
         this.order_info = res[0].data.data
         this.order_info.product_info = this.$mergeData(this.order_info.product_info, {
@@ -1840,84 +1853,9 @@ export default Vue.extend({
           childrenName: 'child_data',
           otherRule: [{ name: 'product_id' }]
         })
-        // @ts-ignore
-        this.order_info.total_purchase_weight = this.order_info.product_info
-          .reduce((a: any, b: any) => {
-            return a + b.child_data.reduce((a1:any,b1:any) => {
-              return a1 + b1.purchase_info.reduce((a2:any,b2:any) => {
-                return a2 + (Number(b2.weight) || 0)
-              },0)
-            },0)
-          }, 0)
-          .toFixed(1)
-        // @ts-ignore
-        this.order_info.total_deduct_price = this.order_info.deduct.reduce((a:any,b:any) => {
-          return a + (Number(b.total_price) || 0)
-        },0)
-        // @ts-ignore
-        this.order_info.process_log.forEach((item:any) => {
-          item.total_deduct_price = item.deduct_log ? item.deduct_log.reduce((a1:any,b1:any) => {
-              return a1 + b1.total_price
-            },0) : 0
-        });
-        // @ts-ignore
-        this.order_info.purchase_log.forEach((item:any) => {
-          item.total_deduct_price = item.deduct_log ? item.deduct_log.reduce((a1:any,b1:any) => {
-              return a1 + b1.total_price
-            },0) : 0
-        });
-        this.total_process_info = {
-          // @ts-ignore
-          total_additional_fee: this.order_info.process_log.reduce((a:any,b:any) => {
-            return a + Number(b.total_additional_fee)
-          },0),
-          // @ts-ignore
-          total_number: this.order_info.process_log.reduce((a:any,b:any) => {
-            return a + Number(b.total_number)
-          },0),
-          // @ts-ignore
-          total_real_number: this.order_info.process_log.reduce((a:any,b:any) => {
-            return a + Number(b.total_real_number)
-          },0),
-          // @ts-ignore
-          total_price: this.order_info.process_log.reduce((a:any,b:any) => {
-            return a + Number(b.total_price)
-          },0),
-          // @ts-ignore
-          total_real_price: this.order_info.process_log.reduce((a:any,b:any) => {
-            return a + Number(b.total_real_price)
-          },0),
-          // @ts-ignore
-          total_deduct_price: this.order_info.process_log.reduce((a:any,b:any) => {
-            return a + Number(b.total_deduct_price)
-          },0)
-        }
-        this.total_purchase_info = {
-          // @ts-ignore
-          total_additional_fee: this.order_info.purchase_log.reduce((a:any,b:any) => {
-            return a + Number(b.total_additional_fee)
-          },0),
-          // @ts-ignore
-          total_number: this.order_info.purchase_log.reduce((a:any,b:any) => {
-            return a + Number(b.total_number)
-          },0),
-          // @ts-ignore
-          total_real_number: this.order_info.purchase_log.reduce((a:any,b:any) => {
-            return a + Number(b.total_real_number)
-          },0),
-          // @ts-ignore
-          total_price: this.order_info.purchase_log.reduce((a:any,b:any) => {
-            return a + Number(b.total_price)
-          },0),
-          // @ts-ignore
-          total_real_price: this.order_info.purchase_log.reduce((a:any,b:any) => {
-            return a + Number(b.total_real_price)
-          },0),
-          // @ts-ignore
-          total_deduct_price: this.order_info.purchase_log.reduce((a:any,b:any) => {
-            return a + Number(b.total_deduct_price)
-          },0)
-        }
+        this.order_info.transfer_log = res[2].data.data.items.filter(
+          (item: any) => item.action_type === 16
+        )
         this.order_info.product_info.forEach((item: any) => {
           let processArr: any[] = []
           // @ts-ignore
@@ -1950,6 +1888,21 @@ export default Vue.extend({
               })
             }
           })
+
+          this.order_info.total_purchase_weight = this.order_info.product_info
+            .reduce((a: any, b: any) => {
+              return a + b.child_data.reduce((a1:any,b1:any) => {
+                return a1 + b1.purchase_info.reduce((a2:any,b2:any) => {
+                  return a2 + (Number(b2.weight) || 0)
+                },0)
+              },0)
+            }, 0)
+            .toFixed(1)
+          
+          // @ts-ignore
+          this.order_info.total_deduct_price = this.order_info.deduct.reduce((a:any,b:any) => {
+            return a + (Number(b.total_price) || 0)
+          },0)
 
           // @ts-ignore
           this.order_info.transfer_log?.forEach((itemTrans: any) => {
@@ -2016,6 +1969,110 @@ export default Vue.extend({
             Number(item.client_id) === Number(this.order_info.client_id) &&
             (item.action_type === 9 || item.action_type === 12 || item.action_type === 18)
         )
+        this.order_info.purchase_log = res[4].data.data || []
+        this.order_info.process_log = []
+
+        this.order_info.transfer_log?.forEach((item:any) => {
+          item.process_info.forEach((itemProcess:any) => {
+            itemProcess.child_data.forEach((itemChild:any) => {
+              itemChild.total_real_number = itemChild.transfer_log_info.transfer_push.reduce((a:any,b:any) => {
+                return a + Number(b.action_weight) || 0
+              },0)
+              
+            });
+            // transfer_log_info.transfer_push.reduce((a:any,b:any) => {return a + b.action_weight},0
+            this.order_info.process_log?.push(itemProcess)
+          });
+        });
+
+        this.order_info.purchase_log?.forEach((item) => {
+          item.total_deduct_price = item.deduct ? item.deduct.reduce((a1:any,b1:any) => {
+            return a1 + b1.total_price
+          },0) : 0
+
+          item.addFee = item.additional_fee ? JSON.parse(item.additional_fee) : []
+          item.total_additional_fee = item.addFee.reduce((a:any,b:any) => {
+            return a + Number(b.price)
+          },0)
+
+          item.total_number = item.child_data.reduce((a:any,b:any) => {
+            return a + Number(b.weight)
+          },0)
+          item.total_real_number = item.child_data.reduce((a:any,b:any) => {
+            return a + Number(b.push_weight)
+          },0)
+          item.total_price = item.child_data.reduce((a:any,b:any) => {
+            return a + (Number(b.weight) * Number(b.price))
+          },0)
+          item.total_real_price = item.child_data.reduce((a:any,b:any) => {
+            return a + (Number(b.push_weight) * Number(b.price))
+          },0)
+        })
+        
+        this.order_info.process_log?.forEach((item) => {
+          item.total_deduct_price = item.deduct_log ? item.deduct_log.reduce((a1:any,b1:any) => {
+            return a1 + b1.total_price
+          },0) : 0
+
+          // item.addFee = item.additional_fee ? JSON.parse(item.additional_fee) : []
+          // item.total_additional_fee = item.addFee.reduce((a:any,b:any) => {
+          //   return a + Number(b.price)
+          // },0)
+
+          item.total_number = item.child_data.reduce((a:any,b:any) => {
+            return a + Number(b.weight)
+          },0)
+          // item.total_real_number = item.child_data.reduce((a:any,b:any) => {
+          //   return a + Number(b.push_weight)
+          // },0)
+          // item.total_price = item.child_data.reduce((a:any,b:any) => {
+          //   return a + (Number(b.weight) * Number(b.price))
+          // },0)
+          // item.total_real_price = item.child_data.reduce((a:any,b:any) => {
+          //   return a + (Number(b.push_weight) * Number(b.price))
+          // },0)
+        })
+
+        this.total_process_info = {
+          total_additional_fee: this.order_info.process_log?.reduce((a:any,b:any) => {
+            return a + Number(b.total_additional_fee)
+          },0),
+          total_number: this.order_info.process_log?.reduce((a:any,b:any) => {
+            return a + Number(b.total_number)
+          },0),
+          total_real_number: this.order_info.process_log?.reduce((a:any,b:any) => {
+            return a + Number(b.total_real_number)
+          },0),
+          total_price: this.order_info.process_log?.reduce((a:any,b:any) => {
+            return a + Number(b.total_price)
+          },0),
+          total_real_price: this.order_info.process_log?.reduce((a:any,b:any) => {
+            return a + Number(b.total_real_price)
+          },0),
+          total_deduct_price: this.order_info.process_log?.reduce((a:any,b:any) => {
+            return a + Number(b.total_deduct_price)
+          },0)
+        }
+        this.total_purchase_info = {
+          total_additional_fee: this.order_info.purchase_log?.reduce((a:any,b:any) => {
+            return a + Number(b.total_additional_fee)
+          },0),
+          total_number: this.order_info.purchase_log?.reduce((a:any,b:any) => {
+            return a + Number(b.total_number)
+          },0),
+          total_real_number: this.order_info.purchase_log?.reduce((a:any,b:any) => {
+            return a + Number(b.total_real_number)
+          },0),
+          total_price: this.order_info.purchase_log?.reduce((a:any,b:any) => {
+            return a + Number(b.total_price)
+          },0),
+          total_real_price: this.order_info.purchase_log?.reduce((a:any,b:any) => {
+            return a + Number(b.total_real_price)
+          },0),
+          total_deduct_price: this.order_info.purchase_log?.reduce((a:any,b:any) => {
+            return a + Number(b.total_deduct_price)
+          },0)
+        }
 
         this.final_out_log.forEach((item: any) => {
           item.child_data.forEach((itemChild: any) => {
@@ -2499,8 +2556,8 @@ export default Vue.extend({
         deduct_data: {
           deduct_content: '',
           total_price: (Number(this.order_info.total_price) - Number(this.cancel_order_info.client_fee)).toFixed(1),
-          deduct_type: 5,
-          pid: this.$route.params.id,
+          rel_doc_type: 5,
+          rel_doc_id: this.$route.params.id,
           date: this.cancel_order_info.cancel_date,
           deduct_file: this.cancel_order_info.file,
           client_id: this.order_info.client_id,

@@ -89,30 +89,6 @@
                 <span class="text">{{ item.client_name }}</span>
               </div>
               <div class="colCtn">
-                <span class="label">金额小计：</span>
-                <span class="text">{{ item.code }}</span>
-              </div>
-            </div>
-            <div class="rowCtn">
-              <div class="colCtn">
-                <span class="label">下单日期：</span>
-                <span class="text">{{ $getDate(item.create_time) }}</span>
-              </div>
-              <div class="colCtn">
-                <span class="label">交货日期：</span>
-                <span class="text">{{ item.delivery_time }}</span>
-              </div>
-              <div class="colCtn">
-                <span class="label">加工数量</span>
-                <span class="text">{{ item.total_weight }}kg</span>
-              </div>
-            </div>
-            <div class="rowCtn">
-              <div class="colCtn">
-                <span class="label">备注信息：</span>
-                <span class="text">{{ item.desc || '无' }}</span>
-              </div>
-              <div class="colCtn">
                 <span class="label">单据状态：</span>
                 <span class="text">
                   <span
@@ -126,32 +102,29 @@
                   </span>
                 </span>
               </div>
+            </div>
+            <div class="rowCtn">
+              <div class="colCtn">
+                <span class="label">下单日期：</span>
+                <span class="text">{{ $getDate(item.create_time) }}</span>
+              </div>
+              <div class="colCtn">
+                <span class="label">交货日期：</span>
+                <span class="text">{{ item.delivery_time }}</span>
+              </div>
               <div class="colCtn">
                 <span class="label"></span>
                 <span class="text"></span>
               </div>
             </div>
-            <div class="rowCtn" v-if="item.additional_fee.length > 0">
+            <div class="rowCtn">
               <div class="colCtn">
-                <span class="label">额外费用：</span>
-                <div class="text">
-                  <div class="tableCtn" style="margin-top: 6px">
-                    <div class="thead">
-                      <div class="trow">
-                        <div class="tcolumn">额外费用名称</div>
-                        <div class="tcolumn">额外费用金额</div>
-                        <div class="tcolumn">额外费用备注</div>
-                      </div>
-                    </div>
-                    <div class="tbody">
-                      <div class="trow" v-for="(itemADD, index) in item.additional_fee" :key="index + 'itemADD'">
-                        <div class="tcolumn">{{ itemADD.name }}</div>
-                        <div class="tcolumn">{{ itemADD.price }}元</div>
-                        <div class="tcolumn">{{ itemADD.desc || '无' }}</div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+                <span class="label">备注信息：</span>
+                <span class="text">{{ item.desc || '无' }}</span>
+              </div>
+              <div class="colCtn">
+                <span class="label"></span>
+                <span class="text"></span>
               </div>
             </div>
             <div class="rowCtn">
@@ -167,6 +140,52 @@
                       <i class="el-icon-picture-outline"></i>
                     </div>
                   </el-image>
+                </div>
+              </div>
+            </div>
+            <div style="padding: 10px 32px">
+              <div class="tableCtn" style="margin-top: 6px">
+                <div class="thead">
+                  <div class="trow">
+                    <div class="tcolumn">额外费用</div>
+                    <div class="tcolumn">我方扣款金额</div>
+                    <div class="tcolumn">加工数量</div>
+                    <div class="tcolumn">实际回库数量</div>
+                    <div class="tcolumn">计划总额（含额外、扣款）</div>
+                    <div class="tcolumn">实际总额（含额外、扣款）</div>
+                  </div>
+                </div>
+                <div class="tbody">
+                  <div class="trow">
+                    <div class="tcolumn">{{ $toFixed(item.addFeePrice, 2, true) }} 元</div>
+                    <div class="tcolumn red">{{ $toFixed(item.total_deduct_price, 2, true) }} 元</div>
+                    <div class="tcolumn blue">{{ $toFixed(item.total_weight || 0, 1, true) }} kg</div>
+                    <div class="tcolumn green">{{ $toFixed(item.total_real_number || 0, 1, true) }} kg</div>
+                    <div class="tcolumn">
+                      {{ $toFixed(((+item.total_price + +item.total_deduct_price) || 0), 2, true) }}
+                      元
+                    </div>
+                    <div class="tcolumn green">
+                      {{
+                        $toFixed(
+                          +item.total_real_price + +item.addFeePrice + +item.total_deduct_price || 0,
+                          2,
+                          true
+                        )
+                      }}
+                      元
+                    </div>
+                  </div>
+                  <div class="trow">
+                    <div class="tcolumn" style="margin: unset">
+                      <othersFeeData :data="item.additional_fee"></othersFeeData>
+                    </div>
+                    <div class="tcolumn gray">详情见下表</div>
+                    <div class="tcolumn gray">详情见下表</div>
+                    <div class="tcolumn gray">详情见下表</div>
+                    <div class="tcolumn gray">详情见下表</div>
+                    <div class="tcolumn gray">详情见下表</div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -553,13 +572,28 @@ export default Vue.extend({
         })
       ]).then((res) => {
         this.process_info = res[0].data.data
-        // 计算每个的重量
-        this.process_info.process_info.forEach((itemWeight: any) => {
-          itemWeight.total_weight = itemWeight.child_data
+        // 计算每个的重量 以及 顺路对额外金额和扣款金额和入库数量进行处理
+        this.process_info.process_info.forEach((item: any) => {
+          item.total_weight = item.child_data
             .reduce((a: any, b: any) => {
               return a + (Number(b.weight) || 0)
             }, 0)
             .toFixed(1)
+
+          item.push_weight = item.child_data.reduce((a:any,b:any) => {
+            return a + b.transfer_log_info.transfer_push.reduce((a1:any,b1:any) => {
+              return a1 + (Number(b1.action_weight) || 0)
+            },0)
+          },0)
+
+          item.additional_fee = item.additional_fee ? JSON.parse(item.additional_fee as string) : []
+          item.addFeePrice = item.additional_fee.reduce((a: any, b: any) => {
+            return a + (Number(b.price) || 0)
+          }, 0)
+
+          item.total_deduct_price = item.deduct.reduce((total: any, current: any) => {
+            return total + Number(current.total_price)
+          }, 0)
         })
         // 算总重量
         this.process_info.total_weight = this.process_info.process_info
@@ -584,12 +618,7 @@ export default Vue.extend({
           }, 0)
           .toFixed(2)
         // 对额外金额进行处理
-        this.process_info.process_info.forEach((itemPro: any) => {
-          itemPro.additional_fee = itemPro.additional_fee ? JSON.parse(itemPro.additional_fee as string) : []
-          itemPro.addFeePrice = itemPro.additional_fee.reduce((a: any, b: any) => {
-            return a + (Number(b.price) || 0)
-          }, 0)
-        })
+        this.process_info.process_info.forEach((itemPro: any) => {})
         // 算含额外金额的总价
         this.process_info.all_total_price = (
           Number(this.process_info.total_price) +

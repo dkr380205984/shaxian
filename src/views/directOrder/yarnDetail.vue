@@ -20,12 +20,17 @@
             <span class="text">{{ order_yarn_info.client_name }}</span>
           </div>
           <div class="colCtn">
-            <span class="label">采购总价：</span>
-            <span class="text">
-              <span class="text">计划：{{ order_yarn_info.total_price }}元</span>
-              <br/>
-              <span class="text">实际：{{ order_yarn_info.total_push_price }}元</span>
-            </span>
+            <span class="label">单据状态：</span>
+            <span
+              class="text"
+              :class="{
+                orange: order_yarn_info.status === 1,
+                blue: order_yarn_info.status === 2,
+                green: order_yarn_info.status === 3,
+                gray: order_yarn_info.status === 4
+              }"
+              >{{ order_yarn_info.status | orderStatusFilter }}</span
+            >
           </div>
         </div>
         <div class="rowCtn">
@@ -62,43 +67,61 @@
             <span class="label">备注信息：</span>
             <span class="text">{{ order_yarn_info.desc || '无' }}</span>
           </div>
-          <div class="colCtn">
-            <span class="label">单据状态：</span>
-            <span
-              class="text"
-              :class="{
-                orange: order_yarn_info.status === 1,
-                blue: order_yarn_info.status === 2,
-                green: order_yarn_info.status === 3,
-                gray: order_yarn_info.status === 4
-              }"
-              >{{ order_yarn_info.status | orderStatusFilter }}</span
-            >
-          </div>
-          <div class="colCtn">
-            <span class="label">已入库数量：</span>
-            <span class="text green" style="padding-left: 10px">{{ order_yarn_info.push_weight || 0 }}kg</span>
-          </div>
+          <div class="colCtn"></div>
+          <div class="colCtn"></div>
         </div>
-        <div class="rowCtn" v-if="order_yarn_info.additional_fee.length > 0">
-          <div class="colCtn">
-            <span class="label">额外费用：</span>
-            <div class="text">
-              <div class="tableCtn" style="margin-top: 6px">
-                <div class="thead">
-                  <div class="trow">
-                    <div class="tcolumn">额外费用名称</div>
-                    <div class="tcolumn">额外费用金额</div>
-                    <div class="tcolumn">额外费用备注</div>
-                  </div>
+        <div style="padding: 10px 32px">
+          <div class="tableCtn" style="margin-top: 6px">
+            <div class="thead">
+              <div class="trow">
+                <div class="tcolumn">额外费用</div>
+                <div class="tcolumn">我方扣款金额</div>
+                <div class="tcolumn">计划采购数量</div>
+                <div class="tcolumn">实际入库数量</div>
+                <div class="tcolumn">计划总额（含额外、扣款）</div>
+                <div class="tcolumn">实际总额（含额外、扣款）</div>
+              </div>
+            </div>
+            <div class="tbody">
+              <div class="trow">
+                <div class="tcolumn">{{ $toFixed(order_yarn_info.total_add_fee_price, 2, true) }} 元</div>
+                <div class="tcolumn red">{{ $toFixed(order_yarn_info.total_deduct_price, 2, true) }} 元</div>
+                <div class="tcolumn blue">{{ $toFixed(order_yarn_info.total_weight || 0, 1, true) }} kg</div>
+                <div class="tcolumn green">{{ $toFixed(order_yarn_info.push_weight || 0, 1, true) }} kg</div>
+                <div class="tcolumn">
+                  {{
+                    $toFixed(
+                      +order_yarn_info.total_price +
+                        +order_yarn_info.total_add_fee_price +
+                        +order_yarn_info.total_deduct_price || 0,
+                      2,
+                      true
+                    )
+                  }}
+                  元
                 </div>
-                <div class="tbody">
-                  <div class="trow" v-for="(item, index) in order_yarn_info.additional_fee" :key="index">
-                    <div class="tcolumn">{{ item.name || '无'}}</div>
-                    <div class="tcolumn">{{ item.price }}元</div>
-                    <div class="tcolumn">{{ item.desc || '无' }}</div>
-                  </div>
+                <div class="tcolumn green">
+                  {{
+                    $toFixed(
+                      +order_yarn_info.total_push_price +
+                        +order_yarn_info.total_add_fee_price +
+                        +order_yarn_info.total_deduct_price || 0,
+                      2,
+                      true
+                    )
+                  }}
+                  元
                 </div>
+              </div>
+              <div class="trow">
+                <div class="tcolumn" style="margin: unset">
+                  <othersFeeData :data="order_yarn_info.additional_fee"></othersFeeData>
+                </div>
+                <div class="tcolumn gray">详情见下表</div>
+                <div class="tcolumn gray">详情见下表</div>
+                <div class="tcolumn gray">详情见下表</div>
+                <div class="tcolumn gray">详情见下表</div>
+                <div class="tcolumn gray">详情见下表</div>
               </div>
             </div>
           </div>
@@ -126,8 +149,12 @@
           <div class="tbody">
             <div class="trow" v-for="(item, index) in order_yarn_info.child_data" :key="index">
               <div class="tcolumn">
-                <el-checkbox v-model="item.checked" style="white-space: pre-wrap;word-break: break-all;" @change="selectList($event, item)">
-                  <div>{{item.name}}</div>
+                <el-checkbox
+                  v-model="item.checked"
+                  style="white-space: pre-wrap; word-break: break-all"
+                  @change="selectList($event, item)"
+                >
+                  <div>{{ item.name }}</div>
                 </el-checkbox>
               </div>
               <div class="tcolumn">{{ item.color }}</div>
@@ -137,15 +164,15 @@
               <div class="tcolumn green">{{ item.push_weight }}kg</div>
               <div class="tcolumn red">{{ item.weight - item.push_weight }}kg</div>
             </div>
-            <div class="trow" style="background:#F4F4F4;">
+            <div class="trow" style="background: #f4f4f4">
               <div class="tcolumn">合计</div>
               <div class="tcolumn"></div>
               <div class="tcolumn"></div>
-              <div class="tcolumn"> 
-                <div>计划:{{order_yarn_info.total_price}} 元</div>
+              <div class="tcolumn">
+                <div>计划:{{ order_yarn_info.total_price }} 元</div>
                 <div class="green">实际:{{ order_yarn_info.total_push_price }} 元</div>
               </div>
-              <div class="tcolumn blue">{{ (order_yarn_info.total_weight || 0).toFixed(1) }}kg</div>
+              <div class="tcolumn blue">{{ $toFixed(order_yarn_info.total_weight || 0, 1, true) }}kg</div>
               <div class="tcolumn green">{{ order_yarn_info.push_weight }} kg</div>
               <div class="tcolumn red">{{ order_yarn_info.total_weight - order_yarn_info.push_weight }}kg</div>
             </div>
@@ -657,7 +684,7 @@ export default Vue.extend({
           )
         })
       }
-      console.log(this.childList)
+      // console.log(this.childList)
     },
     init() {
       this.loading = true
@@ -682,20 +709,33 @@ export default Vue.extend({
         this.order_yarn_info.additional_fee = this.order_yarn_info.additional_fee
           ? JSON.parse(this.order_yarn_info.additional_fee as string)
           : []
-        this.order_yarn_info.total_price = this.order_yarn_info.child_data.reduce((total, current) => {
-          return total + ((Number(current.price) || 0) * (Number(current.weight) || 0))
-        }, 0).toFixed(2)
+        // @ts-ignore
+        this.order_yarn_info.total_add_fee_price = this.order_yarn_info.additional_fee.reduce((total, current) => {
+            return total + (Number(current.price) || 0)
+          }, 0)
+          .toFixed(2)
+        this.order_yarn_info.total_price = this.order_yarn_info.child_data
+          .reduce((total, current) => {
+            return total + (Number(current.price) || 0) * (Number(current.weight) || 0)
+          }, 0)
+          .toFixed(2)
         this.order_yarn_info.total_weight = this.order_yarn_info.child_data.reduce((total, current) => {
           return total + Number(current.weight)
         }, 0)
-        this.order_yarn_info.total_push_price = this.order_yarn_info.child_data.reduce((total, current) => {
-          return total + Number(current.push_price)
-        }, 0).toFixed(2)
+        this.order_yarn_info.total_push_price = this.order_yarn_info.child_data
+          .reduce((total, current) => {
+            return total + Number(current.push_price)
+          }, 0)
+          .toFixed(2)
         this.order_yarn_info.total_push_weight = this.order_yarn_info.child_data.reduce((total, current) => {
           return total + Number(current.push_weight)
         }, 0)
         this.order_in_log = res[1].data.data.items
         this.deduct_list = res[2].data.data
+        // @ts-ignore
+        this.order_yarn_info.total_deduct_price = this.deduct_list.reduce((total: any, current: any) => {
+          return total + Number(current.total_price)
+        }, 0)
         this.deduct_list.forEach((item: any) => {
           item.deduct_content = item.deduct_content ? JSON.parse(item.deduct_content) : []
         })

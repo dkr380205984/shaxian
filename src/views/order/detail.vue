@@ -524,7 +524,7 @@
               <div class="trow" style="background:#F4F4F4" >
                 <div class="tcolumn">加工单位</div>
                 <div class="tcolumn">纱线名称</div>
-                <div class="tcolumn">颜色属性</div>
+                <div class="tcolumn">加工信息</div>
                 <div class="tcolumn">加工数量</div>
                 <div class="tcolumn">实际回库数量</div>
                 <div class="tcolumn">计划总额</div>
@@ -535,7 +535,24 @@
                 <div class="tcolumn noPad" style="flex:6.75">
                   <div class="trow" v-for="itemChild,indexChild in item.child_data" :key="indexChild + '加工单财务详情子集'">
                     <div class="tcolumn">{{itemChild.name}}</div>
-                    <div class="tcolumn">{{itemChild.color || itemChild.after_color || itemChild.before_color}}/{{itemChild.attribute || itemChild.after_attribute || itemChild.before_attribute}}</div>
+                    <div class="tcolumn">
+                      <span class="green" style="margin-right: 12px">{{ item.type }}</span>
+                      <span v-if="item.type === '倒筒'">
+                        {{ itemChild.before_attribute }}
+                        <i class="el-icon-right"></i>
+                        {{ itemChild.after_attribute }}
+                      </span>
+                      <span v-if="item.type === '染色'">
+                        {{ itemChild.before_color }}
+                        <i class="el-icon-right"></i>
+                        {{ itemChild.after_color }}
+                      </span>
+                      <span v-if="item.type === '膨纱'">
+                        {{ itemChild.color }}
+                        <i class="el-icon-right"></i>
+                        {{ itemChild.attribute }}
+                      </span>
+                    </div>
                     <div class="tcolumn">{{$toFixed(itemChild.weight,2,true)}}kg</div>
                     <div class="tcolumn">{{$toFixed(itemChild.total_real_number,2,true) }}kg</div>
                     <div class="tcolumn">{{$toFixed(itemChild.price * itemChild.weight,2,true)}}元</div>

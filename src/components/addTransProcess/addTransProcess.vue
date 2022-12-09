@@ -1039,13 +1039,8 @@ export default Vue.extend({
         item.total_additional_fee = (item.additional_fee as any[]).reduce((total, current) => {
           return total + Number(current.price || 0)
         }, 0)
-        item.additional_fee =
-          (item.additional_fee as any[]).filter((itemChild) => itemChild.name && itemChild.price).length > 0
-            ? JSON.stringify(item.additional_fee)
-            : ''
+        item.additional_fee = JSON.stringify(item.additional_fee)
       })
-      // console.log(this.process_info)
-      // return 
       yarnProcess
         .create({
           order_id: this.orderId || '',

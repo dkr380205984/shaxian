@@ -1688,7 +1688,7 @@ export default class InAndOut extends Vue {
         // @ts-ignore
         client_id: Array.isArray(this.storeInfo.client_id) ? this.storeInfo.client_id[1] : this.storeInfo.client_id,
         child_data: this.storeInfo.child_data.map((item: any) => {
-          console.log(item)
+          // console.log(item)
           return {
             name: Array.isArray(item.name) ? item.name[1] : item.name,
             action_weight: item.action_weight,
@@ -1730,23 +1730,6 @@ export default class InAndOut extends Vue {
   @Watch('show')
   init(val: boolean) {
     if (val) {
-      this.$checkCommonInfo([
-        {
-          checkWhich: 'api/storeHouse',
-          getInfoMethed: 'dispatch',
-          getInfoApi: 'getStoreAsync'
-        },
-        {
-          checkWhich: 'api/factory',
-          getInfoMethed: 'dispatch',
-          getInfoApi: 'getPartyBAsync'
-        },
-        {
-          checkWhich: 'api/yarnType',
-          getInfoMethed: 'dispatch',
-          getInfoApi: 'getYarnTypeAsync'
-        }
-      ])
       this.getType()
       this.clientArr = this.$store.state.api.client.arr.filter((item: any) => (item.status as number) === 1)
       if (this.relatedId) {
@@ -1788,6 +1771,31 @@ export default class InAndOut extends Vue {
         })
       }
     }
+  }
+  mounted() {
+    this.$checkCommonInfo([
+        {
+          checkWhich: 'api/storeHouse',
+          getInfoMethed: 'dispatch',
+          getInfoApi: 'getStoreAsync',
+        },
+        {
+          checkWhich: 'api/factory',
+          getInfoMethed: 'dispatch',
+          getInfoApi: 'getPartyBAsync',
+        },
+        {
+          checkWhich: 'api/client',
+          getInfoMethed: 'dispatch',
+          getInfoApi: 'getPartyBAsync',
+          forceUpdate: true
+        },
+        {
+          checkWhich: 'api/yarnType',
+          getInfoMethed: 'dispatch',
+          getInfoApi: 'getYarnTypeAsync'
+        }
+      ])
   }
 }
 </script>

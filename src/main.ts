@@ -52,6 +52,7 @@ interface CheckCommonInfo {
   checkWhich: string // 需要的公告数据
   getInfoMethed?: string // commit or dispatch,api一般都是异步，用dispatch调用，status一般是同步，用commit调用,默认就是dispatch
   getInfoApi: string // 没有公共数据的时候需要调用的函数
+  forceUpdate?: boolean // 是否强制刷新
 }
 declare module 'vue/types/vue' {
   interface Vue {

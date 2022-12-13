@@ -198,8 +198,8 @@ export default Vue.extend({
         {
           key: 'status',
           name: '订单状态',
-          filterArr: ['未知', '已创建', '进行中', '已完成', '已取消'],
-          classArr: ['', 'orange', 'blue', 'green', 'gray'],
+          filterArr: ['未知', '已创建', '进行中', '已完成', '已取消','已延期'],
+          classArr: ['', 'orange', 'blue', 'green', 'gray', 'red'],
           ifShow: true,
           ifLock: false,
           index: 4,

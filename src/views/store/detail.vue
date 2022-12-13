@@ -380,9 +380,19 @@
                 </div>
                 <div class="bodyCtn">
                   <div class="row" v-for="item in storeLogInfo.list" :key="item.id">
-                    <div class="column min120 blue" :style="{ height: 50.6 * item.child_data.length + 'px' }">
-                      {{ item.code }}
-                    </div>
+                    <!-- 订购入库 -->
+                    <div class="column min120 hoverBlue" style="cursor:pointer" v-if="item.action_type === 3" @click="$router.push('/directOrder/yarnDetail/' + item.related_id)">{{ item.code }}</div>
+                    <!-- 工艺单入库 -->
+                    <div class="column min120 hoverBlue" style="cursor:pointer" v-else-if="item.action_type === 8" @click="$router.push('/material/craftDetail/' + item.related_id)">{{ item.code }}</div>
+                    <!-- 订单发货 和 加工单位直接发货 -->
+                    <div class="column min120 hoverBlue" style="cursor:pointer" v-else-if="item.action_type === 9 || item.action_type === 18" @click="$router.push('/order/detail/' + item.order_id)">{{ item.code }}</div>
+                    <!-- 销售出库 -->
+                    <div class="column min120 hoverBlue" style="cursor:pointer" v-else-if="item.action_type === 12" @click="$router.push('/order/detail/' + item.id)">{{ item.code }}</div>
+                    <!-- 加工调取 -->
+                    <div class="column min120 hoverBlue" style="cursor:pointer" v-else-if="item.action_type === 16" @click="$router.push('/directProcess/yarnDetailNew/' + item.id)">{{ item.code }}</div>
+                    <!-- 加工回库，跳转到调取单 -->
+                    <div class="column min120 hoverBlue" style="cursor:pointer" v-else-if="item.action_type === 17" @click="$router.push('/directProcess/yarnDetailNew/' + item.related_id  )">{{ item.code }}</div>
+                    <div class="column min120" v-else>{{ item.code }}</div>
                     <div
                       class="column"
                       style="min-width: 80px"

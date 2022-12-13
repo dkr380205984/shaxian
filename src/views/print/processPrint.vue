@@ -93,7 +93,18 @@
             <div class="row_item center bgGray flex05">额外费用备注</div>
             <div class="row_item center">{{ itemSon.desc }}</div>
           </div>
-          <div class="print_row fz14" v-if="itemSon.orderInfoDesc" style="min-height: 39px; max-height: 39px">
+          <div
+            class="print_row fz14"
+            v-if="itemSon.isTotal"
+            style="min-height: 39px; max-height: 39px; border-bottom: 1px solid rgba(0, 0, 0, 0.25)"
+          >
+            <div class="row_item center bgGray">合计</div>
+            <div class="row_item center bgGray"></div>
+            <div class="row_item center bgGray"></div>
+            <div class="row_item center bgGray">{{ orderInfo.total_weight || 0 }}kg</div>
+            <div class="row_item center bgGray">{{ orderInfo.total_price || 0 }}元</div>
+          </div>
+          <div class="print_row fz14" v-if="itemSon.orderInfoDesc" style="min-height: 39px; max-height: 39px;border-bottom: 1px solid rgba(0, 0, 0, 0.25)">
             <div class="row_item center bgGray flex05">备注信息</div>
             <div
               class="row_item"
@@ -110,44 +121,42 @@
               <div v-html="orderInfo.desc"></div>
             </div>
           </div>
-          <div style="">
-            <div class="print_row fz14" style="max-height: 78px;position:absolute;bottom:78px" v-if="itemSon.companyDesc">
-            <div class="row_item center bgGray flex05">出库声明</div>
-            <div
-              class="row_item"
-              style="
-                border-right: unset;
-                flex: 4;
-                display: -webkit-box;
-                overflow: hidden;
-                text-overflow: ellipsis;
-                -webkit-line-clamp: 2;
-                -webkit-box-orient: vertical;
-              "
-            >
-              <div v-html="desc"></div>
-            </div>
-          </div>
-          <div class="print_row fz14" v-if="itemSon.kehuqianzi" style="min-height: 39px; max-height: 39px;position:absolute;bottom:39px">
-            <div class="row_item center bgGray flex05">加工单位</div>
-            <div class="row_item center">{{ itemSon.client_name }}</div>
-            <div class="row_item center bgGray flex05">加工日期</div>
-            <div class="row_item center">{{ itemSon.order_time }}</div>
-            <div class="row_item center bgGray flex05">完成日期</div>
-            <div class="row_item center">{{ $getDate(itemSon.delivery_time) }}</div>
-            <div class="row_item center bgGray flex05">单位签字</div>
-            <div class="row_item center"></div>
-          </div>
-          <div class="print_row fz14" v-if="itemSon.total_weight" style="min-height: 39px; max-height: 39px;position:absolute;bottom:0">
-            <div class="row_item center bgGray flex05">加工总数</div>
-            <div class="row_item center">{{ orderInfo.total_weight || 0 }}kg</div>
-            <div class="row_item center bgGray flex05">加工总价</div>
-            <div class="row_item center">{{ orderInfo.total_price || 0 }}元</div>
-            <div class="row_item center bgGray flex05"></div>
-            <div class="row_item center"></div>
-            <div class="row_item center bgGray flex05">签字日期</div>
-            <div class="row_item center"></div>
-          </div>
+        </div>
+        <div class="print_row fz14" style="min-height: 49px; max-height: 49px; position: absolute; bottom: 125px">
+          <div class="row_item center bgGray flex05">加工单位</div>
+          <div class="row_item center">{{ orderInfo.client_name }}</div>
+          <div class="row_item center bgGray flex05">加工日期</div>
+          <div class="row_item center">{{ orderInfo.order_time }}</div>
+          <div class="row_item center bgGray flex05">完成日期</div>
+          <div class="row_item center">{{ $getDate(orderInfo.delivery_time) }}</div>
+          <div class="row_item center bgGray flex05">单位签字</div>
+          <div class="row_item center"></div>
+        </div>
+        <div class="print_row fz14" style="min-height: 50px; max-height: 50px; position: absolute; bottom: 75px">
+          <div class="row_item center bgGray flex05">加工总数</div>
+          <div class="row_item center">{{ orderInfo.total_weight || 0 }}kg</div>
+          <div class="row_item center bgGray flex05">加工总价</div>
+          <div class="row_item center">{{ orderInfo.total_price || 0 }}元</div>
+          <div class="row_item center bgGray flex05"></div>
+          <div class="row_item center"></div>
+          <div class="row_item center bgGray flex05">签字日期</div>
+          <div class="row_item center"></div>
+        </div>
+        <div class="print_row fz14" style="max-height: 75px; position: absolute; bottom: 0; min-height: 75px; border-bottom: unset">
+          <div class="row_item center bgGray flex05">出库声明</div>
+          <div
+            class="row_item"
+            style="
+              border-right: unset;
+              flex: 4;
+              display: -webkit-box;
+              overflow: hidden;
+              text-overflow: ellipsis;
+              -webkit-line-clamp: 2;
+              -webkit-box-orient: vertical;
+            "
+          >
+            <div v-html="desc"></div>
           </div>
         </div>
       </div>
@@ -188,9 +197,7 @@ export default Vue.extend({
       .then((res) => {
         this.id = res.data.data.id
         this.orderInfo = res.data.data
-        this.orderInfo.additional_fee = JSON.parse(this.orderInfo.additional_fee) || [
-          { name: ' ', price: '', desc: '', isAddFee: true }
-        ]
+        this.orderInfo.additional_fee = JSON.parse(this.orderInfo.additional_fee) || []
         this.orderInfo.additional_fee.map((item: any) => {
           item.isAddFee = true
           return item
@@ -200,23 +207,22 @@ export default Vue.extend({
         }, 0)
         let arr: any = ['proName'].concat(this.$clone(this.orderInfo.child_data))
         arr = arr.concat(this.orderInfo.additional_fee)
+
         arr.push(
-          { orderInfoDesc: this.orderInfo.desc || ' ' },
-          { companyDesc: this.desc || ' ' },
-          {
-            client_name: this.orderInfo.client_name,
-            order_time: this.orderInfo.order_time,
-            create_time: this.orderInfo.create_time,
-            kehuqianzi: true
-          },
-          { total_price: this.orderInfo.total_price, total_weight: this.orderInfo.total_weight }
+          { total_price: this.orderInfo.total_price, total_weight: this.orderInfo.total_weight, isTotal: true },
         )
+
+        if(this.orderInfo.desc){
+          arr.push(
+            { orderInfoDesc: this.orderInfo.desc || '' },          
+          )
+        }
 
         this.companyName = window.sessionStorage.getItem('full_name') + '加工出库单'
 
-        if (arr.length > 13) {
+        if (arr.length > 9) {
           arr.forEach((item: any, index: number) => {
-            if (index % 13 === 0) {
+            if (index % 9 === 0) {
               this.orderArr.push([item])
             } else {
               this.orderArr[this.orderArr.length - 1].push(item)

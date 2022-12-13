@@ -86,7 +86,7 @@
                     v-for="item in list"
                     :key="item.id">
                     <div class="column  min120"
-                      :class="{'blue':Number(item.collect_type)===5,'orange':Number(item.collect_type)!==5}">{{item.collect_type | ticketFilter}}</div>
+                      :class="{'blue':Number(item.collect_type)===5,'orange':Number(item.collect_type)!==5}">{{item.collect_type | ticketCollectFilter}}</div>
                     <div class="column min120">{{item.client_name}}</div>
                     <div class="column min120">{{item.code}}</div>
                     <div class="column min120">{{item.collect_price}}元</div>
@@ -130,7 +130,7 @@
                   v-for="item in list"
                   :key="item.id">
                   <div class="column  min120"
-                    :class="{'blue':Number(item.collect_type)===5,'orange':Number(item.collect_type)!==5}">{{item.collect_type | ticketFilter}}</div>
+                    :class="{'blue':Number(item.collect_type)===5,'orange':Number(item.collect_type)!==5}">{{item.collect_type | ticketCollectFilter}}</div>
                 </div>
               </div>
             </div>

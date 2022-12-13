@@ -1,5 +1,6 @@
 import store from '../../store/index'
 import Message from 'element-ui'
+import { number } from 'echarts'
 interface MapTitle {
   title: string
   key: string
@@ -485,9 +486,9 @@ const toFixedAuto = (num: number, precision: number = 2, changeToPrice?: false):
         }
       }
       if (numArr.length === 2) {
-        return numStrArr.join('') + '.' + numArr[1]
+        return num < 0 ? '-' + numStrArr.join('') + '.' + numArr[1] : numStrArr.join('') + '.' + numArr[1]
       } else {
-        return numStrArr.join('')
+        return num < 0 ? '-' + numStrArr.join('') : numStrArr.join('')
       }
     } else {
       return Math.round(num)
@@ -505,14 +506,13 @@ const toFixedAuto = (num: number, precision: number = 2, changeToPrice?: false):
         }
       }
       if (numArr.length === 2) {
-        return numStrArr.join('') + '.' + numArr[1]
+        return num < 0 ? '-' + numStrArr.join('') + '.' + numArr[1] : numStrArr.join('') + '.' + numArr[1]
       } else {
-        return numStrArr.join('')
+        return num < 0 ? '-' + numStrArr.join('') : numStrArr.join('')
       }
     } else {
       return Math.round(num * Math.pow(10, precision)) / Math.pow(10, precision)
     }
-
   } else {
     return num
   }

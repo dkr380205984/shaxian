@@ -50,6 +50,24 @@
           </div>
         </div>
         <div class="row">
+          <div class="label">扣款信息：</div>
+          <div class="info">
+            <el-input v-model="desc"
+              placeholder="请输入扣款信息"></el-input>
+          </div>
+        </div>
+        <div class="row">
+          <div class="label">扣款日期：</div>
+          <div class="info">
+            <el-date-picker style="width:100%"
+              v-model="date"
+              type="date"
+              value-format="yyyy-MM-dd"
+              placeholder="选择下单日期">
+            </el-date-picker>
+          </div>
+        </div>
+        <div class="row">
           <div class="label">文件信息：</div>
           <div class="info">
             <el-checkbox v-model="cvFlag"
@@ -77,24 +95,6 @@
             <el-dialog :visible.sync="dialogVisible" append-to-body>
               <img width="100%" :src="dialogImageUrl" alt="">
             </el-dialog>
-          </div>
-        </div>
-        <div class="row">
-          <div class="label">扣款日期：</div>
-          <div class="info">
-            <el-date-picker style="width:100%"
-              v-model="date"
-              type="date"
-              value-format="yyyy-MM-dd"
-              placeholder="选择下单日期">
-            </el-date-picker>
-          </div>
-        </div>
-        <div class="row">
-          <div class="label">扣款信息：</div>
-          <div class="info">
-            <el-input v-model="desc"
-              placeholder="请输入扣款信息"></el-input>
           </div>
         </div>
       </div>

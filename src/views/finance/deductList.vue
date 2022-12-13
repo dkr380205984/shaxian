@@ -88,7 +88,7 @@
                       :class="{'blue':item.type===5,'orange':item.type!==5}">{{item.type | ticketFilter}}</div>
                     <div class="column min120">{{item.client_name || '无'}}</div>
                     <div class="column min120">{{item.code}}</div>
-                    <div class="column min120">{{item.deduct_price}}元</div>
+                    <div class="column min120">{{item.total_price}}元</div>
                     <div class="column min120">{{item.desc || '无'}}</div>
                     <div class="column min120">{{item.date || '无'}}</div>
                     <div class="column min120">

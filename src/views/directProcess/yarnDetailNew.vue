@@ -255,6 +255,10 @@
                   <i class="iconfont">&#xe63b;</i>
                   <span class="text">单据扣款</span>
                 </div>
+                <div class="button btnRed" @click="deleteAdd">
+                  <i class="iconfont">&#xe639;</i>
+                  <span class="text">删除加工单</span>
+                </div>
                 <div class="button btnBlue" @click="confirm" v-if="process_info.status !== 3">
                   <i class="iconfont">&#xe636;</i>
                   <span class="text">确认完成</span>
@@ -265,7 +269,7 @@
                 </div>
                 <div class="button btnBlue" @click="$openUrl(`/print/processPrint?id=${materialOrderIndex}`)">
                   <i class="el-icon-printer"></i>
-                  <span class="text">打印单据</span>
+                  <span class="text">打印出库单</span>
                 </div>
                 <div class="button btnBlue" @click="$openUrl(`/print/processBaoRan?id=${materialOrderIndex}`)">
                   <i class="el-icon-printer"></i>
@@ -656,9 +660,25 @@ export default Vue.extend({
     openCheck() {
       this.check_flag = true
     },
+    // 删除加工单
+    deleteAdd(){
+      if(this.process_info.process_info.length === 1){
+        this.$message.error('当前调取单只有一张加工单，不可删除，如需删除调取单，请返回上一级列表进行删除')
+        return
+      }
+      yarnProcess.delete({id:this.materialOrderIndex}).then(res => {
+        if(res.data.status) {
+          this.$message.success('删除成功')
+          this.init()
+        }
+      })
+    },
     // 打开扣款窗口
     openDeduct() {
       let index = this.process_info.process_info.findIndex((item: any) => {
+        return item.id == this.materialOrderIndex
+      })
+      let item = this.process_info.process_info.find((item: any) => {
         return item.id == this.materialOrderIndex
       })
       this.deduct_info = {
@@ -668,6 +688,7 @@ export default Vue.extend({
             label: item.name + '/' + item.color + '/' + item.attribute
           }
         }),
+        client_id: item.client_id,
         pid: this.materialOrderIndex,
         pcode: this.process_info.process_info[index].code,
         type: 2

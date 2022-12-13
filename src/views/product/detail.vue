@@ -9,10 +9,6 @@
       <div class="detailCtn">
         <div class="rowCtn">
           <div class="colCtn">
-            <span class="label">纱线名称：</span>
-            <span class="text">{{product_info.name}}</span>
-          </div>
-          <div class="colCtn">
             <span class="label">纱线类型：</span>
             <span class="text">{{product_info.yarn_type|yarnTypeFilter}}</span>
           </div>
@@ -20,12 +16,17 @@
             <span class="label">创建人：</span>
             <span class="text">{{product_info.user_name}}</span>
           </div>
+          <div class="colCtn">
+            <span class="label">更新时间：</span>
+            <span class="text">{{$getDate(product_info.updated_at)}}</span>
+          </div>
         </div>
         <div class="rowCtn">
           <div class="tableCtn"
             style="margin:0;width:100%;">
             <div class="thead">
               <div class="trow">
+                <div class="tcolumn">纱线名称</div>
                 <div class="tcolumn">纱线颜色</div>
                 <div class="tcolumn">纱线属性</div>
                 <div class="tcolumn">参考单价(元)</div>
@@ -36,6 +37,7 @@
               <div class="trow"
                 v-for="item in product_info.child_data"
                 :key="item.id">
+                <div class="tcolumn">{{product_info.name}}</div>
                 <div class="tcolumn">{{item.color}}</div>
                 <div class="tcolumn">{{item.attribute}}</div>
                 <div class="tcolumn">{{item.price}}元</div>
@@ -64,7 +66,7 @@
                   <div class="tcolumn">批号</div>
                   <div class="tcolumn">色号</div>
                   <div class="tcolumn">缸号</div>
-                  <div class="tcolumn">实际库存(kg)</div>
+                  <div class="tcolumn">库存数量(kg)</div>
                 </div>
               </div>
             </div>
@@ -93,6 +95,7 @@
               <div class="tcolumn">合计</div>
               <div class="tcolumn"></div>
               <div class="tcolumn"></div>
+              <div class="tcolumn"></div>
               <div class="tcolumn noPad"
                 style="flex:5">
                 <div class="trow">
@@ -100,7 +103,6 @@
                   <div class="tcolumn"></div>
                   <div class="tcolumn"></div>
                   <div class="tcolumn">{{$formatNum(store_info.reality_weight)}}kg</div>
-                  <div class="tcolumn blue">{{$formatNum(store_info.useable_weight)}}kg</div>
                 </div>
               </div>
             </div>
@@ -253,11 +255,11 @@ export default Vue.extend({
           end_time: ''
         })
         .then((resLog) => {
-          console.log(resLog)
+          console.log(resLog.data.data)
           this.store_log_info = {
-            total_pop: resLog.data.data.others_data.total_pop || 0,
-            total_push: resLog.data.data.others_data.total_push || 0,
-            list: resLog.data.data.data.items
+            total_pop: resLog.data.data.additional.total_pop || 0,
+            total_push: resLog.data.data.additional.total_push || 0,
+            list: resLog.data.data.items
           }
         })
       store

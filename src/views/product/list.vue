@@ -82,7 +82,7 @@
               <div class="column">{{ item.child_data | fiterColor }}</div>
               <div class="column">{{ item.child_data | fiterAttr }}</div>
               <div class="column">{{ item.child_data | fiterPrice }}</div>
-              <div class="column">{{ item.store || 0 }}</div>
+              <div class="column">{{ item.store ? Number(item.store).toFixed(1) : '0.0' }}</div>
               <div class="column">{{ item.user_name }}</div>
               <div class="column">{{ item.updated_at ? $getDate(item.updated_at) : item.created_at ? $getDate(item.created_at) : '无'}}</div>
               <div class="column" style="flex:2">

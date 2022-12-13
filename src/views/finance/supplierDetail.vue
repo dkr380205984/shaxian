@@ -78,10 +78,10 @@
         </div>
         <div class="tbody" style="font-weight:bold;font-size:16px">
           <div class="trow">
-            <div class="tcolumn red">{{$toFixed(client_info.deduct_sum_total_price,2,true) || 0}}元</div>
-            <div class="tcolumn">{{$toFixed(client_info.collection_sum_collect_price,2,true)|| 0}}元</div>
-            <div class="tcolumn">{{$toFixed(client_info.invoice_sum_invoice_price,2,true)|| 0}}元</div>
-            <div class="tcolumn red">{{$toFixed(client_info.real_total_price-client_info.invoice_total_price,2,true) || 0}}元</div>
+            <div class="tcolumn red">{{$toFixed(client_info.deduct_total_price,2,true) || 0}}元</div>
+            <div class="tcolumn">{{$toFixed(client_info.invoice_total_price,2,true)|| 0}}元</div>
+            <div class="tcolumn">{{$toFixed(client_info.collection_total_price,2,true)|| 0}}元</div>
+            <div class="tcolumn red">{{$toFixed(client_info.real_total_price-client_info.collection_total_price-client_info.deduct_total_price,2,true) || 0}}元</div>
           </div>
         </div>
       </div>
@@ -219,7 +219,7 @@
                         <div class="column min120">{{item.desc || '无'}}</div>
                         <div class="column min120">{{item.user_name}}</div>
                         <div class="column min120">{{$getDate(item.create_time)}}</div>
-                        <div class="column min120 hoverBlue" style="cursor:pointer" @click="$openUrl('/print/transPrint?id=' + item.id)">打印</div>
+                        <div class="column min120 hoverBlue" style="cursor:pointer" @click="$openUrl('/print/transPrint?id=' + item.related_id)">打印</div>
                       </div>
                     </div>
                   </div>
@@ -264,7 +264,7 @@
                             <div class="column min120">{{itemChild.name}}</div>
                           </div>
                         </div>
-                      <div class="column min120 hoverBlue" style="cursor:pointer" @click="$openUrl('/print/orderYarn/2/' + item.id)">打印</div>
+                      <div class="column min120 hoverBlue" style="cursor:pointer" @click="$openUrl('/print/orderYarn/2/' + item.related_id)">打印</div>
                     </div>
                   </div>
                 </div>

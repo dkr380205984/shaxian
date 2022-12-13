@@ -444,7 +444,7 @@
               <div class="tcolumn">{{ $toFixed(order_info.total_weight,1) }}kg</div>
               <div class="tcolumn">{{ $toFixed(total_final_out_log.total_action_weight,1) }}kg</div>
               <div class="tcolumn">{{ $toFixed(+order_info.total_price + +order_info.total_additional_fee + +order_info.total_deduct_price,2,true) }}元</div>
-              <div class="tcolumn">{{ $toFixed(+total_final_out_log.total_price + +order_info.total_additional_fee + +order_info.total_deduct_price,2,true) }}元</div>
+              <div class="tcolumn">{{ $toFixed(+total_final_out_log.total_price - +order_info.total_additional_fee + +order_info.total_deduct_price,2,true) }}元</div>
             </div>
           </div>
         </div>
@@ -465,8 +465,8 @@
             <div class="trow">
               <div class="tcolumn">{{$toFixed(total_purchase_info.total_additional_fee,2,true)}}元</div>
               <div class="tcolumn">{{$toFixed(total_purchase_info.total_deduct_price,2,true)}}元</div>
-              <div class="tcolumn">{{$toFixed(total_purchase_info.total_number,2,true)}}元</div>
-              <div class="tcolumn">{{$toFixed(total_purchase_info.total_real_number,2,true)}}元</div>
+              <div class="tcolumn">{{$toFixed(total_purchase_info.total_number,2,true)}}kg</div>
+              <div class="tcolumn">{{$toFixed(total_purchase_info.total_real_number,2,true)}}kg</div>
               <div class="tcolumn">{{$toFixed(total_purchase_info.total_price + total_purchase_info.total_deduct_price + total_purchase_info.total_additional_fee,2,true)}}元</div>
               <div class="tcolumn">{{$toFixed(total_purchase_info.total_real_price + total_purchase_info.total_deduct_price + total_purchase_info.total_additional_fee,2,true)}}元</div>
               <div class="tcolumn blue" style="cursor:pointer" @click="openCaiGou = !openCaiGou">{{openCaiGou?'收起':'展开'}}</div>
@@ -474,12 +474,17 @@
             <div v-if="openCaiGou">
               <div class="trow" style="background:#F4F4F4" >
               <div class="tcolumn">采购单位</div>
-              <div class="tcolumn">纱线名称</div>
-              <div class="tcolumn">颜色属性</div>
-              <div class="tcolumn">计划采购数量</div>
-              <div class="tcolumn">实际入库数量</div>
-              <div class="tcolumn">计划总额</div>
-              <div class="tcolumn">实际总额</div>
+              <div class="tcolumn noPad" style="flex:6.75">
+                <div class="trow">
+                  <div class="tcolumn">纱线名称</div>
+                  <div class="tcolumn">颜色属性</div>
+                  <div class="tcolumn">采购单价</div>
+                  <div class="tcolumn">计划采购数量</div>
+                  <div class="tcolumn">实际入库数量</div>
+                  <div class="tcolumn">计划总额</div>
+                  <div class="tcolumn">实际总额</div>
+                </div>
+              </div>
             </div>
             <div class="trow" v-for="item,index in order_info.purchase_log" :key="index + '采购单财务详情'">
               <div class="tcolumn">{{item.client_name}}</div>
@@ -487,6 +492,7 @@
                 <div class="trow" v-for="itemChild,indexChild in item.child_data" :key="indexChild + '采购单财务子集'">
                   <div class="tcolumn">{{itemChild.name}}</div>
                   <div class="tcolumn">{{itemChild.color}}/{{itemChild.attribute}}</div>
+                  <div class="tcolumn">{{$toFixed(itemChild.price,2,true)}}元</div>
                   <div class="tcolumn">{{$toFixed(itemChild.weight,2,true)}}kg</div>
                   <div class="tcolumn">{{$toFixed(itemChild.push_weight,2,true)}}kg</div>
                   <div class="tcolumn">{{$toFixed(itemChild.weight * itemChild.price,2,true)}}元</div>
@@ -523,12 +529,17 @@
             <div v-if="openJiaGong">
               <div class="trow" style="background:#F4F4F4" >
                 <div class="tcolumn">加工单位</div>
-                <div class="tcolumn">纱线名称</div>
-                <div class="tcolumn">加工信息</div>
-                <div class="tcolumn">加工数量</div>
-                <div class="tcolumn">实际回库数量</div>
-                <div class="tcolumn">计划总额</div>
-                <div class="tcolumn">实际总额</div>
+                <div class="tcolumn noPad" style="flex:6.75">
+                  <div class="trow">
+                    <div class="tcolumn">纱线名称</div>
+                    <div class="tcolumn">加工信息</div>
+                    <div class="tcolumn">加工数量</div>
+                    <div class="tcolumn">加工单价</div>
+                    <div class="tcolumn">实际回库数量</div>
+                    <div class="tcolumn">计划总额</div>
+                    <div class="tcolumn">实际总额</div>
+                  </div>
+                </div>
               </div>
               <div class="trow" v-for="item,index in order_info.process_log" :key="index + '加工单财务详情'">
                 <div class="tcolumn">{{item.client_name}}</div>
@@ -555,6 +566,7 @@
                     </div>
                     <div class="tcolumn">{{$toFixed(itemChild.weight,2,true)}}kg</div>
                     <div class="tcolumn">{{$toFixed(itemChild.total_real_number,2,true) }}kg</div>
+                    <div class="tcolumn">{{$toFixed(itemChild.price,2,true) }}元</div>
                     <div class="tcolumn">{{$toFixed(itemChild.price * itemChild.weight,2,true)}}元</div>
                     <div class="tcolumn">{{$toFixed(itemChild.price * itemChild.total_real_number,2,true)}}元</div>
                   </div>
@@ -580,7 +592,7 @@
               <div class="tcolumn">{{ $toFixed(order_info.total_deduct_price,2,true) }}元</div>
               <div class="tcolumn">{{ $toFixed(order_info.total_weight,1) }}kg</div>
               <div class="tcolumn">
-                {{ $toFixed(+order_info.total_price + +order_info.total_deduct_price,2,true) }}元
+                {{ $toFixed(+order_info.total_price - +order_info.total_deduct_price,2,true) }}元
               </div>
             </div>
           </div>
@@ -723,7 +735,7 @@
                   <i class="iconfont">&#xe63a;</i>
                   <span class="text">订单修改</span>
                 </div>
-                <div class="button btnRed" @click="deleteOrder" v-if="order_info.status !== 3">
+                <div class="button btnRed" @click="deleteOrder" v-if="order_info.status === 1 && order_info.type !== 2">
                   <i class="iconfont">&#xe639;</i>
                   <span class="text">订单删除</span>
                 </div>
@@ -1528,19 +1540,19 @@
               <div class="trow">
                 <div class="tcolumn">采购并入库</div>
                 <div class="tcolumn noPad" style="flex: 4.5">
-                  <div class="trow" v-for="(item, index) in caigouList" :key="index + '日志'">
+                  <div class="trow" v-for="(item, index) in order_info.purchase_log" :key="index + '日志'">
                     <div class="tcolumn">{{ item.code }}</div>
                     <div class="tcolumn">{{ item.user_name }}</div>
                     <div class="tcolumn">{{ $getDate(item.created_at) }}</div>
                     <div
                       class="tcolumn hoverBlue"
                       style="cursor: pointer"
-                      @click="$router.push('/directOrder/yarnDetail/' + item.related_id)"
+                      @click="$router.push('/directOrder/yarnDetail/' + item.id)"
                     >
                       详情
                     </div>
                   </div>
-                  <div v-if="caigouList.length === 0" class="trow tc" style="align-items: center">暂无单据</div>
+                  <div v-if="order_info.purchase_log.length === 0" class="trow tc gray" style="align-items: center">暂无单据</div>
                 </div>
               </div>
               <div class="trow">
@@ -1552,7 +1564,7 @@
                     <div class="tcolumn">{{ $getDate(item.created_at) }}</div>
                     <div class="tcolumn gray">暂无操作</div>
                   </div>
-                  <div v-if="kucunList.length === 0" class="trow tc" style="align-items: center">暂无单据</div>
+                  <div v-if="kucunList.length === 0" class="trow tc gray" style="align-items: center">暂无单据</div>
                 </div>
               </div>
               <div class="trow">
@@ -1570,7 +1582,7 @@
                       详情
                     </div>
                   </div>
-                  <div v-if="kucunList.length === 0" class="trow tc" style="align-items: center">暂无单据</div>
+                  <div v-if="diaoquList.length === 0" class="trow tc gray" style="align-items: center">暂无单据</div>
                 </div>
               </div>
               <div class="trow">
@@ -1583,7 +1595,7 @@
                     <div class="tcolumn gray">暂无操作</div>
                     <!-- <div class="tcolumn hoverBlue" style="cursor:pointer" v-if="item.action_type === 16" @click="$router.push('/directProcess/yarnDetailNew/'+item.id)">详情</div> -->
                   </div>
-                  <div v-if="huikuList.length === 0" class="trow tc" style="align-items: center">暂无单据</div>
+                  <div v-if="huikuList.length === 0" class="trow tc gray" style="align-items: center">暂无单据</div>
                 </div>
               </div>
               <div class="trow">
@@ -1595,7 +1607,7 @@
                     <div class="tcolumn">{{ $getDate(item.created_at) }}</div>
                     <div class="tcolumn gray">暂无操作</div>
                   </div>
-                  <div v-if="jiagsdjList.length === 0" class="trow tc" style="align-items: center">暂无单据</div>
+                  <div v-if="jiagsdjList.length === 0" class="trow tc gray" style="align-items: center">暂无单据</div>
                 </div>
               </div>
             </div>

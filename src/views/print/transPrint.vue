@@ -95,7 +95,11 @@
             </div>
             <div class="row_item center flex08">{{ itemSon.item || 0 }}</div>
           </div>
-          <div class="print_row" v-if="itemSon.isTotal" style="min-height: 39px; max-height: 39px">
+          <div
+            class="print_row"
+            v-if="itemSon.isTotal"
+            style="min-height: 39px; max-height: 39px; border-bottom: 1px solid rgba(0, 0, 0, 0.25)"
+          >
             <div class="row_item center bgGray flex15">合计</div>
             <div class="row_item center bgGray flex15"></div>
             <div class="row_item center bgGray flex07"></div>
@@ -109,7 +113,7 @@
             <div class="row_item center bgGray flex08">{{ orderInfo.total_price || 0 }}元</div>
             <div class="row_item center bgGray flex08"></div>
           </div>
-          <div class="print_row" v-if="itemSon.orderInfoDesc" style="min-height: 39px; max-height: 39px">
+          <div class="print_row" v-if="itemSon.orderInfoDesc" style="min-height: 39px; max-height: 39px;border-bottom: 1px solid rgba(0, 0, 0, 0.25)">
             <div class="row_item center bgGray flex05">备注信息</div>
             <div
               class="row_item"
@@ -126,54 +130,45 @@
               <div v-html="orderInfo.desc"></div>
             </div>
           </div>
+        </div>
+        <div class="print_row" style="min-height: 49px; max-height: 49px; position: absolute; bottom: 125px">
+          <div class="row_item center bgGray flex05">客户单号</div>
+          <div class="row_item center">{{ orderInfo.related_info ? orderInfo.related_info.code : '无' }}</div>
+          <div class="row_item center bgGray flex05">创建人</div>
+          <div class="row_item center">{{ orderInfo.user_name }}</div>
+          <div class="row_item center bgGray flex05">创建日期</div>
+          <div class="row_item center">{{ $getDate(orderInfo.create_time) }}</div>
+          <div class="row_item center bgGray flex05">客户签字</div>
+          <div class="row_item center"></div>
+        </div>
+        <div class="print_row" style="min-height: 50px; max-height: 50px; position: absolute; bottom: 75px">
+          <div class="row_item center bgGray flex05">数量合计</div>
+          <div class="row_item center">{{ orderInfo.total_weight || 0 }}kg</div>
+          <div class="row_item center bgGray flex05">金额合计</div>
+          <div class="row_item center">{{ orderInfo.total_price || 0 }}元</div>
+          <div class="row_item center bgGray flex05">发货日期</div>
+          <div class="row_item center">{{ $getDate(orderInfo.complete_time) }}</div>
+          <div class="row_item center bgGray flex05">签字日期</div>
+          <div class="row_item center"></div>
+        </div>
+        <div
+          class="print_row"
+          style="max-height: 75px; position: absolute; bottom: 0; min-height: 75px; border-bottom: unset"
+        >
+          <div class="row_item center bgGray flex05">公司声明</div>
           <div
-            class="print_row"
-            v-if="itemSon.kehuqianzi"
-            style="min-height: 39px; max-height: 39px;"
+            class="row_item"
+            style="
+              border-right: unset;
+              flex: 5.55;
+              display: -webkit-box;
+              overflow: hidden;
+              text-overflow: ellipsis;
+              -webkit-line-clamp: 2;
+              -webkit-box-orient: vertical;
+            "
           >
-            <div class="row_item center bgGray flex05">客户单号</div>
-            <div class="row_item center">{{ orderInfo.related_info ? orderInfo.related_info.code : '无' }}</div>
-            <div class="row_item center bgGray flex05">创建人</div>
-            <div class="row_item center">{{ orderInfo.user_name }}</div>
-            <div class="row_item center bgGray flex05">创建日期</div>
-            <div class="row_item center">{{ $getDate(orderInfo.create_time) }}</div>
-            <div class="row_item center bgGray flex05">客户签字</div>
-            <div class="row_item center"></div>
-          </div>
-          <div
-            class="print_row"
-            v-if="itemSon.fahuoDate"
-            style="min-height: 39px; max-height: 39px;"
-          >
-            <div class="row_item center bgGray flex05"></div>
-            <div class="row_item center"></div>
-            <div class="row_item center bgGray flex05"></div>
-            <div class="row_item center"></div>
-            <div class="row_item center bgGray flex05">发货日期</div>
-            <div class="row_item center">{{ $getDate(orderInfo.complete_time) }}</div>
-            <div class="row_item center bgGray flex05">签字日期</div>
-            <div class="row_item center"></div>
-          </div>
-          <div
-            class="print_row"
-            style="max-height: 55px; position: absolute; bottom: 0; min-height: 60px"
-            v-if="itemSon.companyDesc"
-          >
-            <div class="row_item center bgGray flex05">公司声明</div>
-            <div
-              class="row_item"
-              style="
-                border-right: unset;
-                flex: 5.55;
-                display: -webkit-box;
-                overflow: hidden;
-                text-overflow: ellipsis;
-                -webkit-line-clamp: 2;
-                -webkit-box-orient: vertical;
-              "
-            >
-              <div v-html="desc"></div>
-            </div>
+            <div v-html="desc"></div>
           </div>
         </div>
       </div>
@@ -235,22 +230,15 @@ export default Vue.extend({
         let arr: any = ['proName'].concat(this.$clone(this.orderInfo.child_data))
         arr.push(
           { total_price: this.orderInfo.total_price, total_weight: this.orderInfo.total_weight, isTotal: true },
-          { orderInfoDesc: this.orderInfo.desc || ' ' },
-          {
-            order_code: this.orderInfo.order_code,
-            client_name: this.orderInfo.client_name,
-            create_time: this.orderInfo.create_time,
-            kehuqianzi: true
-          },
-          {
-            fahuoDate: true
-          },
-          { companyDesc: this.desc || ' ' },
         )
 
-        if (arr.length > 13) {
+        if(this.orderInfo.desc){
+          arr.push({ orderInfoDesc: this.orderInfo.desc })
+        }
+
+        if (arr.length > 9) {
           arr.forEach((item: any, index: number) => {
-            if (index % 13 === 0) {
+            if (index % 9 === 0) {
               this.orderArr.push([item])
             } else {
               this.orderArr[this.orderArr.length - 1].push(item)

@@ -1054,56 +1054,63 @@ export default class InAndOut extends Vue {
               }
             })
             this.storeInfo.child_data.push(...a)
-          } else if (itemPro.type === '倒筒'){
-            let a = itemPro.child_data.map((itemChild:any) =>{
-              return {
-                name: itemChild.name,
-                action_weight: itemChild.weight,
-                color: itemChild.after_color || itemChild.before_color || itemChild.color || '白胚',
-                attribute: itemChild.after_attribute,
-                batch_code: itemChild.batch_code,
-                color_code: itemChild.color_code,
-                vat_code: itemChild.vat_code,
-                item: itemChild.item,
-                id:data.child_data.find((itemFind:any) => {
-                  return itemFind.name === itemChild.name
-                })?.id || null,
-                colorArr: [
-                  {
-                    label: itemChild.after_color || itemChild.before_color || itemChild.color || '白胚',
-                    value: itemChild.after_color || itemChild.before_color || itemChild.color || '白胚',
-                    id:itemChild.id
-                  }
-                ]
-              }
-            })
-            this.storeInfo.child_data.push(...a)
-          } else {
-            let a = itemPro.child_data.map((itemChild:any) =>{
-              return {
-                name: itemChild.name,
-                action_weight: itemChild.weight,
-                color: itemChild.after_color || itemChild.before_color || itemChild.color || '白胚',
-                attribute: itemChild.after_attribute || itemChild.before_attribute || itemChild.attribute,
-                batch_code: itemChild.batch_code,
-                color_code: itemChild.color_code,
-                vat_code: itemChild.vat_code,
-                item: itemChild.item,
-                id:data.child_data.find((itemFind:any) => {
-                  return itemFind.name === itemChild.name
-                })?.id || null,
-                colorArr: [
-                  {
-                    label: itemChild.after_color || itemChild.before_color || itemChild.color || '白胚',
-                    value: itemChild.after_color || itemChild.before_color || itemChild.color || '白胚',
-                    id:itemChild.id
-                  }
-                ]
-              }
-            })
-            this.storeInfo.child_data.push(...a)
           }
         });
+
+        // 如果有染色就不用管其它的，没有染色的话，就把其它的放进来
+        if(this.storeInfo.child_data.length === 0) {
+          data.process_info.forEach((itemPro:any) => {
+            if (itemPro.type === '倒筒'){
+              let a = itemPro.child_data.map((itemChild:any) =>{
+                return {
+                  name: itemChild.name,
+                  action_weight: itemChild.weight,
+                  color: itemChild.after_color || itemChild.before_color || itemChild.color || '白胚',
+                  attribute: itemChild.after_attribute,
+                  batch_code: itemChild.batch_code,
+                  color_code: itemChild.color_code,
+                  vat_code: itemChild.vat_code,
+                  item: itemChild.item,
+                  id:data.child_data.find((itemFind:any) => {
+                    return itemFind.name === itemChild.name
+                  })?.id || null,
+                  colorArr: [
+                    {
+                      label: itemChild.after_color || itemChild.before_color || itemChild.color || '白胚',
+                      value: itemChild.after_color || itemChild.before_color || itemChild.color || '白胚',
+                      id:itemChild.id
+                    }
+                  ]
+                }
+              })
+              this.storeInfo.child_data.push(...a)
+            } else {
+              let a = itemPro.child_data.map((itemChild:any) =>{
+                return {
+                  name: itemChild.name,
+                  action_weight: itemChild.weight,
+                  color: itemChild.after_color || itemChild.before_color || itemChild.color || '白胚',
+                  attribute: itemChild.after_attribute || itemChild.before_attribute || itemChild.attribute,
+                  batch_code: itemChild.batch_code,
+                  color_code: itemChild.color_code,
+                  vat_code: itemChild.vat_code,
+                  item: itemChild.item,
+                  id:data.child_data.find((itemFind:any) => {
+                    return itemFind.name === itemChild.name
+                  })?.id || null,
+                  colorArr: [
+                    {
+                      label: itemChild.after_color || itemChild.before_color || itemChild.color || '白胚',
+                      value: itemChild.after_color || itemChild.before_color || itemChild.color || '白胚',
+                      id:itemChild.id
+                    }
+                  ]
+                }
+              })
+              this.storeInfo.child_data.push(...a)
+            }
+          })
+        }
 
         this.loading = false
       })

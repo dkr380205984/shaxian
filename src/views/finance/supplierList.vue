@@ -43,12 +43,12 @@
                 </sort>
               </div>
               <div class="column">开票总额
-                <sort v-model="collection_total_price" @beforeChange="getSort($event, 'collection_total_price')">
-                </sort>
-              </div>
-              <div class="column">付款总额
                 <sort v-model="invoice_total_price"
                   @beforeChange="getSort($event, 'invoice_total_price')"></sort>
+              </div>
+              <div class="column">付款总额
+                <sort v-model="collection_total_price" @beforeChange="getSort($event, 'collection_total_price')">
+                </sort>
               </div>
               <div class="column">我方扣款
                 <sort v-model="deduct_total_price" @beforeChange="getSort($event, 'deduct_total_price')"></sort>
@@ -67,8 +67,8 @@
               <div class="column">{{ $toFixed(item.total_price/10000 , 2, true) || 0 }}万元</div>
               <div class="column">{{ $toFixed(item.real_total_weight/1000 , 2, true) || 0 }}吨</div>
               <div class="column">{{ $toFixed(item.real_total_price/10000 , 2, true) || 0 }}万元</div>
-              <div class="column">{{ $toFixed(item.collection_total_price/10000 , 2, true) || 0 }}万元</div>
               <div class="column">{{ $toFixed(item.invoice_total_price/10000 , 2, true) || 0 }}万元</div>
+              <div class="column">{{ $toFixed(item.collection_total_price/10000 , 2, true) || 0 }}万元</div>
               <div class="column">{{ $toFixed(item.deduct_total_price/10000 , 2, true) || 0 }}万元</div>
               <div class="column">{{ $toFixed(item.invoice_wait/10000 , 2, true) || 0 }}万元</div>
               <div class="column">
@@ -106,7 +106,7 @@
               <span class="text">批量导入单据</span>
             </div>
             <div class="otherInfoCtn">
-              <div class="otherInfo">
+              <div class="otherInfo" style="width: 320px;">
                 <div class="btn backHoverOrange"
                   @click="importExcelData('开票单据')">
                   <svg class="iconFont"
@@ -124,12 +124,12 @@
                   <span class="text">扣款单据</span>
                 </div>
                 <div class="btn backHoverBlue"
-                  @click="importExcelData('收款单据','元')">
+                  @click="importExcelData('付款单据','元')">
                   <svg class="iconFont"
                     aria-hidden="true">
                     <use xlink:href="#icon-xiugaidingdan"></use>
                   </svg>
-                  <span class="text">收款单据</span>
+                  <span class="text">付款单据</span>
                 </div>
               </div>
             </div>
@@ -140,7 +140,7 @@
               <span class="text">下载导入模板</span>
             </div>
             <div class="otherInfoCtn">
-              <div class="otherInfo">
+              <div class="otherInfo" style="width: 320px;">
                 <div class="btn backHoverOrange"
                   @click="downloadExcel('开票单据模板')">
                   <svg class="iconFont"
@@ -150,12 +150,12 @@
                   <span class="text">开票单据</span>
                 </div>
                 <div class="btn backHoverBlue"
-                  @click="downloadExcel('收款单据模板')">
+                  @click="downloadExcel('付款单据模板')">
                   <svg class="iconFont"
                     aria-hidden="true">
                     <use xlink:href="#icon-xiugaidingdan"></use>
                   </svg>
-                  <span class="text">收款单据</span>
+                  <span class="text">付款单据</span>
                 </div>
                 <div class="btn backHoverRed"
                   @click="downloadExcel('扣款单据模板')">
@@ -304,7 +304,7 @@ export default Vue.extend({
           ],
           type
         )
-      } else if (type === '收款单据模板') {
+      } else if (type === '付款单据模板') {
         this.$downloadExcel(
           [],
           [
@@ -376,7 +376,7 @@ export default Vue.extend({
           type: [false, 2],
           pid: [false, []],
         }
-      } else if (type === '收款单据') {
+      } else if (type === '付款单据') {
         typeObj = {
           type: ['收款方式(必填，现金收款、银行转账、网银支付三选一)'],
           client_name: ['收款单位(必填，全称)'],
@@ -454,7 +454,7 @@ export default Vue.extend({
             this.getList()
           }
         })
-      } else if (type === '收款单据') {
+      } else if (type === '付款单据') {
         let err = false
         // excel日期格式转前端日期格式
         submitData.forEach((item) => {

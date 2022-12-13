@@ -42,6 +42,18 @@ Vue.filter('ticketFilter', (val: 1 | 2 | 3 | 4 | 5) => {
   const statusArr = ['', '订单扣款', '其它扣款', '毛条订购', '毛条加工', '订单票据']
   return statusArr[val]
 })
+
+// 收款票据类型
+Vue.filter('ticketCollectFilter', (val: 1 | 2 | 3 | 4 | 5) => {
+  const statusArr = ['', '订单收款', '其它收款', '毛条订购', '毛条加工', '订单票据']
+  return statusArr[val]
+})
+
+// 付款票据类型
+Vue.filter('ticketPayFilter', (val: 1 | 2 | 3 | 4 | 5) => {
+  const statusArr = ['', '订单付款', '其它付款']
+  return statusArr[val]
+})
 // 纱线类型
 Vue.filter('yarnTypeFilter', (val: any[]) => {
   return val.map((item) => item.type_name).join(',')

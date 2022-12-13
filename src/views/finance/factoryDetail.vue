@@ -70,18 +70,18 @@
         style="padding:20px 32px 20px 32px;margin:0;">
         <div class="thead">
           <div class="trow">
-            <div class="tcolumn">客户扣款</div>
+            <div class="tcolumn">我方扣款</div>
             <div class="tcolumn">开票总额</div>
             <div class="tcolumn">付款总额</div>
-            <div class="tcolumn">客户欠款</div>
+            <div class="tcolumn">我方欠款</div>
           </div>
         </div>
         <div class="tbody" style="font-weight:bold;font-size:16px">
           <div class="trow">
             <div class="tcolumn red">{{ $toFixed(client_info.deduct_total_price,2,true) }}元</div>
             <div class="tcolumn">{{ $toFixed(client_info.invoice_total_price,2,true) }}元</div>
-            <div class="tcolumn">{{ $toFixed(client_info.deduct_total_price,2,true) }}元</div>
-            <div class="tcolumn red">{{ $toFixed(client_info.real_total_price-client_info.invoice_total_price,2,true) }}元</div>
+            <div class="tcolumn">{{ $toFixed(client_info.collection_total_price,2,true) }}元</div>
+            <div class="tcolumn red">{{ $toFixed(client_info.total_price-client_info.deduct_total_price-client_info.collection_total_price,2,true) }}元</div>
           </div>
         </div>
       </div>
@@ -887,11 +887,11 @@ export default Vue.extend({
         this.bill_total = res[1].data.data.total
         this.collection_list = res[2].data.data.items
         this.collection_total = res[2].data.data.total
-        res[3].data.data.total_other_fee = res[3].data.data.others_fee.reduce((a:any,b:any) => {
-          return a + b.others_fee.reduce((a1:any,b1:any) => {
+        res[3].data.data.total_other_fee = res[3].data.data.others_fee?.reduce((a:any,b:any) => {
+          return a + b.others_fee?.reduce((a1:any,b1:any) => {
             return a1 + (Number(b1.price) || 0)
-          },0)
-        },0)
+          },0) || 0
+        },0) || 0
         this.client_info = res[3].data.data
         this.order_list = res[4].data.data?.items
         this.order_total = res[4].data.data?.total

@@ -76,8 +76,8 @@
           <div class="trow">
             <div class="tcolumn red">{{ $toFixed(client_info.deduct_total_price,2,true) }}元</div>
             <div class="tcolumn">{{ $toFixed(client_info.invoice_total_price,2,true) }}元</div>
-            <div class="tcolumn">{{ $toFixed(client_info.deduct_total_price,2,true) }}元</div>
-            <div class="tcolumn red">{{ $toFixed(client_info.real_total_price-client_info.invoice_total_price,2,true) }}元</div>
+            <div class="tcolumn">{{ $toFixed(client_info.collection_total_price,2,true) }}元</div>
+            <div class="tcolumn red">{{ $toFixed(client_info.real_total_price-client_info.collection_total_price-client_info.deduct_total_price,2,true) }}元</div>
           </div>
         </div>
       </div>

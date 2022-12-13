@@ -790,6 +790,7 @@ export default Vue.extend({
             label: item.name + '/' + item.color + '/' + item.attribute
           }
         }),
+        client_id: this.order_yarn_info.client_id,
         pid: this.$route.params.id,
         pcode: this.order_yarn_info.code,
         type: 1

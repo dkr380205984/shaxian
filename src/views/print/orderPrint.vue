@@ -203,10 +203,10 @@
               <div class="row_item center bgGray flex06">色号</div>
               <div class="row_item center bgGray flex06">缸号</div>
               <div class="row_item center bgGray flex15">出库仓库</div>
-              <div class="row_item center bgGray flex08">{{ orderInfo.type === 1 ? '下单' : '销售' }}数量</div>
-              <div class="row_item center bgGray flex07">{{ orderInfo.type === 1 ? '下单' : '销售' }}单价(元)</div>
+              <div class="row_item center bgGray flex11">{{ orderInfo.type === 1 ? '下单' : '销售' }}数量</div>
+              <div class="row_item center bgGray flex07">{{ orderInfo.type === 1 ? '下单' : '' }}单价(元)</div>
               <div class="row_item center bgGray flex08">金额小计</div>
-              <div class="row_item center bgGray flex08">{{ orderInfo.type === 1 ? '下单' : '销售' }}件数</div>
+              <div class="row_item center bgGray flex05">{{ orderInfo.type === 1 ? '下单' : '' }}件数</div>
             </div>
             <div class="print_row" v-if="itemSon.id" style="min-height: 39px; max-height: 39px">
               <div class="row_item center flex15">{{ itemSon.product_name }}</div>
@@ -217,12 +217,12 @@
               <div class="row_item center flex06">{{ itemSon.color_code }}</div>
               <div class="row_item center flex06">{{ itemSon.vat_code }}</div>
               <div class="row_item center flex15">{{ itemSon.store }}</div>
-              <div class="row_item center flex08">{{ itemSon.weight }}kg</div>
+              <div class="row_item center flex11">{{ itemSon.weight }}kg</div>
               <div class="row_item center flex07">{{ itemSon.price }}元</div>
               <div class="row_item center flex08">
                 {{ ((itemSon.price || 0) * (itemSon.weight || 0)).toFixed(2) }}元
               </div>
-              <div class="row_item center flex08">{{ itemSon.item }}</div>
+              <div class="row_item center flex05">{{ itemSon.item }}</div>
             </div>
             <div class="print_row" v-if="itemSon.isHeJi" style="min-height: 39px; max-height: 39px">
               <div class="row_item center bgGray flex15">合计</div>
@@ -233,10 +233,10 @@
               <div class="row_item center bgGray flex06"></div>
               <div class="row_item center bgGray flex06"></div>
               <div class="row_item center bgGray flex15"></div>
-              <div class="row_item center bgGray flex08">{{ orderInfo.total_weight || 0 }}kg</div>
+              <div class="row_item center bgGray flex11">{{ orderInfo.total_weight || 0 }}kg</div>
               <div class="row_item center bgGray flex07"></div>
               <div class="row_item center bgGray flex08">{{ orderInfo.total_price || 0 }}元</div>
-              <div class="row_item center bgGray flex08"></div>
+              <div class="row_item center bgGray flex05"></div>
             </div>
             <div class="print_row" style="min-height: 39px; max-height: 39px" v-if="itemSon.name">
               <div class="row_item center bgGray flex05">额外费用名称</div>
@@ -246,7 +246,7 @@
               <div class="row_item center bgGray flex05">额外费用备注</div>
               <div class="row_item center">{{ itemSon.desc }}</div>
             </div>
-            <div class="print_row" v-if="itemSon.orderInfoDesc" style="min-height: 39px; max-height: 39px">
+            <div class="print_row" v-if="itemSon.orderInfoDesc" style="min-height: 39px; max-height: 39px;border-bottom: 1px solid rgba(0, 0, 0, 0.25)">
               <div class="row_item center bgGray flex05">备注信息</div>
               <div
                 class="row_item"
@@ -284,54 +284,49 @@
                 <div v-html="desc"></div>
               </div>
             </div> -->
+            
+          </div>
+          <div
+            class="print_row"
+            style="min-height: 49px; max-height: 49px; position: absolute; bottom: 125px">
+            <div class="row_item center bgGray flex05">客户单号</div>
+            <div class="row_item center">{{ orderInfo.order_code }}</div>
+            <div class="row_item center bgGray flex05">创建人</div>
+            <div class="row_item center">{{ orderInfo.user_name }}</div>
+            <div class="row_item center bgGray flex05">创建日期</div>
+            <div class="row_item center">{{ $getDate(orderInfo.create_time) }}</div>
+            <div class="row_item center bgGray flex05">客户签字</div>
+            <div class="row_item center"></div>
+          </div>
+          <div
+            class="print_row"
+            style="min-height: 50px; max-height: 50px; position: absolute; bottom: 75px">
+            <div class="row_item center bgGray flex05">合计数量</div>
+            <div class="row_item center">{{ orderInfo.total_weight }}Kg</div>
+            <div class="row_item center bgGray flex05">合计金额</div>
+            <div class="row_item center">{{ (+orderInfo.total_price + Number(orderInfo.total_additional_fee)).toFixed(2)}}元</div>
+            <div class="row_item center bgGray flex05">出库日期</div>
+            <div class="row_item center">{{ $getDate(orderInfo.order_time) }}</div>
+            <div class="row_item center bgGray flex05">签字日期</div>
+            <div class="row_item center"></div>
+          </div>
+          <div
+            class="print_row"
+            style="max-height: 75px; position: absolute; bottom: 0; min-height: 75px; border-bottom: unset">
+            <div class="row_item center bgGray flex05">公司声明</div>
             <div
-              class="print_row"
-              v-if="itemSon.kehuqianzi"
-              style="min-height: 39px; max-height: 39px; position: absolute; bottom: 99px"
+              class="row_item"
+              style="
+                border-right: unset;
+                flex: 5.55;
+                display: -webkit-box;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                -webkit-line-clamp: 2;
+                -webkit-box-orient: vertical;
+              "
             >
-              <div class="row_item center bgGray flex05">客户单号</div>
-              <div class="row_item center">{{ itemSon.order_code }}</div>
-              <div class="row_item center bgGray flex05">创建人</div>
-              <div class="row_item center">{{ orderInfo.user_name }}</div>
-              <div class="row_item center bgGray flex05">创建日期</div>
-              <div class="row_item center">{{ $getDate(orderInfo.create_time) }}</div>
-              <div class="row_item center bgGray flex05">客户签字</div>
-              <div class="row_item center"></div>
-            </div>
-            <div
-              class="print_row"
-              v-if="itemSon.isLast"
-              style="min-height: 39px; max-height: 39px; position: absolute; bottom: 60px"
-            >
-              <div class="row_item center bgGray flex05"></div>
-              <div class="row_item center"></div>
-              <div class="row_item center bgGray flex05"></div>
-              <div class="row_item center"></div>
-              <div class="row_item center bgGray flex05">出库日期</div>
-              <div class="row_item center">{{ $getDate(itemSon.order_time) }}</div>
-              <div class="row_item center bgGray flex05">签字日期</div>
-              <div class="row_item center"></div>
-            </div>
-            <div
-              class="print_row"
-              style="max-height: 55px; position: absolute; bottom: 0;min-height:60px"
-              v-if="itemSon.companyDesc"
-            >
-              <div class="row_item center bgGray flex05">公司声明</div>
-              <div
-                class="row_item"
-                style="
-                  border-right: unset;
-                  flex: 5.55;
-                  display: -webkit-box;
-                  overflow: hidden;
-                  text-overflow: ellipsis;
-                  -webkit-line-clamp: 2;
-                  -webkit-box-orient: vertical;
-                "
-              >
-                <div v-html="desc"></div>
-              </div>
+              <div v-html="desc"></div>
             </div>
           </div>
         </div>
@@ -460,9 +455,9 @@ export default Vue.extend({
         arr.push({isLast: true})
 
         // console.log(arr)
-        if (arr.length > 13) {
+        if (arr.length > 9) {
           arr.forEach((item: any, index: number) => {
-            if (index % 13 === 0) {
+            if (index % 9 === 0) {
               this.orderArr.push([item])
             } else {
               this.orderArr[this.orderArr.length - 1].push(item)

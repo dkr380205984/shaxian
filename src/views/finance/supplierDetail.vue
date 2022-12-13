@@ -692,7 +692,7 @@
               <div class="column">{{item.desc}}</div>
               <div class="column">{{item.date}}</div>
               <div class="column">
-                <div class="opr blue">打印</div>
+                <div class="opr blue" @click="$openUrl('/print/deductPrint?id='+item.id)">打印</div>
                 <div class="opr red"
                   @click="deleteLog('扣款',item.id)">删除</div>
               </div>

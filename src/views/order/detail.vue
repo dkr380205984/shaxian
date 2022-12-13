@@ -2308,6 +2308,7 @@ export default Vue.extend({
             label: item.product_name
           }
         }),
+        client_id:this.order_info.client_id,
         pid: this.$route.params.id,
         pcode: this.order_info.code,
         type: 5

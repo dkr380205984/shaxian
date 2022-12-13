@@ -143,8 +143,10 @@
         <div class="print_row" style="min-height: 50px; max-height: 50px; position: absolute; bottom: 75px">
           <div class="row_item center bgGray flex05">数量合计</div>
           <div class="row_item center">{{ orderInfo.total_weight || 0 }}kg</div>
-          <div class="row_item center bgGray flex05">金额合计</div>
-          <div class="row_item center">{{ Number(+orderInfo.total_price + +orderInfo.total_additional_fee).toFixed(2) || 0 }}元</div>
+          <div class="row_item center bgGray flex05" v-if="orderInfo.action_type === 3">金额合计</div>
+          <div class="row_item center bgGray flex05" v-else></div>
+          <div class="row_item center" v-if="orderInfo.action_type === 3">{{ Number(+orderInfo.total_price + +orderInfo.total_additional_fee).toFixed(2) || 0 }}元</div>
+          <div class="row_item center" v-else></div>
           <div class="row_item center bgGray flex05">发货日期</div>
           <div class="row_item center">{{ $getDate(orderInfo.complete_time) }}</div>
           <div class="row_item center bgGray flex05">签字日期</div>

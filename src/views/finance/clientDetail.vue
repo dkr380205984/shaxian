@@ -205,7 +205,7 @@
                             <div class="column min120">{{itemChild.color}}</div>
                             <div class="column min120">{{itemChild.attribute}}</div>
                             <div class="column min120">{{itemChild.number_attribute || '无'}}</div>
-                            <div class="column min120">{{itemChild.batch_code}}/{{itemChild.color_code}}/{{itemChild.vat_code}}</div>
+                            <div class="column min120" style="word-break: break-all;">{{itemChild.batch_code}}/{{itemChild.color_code}}/{{itemChild.vat_code}}</div>
                             <div class="column min120">{{item.store_name}}/{{item.second_store_name}}</div>
                             <div class="column min120">{{itemChild.order_info ? itemChild.order_info.price : '0.00'}}</div>
                             <div class="column min120">{{itemChild.action_weight}}</div>
@@ -710,7 +710,7 @@
               <div class="column">{{ item.desc }}</div>
               <div class="column">{{ item.date }}</div>
               <div class="column">
-                <div class="opr blue">打印</div>
+                <div class="opr blue" @click="$openUrl('/print/deductPrint?id='+item.id)">打印</div>
                 <div class="opr red" @click="deleteLog('扣款', item.id)">删除</div>
               </div>
             </div>
@@ -945,7 +945,7 @@ export default Vue.extend({
           client_id: this.$route.params.id,
           start_time: this.stockObj.date[0],
           end_time: this.stockObj.date[1],
-          action_type: [18, 9],
+          action_type: [18, 9, 12],
           limit: 5,
           page: this.stock_page
         })
@@ -1120,7 +1120,7 @@ export default Vue.extend({
         .list({
           client_id: this.$route.params.id,
           limit: 5,
-          action_type: [18, 9],
+          action_type: [18, 9, 12],
           name:this.stockObj.name[1] || '',
           user_id:this.stockObj.user_id || '',
           batch_code:this.stockObj.batch_code,

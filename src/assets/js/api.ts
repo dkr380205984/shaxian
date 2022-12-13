@@ -191,7 +191,8 @@ import { DeductInfo } from '@/types/common'
 const deduct = {
   create: (params:{data: Array<DeductInfo>}) => http.post(`${baseUrl}/financial/deduct/save`, params, 'application/json'),
   list: (params: ListParam) => http.get(`${baseUrl}/financial/deduct/lists`, params),
-  delete: (params: DeleteParam) => http.post(`${baseUrl}/financial/deduct/delete`, params, 'application/json')
+  delete: (params: DeleteParam) => http.post(`${baseUrl}/financial/deduct/delete`, params, 'application/json'),
+  detail: (params: {id:string | number}) => http.get(`${baseUrl}/financial/deduct/detail`,params)
 }
 
 // 开票

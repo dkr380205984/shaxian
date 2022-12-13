@@ -547,11 +547,11 @@
                       </div>
                     </div>
                     <div class="column min120">
-                      <!-- 订购入库 -->
+                      <!-- 仓库入库 和 订购入库 -->
                       <span
                         class="blue opr"
-                        v-if="item.action_type == 3"
-                        @click="$openUrl(`/print/store/${item.action_type}/${item.id}?orderId=${$route.params.id}`)"
+                        v-if="item.action_type == 1 || item.action_type == 3"
+                        @click="$openUrl(`/print/inStore?id=${item.id}`)"
                       >
                         打印
                       </span>

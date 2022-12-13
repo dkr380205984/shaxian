@@ -264,7 +264,7 @@
                             <div class="column min120">{{itemChild.name}}</div>
                           </div>
                         </div>
-                      <div class="column min120 hoverBlue" style="cursor:pointer" @click="$openUrl('/print/orderYarn/2/' + item.related_id)">打印</div>
+                      <div class="column min120 hoverBlue" style="cursor:pointer" @click="$openUrl('/print/inStore?id=' + item.id)">打印</div>
                     </div>
                   </div>
                 </div>

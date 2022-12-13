@@ -1699,7 +1699,7 @@ export default class InAndOut extends Vue {
           return {
             name: Array.isArray(item.name) ? item.name[1] : item.name,
             action_weight: item.action_weight,
-            color: item.colorName || item.color,
+            color: item.colorName.label || item.color,
             attribute: item.attribute,
             store_client_id: item.store_client_id,
             batch_code: item.batch_code || '',

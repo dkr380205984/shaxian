@@ -517,6 +517,7 @@ const toFixedAuto = (num: number, precision: number = 2, changeToPrice?: false):
     return num
   }
 }
+
 export default {
   install: (Vue: any) => {
     Vue.prototype.$getHash = plugin.getHash

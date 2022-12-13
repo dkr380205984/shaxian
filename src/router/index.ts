@@ -328,6 +328,11 @@ const routes: RouteConfig[] = [
         name: 'store',
         component: () => import('@/views/print/store.vue')
       },
+      {// 新版入库单
+        path: 'inStore',
+        name: 'inStore',
+        component: () => import('@/views/print/inStore.vue')
+      },
       {// 毛条出入库单
         path: 'materialStore/:type/:documentId',
         name: 'materialStore',

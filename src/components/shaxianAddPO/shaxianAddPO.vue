@@ -643,6 +643,27 @@ export default Vue.extend({
         }
       })
     },
+    // 节流函数
+    fnThrottle (method:any, delay:any, duration:any) {
+      var that = this;
+      var timer = this.timer;
+      var begin = new Date().getTime();
+      return function(){
+        var context = that;
+        var args = arguments;
+        var current = new Date().getTime();
+        clearTimeout(timer);
+        if(current-begin>=duration){
+          method.apply(context,args);
+          begin=current;
+        }else{
+          console.log(delay)
+          that.timer=setTimeout(function(){
+            method.apply(context,args);
+          },delay);
+        }
+      }
+    },
     // 打开复制粘贴图片功能
     changeCVOpration(flag: boolean) {
       if (this.notify) {
@@ -915,7 +936,10 @@ export default Vue.extend({
 
       let params = this.$clone(this.order_yarn_info)
       params.additional_fee = JSON.stringify(params.additional_fee)
-      if (this.update) {
+      this.saveEditOrCreate(params,step)
+    },
+    saveEditOrCreate(params:any,step:number){
+      if(this.update){
         yarnOrder.update(params).then((res) => {
           if (res.data.status) {
             if (step === 1) {
@@ -926,11 +950,11 @@ export default Vue.extend({
             if (step === 2) {
               this.store_info.client_id = this.order_yarn_info.client_id
               this.store_info.related_id = res.data.data
-
+  
               this.selfYarnArr = this.$mergeData(this.order_yarn_info.child_data, {
                 mainRule: 'name'
               })
-
+  
               this.store_info.child_data = this.order_yarn_info.child_data.map((item: any) => {
                 return {
                   action_weight: item.weight,
@@ -952,48 +976,48 @@ export default Vue.extend({
         })
       } else {
         yarnOrder
-          .create({
-            data: [params]
-          })
-          .then((res) => {
-            if (res.data.status) {
-              if (step === 1) {
-                this.$message.success((this.update ? '修改' : '添加') + '成功')
-                this.$emit('afterCreate')
-                this.close()
-              }
-              if (step === 2) {
-                this.store_info.client_id = this.order_yarn_info.client_id
-                this.store_info.related_id = res.data.data[0]
-                yarnOrder
-                  .detail({
-                    id: res.data.data[0]
-                  })
-                  .then((ress) => {
-                    this.selfYarnArr = this.$mergeData(ress.data.data.child_data, {
-                      mainRule: 'name'
-                    })
-
-                    this.store_info.child_data = ress.data.data.child_data.map((item: any) => {
-                      return {
-                        action_weight: item.weight,
-                        attribute: item.attribute,
-                        color: item.color,
-                        name: item.name,
-                        price: item.price,
-                        batch_code: '',
-                        color_code: '',
-                        vat_code: '',
-                        item: '',
-                        related_info_id: item.id
-                      }
-                    })
-                    this.step = 2
-                  })
-              }
+        .create({
+          data: [params]
+        })
+        .then((res) => {
+          if (res.data.status) {
+            if (step === 1) {
+              this.$message.success((this.update ? '修改' : '添加') + '成功')
+              this.$emit('afterCreate')
+              this.close()
             }
-            this.loading = false
-          })
+            if (step === 2) {
+              this.store_info.client_id = this.order_yarn_info.client_id
+              this.store_info.related_id = res.data.data[0]
+              yarnOrder
+                .detail({
+                  id: res.data.data[0]
+                })
+                .then((ress) => {
+                  this.selfYarnArr = this.$mergeData(ress.data.data.child_data, {
+                    mainRule: 'name'
+                  })
+
+                  this.store_info.child_data = ress.data.data.child_data.map((item: any) => {
+                    return {
+                      action_weight: item.weight,
+                      attribute: item.attribute,
+                      color: item.color,
+                      name: item.name,
+                      price: item.price,
+                      batch_code: '',
+                      color_code: '',
+                      vat_code: '',
+                      item: '',
+                      related_info_id: item.id
+                    }
+                  })
+                  this.step = 2
+                })
+            }
+          }
+          this.loading = false
+        })
       }
     },
     // 根据选中的纱线初始化颜色属性下拉框
@@ -1061,22 +1085,26 @@ export default Vue.extend({
         return
       }
 
+      this.loading = true
       this.store_info.store_id = this.store_info.select_id[0]
       this.store_info.second_store_id = this.store_info.select_id[1]
       this.store_info.order_id = this.orderId
       this.store_info.child_data.forEach((item: any) => {
-        console.log(item)
         item.batch_code = item.batch_code || ''
         item.color_code = item.color_code || ''
         item.vat_code = item.vat_code || ''
       })
-      // return
+      
+      this.stockCreate()
+    },
+    stockCreate(){
       stock.create({ data: [this.store_info] }).then((res) => {
         if (res.data.status) {
           this.$message.success('入库成功')
           this.$emit('afterCreate')
           this.close()
         }
+        this.loading = false
       })
     },
     getOrderYarnInfo() {

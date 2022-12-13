@@ -1,11 +1,11 @@
 <template>
-  <div id="addTransProcess" class="popup" v-show="update_flag || create_flag">
+  <div id="addTransProcess" v-loading="loading" class="popup" v-show="update_flag || create_flag">
     <div class="main" style="width: 1300px">
       <div class="titleCtn">
         <span class="text">{{ update_flag ? '修改' : '添加' }}加工单</span>
         <i class="close_icon el-icon-close" @click="close"></i>
       </div>
-      <div class="contentCtn" v-loading="loading" style="padding: 0; max-height: 800px">
+      <div class="contentCtn" style="padding: 0; max-height: 800px">
         <div class="createCtn" style="max-height: 700px;overflow:scroll">
           <el-steps v-if="!update_flag" :active="step" process-status="finish" finish-status="success">
             <el-step title="选择仓库"></el-step>

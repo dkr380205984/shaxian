@@ -58,6 +58,7 @@ Vue.filter('ticketPayFilter', (val: 1 | 2 | 3 | 4 | 5) => {
 Vue.filter('yarnTypeFilter', (val: any[]) => {
   return val.map((item) => item.type_name).join(',')
 })
+
 // 注册公共方法后需要声明
 type regNormal = 'isNum' | 'isEmail' | 'isPhone' | 'isNull'
 interface CheckCommonInfo {
@@ -86,6 +87,24 @@ declare module 'vue/types/vue' {
     ): boolean
   }
 }
+
+// 防抖指令函数
+// 示例
+// <div class="btn btnBlue" v-debounce="saveOrder">提交</div>
+Vue.directive('debounce', {
+  // 指令的定义
+  bind: function (el, binding) {
+    let timer:any = null;
+    let debounce = binding.value;
+
+    el.addEventListener('click', function () {
+      clearTimeout(timer);
+      timer = setTimeout(() => {
+        debounce();
+      }, 1000);
+    });
+  },
+});
 
 new Vue({
   router,

@@ -446,7 +446,7 @@ export default Vue.extend({
     },
     deleteOnce(father: any[], indexChild: number, indexFather: number, id: number) {
       if (id) {
-        this.$confirm('是否删除该纱线颜色?', '提示', {
+        this.$confirm('删除该纱线，无需提交修改将会直接删除，是否继续？?', '注意', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'

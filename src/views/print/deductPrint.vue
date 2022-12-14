@@ -31,7 +31,12 @@
             {{ $getDate(deductInfo.create_time) }}，{{ deductInfo.user_name }}，{{ phone }}
           </span>
         </div>
-        <div class="left"></div>
+        <div class="left">
+          <span style="font-size: 17px">
+            <span class="label">结算方式：</span>
+            {{ settle_type }}
+          </span>
+        </div>
       </div>
       <div class="print_body" style="position: relative">
         <div class="print_row">
@@ -146,7 +151,7 @@ export default Vue.extend({
   },
   methods: {},
   created() {
-    printList(undefined, 4).then((res: any) => {
+    printList(undefined, 11).then((res: any) => {
       this.desc = res.desc
       this.settle_type = res.settle_type
     })

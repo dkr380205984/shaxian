@@ -554,7 +554,7 @@ export default Vue.extend({
         this.order_material_info.additional_fee = this.order_material_info.additional_fee
           ? JSON.parse(this.order_material_info.additional_fee as string)
           : []
-        this.order_in_log = res[1].data.data.data.items
+        this.order_in_log = res[1].data.data.items
         this.order_material_info.child_data.forEach((item) => {
           item.push_weight = 0
           this.order_in_log.forEach((itemLog: any) => {

@@ -1,6 +1,6 @@
 
 import { PrintListParams } from '@/types/settings'
-export const printList = (option?: PrintListParams, type?: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10) => { // 再次封装一下打印设置接口
+export const printList = (option?: PrintListParams, type?: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11) => { // 再次封装一下打印设置接口
   const companyName: string = window.sessionStorage.getItem('full_name') || ''
   const { print } = require('@/assets/js/api')
   const tableList = [
@@ -14,6 +14,7 @@ export const printList = (option?: PrintListParams, type?: 1 | 2 | 3 | 4 | 5 | 6
     { id: null, name: '毛条入库打印单', type: 8, title: `${companyName}毛条入库单`, desc: '',settle_type:'' },
     { id: null, name: '毛条出库打印单', type: 9, title: `${companyName}毛条出库单`, desc: '',settle_type:'' },
     { id: null, name: '订单出库单', type: 10, title: `${companyName}订单出库单`, desc: '',settle_type:'' },
+    { id: null, name: '扣款打印单', type: 11, title: `${companyName}扣款单`, desc: '',settle_type:'' },
   ]
   return new Promise((reject) => {
     print.list(option).then((res: any) => {

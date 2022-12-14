@@ -568,7 +568,7 @@
         <div class="pageCtn">
           <el-pagination background
             :current-page.sync="bill_page"
-            :page-size="10"
+            :page-size="5"
             layout="prev, pager, next"
             :total="bill_total"
             @current-change="getBillList">
@@ -637,10 +637,10 @@
         <div class="pageCtn">
           <el-pagination background
             :current-page.sync="collection_page"
-            :page-size="10"
+            :page-size="5"
             layout="prev, pager, next"
             :total="collection_total"
-            :current-change="getCollectionList">
+            @current-change="getCollectionList">
           </el-pagination>
         </div>
       </div>
@@ -702,10 +702,10 @@
         <div class="pageCtn">
           <el-pagination background
             :current-page.sync="deduct_page"
-            :page-size="10"
+            :page-size="5"
             layout="prev, pager, next"
             :total="deduct_total"
-            :current-change="getDeductList">
+            @current-change="getDeductList">
           </el-pagination>
         </div>
       </div>

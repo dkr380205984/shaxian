@@ -439,7 +439,7 @@
       <div class="main">
         <div class="btnCtn">
           <div class="btn btnGray" @click="$router.go(-1)">返回</div>
-          <div class="btn btnBlue" v-debounce="saveOrder">提交</div>
+          <div class="btn btnBlue" @click="saveOrder">提交</div>
         </div>
       </div>
     </div>
@@ -663,6 +663,9 @@ export default Vue.extend({
           })
         })
       ) {
+        return
+      }
+      if (this.$submitLock()) {
         return
       }
       const formData = JSON.parse(JSON.stringify(this.order_info))

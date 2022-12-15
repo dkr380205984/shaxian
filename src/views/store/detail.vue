@@ -776,7 +776,7 @@ export default Vue.extend({
         this.storeLogListFilter = {
           LV2_name: '',
           name: '',
-          store_client_id:'',
+          store_client_id: '',
           color: '',
           attr: '',
           type: '',
@@ -1001,7 +1001,7 @@ export default Vue.extend({
   computed: {
     clientArr() {
       return this.$store.state.api.client.arr.filter((item: any) => item.status === 1 && item.type === 1)
-    },
+    }
   },
   mounted() {
     this.$checkCommonInfo([

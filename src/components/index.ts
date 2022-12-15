@@ -17,6 +17,7 @@ import zhList from './zhList/zhList.vue'
 import zhListSetting from './zhListSetting/zhListSetting.vue'
 import othersFeeData from './othersFeeData/othersFeeData.vue'
 import addMaterial from './addMaterial/addMaterial.vue'
+import zhCharts from './zhCharts/zhCharts.vue'
 export default {
   install: (vue: any) => {
     vue.component('sort', sort)
@@ -39,5 +40,6 @@ export default {
     vue.component('addTransProcess', addTransProcess)
     vue.component('othersFeeData', othersFeeData)
     vue.component('addMaterial', addMaterial)
+    vue.component('zhCharts', zhCharts)
   }
 }

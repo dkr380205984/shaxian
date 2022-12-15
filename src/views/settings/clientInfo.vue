@@ -163,7 +163,7 @@ export default Vue.extend({
         logo: this.companyInfo.logoUrl,
         alias: this.companyInfo.alias,
         phone: this.companyInfo.phone,
-        address: this.companyInfo.address,
+        address: this.companyInfo.address
       }).then((res) => {
         if (res.data.status) {
           this.$message.success('设置成功,重新登陆后设置生效')

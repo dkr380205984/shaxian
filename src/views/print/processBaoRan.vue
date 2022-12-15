@@ -227,63 +227,6 @@ export default Vue.extend({
             .toFixed(2)
         })
       })
-    // order
-    //   .detail({
-    //     id: +this.$route.query.id
-    //   })
-    //   .then((res) => {
-    //     this.id = res.data.data.id
-    //     this.orderInfo = res.data.data
-    //     if(this.orderInfo.type === 2){
-    //       this.printA4Type = window.sessionStorage.getItem('printA4Type') === 'true'
-    //     }
-    //     this.orderInfo.additional_fee = JSON.parse(this.orderInfo.additional_fee) || [
-    //       { name: ' ', price: '', desc: '' }
-    //     ]
-    //     let arr: any = ['proName'].concat(this.$clone(this.orderInfo.product_info))
-    //     arr.push({ total_price: this.orderInfo.total_price, total_weight: this.orderInfo.total_weight,isHeJi:true })
-    //     arr = arr.concat(this.orderInfo.additional_fee)
-    //     arr.push(
-    //       { orderInfoDesc: this.orderInfo.desc || ' ' },
-    //       { companyDesc: this.desc || ' ' },
-    //       {
-    //         order_code: this.orderInfo.order_code,
-    //         client_name: this.orderInfo.client_name,
-    //         create_time: this.orderInfo.create_time,
-    //         kehuqianzi: true
-    //       }
-    //     )
-    //     this.companyName =
-    //       window.sessionStorage.getItem('full_name') + (this.orderInfo.type == 2 ? '销售订单' : '生产订单-计划单')
-    //     this.orderInfo.product_info.forEach((item: any) => (item.priceNumber = (item.price || 0) * (item.weight || 0)))
-    //     this.orderInfo.product_info = this.$mergeData(this.orderInfo.product_info, {
-    //       mainRule: 'product_name',
-    //       childrenName: 'child_data'
-    //     })
-    //     this.orderInfo.product_info.forEach((item: any) => {
-    //       item.total_weight = item.child_data.reduce((a: any, b: any) => {
-    //         return a + (Number(b.weight) || 0)
-    //       }, 0)
-    //       item.total_price = item.child_data.reduce((a: any, b: any) => {
-    //         return a + (b.weight || 0) * (b.price || 0)
-    //       }, 0)
-    //     })
-
-    //     arr.push({isLast: true})
-
-    //     // console.log(arr)
-    //     if (arr.length > 13) {
-    //       arr.forEach((item: any, index: number) => {
-    //         if (index % 13 === 0) {
-    //           this.orderArr.push([item])
-    //         } else {
-    //           this.orderArr[this.orderArr.length - 1].push(item)
-    //         }
-    //       })
-    //     } else {
-    //       this.orderArr = [this.$clone(arr)]
-    //     }
-    //   })
   }
 })
 </script>

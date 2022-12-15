@@ -117,7 +117,7 @@ export default Vue.extend({
         id: null,
         type: '',
         name: '',
-        settle_type:'',
+        settle_type: '',
         title: '',
         desc: ''
       },

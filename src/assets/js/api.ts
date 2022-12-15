@@ -238,6 +238,13 @@ const finance = {
   clientDetail: (params: any) => http.get(`${baseUrl}/financial/client/detail`, params)
 }
 
+// 数据报表
+const dateStatic = {
+  clientSellCharts: (params: any) => http.get(`${baseUrl}/client/sell/charts`, params),
+  materialSellCharts: (params: any) => http.get(`${baseUrl}/material/sell/charts`, params),
+  materialStoreCharts: (params: any) => http.get(`${baseUrl}/material/store/charts`, params)
+}
+
 // 导出excel
 const exportExcel = {
   order: (params: { client_id: string | number, start_time: string, end_time: string }) => http.get(`${baseUrl}/order/log/export`, params),
@@ -284,5 +291,6 @@ export {
   print,
   allList,
   finance,
-  listSetting
+  listSetting,
+  dateStatic
 }

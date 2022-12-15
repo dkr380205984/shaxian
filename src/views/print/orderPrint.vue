@@ -362,7 +362,7 @@ export default Vue.extend({
       X_position: 0,
       Y_position: 0,
       showMenu: false,
-      settle_type:'',
+      settle_type: '',
       desc: '',
       printA4Type: true,
       orderArr: [],
@@ -383,7 +383,7 @@ export default Vue.extend({
           }, 100)
         } else if (type === 3) {
           this.printA4Type = !this.printA4Type
-          window.sessionStorage.setItem('printA4Type',this.printA4Type)
+          window.sessionStorage.setItem('printA4Type', this.printA4Type)
         }
       })
     },
@@ -417,14 +417,14 @@ export default Vue.extend({
       .then((res) => {
         this.id = res.data.data.id
         this.orderInfo = res.data.data
-        if(this.orderInfo.type === 2){
+        if (this.orderInfo.type === 2) {
           this.printA4Type = window.sessionStorage.getItem('printA4Type') === 'true'
         }
         this.orderInfo.additional_fee = JSON.parse(this.orderInfo.additional_fee) || [
           { name: ' ', price: '', desc: '' }
         ]
         let arr: any = ['proName'].concat(this.$clone(this.orderInfo.product_info))
-        arr.push({ total_price: this.orderInfo.total_price, total_weight: this.orderInfo.total_weight,isHeJi:true })
+        arr.push({ total_price: this.orderInfo.total_price, total_weight: this.orderInfo.total_weight, isHeJi: true })
         arr = arr.concat(this.orderInfo.additional_fee)
         arr.push(
           { orderInfoDesc: this.orderInfo.desc || ' ' },
@@ -437,7 +437,7 @@ export default Vue.extend({
           }
         )
         this.companyName =
-          window.sessionStorage.getItem('full_name') + (this.orderInfo.type == 2 ? '销售订单' : '生产订单-计划单')
+          window.sessionStorage.getItem('full_name') + (this.orderInfo.type === 2 ? '销售订单' : '生产订单-计划单')
         this.orderInfo.product_info.forEach((item: any) => (item.priceNumber = (item.price || 0) * (item.weight || 0)))
         this.orderInfo.product_info = this.$mergeData(this.orderInfo.product_info, {
           mainRule: 'product_name',

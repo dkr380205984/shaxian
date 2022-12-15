@@ -20,10 +20,19 @@
     "no-consecutive-blank-lines": false,
     "object-literal-sort-keys": false,
     "ordered-imports": false,
+    "variable-name": [
+      "allow-leading-underscore"
+    ],
+    "comment-format": [
+      false,
+      "check-space"
+    ],
+    "no-var-keyword": false,
     "semicolon": [
       false,
       "always"
     ],
+    "prefer-const":false,
     "trailing-comma": [
       true,
       {

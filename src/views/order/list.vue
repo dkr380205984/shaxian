@@ -198,7 +198,7 @@ export default Vue.extend({
         {
           key: 'status',
           name: '订单状态',
-          filterArr: ['未知', '已创建', '进行中', '已完成', '已取消','已延期'],
+          filterArr: ['未知', '已创建', '进行中', '已完成', '已取消', '已延期'],
           classArr: ['', 'orange', 'blue', 'green', 'gray', 'red'],
           ifShow: true,
           ifLock: false,
@@ -230,7 +230,7 @@ export default Vue.extend({
           ifShow: true,
           ifLock: false,
           index: 7,
-          from: 'product_info',
+          from: 'product_info'
         },
         {
           key: 'attribute',
@@ -238,7 +238,7 @@ export default Vue.extend({
           ifShow: true,
           ifLock: false,
           index: 8,
-          from: 'product_info',
+          from: 'product_info'
         },
         {
           key: 'number_attribute',
@@ -246,7 +246,7 @@ export default Vue.extend({
           ifShow: true,
           ifLock: false,
           index: 9,
-          from: 'product_info',
+          from: 'product_info'
         },
         {
           key: 'weight',
@@ -323,7 +323,7 @@ export default Vue.extend({
           name: '修改',
           class: 'hoverOrange',
           fn: (item: any) => {
-            if(item.type === 2){
+            if (item.type === 2) {
               this.$message.error('销售订单不可更改')
               return
             }
@@ -441,12 +441,12 @@ export default Vue.extend({
         step = detail > 0 ? moveForwardStep * 100 : moveBackStep * 100
         // e.preventDefault()
         let left = obj.querySelector('table').clientWidth - obj.clientWidth
-        //这里是为了向右滚动后再向下滚动，向左滚动后再向上滚动，如果不需要，只需要写e.preventDefault()
-        //-------------------
+        // 这里是为了向右滚动后再向下滚动，向左滚动后再向上滚动，如果不需要，只需要写e.preventDefault()
+        // -------------------
         if (moveForwardStep === -1) {
-          //google
+          // google
           if (detail > 0) {
-            //向上
+            // 向上
             if (obj.scrollLeft > 0) {
               e.preventDefault()
             } else {
@@ -460,9 +460,9 @@ export default Vue.extend({
             }
           }
         } else {
-          //firefox
+          // firefox
           if (detail > 0) {
-            //向下
+            // 向下
             if (obj.scrollLeft < left) {
               e.preventDefault()
             } else {
@@ -476,7 +476,7 @@ export default Vue.extend({
             }
           }
         }
-        //--------------------
+        // --------------------
         obj.scrollLeft = obj.scrollLeft + step
       }
     },
@@ -555,9 +555,9 @@ export default Vue.extend({
         })
         .then((res) => {
           if (res.data.status) {
-            res.data.data.items.forEach((item:any) => {
-              item.image_data = item.file_url?[item.file_url]:[]
-            });
+            res.data.data.items.forEach((item: any) => {
+              item.image_data = item.file_url ? [item.file_url] : []
+            })
             this.list = res.data.data.items
             this.total = res.data.data.total
           }

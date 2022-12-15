@@ -86,7 +86,9 @@
               {{ itemSon.purchase_info ? itemSon.purchase_info.price : '0.00' }}元
             </div>
             <div class="row_item center flex08" v-if="orderInfo.action_type === 3">
-              {{ ((itemSon.purchase_info ? itemSon.purchase_info.price :  0) * (itemSon.action_weight || 0)).toFixed(2) }}元
+              {{
+                ((itemSon.purchase_info ? itemSon.purchase_info.price : 0) * (itemSon.action_weight || 0)).toFixed(2)
+              }}元
             </div>
             <div class="row_item center flex08">{{ itemSon.item || 0 }}</div>
           </div>
@@ -105,7 +107,9 @@
             <div class="row_item center bgGray flex15"></div>
             <div class="row_item center bgGray flex08">{{ orderInfo.total_weight || '0.0' }}kg</div>
             <div class="row_item center bgGray flex07" v-if="orderInfo.action_type === 3"></div>
-            <div class="row_item center bgGray flex08" v-if="orderInfo.action_type === 3">{{ (orderInfo.total_price).toFixed(2) || '0.00' }}元</div>
+            <div class="row_item center bgGray flex08" v-if="orderInfo.action_type === 3">
+              {{ orderInfo.total_price.toFixed(2) || '0.00' }}元
+            </div>
             <div class="row_item center bgGray flex08"></div>
           </div>
           <div
@@ -145,7 +149,9 @@
           <div class="row_item center">{{ orderInfo.total_weight || 0 }}kg</div>
           <div class="row_item center bgGray flex05" v-if="orderInfo.action_type === 3">金额合计</div>
           <div class="row_item center bgGray flex05" v-else></div>
-          <div class="row_item center" v-if="orderInfo.action_type === 3">{{ Number(+orderInfo.total_price + +orderInfo.total_additional_fee).toFixed(2) || 0 }}元</div>
+          <div class="row_item center" v-if="orderInfo.action_type === 3">
+            {{ Number(+orderInfo.total_price + +orderInfo.total_additional_fee).toFixed(2) || 0 }}元
+          </div>
           <div class="row_item center" v-else></div>
           <div class="row_item center bgGray flex05">发货日期</div>
           <div class="row_item center">{{ $getDate(orderInfo.complete_time) }}</div>
@@ -222,10 +228,12 @@ export default Vue.extend({
             return a + (Number(b.action_weight) || 0)
           }, 0)
           .toFixed(1)
-        this.orderInfo.total_price = this.orderInfo.child_data.reduce((a:any,b:any) => {
-            return a + ((b?.purchase_info?.price * b?.action_weight) || 0)
-        },0)
-        this.orderInfo.total_additional_fee = this.orderInfo.related_info ? this.orderInfo.related_info.total_additional_fee : "0.00"
+        this.orderInfo.total_price = this.orderInfo.child_data.reduce((a: any, b: any) => {
+          return a + (b?.purchase_info?.price * b?.action_weight || 0)
+        }, 0)
+        this.orderInfo.total_additional_fee = this.orderInfo.related_info
+          ? this.orderInfo.related_info.total_additional_fee
+          : '0.00'
 
         let arr: any = ['proName'].concat(this.$clone(this.orderInfo.child_data))
         arr.push({ total_price: this.orderInfo.total_price, total_weight: this.orderInfo.total_weight, isTotal: true })

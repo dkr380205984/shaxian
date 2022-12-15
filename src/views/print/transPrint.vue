@@ -229,10 +229,10 @@ export default Vue.extend({
 
         let arr: any = ['proName'].concat(this.$clone(this.orderInfo.child_data))
         arr.push(
-          { total_price: this.orderInfo.total_price, total_weight: this.orderInfo.total_weight, isTotal: true },
+          { total_price: this.orderInfo.total_price, total_weight: this.orderInfo.total_weight, isTotal: true }
         )
 
-        if(this.orderInfo.desc){
+        if (this.orderInfo.desc) {
           arr.push({ orderInfoDesc: this.orderInfo.desc })
         }
 

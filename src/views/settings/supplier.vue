@@ -139,7 +139,7 @@
           <div class="buttonList">
             <div class="btn backHoverBlue" @click="importExcelData('添加供货商')">
               <i class="el-icon-s-grid"></i>
-              <span class="text">批量导入单据</span>
+              <span class="text">批量导入供货商</span>
             </div>
           </div>
           <div class="buttonList">
@@ -308,7 +308,7 @@ export default Vue.extend({
       inputFile.addEventListener('change', (e) => {
         this.getExcelData(e, this.saveImportData, type)
       })
-      let click = document.createEvent('MouseEvents')
+      const click = document.createEvent('MouseEvents')
       click.initEvent('click', true, true)
       inputFile.dispatchEvent(click)
     },
@@ -317,7 +317,7 @@ export default Vue.extend({
       const XLSX = require('xlsx')
       const files = file.target.files
       const fileReader = new FileReader()
-      fileReader.onload = function (e: any) {
+      fileReader.onload = (e: any) => {
         try {
           const data = e.target.result
           const bytes = new Uint8Array(data) // 无符号整型数组
@@ -335,7 +335,9 @@ export default Vue.extend({
             // 遍历每张纸数据
             r[name] = XLSX.utils.sheet_to_json(workbook.Sheets[name])
           })
-          callBack && callBack(r, type)
+          if (callBack) {
+            callBack(r, type)
+          }
         } catch (e) {
           _this.$message.error('文件类型不正确')
         }
@@ -356,25 +358,30 @@ export default Vue.extend({
           contact_phone: ['联系人电话（选填）', '']
         }
       }
-      let submitData: Array<PartyB> = []
+      const submitData: PartyB[] = []
       for (const prop in data) {
-        for (const key in data[prop]) {
-          let obj: any = {}
-          for (const indexType in typeObj) {
-            if (typeObj[indexType][0]) {
-              obj[indexType] = data[prop][key][typeObj[indexType][0]] || typeObj[indexType][1]
-              if (obj[indexType] === undefined) {
-                this.$message.error('解析失败，请使用标准模板或检测必填数据是否存在空的情况！！！')
-                return
+        if (data.hasOwnProperty(prop)) {
+           // 逻辑处理
+          for (const key in data[prop]) {
+            if (data[prop].hasOwnProperty(key)) {
+              const obj: any = {}
+              for (const indexType in typeObj) {
+                if (typeObj[indexType][0]) {
+                  obj[indexType] = data[prop][key][typeObj[indexType][0]] || typeObj[indexType][1]
+                  if (obj[indexType] === undefined) {
+                    this.$message.error('解析失败，请使用标准模板或检测必填数据是否存在空的情况！！！')
+                    return
+                  }
+                } else {
+                  obj[indexType] = typeObj[indexType][1]
+                }
               }
-            } else {
-              obj[indexType] = typeObj[indexType][1]
+              obj.id = null
+              obj.type = 2
+              obj.client_type = null
+              submitData.push(obj)
             }
           }
-          obj.id = null
-          obj.type = 2
-          obj.client_type = null
-          submitData.push(obj)
         }
       }
       if (submitData.length === 0) {
@@ -391,7 +398,7 @@ export default Vue.extend({
       }
     },
     disableSupplier(item: PartyB) {
-      this.$confirm('此操作将'+(item.status === 1?'禁用':'启用')+'该供应商, 是否继续?', '提示', {
+      this.$confirm('此操作将' + (item.status === 1 ? '禁用' : '启用') + '该供应商, 是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'

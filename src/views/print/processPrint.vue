@@ -209,12 +209,12 @@ export default Vue.extend({
         arr = arr.concat(this.orderInfo.additional_fee)
 
         arr.push(
-          { total_price: this.orderInfo.total_price, total_weight: this.orderInfo.total_weight, isTotal: true },
+          { total_price: this.orderInfo.total_price, total_weight: this.orderInfo.total_weight, isTotal: true }
         )
 
-        if(this.orderInfo.desc){
+        if (this.orderInfo.desc) {
           arr.push(
-            { orderInfoDesc: this.orderInfo.desc || '' },          
+            { orderInfoDesc: this.orderInfo.desc || '' }
           )
         }
 

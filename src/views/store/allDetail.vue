@@ -1762,7 +1762,7 @@ export default Vue.extend({
         // this.firstStoreId = arr[0].store_id
         return
       }
-      let arr = this.$mergeData(this.selectList, {
+      const arr = this.$mergeData(this.selectList, {
         mainRule: ['store_id', 'second_store_id'],
         childrenName: 'store_info'
       })

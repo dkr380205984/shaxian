@@ -21,18 +21,21 @@
               <span class="text">下单客户</span>
               <span class="explanation">
                 (必选)
-                <el-tooltip class="item"
-                  effect="dark"
-                  content="设置成功后请点击此按钮刷新数据"
-                  placement="top">
-                  <i class="el-icon-refresh hoverGreen"
-                    style="line-height:46px;font-size:18px;margin-left:8px;cursor:pointer"
-                    @click="$checkCommonInfo([{
-                      checkWhich: 'api/client',
-                      getInfoMethed: 'dispatch',
-                      getInfoApi: 'getPartyBAsync',
-                      forceUpdate:true
-                    }])"></i>
+                <el-tooltip class="item" effect="dark" content="设置成功后请点击此按钮刷新数据" placement="top">
+                  <i
+                    class="el-icon-refresh hoverGreen"
+                    style="line-height: 46px; font-size: 18px; margin-left: 8px; cursor: pointer"
+                    @click="
+                      $checkCommonInfo([
+                        {
+                          checkWhich: 'api/client',
+                          getInfoMethed: 'dispatch',
+                          getInfoApi: 'getPartyBAsync',
+                          forceUpdate: true
+                        }
+                      ])
+                    "
+                  ></i>
                 </el-tooltip>
                 <el-tooltip class="item" effect="dark" content="添加客户" placement="top">
                   <i
@@ -154,11 +157,13 @@
                   <div class="noData" v-if="order_info.product_info.length === 0">请添加至少一种纱线</div>
                   <div class="trow" v-for="(itemPro, indexPro) in order_info.product_info" :key="indexPro">
                     <div class="tcolumn" style="flex: 1.7">
-                      <div class="el noBorderRadius" style="display:flex;align-items:center">
-                        <span class="el-input-group__prepend" style="height: 30px;line-height: 30px">{{indexPro+1}}</span>
+                      <div class="el noBorderRadius" style="display: flex; align-items: center">
+                        <span class="el-input-group__prepend" style="height: 30px; line-height: 30px">{{
+                          indexPro + 1
+                        }}</span>
                         <el-cascader
                           v-model="itemPro.name"
-                          style="width:90%"
+                          style="width: 90%"
                           filterable
                           :disabled="itemPro.isCheck"
                           placeholder="请选择纱线"
@@ -222,10 +227,20 @@
                       ></el-input>
                     </div>
                     <div class="tcolumn">
-                      <el-input class="el" v-model="itemPro.price" type="number" placeholder="销售单价" @input="cmpTotal"> </el-input>
+                      <el-input
+                        class="el"
+                        v-model="itemPro.price"
+                        type="number"
+                        placeholder="销售单价"
+                        @input="cmpTotal"
+                      >
+                      </el-input>
                     </div>
                     <div class="tcolumn" style="flex: 1.5">
-                      <span>{{ (itemPro.store_name || '') }}/ <br/> {{(itemPro.second_store_name || '') }}</span>
+                      <span
+                        >{{ itemPro.store_name || '' }}/ <br />
+                        {{ itemPro.second_store_name || '' }}</span
+                      >
                     </div>
                     <div class="tcolumn">
                       <el-input
@@ -241,10 +256,12 @@
                       <el-input class="el" v-model="itemPro.item" placeholder="件数" @input="cmpTotal"> </el-input>
                     </div>
                     <div class="tcolumn flexRow" style="flex: 0.8">
-                      <span class="opr red" style="margin:unset;margin-right: 12px" @click="deleteOnce(indexPro)">删除</span>
+                      <span class="opr red" style="margin: unset; margin-right: 12px" @click="deleteOnce(indexPro)"
+                        >删除</span
+                      >
                       <span
                         class="opr blue"
-                        style="margin:unset"
+                        style="margin: unset"
                         @click="
                           $addItem(order_info.product_info, {
                             name: itemPro.name,
@@ -489,7 +506,7 @@ export default Vue.extend({
       },
       editor: '',
       postData: { key: '', token: '' },
-      attributeArr: [{ value: '绞纱' }, { value: '筒纱' }],
+      attributeArr: [{ value: '绞纱' }, { value: '筒纱' }]
     }
   },
   computed: {
@@ -545,24 +562,32 @@ export default Vue.extend({
     },
     getYarnSelect(selectList: any) {
       // @ts-ignore
-      this.yarn_list[0].children = this.yarn_list[0].children.map((item: any) => {
-        return item.value
+      this.yarn_list[0].children = this.yarn_list[0].children.map((items: any) => {
+        return items.value
       })
       let item = this.order_info.product_info[0]
-      if(this.order_info.product_info.length === 1 && item.attribute === "" && item.color === "" && item.name.length === 0 && item.number_attribute ==="" && item.price === "" && item.weight === ""){
+      if (
+        this.order_info.product_info.length === 1 &&
+        item.attribute === '' &&
+        item.color === '' &&
+        item.name.length === 0 &&
+        item.number_attribute === '' &&
+        item.price === '' &&
+        item.weight === ''
+      ) {
         this.order_info.product_info = []
       }
-      selectList.forEach((item: any) => {
+      selectList.forEach((items: any) => {
         // @ts-ignore
-        this.yarn_list[0].children.push(item.name)
-        item.name = ['', item.name]
-        this.order_info.product_info.push(item)
+        this.yarn_list[0].children.push(items.name)
+        items.name = ['', items.name]
+        this.order_info.product_info.push(items)
       })
       // @ts-ignore 赋值到默认组里面
-      this.yarn_list[0].children = [...new Set(this.yarn_list[0].children)].map((item: any) => {
+      this.yarn_list[0].children = [...new Set(this.yarn_list[0].children)].map((items: any) => {
         return {
-          label: item,
-          value: item
+          label: items,
+          value: items
         }
       })
       this.loadingData = false
@@ -664,7 +689,9 @@ export default Vue.extend({
       let str = ''
 
       this.order_info.product_info.forEach((item: any) => {
-        if (!item.isCheck) return
+        if (!item.isCheck) {
+          return
+        }
         if (item.weight > item.useable_weight) {
           str +=
             '\n' +
@@ -689,7 +716,9 @@ export default Vue.extend({
           .then(() => {
             this.orderSave()
           })
-          .catch(() => {})
+          .catch((err) => {
+            console.log(err)
+          })
       } else {
         this.orderSave()
       }
@@ -714,7 +743,7 @@ export default Vue.extend({
         childrenName: 'child_data'
       })
 
-      let index = formData.reduce_store_data.findIndex((item: any) => {
+      const index = formData.reduce_store_data.findIndex((item: any) => {
         return item.store_id === undefined && item.second_store_id === undefined
       })
 
@@ -742,7 +771,7 @@ export default Vue.extend({
       order.create(formData).then((res) => {
         if (res.data.status) {
           this.$message.success(this.update ? '修改成功' : '添加成功')
-          this.$router.push('/order/detail/'+res.data.data)
+          this.$router.push('/order/detail/' + res.data.data)
           // if (this.update) {
           // } else {
           //   this.$confirm('继续添加新订单?', '提示', {
@@ -831,12 +860,12 @@ export default Vue.extend({
       this.$forceUpdate()
     },
     dataURLtoFile(dataurl: string, filename: string) {
-      var arr = dataurl.split(',')
+      let arr = dataurl.split(',')
       // @ts-ignore
-      var mime = arr[0].match(/:(.*?);/)[1]
-      var bstr = atob(arr[1])
-      var n = bstr.length
-      var u8arr = new Uint8Array(n)
+      const mime = arr[0].match(/:(.*?);/)[1]
+      const bstr = atob(arr[1])
+      let n = bstr.length
+      let u8arr = new Uint8Array(n)
       while (n--) {
         u8arr[n] = bstr.charCodeAt(n)
       }
@@ -844,10 +873,10 @@ export default Vue.extend({
     },
     // 复制粘贴图片
     pasteImage(event: any) {
-      let _this = this
+      const _this = this
       // 只处理图片格式数据
       if (event.clipboardData || event.originalEvent) {
-        let clipboardData = event.clipboardData || event.originalEvent.clipboardData
+        const clipboardData = event.clipboardData || event.originalEvent.clipboardData
         if (clipboardData.items) {
           let blob
           for (let i = 0; i < clipboardData.items.length; i++) {
@@ -855,24 +884,24 @@ export default Vue.extend({
               blob = clipboardData.items[i].getAsFile()
             }
           }
-          let render = new FileReader()
-          render.onload = function (evt: any) {
-            //输出base64编码
+          const render = new FileReader()
+          render.onload = (evt: any) => {
+            // 输出base64编码
             const base64 = evt.target.result
             // @ts-ignore
             // document.getElementById('cvImg' + _this.sampleInfo.cvImageLength).setAttribute('src', base64)
-            var url = 'https://upload.qiniup.com/'
-            var xhr = new XMLHttpRequest()
-            let formData = new FormData()
+            const url = 'https://upload.qiniup.com/'
+            const xhr = new XMLHttpRequest()
+            const formData = new FormData()
             formData.append('token', _this.token)
             _this.loading = true
             // @ts-ignore
-            let filename = Date.parse(new Date()) + '.jpg'
+            const filename = Date.parse(new Date()) + '.jpg'
             formData.append('key', filename)
             formData.append('file', _this.dataURLtoFile(base64, filename))
             xhr.open('POST', url, true)
             xhr.send(formData)
-            xhr.onreadystatechange = function () {
+            xhr.onreadystatechange = () => {
               _this.loading = false
               if (xhr.readyState === 4) {
                 _this.$message.success('上传成功')
@@ -926,8 +955,8 @@ export default Vue.extend({
         type: 'warning'
       })
         .then(() => {
-          //执行删除操作,找到相同的删除
-          let fileIndex = fileList.findIndex((item: any, index: number) => {
+          // 执行删除操作,找到相同的删除
+          const fileIndex = fileList.findIndex((item: any, index: number) => {
             if (item.id) {
               return item.id === file.id
             } else if (item.response) {
@@ -1041,7 +1070,7 @@ export default Vue.extend({
           this.order_info.product_info.forEach((item: any) => {
             item.name = item.product_name
           })
-          let arr = this.$clone(this.order_info.product_info)
+          const arr = this.$clone(this.order_info.product_info)
           this.order_info.product_info = []
           this.getYarnSelect(arr)
           this.order_info.additional_fee = this.order_info.additional_fee
@@ -1063,8 +1092,8 @@ export default Vue.extend({
 @import '~@/assets/less/order/salesOrderCreate.less';
 </style>
 <style lang='less'>
-.noBorderRadius{
-  .el-input__inner{
+.noBorderRadius {
+  .el-input__inner {
     border-radius: 0 4px 4px 0;
   }
 }

@@ -292,6 +292,139 @@
         </div>
       </div>
     </div>
+    <div class="module" style="margin-top: 32px">
+      <div class="titleCtn">
+        <span class="title">销售额</span>
+        <div class="fr elCtn">
+          <el-date-picker
+            v-model="saleObj.date"
+            type="daterange"
+            align="right"
+            unlink-panels
+            range-separator="至"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+            :picker-options="pickerOptions"
+            @change="getSaleClient"
+          >
+          </el-date-picker>
+        </div>
+        <div class="fr" style="margin-right: 20px">
+          <el-select v-model="saleObj.id" placeholder="客户名称筛选" clearable filterable @change="getSaleClient">
+            <el-option
+              v-for="item in client_list"
+              :key="item.id"
+              :value="item.id"
+              :label="(item.code || item.id) + ' - ' + item.name"
+            ></el-option>
+          </el-select>
+        </div>
+      </div>
+      <div style="display: flex">
+        <div style="padding: 20px 32px; flex: 2.7">
+          <div style="display: flex; padding-bottom: 20px">
+            <div style="width: 33%">
+              <div style="color: rgba(0, 0, 0, 0.45); font-weight: bold">总销售额</div>
+              <div style="font-size: 30px; margin-top: 10px">{{saleInfo.total_price}}万元</div>
+            </div>
+            <div style="width: 33%">
+              <div style="color: rgba(0, 0, 0, 0.45); font-weight: bold">总销售数量</div>
+              <div style="font-size: 30px; margin-top: 10px">{{saleInfo.total_weight}}吨</div>
+            </div>
+            <div style="width: 33%"></div>
+          </div>
+          <div style="height:340px">
+            <zh-charts :option="option1"></zh-charts>
+          </div>
+        </div>
+        <div style="padding: 20px 32px; flex: 1.3; border-left: 1px solid #d9d9d9">
+          <div class="title" style="font-weight: bold;padding-bottom:10px">客户销售金额排名</div>
+          <div style="max-height: 410px; overflow: scroll; padding: 0 10px">
+            <div
+              style="margin-top: 10px; display: flex; align-items: center;"
+              v-for="(item, index) in saleInfo.client_data"
+              :key="index + '客户销售金额排名'"
+            >
+              <div style="width: 10%; color: white">
+                <div class="bgBlue">{{ index + 1 }}</div>
+              </div>
+              <div style="width: 65%">{{item.client_name}}</div>
+              <div style="width: 25%">{{item.price}} 万元</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="module" style="margin-top: 32px">
+      <div class="titleCtn">
+        <span class="title">销售纱线种类</span>
+        <div class="fr elCtn">
+          <el-date-picker
+            v-model="yarnTypeObj.date"
+            type="daterange"
+            align="right"
+            unlink-panels
+            range-separator="至"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+            :picker-options="pickerOptions"
+            @change="getYarnTypeInfo"
+          >
+          </el-date-picker>
+        </div>
+        <div class="fr elCtn" style="margin-right: 20px">
+          <el-cascader
+            v-model="yarnTypeObj.name"
+            filterable
+            clearable
+            :show-all-levels="false"
+            placeholder="请选择纱线"
+            :options="yarn_list"
+            @change="getYarnTypeInfo"
+          ></el-cascader>
+        </div>
+        <div class="fr elCtn" style="margin-right: 20px">
+          <el-select v-model="yarnTypeObj.sortWay" @change="getYarnTypeInfo">
+            <el-option label="按数量排序" :value="1"> </el-option>
+            <el-option label="按金额排序" :value="2"> </el-option>
+          </el-select>
+        </div>
+      </div>
+      <div style="display: flex">
+        <div style="padding: 20px 32px; flex: 2.7">
+          <div style="display: flex; padding-bottom: 20px">
+            <div style="width: 33%">
+              <div style="color: rgba(0, 0, 0, 0.45); font-weight: bold">总销售额</div>
+              <div style="font-size: 30px; margin-top: 10px">{{yarnTypeInfo.total_price}}万元</div>
+            </div>
+            <div style="width: 33%">
+              <div style="color: rgba(0, 0, 0, 0.45); font-weight: bold">总销售数量</div>
+              <div style="font-size: 30px; margin-top: 10px">{{yarnTypeInfo.total_number}}吨</div>
+            </div>
+            <div style="width: 33%"></div>
+          </div>
+          <div style="height:340px">
+            <zh-charts :option="option2"></zh-charts>
+          </div>
+        </div>
+        <div style="padding: 20px 32px; flex: 1.3; border-left: 1px solid #d9d9d9">
+          <div class="title" style="font-weight: bold;padding-bottom:10px">客户销售金额排名</div>
+          <div style="max-height: 410px; overflow: scroll; padding: 0 10px">
+            <div
+              style="margin-top: 10px; display: flex; align-items: center;"
+              v-for="(item, index) in yarnTypeInfo.material_data"
+              :key="index + '客户销售金额排名'"
+            >
+              <div style="width: 10%; color: white">
+                <div class="bgBlue">{{ index + 1 }}</div>
+              </div>
+              <div style="width: 65%">{{item.name}}</div>
+              <div style="width: 25%">{{item.price}} 万元</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
     <!-- <div class="fastEditCtn">
       <div class="first_line">
         <div class="fastEdit_item"
@@ -383,7 +516,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { index } from '@/assets/js/api'
+import { index, dateStatic } from '@/assets/js/api'
 export default Vue.extend({
   data() {
     return {
@@ -410,7 +543,281 @@ export default Vue.extend({
       searchType: '0',
       showSearch: false,
       searchLoading: false,
-      searchList: [[], [], [], [], [], [], [], [], [], [], []],
+      searchList: [[], [], [], [], [], [], [], [], [], [], [], []],
+      saleObj: {
+        id: '',
+        date: [new Date().getFullYear() + '-01-01',this.$getDate(new Date())]
+      },
+      saleInfo:{
+        client_data:[],
+        total_price:0,
+        total_weight:0
+      },
+      option1: {
+        tooltip: {
+          trigger: 'axis',
+          axisPointer: {
+            type: 'cross',
+            crossStyle: {
+              color: '#999'
+            }
+          },
+          formatter : (params: any) => {
+            var htmlStr = '<div>'
+            htmlStr += params[0].name + '<br/>' //x轴的名称
+            params.forEach((param: any, index: number) => {
+              var color = param.color //图例颜色
+
+              //为了保证和原来的效果一样，这里自己实现了一个点的效果
+              htmlStr +=
+                '<span style="margin-right:5px;display:inline-block;width:10px;height:10px;border-radius:5px;background-color:' +
+                color +
+                ';"></span>'
+
+              //添加一个汉字，这里你可以格式你的数字或者自定义文本内容
+              htmlStr +=
+                param.seriesName +
+                '：' +
+                '<span style="color:' +
+                color +
+                ';margin-right:10px">' +
+                param.value +
+                '</span>' +
+                (index === 1 ? '万元' : '吨')
+
+              htmlStr += '</div>'
+            })
+
+            return htmlStr
+          }
+        },
+        legend: {
+          data: ['销售数量','销售金额']
+        },
+        xAxis: [
+          {
+            type: 'category',
+            data: ['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月'],
+            axisPointer: {
+              type: 'shadow'
+            }
+          }
+        ],
+        yAxis: [
+          {
+            type: 'value',
+            name: '销售数量',
+            min: 0,
+            max: 25,
+            interval: 5,
+            axisLabel: {
+              formatter: '{value} 吨'
+            }
+          },
+          {
+            type: 'value',
+            name: '销售金额',
+            min: 0,
+            max: 500,
+            interval: 100,
+            axisLabel: {
+              formatter: '{value} 万元'
+            }
+          }
+        ],
+        series: [
+          {
+            type: 'bar',
+            name: '销售数量',
+            data: []
+          },
+          {
+            type: 'line',
+            name: '销售金额',
+            yAxisIndex: 1,
+            data: []
+          }
+        ]
+      },
+      yarnTypeObj:{
+        date: [new Date().getFullYear() + '-01-01',this.$getDate(new Date())],
+        name: ['',''],
+        sortWay: 1
+      },
+      yarnTypeInfo:{
+        total_price: '',
+        total_number: '',
+        material_data: []
+      },
+      option2: {
+        tooltip: {
+          trigger: 'axis',
+          axisPointer: {
+            type: 'cross',
+            crossStyle: {
+              color: '#999'
+            }
+          },
+          formatter : (params: any) => {
+            var htmlStr = '<div>'
+            htmlStr += params[0].name + '<br/>' //x轴的名称
+            params.forEach((param: any, index: number) => {
+              var color = param.color //图例颜色
+
+              //为了保证和原来的效果一样，这里自己实现了一个点的效果
+              htmlStr +=
+                '<span style="margin-right:5px;display:inline-block;width:10px;height:10px;border-radius:5px;background-color:' +
+                color +
+                ';"></span>'
+
+              //添加一个汉字，这里你可以格式你的数字或者自定义文本内容
+              htmlStr +=
+                param.seriesName +
+                '：' +
+                '<span style="color:' +
+                color +
+                ';margin-right:10px">' +
+                param.value +
+                '</span>' +
+                (index === 1 ? '万元' : '吨')
+
+              htmlStr += '</div>'
+            })
+
+            return htmlStr
+          }
+        },
+        dataZoom: [
+          {
+            start: 0, //默认为0
+            end: 100 - 1500 / 31, //默认为100
+            type: 'slider',
+            maxValueSpan: 10, //窗口的大小，显示数据的条数的
+            show: true,
+            handleSize: 0, //滑动条的 左右2个滑动条的大小
+            height: '7%', //组件高度
+            left: 65,
+            right: 85,
+            bottom: '-10',
+            borderColor: 'rgba(43,48,67,.8)',
+            fillerColor: '#33384b',
+            zoomLock: true,
+            brushSelect: false,
+            backgroundColor: 'rgba(43,48,67,.8)', //两边未选中的滑动条区域的颜色
+            showDataShadow: false, //是否显示数据阴影 默认auto
+            showDetail: false, //即拖拽时候是否显示详细数值信息 默认true
+            realtime: true, //是否实时更新
+            xAxisIndex: [0] //控制的 x轴
+          }
+        ],
+        legend: {
+          data: ['销售数量','销售金额']
+        },
+        xAxis: [
+          {
+            type: 'category',
+            data: [],
+            axisPointer: {
+              type: 'shadow'
+            },
+            axisLabel: {
+              interval: 0,
+              formatter: function (params:any) {
+                let newParamsName = '';
+                const paramsNameNumber = params.length; // 文字总长度
+                const provideNumber = 6; //一行显示几个字
+                const rowNumber = Math.ceil(paramsNameNumber / provideNumber);
+                if (paramsNameNumber > provideNumber) {
+                  for (let p = 0; p < rowNumber; p++) {
+                    const start = p * provideNumber;
+                    const end = start + provideNumber;
+                    const tempStr = p === rowNumber - 1 ? params.substring(start, paramsNameNumber) : params.substring(start, end) + '\n';
+                    newParamsName += tempStr;
+                  }
+                } else {
+                  newParamsName = params;
+                }
+                return newParamsName;
+              }
+            }
+          }
+        ],
+        yAxis: [
+          {
+            type: 'value',
+            name: '销售数量',
+            min: 0,
+            max: 25,
+            interval: 5,
+            axisLabel: {
+              formatter: '{value} 吨',
+            }
+          },
+          {
+            type: 'value',
+            name: '销售金额',
+            min: 0,
+            max: 500,
+            interval: 100,
+            axisLabel: {
+              formatter: '{value} 万元',
+            }
+          }
+        ],
+        series: [
+          {
+            type: 'bar',
+            name: '销售数量',
+            data: []
+          },
+          {
+            type: 'line',
+            name: '销售金额',
+            yAxisIndex: 1,
+            data: []
+          }
+        ]
+      },
+      pickerOptions: {
+        shortcuts: [
+          {
+            text: '最近一个月',
+            onClick(picker: any) {
+              const end = new Date()
+              const start = new Date()
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 30)
+              picker.$emit('pick', [start, end])
+            }
+          },
+          {
+            text: '最近三个月',
+            onClick(picker: any) {
+              const end = new Date()
+              const start = new Date()
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 90)
+              picker.$emit('pick', [start, end])
+            }
+          },
+          {
+            text: '最近半年',
+            onClick(picker: any) {
+              const end = new Date()
+              const start = new Date()
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 180)
+              picker.$emit('pick', [start, end])
+            }
+          },
+          {
+            text: '最近一年',
+            onClick(picker: any) {
+              const end = new Date()
+              const start = new Date()
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 365)
+              picker.$emit('pick', [start, end])
+            }
+          }
+        ]
+      },
       easyOprFlag: false,
       easyOpr: [
         {
@@ -521,6 +928,23 @@ export default Vue.extend({
         return '晚上好'
       }
     },
+    client_list() {
+      return this.$store.state.api.client.arr
+    },
+    yarn_list() {
+      return this.$store.state.api.yarnType.arr.map((item: any) => {
+        return {
+          value: item.name,
+          label: item.name,
+          children: item.yarns.map((itemChild: any) => {
+            return {
+              value: itemChild.name,
+              label: itemChild.name
+            }
+          })
+        }
+      })
+    },
     // 用户可选的操作
     userCanCheckedOpr(): any[] {
       return this.newSplice(
@@ -555,6 +979,170 @@ export default Vue.extend({
               this.disabledScroll = true
             }
           }
+        })
+      this.getSaleClient()
+      this.getYarnTypeInfo()
+    },
+    getSaleClient() {
+      if(!this.saleObj.date) {
+        this.saleObj.date = [new Date().getFullYear() + '-01-01',this.$getDate(new Date())]
+      }
+      dateStatic
+        .clientSellCharts({
+          client_id: this.saleObj.id,
+          start_time: this.saleObj.date[0],
+          end_time: this.saleObj.date[1]
+        })
+        .then((res) => {
+          let charts_data = res.data.data.charts_data
+          let client_data = res.data.data.client_data
+          this.saleInfo.client_data = client_data.sort((a:any,b:any) => {
+            return b.price - a.price
+          }).map((item:any) => {
+            item.price = (item.price / 10000).toFixed(2)
+            return item
+          })
+          this.saleInfo.total_price = client_data.reduce((a:any,b:any) => {
+            return a + Number(b.price)
+          },0).toFixed(2)
+          this.saleInfo.total_weight = charts_data.reduce((a:any,b:any) => {
+            return a + Number((b.weight / 1000).toFixed(2))
+          },0).toFixed(2)
+          this.option1.series[0].data = []
+          this.option1.series[1].data = []
+          let maxPrice: any,
+            minPrice: any,
+            maxWeight: any,
+            minWeight: any = 0
+
+          if (charts_data.length !== 0) {
+            //  销售金额
+            maxPrice = Object.values(charts_data).reduce((num1: any, num2: any) => {
+              return +num1.price > +num2.price ? num1 : num2
+            })
+            minPrice = Object.values(charts_data).reduce((num1: any, num2: any) => {
+              return +num1.price < +num2.price ? num1 : num2
+            })
+
+            // 销售数量
+            maxWeight = Object.values(charts_data).reduce((num1: any, num2: any) => {
+              return +num1.weight > +num2.weight ? num1 : num2
+            })
+            minWeight = Object.values(charts_data).reduce((num1: any, num2: any) => {
+              return +num1.weight < +num2.weight ? num1 : num2
+            })
+
+            // 拿到销售金额的最大值和最小值
+            maxPrice = +maxPrice.price
+            minPrice = +minPrice.price
+
+            // 拿到销售数量的最大值和最小值
+            maxWeight = +maxWeight.weight
+            minWeight = +minWeight.weight
+          }
+
+          // 销售数量 图表更新
+          this.option1.yAxis[0].max = Math.ceil(Math.ceil(maxWeight / 1000 / 5)) * 5 || 10
+          this.option1.yAxis[0].min = minWeight && minWeight < 0 ? Math.ceil(minWeight / 1000) : 0
+          this.option1.yAxis[0].interval = Math.ceil(maxWeight / 1000 / 5) || 10
+
+          // 销售金额 图表更新
+          this.option1.yAxis[1].max = Math.ceil(Math.ceil(maxPrice / 10000 / 5)) * 5 || 10
+          this.option1.yAxis[1].min = minPrice && minPrice < 0 ? Math.ceil(minPrice / 10000) : 0
+          this.option1.yAxis[1].interval = Math.ceil(maxPrice / 10000 / 5) || 10
+
+          this.option1.series[0].data = charts_data.map((item: any) => {
+            return (item.weight / 1000).toFixed(2)
+          })
+          this.option1.series[1].data = charts_data.map((item: any) => {
+            return (item.price / 10000).toFixed(2)
+          })
+        })
+    },
+    getYarnTypeInfo() {
+      if(!this.yarnTypeObj.date) {
+        this.yarnTypeObj.date = [new Date().getFullYear() + '-01-01',this.$getDate(new Date())]
+      }
+
+      dateStatic
+        .materialSellCharts({
+          product_name: this.yarnTypeObj.name[1],
+          start_time: this.yarnTypeObj.date[0],
+          end_time: this.yarnTypeObj.date[1]
+        })
+        .then((res) => {
+          let charts_data = res.data.data.charts_data.sort((a:any,b:any) => {
+            if (this.yarnTypeObj.sortWay === 1) {
+              return b.number - a.number
+            } else if (this.yarnTypeObj.sortWay === 2) {
+              return b.price - a.price
+            }
+          })
+          let material_data = res.data.data.material_data
+          this.yarnTypeInfo.material_data = material_data.sort((a:any,b:any) => {
+            return b.price - a.price
+          }).map((item:any) => {
+            item.price = (item.price / 10000).toFixed(2)
+            return item
+          })
+          this.yarnTypeInfo.total_price = material_data.reduce((a:any,b:any) => {
+            return a + Number(b.price)
+          },0).toFixed(2)
+          this.yarnTypeInfo.total_number = charts_data.reduce((a:any,b:any) => {
+            return a + Number((b.number / 1000).toFixed(2))
+          },0).toFixed(2)
+          this.option2.series[0].data = []
+          this.option2.series[1].data = []
+          let maxPrice: any,
+            minPrice: any,
+            maxWeight: any,
+            minWeight: any = 0
+
+          if (charts_data.length !== 0) {
+            //  销售金额
+            maxPrice = Object.values(charts_data).reduce((num1: any, num2: any) => {
+              return +num1.price > +num2.price ? num1 : num2
+            })
+            minPrice = Object.values(charts_data).reduce((num1: any, num2: any) => {
+              return +num1.price < +num2.price ? num1 : num2
+            })
+
+            // 销售数量
+            maxWeight = Object.values(charts_data).reduce((num1: any, num2: any) => {
+              return +num1.number > +num2.number ? num1 : num2
+            })
+            minWeight = Object.values(charts_data).reduce((num1: any, num2: any) => {
+              return +num1.number < +num2.number ? num1 : num2
+            })
+
+            // 拿到销售金额的最大值和最小值
+            maxPrice = +maxPrice.price
+            minPrice = +minPrice.price
+
+            // 拿到销售数量的最大值和最小值
+            maxWeight = +maxWeight.number
+            minWeight = +minWeight.number
+          }
+
+          // 销售数量 图表更新
+          this.option2.yAxis[0].max = Math.ceil(Math.ceil(maxWeight / 1000 / 5)) * 5 || 10
+          this.option2.yAxis[0].min = minWeight && minWeight < 0 ? Math.ceil(minWeight / 1000) : 0
+          this.option2.yAxis[0].interval = Math.ceil(maxWeight / 1000 / 5) || 10
+
+          // 销售金额 图表更新
+          this.option2.yAxis[1].max = Math.ceil(Math.ceil(maxPrice / 10000 / 5)) * 5 || 10
+          this.option2.yAxis[1].min = minPrice && minPrice < 0 ? Math.ceil(minPrice / 10000) : 0
+          this.option2.yAxis[1].interval = Math.ceil(maxPrice / 10000 / 5) || 10
+
+          this.option2.xAxis[0].data = charts_data.map((item: any) => {
+            return item.name
+          })
+          this.option2.series[0].data = charts_data.map((item: any) => {
+            return (item.number / 1000).toFixed(2)
+          })
+          this.option2.series[1].data = charts_data.map((item: any) => {
+            return (item.price / 10000).toFixed(2)
+          })
         })
     },
     resetAll() {
@@ -645,6 +1233,18 @@ export default Vue.extend({
     // }
   },
   mounted() {
+    this.$checkCommonInfo([
+      {
+        checkWhich: 'api/client',
+        getInfoMethed: 'dispatch',
+        getInfoApi: 'getPartyBAsync'
+      },
+      {
+        checkWhich: 'api/yarnType',
+        getInfoMethed: 'dispatch',
+        getInfoApi: 'getYarnTypeAsync'
+      }
+    ])
     const userEasyOpr = window.localStorage.getItem('userEasyOpr')
       ? JSON.parse(window.localStorage.getItem('userEasyOpr') as string)
       : []
@@ -685,5 +1285,14 @@ export default Vue.extend({
       border-color: transparent !important;
     }
   }
+}
+.bgBlue {
+  background-color: #1a95ff;
+  text-align: center;
+  padding: 5px;
+  border-radius: 1.5em;
+  line-height: 1.5em;
+  width: 1.5em;
+  height: 1.5em;
 }
 </style>

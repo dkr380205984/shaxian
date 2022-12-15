@@ -114,7 +114,7 @@ export default Vue.extend({
       // 初始化调取单号信息
       this.storeInfo = res[1].data.data.find((itemF: any) => +itemF.id === +this.$route.query.purchaseId) || {}
     })
-  },
+  }
 })
 </script>
 

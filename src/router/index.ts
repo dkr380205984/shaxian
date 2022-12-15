@@ -61,6 +61,10 @@ const routes: RouteConfig[] = [
         name: '毛条列表',
         component: () => import('../views/material/list.vue')
       }, {
+        path: '/material/detail/:id',
+        name: '毛条详情',
+        component: () => import('../views/material/detail.vue')
+      }, {
         path: '/material/craftList',
         name: '工艺单列表',
         component: () => import('../views/material/craftList.vue')

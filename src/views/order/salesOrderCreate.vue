@@ -241,9 +241,10 @@
                       <el-input class="el" v-model="itemPro.item" placeholder="件数" @input="cmpTotal"> </el-input>
                     </div>
                     <div class="tcolumn flexRow" style="flex: 0.8">
-                      <span class="opr red" style="margin-right: 12px" @click="deleteOnce(indexPro)">删除</span>
+                      <span class="opr red" style="margin:unset;margin-right: 12px" @click="deleteOnce(indexPro)">删除</span>
                       <span
                         class="opr blue"
+                        style="margin:unset"
                         @click="
                           $addItem(order_info.product_info, {
                             name: itemPro.name,

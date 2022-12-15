@@ -56,7 +56,7 @@ Vue.filter('ticketPayFilter', (val: 1 | 2 | 3 | 4 | 5) => {
 })
 // 纱线类型
 Vue.filter('yarnTypeFilter', (val: any[]) => {
-  return val.map((item) => item.type_name).join(',')
+  return val?.map((item) => item.type_name).join(',')
 })
 
 // 注册公共方法后需要声明

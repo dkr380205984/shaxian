@@ -222,11 +222,12 @@
                         <div class="tcolumn flexRow" style="flex: 0.5">
                           <span
                             class="opr red"
-                            style="margin-right: 12px"
+                            style="margin:0 3px"
                             @click="deleteOnce(itemPro.child_data, indexChild, indexPro)"
                             >删除</span
                           >
                           <span
+                            style="margin:0 3px"
                             class="opr blue"
                             @click="parseThis(indexPro,indexChild)"
                           >
@@ -238,7 +239,6 @@
                     <div class="tcolumn" style="flex: 0.3">
                       <span
                         class="opr hoverRed"
-                        style="margin-right: 12px"
                         @click="deletePro(order_info.product_info, indexPro)"
                         >删除纱线</span>
                     </div>

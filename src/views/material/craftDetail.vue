@@ -711,11 +711,11 @@ export default Vue.extend({
             }
           ]
         }
-        this.store_yarn_list = res[1].data.data.data.items
+        this.store_yarn_list = res[1].data.data.items
         this.craft_info.push_weight = this.store_yarn_list.reduce((total: number, current: any) => {
           return total + Number(current.child_data[0].action_weight)
         }, 0)
-        this.store_material_list = res[2].data.data.data.items
+        this.store_material_list = res[2].data.data.items
         this.craft_info.material_info.forEach((item: any) => {
           item.push_weight = this.store_material_list
             .filter((itemChild: any) => itemChild.child_data[0].name === item.material_name)

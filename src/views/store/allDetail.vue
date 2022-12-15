@@ -1337,6 +1337,7 @@ export default Vue.extend({
       this.initData = []
       this.firstStoreId = ''
       this.selectList = []
+      this.storeLogListFilter.code = this.$route.query.store_log_code
       this.getStoreInfoList()
       this.getStoreLogList()
       this.getMergeSearchList()
@@ -1526,6 +1527,7 @@ export default Vue.extend({
       stock
         .list({
           page: pages,
+          code: this.storeLogListFilter.code || '',
           limit: this.storeLogListFilter.limit || 10,
           store_id: this.storeLogListFilter.LV2_name ? this.storeLogListFilter.LV2_name[0] : '',
           store_client_id: this.storeLogListFilter.store_client_id || null,

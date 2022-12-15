@@ -146,8 +146,12 @@
           <div class="tbody">
             <div class="trow" v-for="item in order_info.product_info" :key="item.id">
               <div class="tcolumn">
-                <el-checkbox v-model="item.checked" style="white-space: pre-wrap;word-break: break-all;" @change="selectList($event, item)">
-                  <div style="max-width:110px;">{{item.product_name}}</div>
+                <el-checkbox
+                  v-model="item.checked"
+                  style="white-space: pre-wrap; word-break: break-all"
+                  @change="selectList($event, item)"
+                >
+                  <div style="max-width: 110px">{{ item.product_name }}</div>
                 </el-checkbox>
               </div>
               <div class="tcolumn noPad" style="flex: 7">
@@ -160,12 +164,18 @@
                   <div class="tcolumn">{{ itemChild.price }}元</div>
                   <div class="tcolumn blue">{{ itemChild.weight }}kg</div>
                   <div class="tcolumn blue">
-                    <div style="white-space: pre-wrap;word-break: break-all;" v-for="itemPurchase,indexPurchase in itemChild.purchase_info" :key='indexPurchase + itemPurchase.client + "采购数量"'>
-                      {{ itemPurchase.client}}：{{ itemPurchase.weight || 0 }}kg
+                    <div
+                      style="white-space: pre-wrap; word-break: break-all"
+                      v-for="(itemPurchase, indexPurchase) in itemChild.purchase_info"
+                      :key="indexPurchase + itemPurchase.client + '采购数量'"
+                    >
+                      {{ itemPurchase.client }}：{{ itemPurchase.weight || 0 }}kg
                     </div>
                     <div class="once gray" v-if="itemChild.purchase_info.length === 0">暂无采购信息</div>
                   </div>
-                  <div class="tcolumn blue">{{ itemChild.send_weight ? (itemChild.send_weight).toFixed(2) : '0.00' }}kg</div>
+                  <div class="tcolumn blue">
+                    {{ itemChild.send_weight ? itemChild.send_weight.toFixed(2) : '0.00' }}kg
+                  </div>
                 </div>
               </div>
               <div class="tcolumn blue">
@@ -227,7 +237,7 @@
                   </div>
                   <div class="tcolumn">{{ itemChild.attribute }}</div>
                   <div class="tcolumn">{{ itemChild.number_attribute }}</div>
-                  <div class="tcolumn">{{ itemChild.store_client_name || '无'}}</div>
+                  <div class="tcolumn">{{ itemChild.store_client_name || '无' }}</div>
                   <div class="tcolumn">
                     {{ itemChild.batch_code }}/{{ itemChild.color_code }}/{{ itemChild.vat_code }}
                   </div>
@@ -328,21 +338,11 @@
               <div class="tcolumn">{{ item.desc || '无' }}</div>
               <div class="tcolumn">{{ item.user_name }}</div>
               <div class="tcolumn">
-                <div style="display:flex;justify-content: space-around;">
-                  <span
-                    class="hoverBlue"
-                    style="cursor: pointer;"
-                    @click="$openUrl('/print/transPrint?id=' + item.id)"
-                  >
+                <div style="display: flex; justify-content: space-around">
+                  <span class="hoverBlue" style="cursor: pointer" @click="$openUrl('/print/transPrint?id=' + item.id)">
                     打印
                   </span>
-                  <span
-                    class="hoverRed"
-                    style="cursor: pointer;"
-                    @click="deleteFaHuo(item.id)"
-                  >
-                    删除
-                  </span>
+                  <span class="hoverRed" style="cursor: pointer" @click="deleteFaHuo(item.id)"> 删除 </span>
                 </div>
               </div>
             </div>
@@ -359,8 +359,8 @@
                   <div class="tcolumn"></div>
                   <div class="tcolumn"></div>
                   <div class="tcolumn"></div>
-                  <div class="tcolumn">{{ $toFixed(total_final_out_log.total_action_weight,1) }}kg</div>
-                  <div class="tcolumn">{{ $toFixed(total_final_out_log.total_price,2,true) }}元</div>
+                  <div class="tcolumn">{{ $toFixed(total_final_out_log.total_action_weight, 1) }}kg</div>
+                  <div class="tcolumn">{{ $toFixed(total_final_out_log.total_price, 2, true) }}元</div>
                   <div class="tcolumn">{{ total_final_out_log.total_item }}</div>
                 </div>
               </div>
@@ -375,11 +375,7 @@
     <div class="module" v-if="order_info.status === 4">
       <div class="titleCtn">
         <span class="title">结余入库</span>
-        <span
-          class="addBtn btn btnMain"
-          @click="openInStore"
-          >结余入库</span
-        >
+        <span class="addBtn btn btnMain" @click="openInStore">结余入库</span>
       </div>
       <div style="padding: 20px 32px">
         <div class="tableCtn">
@@ -439,12 +435,30 @@
           </div>
           <div class="tbody">
             <div class="trow">
-              <div class="tcolumn">{{ $toFixed(order_info.total_additional_fee,2,true)}}元</div>
-              <div class="tcolumn">{{ $toFixed(order_info.total_deduct_price,2,true) }}元</div>
-              <div class="tcolumn">{{ $toFixed(order_info.total_weight,1) }}kg</div>
-              <div class="tcolumn">{{ $toFixed(total_final_out_log.total_action_weight,1) }}kg</div>
-              <div class="tcolumn">{{ $toFixed(+order_info.total_price + +order_info.total_additional_fee + +order_info.total_deduct_price,2,true) }}元</div>
-              <div class="tcolumn">{{ $toFixed(+total_final_out_log.total_price - +order_info.total_additional_fee + +order_info.total_deduct_price,2,true) }}元</div>
+              <div class="tcolumn">{{ $toFixed(order_info.total_additional_fee, 2, true) }}元</div>
+              <div class="tcolumn">{{ $toFixed(order_info.total_deduct_price, 2, true) }}元</div>
+              <div class="tcolumn">{{ $toFixed(order_info.total_weight, 1) }}kg</div>
+              <div class="tcolumn">{{ $toFixed(total_final_out_log.total_action_weight, 1) }}kg</div>
+              <div class="tcolumn">
+                {{
+                  $toFixed(
+                    +order_info.total_price + +order_info.total_additional_fee + +order_info.total_deduct_price,
+                    2,
+                    true
+                  )
+                }}元
+              </div>
+              <div class="tcolumn">
+                {{
+                  $toFixed(
+                    +total_final_out_log.total_price -
+                      +order_info.total_additional_fee +
+                      +order_info.total_deduct_price,
+                    2,
+                    true
+                  )
+                }}元
+              </div>
             </div>
           </div>
         </div>
@@ -463,43 +477,69 @@
           </div>
           <div class="tbody">
             <div class="trow">
-              <div class="tcolumn">{{$toFixed(total_purchase_info.total_additional_fee,2,true)}}元</div>
-              <div class="tcolumn">{{$toFixed(total_purchase_info.total_deduct_price,2,true)}}元</div>
-              <div class="tcolumn">{{$toFixed(total_purchase_info.total_number,2,true)}}kg</div>
-              <div class="tcolumn">{{$toFixed(total_purchase_info.total_real_number,2,true)}}kg</div>
-              <div class="tcolumn">{{$toFixed(total_purchase_info.total_price + total_purchase_info.total_deduct_price + total_purchase_info.total_additional_fee,2,true)}}元</div>
-              <div class="tcolumn">{{$toFixed(total_purchase_info.total_real_price + total_purchase_info.total_deduct_price + total_purchase_info.total_additional_fee,2,true)}}元</div>
-              <div class="tcolumn blue" style="cursor:pointer" @click="openCaiGou = !openCaiGou">{{openCaiGou?'收起':'展开'}}</div>
+              <div class="tcolumn">{{ $toFixed(total_purchase_info.total_additional_fee, 2, true) }}元</div>
+              <div class="tcolumn">{{ $toFixed(total_purchase_info.total_deduct_price, 2, true) }}元</div>
+              <div class="tcolumn">{{ $toFixed(total_purchase_info.total_number, 2, true) }}kg</div>
+              <div class="tcolumn">{{ $toFixed(total_purchase_info.total_real_number, 2, true) }}kg</div>
+              <div class="tcolumn">
+                {{
+                  $toFixed(
+                    total_purchase_info.total_price +
+                      total_purchase_info.total_deduct_price +
+                      total_purchase_info.total_additional_fee,
+                    2,
+                    true
+                  )
+                }}元
+              </div>
+              <div class="tcolumn">
+                {{
+                  $toFixed(
+                    total_purchase_info.total_real_price +
+                      total_purchase_info.total_deduct_price +
+                      total_purchase_info.total_additional_fee,
+                    2,
+                    true
+                  )
+                }}元
+              </div>
+              <div class="tcolumn blue" style="cursor: pointer" @click="openCaiGou = !openCaiGou">
+                {{ openCaiGou ? '收起' : '展开' }}
+              </div>
             </div>
             <div v-if="openCaiGou">
-              <div class="trow" style="background:#F4F4F4" >
-              <div class="tcolumn">采购单位</div>
-              <div class="tcolumn noPad" style="flex:6.75">
-                <div class="trow">
-                  <div class="tcolumn">纱线名称</div>
-                  <div class="tcolumn">颜色属性</div>
-                  <div class="tcolumn">采购单价</div>
-                  <div class="tcolumn">计划采购数量</div>
-                  <div class="tcolumn">实际入库数量</div>
-                  <div class="tcolumn">计划总额</div>
-                  <div class="tcolumn">实际总额</div>
+              <div class="trow" style="background: #f4f4f4">
+                <div class="tcolumn">采购单位</div>
+                <div class="tcolumn noPad" style="flex: 6.75">
+                  <div class="trow">
+                    <div class="tcolumn">纱线名称</div>
+                    <div class="tcolumn">颜色属性</div>
+                    <div class="tcolumn">采购单价</div>
+                    <div class="tcolumn">计划采购数量</div>
+                    <div class="tcolumn">实际入库数量</div>
+                    <div class="tcolumn">计划总额</div>
+                    <div class="tcolumn">实际总额</div>
+                  </div>
                 </div>
               </div>
-            </div>
-            <div class="trow" v-for="item,index in order_info.purchase_log" :key="index + '采购单财务详情'">
-              <div class="tcolumn">{{item.client_name}}</div>
-              <div class="tcolumn noPad" style="flex:6.75">
-                <div class="trow" v-for="itemChild,indexChild in item.child_data" :key="indexChild + '采购单财务子集'">
-                  <div class="tcolumn">{{itemChild.name}}</div>
-                  <div class="tcolumn">{{itemChild.color}}/{{itemChild.attribute}}</div>
-                  <div class="tcolumn">{{$toFixed(itemChild.price,2,true)}}元</div>
-                  <div class="tcolumn">{{$toFixed(itemChild.weight,2,true)}}kg</div>
-                  <div class="tcolumn">{{$toFixed(itemChild.push_weight,2,true)}}kg</div>
-                  <div class="tcolumn">{{$toFixed(itemChild.weight * itemChild.price,2,true)}}元</div>
-                  <div class="tcolumn">{{$toFixed(itemChild.push_weight * itemChild.price,2,true)}}元</div>
+              <div class="trow" v-for="(item, index) in order_info.purchase_log" :key="index + '采购单财务详情'">
+                <div class="tcolumn">{{ item.client_name }}</div>
+                <div class="tcolumn noPad" style="flex: 6.75">
+                  <div
+                    class="trow"
+                    v-for="(itemChild, indexChild) in item.child_data"
+                    :key="indexChild + '采购单财务子集'"
+                  >
+                    <div class="tcolumn">{{ itemChild.name }}</div>
+                    <div class="tcolumn">{{ itemChild.color }}/{{ itemChild.attribute }}</div>
+                    <div class="tcolumn">{{ $toFixed(itemChild.price, 2, true) }}元</div>
+                    <div class="tcolumn">{{ $toFixed(itemChild.weight, 2, true) }}kg</div>
+                    <div class="tcolumn">{{ $toFixed(itemChild.push_weight, 2, true) }}kg</div>
+                    <div class="tcolumn">{{ $toFixed(itemChild.weight * itemChild.price, 2, true) }}元</div>
+                    <div class="tcolumn">{{ $toFixed(itemChild.push_weight * itemChild.price, 2, true) }}元</div>
+                  </div>
                 </div>
               </div>
-            </div>
             </div>
           </div>
         </div>
@@ -518,18 +558,32 @@
           </div>
           <div class="tbody">
             <div class="trow">
-              <div class="tcolumn">{{$toFixed(total_process_info.total_additional_fee,2,true)}}元</div>
-              <div class="tcolumn">{{$toFixed(total_process_info.total_deduct_price,2,true)}}元</div>
-              <div class="tcolumn">{{$toFixed(total_process_info.total_number,2,true)}}kg</div>
-              <div class="tcolumn">{{$toFixed(total_process_info.total_real_number,2,true)}}kg</div>
-              <div class="tcolumn">{{$toFixed(total_process_info.total_price + total_process_info.total_deduct_price,2,true)}}元</div>
-              <div class="tcolumn">{{$toFixed(total_process_info.total_real_price + total_process_info.total_deduct_price + total_process_info.total_additional_fee,2,true)}}元</div>
-              <div class="tcolumn blue" style="cursor:pointer" @click="openJiaGong = !openJiaGong">{{openJiaGong?'收起':'展开'}}</div>
+              <div class="tcolumn">{{ $toFixed(total_process_info.total_additional_fee, 2, true) }}元</div>
+              <div class="tcolumn">{{ $toFixed(total_process_info.total_deduct_price, 2, true) }}元</div>
+              <div class="tcolumn">{{ $toFixed(total_process_info.total_number, 2, true) }}kg</div>
+              <div class="tcolumn">{{ $toFixed(total_process_info.total_real_number, 2, true) }}kg</div>
+              <div class="tcolumn">
+                {{ $toFixed(total_process_info.total_price + total_process_info.total_deduct_price, 2, true) }}元
+              </div>
+              <div class="tcolumn">
+                {{
+                  $toFixed(
+                    total_process_info.total_real_price +
+                      total_process_info.total_deduct_price +
+                      total_process_info.total_additional_fee,
+                    2,
+                    true
+                  )
+                }}元
+              </div>
+              <div class="tcolumn blue" style="cursor: pointer" @click="openJiaGong = !openJiaGong">
+                {{ openJiaGong ? '收起' : '展开' }}
+              </div>
             </div>
             <div v-if="openJiaGong">
-              <div class="trow" style="background:#F4F4F4" >
+              <div class="trow" style="background: #f4f4f4">
                 <div class="tcolumn">加工单位</div>
-                <div class="tcolumn noPad" style="flex:6.75">
+                <div class="tcolumn noPad" style="flex: 6.75">
                   <div class="trow">
                     <div class="tcolumn">纱线名称</div>
                     <div class="tcolumn">加工信息</div>
@@ -541,11 +595,15 @@
                   </div>
                 </div>
               </div>
-              <div class="trow" v-for="item,index in order_info.process_log" :key="index + '加工单财务详情'">
-                <div class="tcolumn">{{item.client_name}}</div>
-                <div class="tcolumn noPad" style="flex:6.75">
-                  <div class="trow" v-for="itemChild,indexChild in item.child_data" :key="indexChild + '加工单财务详情子集'">
-                    <div class="tcolumn">{{itemChild.name}}</div>
+              <div class="trow" v-for="(item, index) in order_info.process_log" :key="index + '加工单财务详情'">
+                <div class="tcolumn">{{ item.client_name }}</div>
+                <div class="tcolumn noPad" style="flex: 6.75">
+                  <div
+                    class="trow"
+                    v-for="(itemChild, indexChild) in item.child_data"
+                    :key="indexChild + '加工单财务详情子集'"
+                  >
+                    <div class="tcolumn">{{ itemChild.name }}</div>
                     <div class="tcolumn">
                       <span class="green" style="margin-right: 12px">{{ item.type }}</span>
                       <span v-if="item.type === '倒筒'">
@@ -564,11 +622,11 @@
                         {{ itemChild.attribute }}
                       </span>
                     </div>
-                    <div class="tcolumn">{{$toFixed(itemChild.weight,2,true)}}kg</div>
-                    <div class="tcolumn">{{$toFixed(itemChild.total_real_number,2,true) }}kg</div>
-                    <div class="tcolumn">{{$toFixed(itemChild.price,2,true) }}元</div>
-                    <div class="tcolumn">{{$toFixed(itemChild.price * itemChild.weight,2,true)}}元</div>
-                    <div class="tcolumn">{{$toFixed(itemChild.price * itemChild.total_real_number,2,true)}}元</div>
+                    <div class="tcolumn">{{ $toFixed(itemChild.weight, 2, true) }}kg</div>
+                    <div class="tcolumn">{{ $toFixed(itemChild.total_real_number, 2, true) }}kg</div>
+                    <div class="tcolumn">{{ $toFixed(itemChild.price, 2, true) }}元</div>
+                    <div class="tcolumn">{{ $toFixed(itemChild.price * itemChild.weight, 2, true) }}元</div>
+                    <div class="tcolumn">{{ $toFixed(itemChild.price * itemChild.total_real_number, 2, true) }}元</div>
                   </div>
                 </div>
               </div>
@@ -588,11 +646,11 @@
           </div>
           <div class="tbody">
             <div class="trow">
-              <div class="tcolumn">{{ $toFixed(order_info.total_additional_fee,2,true)}}元</div>
-              <div class="tcolumn">{{ $toFixed(order_info.total_deduct_price,2,true) }}元</div>
-              <div class="tcolumn">{{ $toFixed(order_info.total_weight,1) }}kg</div>
+              <div class="tcolumn">{{ $toFixed(order_info.total_additional_fee, 2, true) }}元</div>
+              <div class="tcolumn">{{ $toFixed(order_info.total_deduct_price, 2, true) }}元</div>
+              <div class="tcolumn">{{ $toFixed(order_info.total_weight, 1) }}kg</div>
               <div class="tcolumn">
-                {{ $toFixed(+order_info.total_price - +order_info.total_deduct_price,2,true) }}元
+                {{ $toFixed(+order_info.total_price - +order_info.total_deduct_price, 2, true) }}元
               </div>
             </div>
           </div>
@@ -682,6 +740,48 @@
             </div>
           </div>
         </div> -->
+      </div>
+    </div>
+    <div class="module" v-if="order_info.deduct.length > 0">
+      <div class="titleCtn">
+        <span class="title">扣款单据</span>
+      </div>
+      <div class="listCtn">
+        <div class="list">
+          <div class="headCtn">
+            <div class="row">
+              <div class="column">扣款单号</div>
+              <div class="column">扣款金额</div>
+              <div class="column">图片说明</div>
+              <div class="column">备注信息</div>
+              <div class="column">日期</div>
+              <div class="column">操作</div>
+            </div>
+          </div>
+          <div class="bodyCtn">
+            <div class="row" v-for="item in order_info.deduct" :key="item.id + '扣款'">
+              <div class="column blue">{{ item.code }}</div>
+              <div class="column red">{{ item.total_price }}元</div>
+              <div class="column">
+                <el-image
+                  style="width: 50px; height: 50px; line-height: 50px; text-align: center; font-size: 22px"
+                  :src="item.deduct_file"
+                  :preview-src-list="[item.deduct_file]"
+                >
+                  <div slot="error" class="image-slot">
+                    <i class="el-icon-picture-outline"></i>
+                  </div>
+                </el-image>
+              </div>
+              <div class="column">{{ item.desc }}</div>
+              <div class="column">{{ item.date }}</div>
+              <div class="column">
+                <div class="opr blue" @click="$openUrl('/print/deductPrint?id=' + item.id)">打印</div>
+                <div class="opr red" @click="deleteLog('扣款', item.id)">删除</div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
     <div class="bottomFixBar">
@@ -822,7 +922,7 @@
       @close="init"
     ></in-and-out>
     <div class="popup" v-show="cancel_flag">
-      <div class="main" style="width:1300px">
+      <div class="main" style="width: 1300px">
         <div class="titleCtn">
           <div class="text">取消订单</div>
           <i class="el-icon-close" @click="cancel_flag = false"></i>
@@ -1245,8 +1345,9 @@
           <div style="max-height: 600px; overflow: scroll">
             <div class="rowCtn" v-for="(item, index) in fahuoList" :key="index + '发货数量'">
               <div class="colCtn" style="flex: 3">
-                {{ item.store_name }} / {{ item.second_store_name }} / {{ item.name }} / {{ item.attribute }} / {{item.store_client_name}}/
-                {{ item.color }} / {{ item.batch_code }} / {{ item.color_code }} / {{ item.vat_color }}
+                {{ item.store_name }} / {{ item.second_store_name }} / {{ item.name }} / {{ item.attribute }} /
+                {{ item.store_client_name }}/ {{ item.color }} / {{ item.batch_code }} / {{ item.color_code }} /
+                {{ item.vat_color }}
               </div>
               <div class="colCtn">
                 <div class="elCtn">
@@ -1350,7 +1451,7 @@
                 <el-tooltip class="item" effect="dark" content="统一属性" placement="top">
                   <svg
                     class="iconFont copyIcon hoverBlue"
-                    style="cursor:pointer"
+                    style="cursor: pointer"
                     aria-hidden="true"
                     @click="copyInfoJiaGong('attribute')"
                   >
@@ -1394,17 +1495,13 @@
           </div>
           <div style="max-height: 600px; overflow: scroll">
             <div class="rowCtn" v-for="(item, index) in jiagongdanList" :key="index + '发货数量'">
-              <div class="colCtn"> {{ item.name }}/{{ item.color }} </div>
-              <div class="colCtn"> {{ item.store_client_name || '无' }} </div>
+              <div class="colCtn">{{ item.name }}/{{ item.color }}</div>
+              <div class="colCtn">{{ item.store_client_name || '无' }}</div>
               <div class="colCtn">
                 <div class="elCtn">
-                  <el-select class="el"
-                    v-model="item.attribute"
-                    placeholder="属性">
-                    <el-option label="绞纱"
-                      value="绞纱"></el-option>
-                    <el-option label="筒纱"
-                      value="筒纱"></el-option>
+                  <el-select class="el" v-model="item.attribute" placeholder="属性">
+                    <el-option label="绞纱" value="绞纱"></el-option>
+                    <el-option label="筒纱" value="筒纱"></el-option>
                   </el-select>
                 </div>
               </div>
@@ -1491,12 +1588,20 @@
                 <span class="explanation">(选填)</span>
               </div>
               <div class="elCtn">
-                <el-select v-model="jiagongdanObj.jiagongClient" collapse-tags :multiple-limit='2' value-key='id' multiple placeholder="请选择加工单位">
+                <el-select
+                  v-model="jiagongdanObj.jiagongClient"
+                  collapse-tags
+                  :multiple-limit="2"
+                  value-key="id"
+                  multiple
+                  placeholder="请选择加工单位"
+                >
                   <el-option
-                    v-for="itemClient,indexClient in client_arr"
+                    v-for="(itemClient, indexClient) in client_arr"
                     :key="itemClient.id || indexClient + '加工单位'"
                     :value="itemClient"
-                    :label="itemClient.code + '-' + itemClient.name">
+                    :label="itemClient.code + '-' + itemClient.name"
+                  >
                   </el-option>
                 </el-select>
               </div>
@@ -1552,7 +1657,9 @@
                       详情
                     </div>
                   </div>
-                  <div v-if="order_info.purchase_log.length === 0" class="trow tc gray" style="align-items: center">暂无单据</div>
+                  <div v-if="order_info.purchase_log.length === 0" class="trow tc gray" style="align-items: center">
+                    暂无单据
+                  </div>
                 </div>
               </div>
               <div class="trow">
@@ -1622,7 +1729,7 @@
 import Vue from 'vue'
 import { Order, CancelOrder } from '@/types/order'
 import { StoreCreate } from '@/types/store'
-import { order, deduct, stock, check, yarnOrder } from '@/assets/js/api'
+import { order, deduct, stock, check, yarnOrder, bill, collection } from '@/assets/js/api'
 
 export default Vue.extend({
   data(): {
@@ -1657,8 +1764,8 @@ export default Vue.extend({
       jiagsdjList: [],
       initData: [],
       childList: [],
-      total_process_info:{},
-      total_purchase_info:{},
+      total_process_info: {},
+      total_purchase_info: {},
       fahuoListObj: {
         total_reality_weight: 0,
         total_weight: 0,
@@ -1671,7 +1778,7 @@ export default Vue.extend({
       },
       jiagongdanObj: {
         desc: '',
-        jiagongClient:[],
+        jiagongClient: [],
         date: this.$getDate(new Date())
       },
       shaxianInfo: {},
@@ -1711,8 +1818,8 @@ export default Vue.extend({
         is_check: 0,
         product_info: [],
         total_additional_fee: 0,
-        purchase_log:[],
-        process_log:[],
+        purchase_log: [],
+        process_log: []
       },
       orderInfoProChild: [],
       client_arr: [],
@@ -1797,11 +1904,11 @@ export default Vue.extend({
             attribute: itemChild.attribute,
             price: '',
             order_info_id: itemChild.id,
-            item:{
-              id:itemChild.id,
+            item: {
+              id: itemChild.id,
               label: itemChild.name,
-              value: itemChild.name,
-            },
+              value: itemChild.name
+            }
           }
         })
         this.childList.push(...arr)
@@ -1816,8 +1923,8 @@ export default Vue.extend({
         })
       }
     },
-    copyInfoJiaGong(type:string){
-      this.jiagongdanList.forEach((item:any) => {
+    copyInfoJiaGong(type: string) {
+      this.jiagongdanList.forEach((item: any) => {
         item[type] = this.jiagongdanList[0][type]
       })
     },
@@ -1853,6 +1960,57 @@ export default Vue.extend({
       }
       this.check_detail_flag = true
     },
+    deleteLog(type: string, id: number) {
+      this.$confirm('是否删除该扣款单据?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      })
+        .then(() => {
+          if (type === '开票') {
+            bill
+              .delete({
+                id
+              })
+              .then((res) => {
+                if (res.data.status) {
+                  this.$message.success('删除成功')
+                }
+                this.loading = false
+              })
+          } else if (type === '收款') {
+            collection
+              .delete({
+                id
+              })
+              .then((res) => {
+                if (res.data.status) {
+                  this.$message.success('删除成功')
+                }
+                this.loading = false
+              })
+          } else {
+            deduct
+              .delete({
+                id
+              })
+              .then((res) => {
+                if (res.data.status) {
+                  this.$message.success('删除成功')
+                }
+                this.loading = false
+              })
+          }
+
+          this.init()
+        })
+        .catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          })
+        })
+    },
     init() {
       this.showProcessClient = false
       this.jiagongdanList = []
@@ -1874,7 +2032,7 @@ export default Vue.extend({
         }),
         yarnOrder.list({
           order_id: this.$route.params.id
-        }),
+        })
       ]).then((res) => {
         this.order_info = res[0].data.data
         this.order_info.product_info = this.$mergeData(this.order_info.product_info, {
@@ -1882,17 +2040,17 @@ export default Vue.extend({
           childrenName: 'child_data',
           otherRule: [{ name: 'product_id' }]
         })
-        this.order_info.transfer_log = res[2].data.data.items.filter(
-          (item: any) => item.action_type === 16
-        )
+        this.order_info.transfer_log = res[2].data.data.items.filter((item: any) => item.action_type === 16)
         this.order_info.product_info.forEach((item: any) => {
           let processArr: any[] = []
           // @ts-ignore
-          let a = this.order_info.transfer_log ? this.order_info.transfer_log.find((itemTrans:any) => {
-            return itemTrans.child_data.find((itemChild:any) => {
-              return item.product_name === itemChild.name
-            })
-          }) : false
+          let a = this.order_info.transfer_log
+            ? this.order_info.transfer_log.find((itemTrans: any) => {
+                return itemTrans.child_data.find((itemChild: any) => {
+                  return item.product_name === itemChild.name
+                })
+              })
+            : false
 
           item.total_purchase_weight = item.child_data.reduce((a: any, b: any) => {
             return a + (b.purchase_weight || 0)
@@ -1900,16 +2058,16 @@ export default Vue.extend({
           item.total_transfer_weight = item.child_data.reduce((a: any, b: any) => {
             return a + (b.transfer_weight || 0)
           }, 0)
-          
+
           item.child_data.forEach((itemChild: any) => {
             itemChild.name = item.product_name
             itemChild.send_weight = 0
             this.orderInfoProChild.push(itemChild)
-            if(a){
+            if (a) {
               this.jiagongdanList.push({
                 action_weight: 0,
                 related_info_id: '',
-                jiagongNumber:itemChild.weight,
+                jiagongNumber: itemChild.weight,
                 attribute: itemChild.attribute,
                 color: itemChild.color,
                 name: itemChild.name,
@@ -1920,18 +2078,24 @@ export default Vue.extend({
 
           this.order_info.total_purchase_weight = this.order_info.product_info
             .reduce((a: any, b: any) => {
-              return a + b.child_data.reduce((a1:any,b1:any) => {
-                return a1 + b1.purchase_info.reduce((a2:any,b2:any) => {
-                  return a2 + (Number(b2.weight) || 0)
-                },0)
-              },0)
+              return (
+                a +
+                b.child_data.reduce((a1: any, b1: any) => {
+                  return (
+                    a1 +
+                    b1.purchase_info.reduce((a2: any, b2: any) => {
+                      return a2 + (Number(b2.weight) || 0)
+                    }, 0)
+                  )
+                }, 0)
+              )
             }, 0)
             .toFixed(1)
-          
+
           // @ts-ignore
-          this.order_info.total_deduct_price = this.order_info.deduct.reduce((a:any,b:any) => {
+          this.order_info.total_deduct_price = this.order_info.deduct.reduce((a: any, b: any) => {
             return a + (Number(b.total_price) || 0)
-          },0)
+          }, 0)
 
           // @ts-ignore
           this.order_info.transfer_log?.forEach((itemTrans: any) => {
@@ -1946,11 +2110,7 @@ export default Vue.extend({
 
           this.jiagongdanList.forEach((item: any) => {
             this.orderInfoProChild.forEach((itemOPC: any) => {
-              if (
-                itemOPC.attribute === item.attribute &&
-                itemOPC.color === item.color &&
-                itemOPC.name === item.name
-              ) {
+              if (itemOPC.attribute === item.attribute && itemOPC.color === item.color && itemOPC.name === item.name) {
                 item.xiadanNumber = itemOPC.weight
                 item.action_weight = itemOPC.weight
                 item.related_info_id = itemOPC.id
@@ -2001,56 +2161,59 @@ export default Vue.extend({
         this.order_info.purchase_log = res[4].data.data || []
         this.order_info.process_log = []
 
-        this.order_info.transfer_log?.forEach((item:any) => {
-          item.process_info.forEach((itemProcess:any) => {
-            itemProcess.child_data.forEach((itemChild:any) => {
-              itemChild.total_real_number = itemChild.transfer_log_info.transfer_push.reduce((a:any,b:any) => {
+        this.order_info.transfer_log?.forEach((item: any) => {
+          item.process_info.forEach((itemProcess: any) => {
+            itemProcess.child_data.forEach((itemChild: any) => {
+              itemChild.total_real_number = itemChild.transfer_log_info.transfer_push.reduce((a: any, b: any) => {
                 return a + Number(b.action_weight) || 0
-              },0)
-              
-            });
+              }, 0)
+            })
             // transfer_log_info.transfer_push.reduce((a:any,b:any) => {return a + b.action_weight},0
             this.order_info.process_log?.push(itemProcess)
-          });
-        });
+          })
+        })
 
         this.order_info.purchase_log?.forEach((item) => {
-          item.total_deduct_price = item.deduct ? item.deduct.reduce((a1:any,b1:any) => {
-            return a1 + b1.total_price
-          },0) : 0
+          item.total_deduct_price = item.deduct
+            ? item.deduct.reduce((a1: any, b1: any) => {
+                return a1 + b1.total_price
+              }, 0)
+            : 0
 
           item.addFee = item.additional_fee ? JSON.parse(item.additional_fee) : []
-          item.total_additional_fee = item.addFee.reduce((a:any,b:any) => {
+          item.total_additional_fee = item.addFee.reduce((a: any, b: any) => {
             return a + Number(b.price)
-          },0)
+          }, 0)
 
-          item.total_number = item.child_data.reduce((a:any,b:any) => {
+          item.total_number = item.child_data.reduce((a: any, b: any) => {
             return a + Number(b.weight)
-          },0)
-          item.total_real_number = item.child_data.reduce((a:any,b:any) => {
+          }, 0)
+          item.total_real_number = item.child_data.reduce((a: any, b: any) => {
             return a + Number(b.push_weight)
-          },0)
-          item.total_price = item.child_data.reduce((a:any,b:any) => {
-            return a + (Number(b.weight) * Number(b.price))
-          },0)
-          item.total_real_price = item.child_data.reduce((a:any,b:any) => {
-            return a + (Number(b.push_weight) * Number(b.price))
-          },0)
+          }, 0)
+          item.total_price = item.child_data.reduce((a: any, b: any) => {
+            return a + Number(b.weight) * Number(b.price)
+          }, 0)
+          item.total_real_price = item.child_data.reduce((a: any, b: any) => {
+            return a + Number(b.push_weight) * Number(b.price)
+          }, 0)
         })
-        
+
         this.order_info.process_log?.forEach((item) => {
-          item.total_deduct_price = item.deduct_log ? item.deduct_log.reduce((a1:any,b1:any) => {
-            return a1 + b1.total_price
-          },0) : 0
+          item.total_deduct_price = item.deduct_log
+            ? item.deduct_log.reduce((a1: any, b1: any) => {
+                return a1 + b1.total_price
+              }, 0)
+            : 0
 
           // item.addFee = item.additional_fee ? JSON.parse(item.additional_fee) : []
           // item.total_additional_fee = item.addFee.reduce((a:any,b:any) => {
           //   return a + Number(b.price)
           // },0)
 
-          item.total_number = item.child_data.reduce((a:any,b:any) => {
+          item.total_number = item.child_data.reduce((a: any, b: any) => {
             return a + Number(b.weight)
-          },0)
+          }, 0)
           // item.total_real_number = item.child_data.reduce((a:any,b:any) => {
           //   return a + Number(b.push_weight)
           // },0)
@@ -2063,54 +2226,58 @@ export default Vue.extend({
         })
 
         this.total_process_info = {
-          total_additional_fee: this.order_info.process_log?.reduce((a:any,b:any) => {
+          total_additional_fee: this.order_info.process_log?.reduce((a: any, b: any) => {
             return a + Number(b.total_additional_fee)
-          },0),
-          total_number: this.order_info.process_log?.reduce((a:any,b:any) => {
+          }, 0),
+          total_number: this.order_info.process_log?.reduce((a: any, b: any) => {
             return a + Number(b.total_number)
-          },0),
-          total_real_number: this.order_info.process_log?.reduce((a:any,b:any) => {
+          }, 0),
+          total_real_number: this.order_info.process_log?.reduce((a: any, b: any) => {
             return a + Number(b.total_real_number)
-          },0),
-          total_price: this.order_info.process_log?.reduce((a:any,b:any) => {
+          }, 0),
+          total_price: this.order_info.process_log?.reduce((a: any, b: any) => {
             return a + Number(b.total_price)
-          },0),
-          total_real_price: this.order_info.process_log?.reduce((a:any,b:any) => {
+          }, 0),
+          total_real_price: this.order_info.process_log?.reduce((a: any, b: any) => {
             return a + Number(b.total_real_price)
-          },0),
-          total_deduct_price: this.order_info.process_log?.reduce((a:any,b:any) => {
+          }, 0),
+          total_deduct_price: this.order_info.process_log?.reduce((a: any, b: any) => {
             return a + Number(b.total_deduct_price)
-          },0)
+          }, 0)
         }
         this.total_purchase_info = {
-          total_additional_fee: this.order_info.purchase_log?.reduce((a:any,b:any) => {
+          total_additional_fee: this.order_info.purchase_log?.reduce((a: any, b: any) => {
             return a + Number(b.total_additional_fee)
-          },0),
-          total_number: this.order_info.purchase_log?.reduce((a:any,b:any) => {
+          }, 0),
+          total_number: this.order_info.purchase_log?.reduce((a: any, b: any) => {
             return a + Number(b.total_number)
-          },0),
-          total_real_number: this.order_info.purchase_log?.reduce((a:any,b:any) => {
+          }, 0),
+          total_real_number: this.order_info.purchase_log?.reduce((a: any, b: any) => {
             return a + Number(b.total_real_number)
-          },0),
-          total_price: this.order_info.purchase_log?.reduce((a:any,b:any) => {
+          }, 0),
+          total_price: this.order_info.purchase_log?.reduce((a: any, b: any) => {
             return a + Number(b.total_price)
-          },0),
-          total_real_price: this.order_info.purchase_log?.reduce((a:any,b:any) => {
+          }, 0),
+          total_real_price: this.order_info.purchase_log?.reduce((a: any, b: any) => {
             return a + Number(b.total_real_price)
-          },0),
-          total_deduct_price: this.order_info.purchase_log?.reduce((a:any,b:any) => {
+          }, 0),
+          total_deduct_price: this.order_info.purchase_log?.reduce((a: any, b: any) => {
             return a + Number(b.total_deduct_price)
-          },0)
+          }, 0)
         }
 
         this.final_out_log.forEach((item: any) => {
           item.child_data.forEach((itemChild: any) => {
-            this.order_info.product_info.forEach((itemPro:any) => {
-              itemPro.child_data.forEach((itemProChild:any) => {
-                if(itemProChild.color === itemChild.color && itemProChild.attribute === itemChild.attribute && itemProChild.name === itemChild.name){
-                  itemProChild.send_weight += (Number(itemChild.action_weight) || 0)
+            this.order_info.product_info.forEach((itemPro: any) => {
+              itemPro.child_data.forEach((itemProChild: any) => {
+                if (
+                  itemProChild.color === itemChild.color &&
+                  itemProChild.attribute === itemChild.attribute &&
+                  itemProChild.name === itemChild.name
+                ) {
+                  itemProChild.send_weight += Number(itemChild.action_weight) || 0
                 }
-              });
+              })
             })
             this.jiagongdanList.forEach((itemJGD: any) => {
               if (
@@ -2139,9 +2306,12 @@ export default Vue.extend({
         // @ts-ignore
         this.order_info.total_transfer_weight = this.order_info.product_info
           .reduce((a: any, b: any) => {
-            return a + b.child_data.reduce((a1:any,b1:any) => {
-              return a1 + (b1.send_weight || 0)
-            },0)
+            return (
+              a +
+              b.child_data.reduce((a1: any, b1: any) => {
+                return a1 + (b1.send_weight || 0)
+              }, 0)
+            )
           }, 0)
           .toFixed(1)
 
@@ -2179,23 +2349,25 @@ export default Vue.extend({
         this.diaoquList = res[2].data.data.items.filter((item: any) => item.action_type === 16)
         this.huikuList = res[2].data.data.items.filter((item: any) => item.action_type === 17)
         this.jiagsdjList = res[2].data.data.items.filter((item: any) => item.action_type === 18)
-        
-        let jiaGongDanWeiArr:any = []
+
+        let jiaGongDanWeiArr: any = []
         let client_arr = this.$store.state.api.supplier.arr
-        this.diaoquList.forEach((item:any) => {
-          jiaGongDanWeiArr.push(...item.process_info.map((itemProcess:any) => {
-            return itemProcess.client_id
-          }))
-        });
+        this.diaoquList.forEach((item: any) => {
+          jiaGongDanWeiArr.push(
+            ...item.process_info.map((itemProcess: any) => {
+              return itemProcess.client_id
+            })
+          )
+        })
         jiaGongDanWeiArr = [...new Set(jiaGongDanWeiArr)]
-        jiaGongDanWeiArr.forEach((item:any) => {
-          let itemClient = client_arr.find((itemClient:any) => {
+        jiaGongDanWeiArr.forEach((item: any) => {
+          let itemClient = client_arr.find((itemClient: any) => {
             return itemClient.id === item
           })
-          if(itemClient){
+          if (itemClient) {
             this.client_arr.push(itemClient)
           }
-        });
+        })
 
         this.order_log_list = res[2].data.data.items
         if (this.order_info.status === 4) {
@@ -2226,19 +2398,19 @@ export default Vue.extend({
           this.yarnList.push({ label: item.product_name, value: item.product_name })
           this.yarnInfoList.push({
             name: item.product_name,
-            child_data:[]
+            child_data: []
           })
           item.child_data.forEach((itemChild: any) => {
             this.yarnInfoList[this.yarnInfoList.length - 1].child_data.push({
-              price:itemChild.price,
-              color:itemChild.color,
-              weight:itemChild.weight
+              price: itemChild.price,
+              color: itemChild.color,
+              weight: itemChild.weight
             })
             this.shaxianInfo.child_data.push({
               name: item.product_name,
               color: itemChild.color,
               attribute: itemChild.attribute,
-              id:itemChild.id,
+              id: itemChild.id,
               weight: '',
               price: ''
             })
@@ -2248,27 +2420,30 @@ export default Vue.extend({
         this.loading = false
       })
     },
-    deleteFaHuo(id:any){
+    deleteFaHuo(id: any) {
       this.$confirm('此操作将删除该发货单据, 是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
-      }).then(() => {
-        stock.delete({
-          id: id
-        }).then(res => {
-          if(res.data.status){
-            this.$message.success('删除成功')
-            this.init()
-          }
+      })
+        .then(() => {
+          stock
+            .delete({
+              id: id
+            })
+            .then((res) => {
+              if (res.data.status) {
+                this.$message.success('删除成功')
+                this.init()
+              }
+            })
         })
-      }).catch(() => {
-        this.$message({
-          type: 'info',
-          message: '已取消删除'
-        });          
-      });
-      
+        .catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          })
+        })
     },
     getTotalJiaGongDan() {
       this.totalJiaGongDan = {
@@ -2308,7 +2483,7 @@ export default Vue.extend({
             label: item.product_name
           }
         }),
-        client_id:this.order_info.client_id,
+        client_id: this.order_info.client_id,
         pid: this.$route.params.id,
         pcode: this.order_info.code,
         type: 5
@@ -2367,9 +2542,16 @@ export default Vue.extend({
       this.jiagongdanList = this.jiagongdanList.filter((item: any) => {
         return item.action_weight !== '0' || !item.action_weight
       })
-      let desc = this.jiagongdanObj.jiagongClient.length === 0?this.desc : this.jiagongdanObj.jiagongClient.map((item:any) => {
-        return item.name
-      }).toString() + '直接发货。' + this.jiagongdanObj.desc
+      let desc =
+        this.jiagongdanObj.jiagongClient.length === 0
+          ? this.desc
+          : this.jiagongdanObj.jiagongClient
+              .map((item: any) => {
+                return item.name
+              })
+              .toString() +
+            '直接发货。' +
+            this.jiagongdanObj.desc
 
       let params = {
         desc: desc,
@@ -2431,8 +2613,8 @@ export default Vue.extend({
           obj.second_store_name = item.second_store_name
           obj.store_id = item.store_id
           obj.second_store_id = item.second_store_id
-          obj.reality_weight = objOrder?objOrder.weight : 0
-          obj.related_info_id = objOrder?objOrder.id : ''
+          obj.reality_weight = objOrder ? objOrder.weight : 0
+          obj.related_info_id = objOrder ? objOrder.id : ''
           obj.weight = arr
             .reduce((a: any, b: any) => {
               if (
@@ -2522,26 +2704,28 @@ export default Vue.extend({
       this.getStoreInPro()
       this.cancel_flag = true
     },
-    openInStore(){
+    openInStore() {
       this.getStoreInPro()
-    // second_store_id: number
-    // name: string
-    // color: string
-    // attribute: string
-    // store_info: Array<{
-    //   color_code: string
-    //   vat_code: string
-    //   batch_code: string
-    //   weight: number
-    // }>
-      let arr = this.cancel_order_info.store_data![0].child_data.map((item:any) => {
-        item.store_info= [{
-          color_code:'',
-          vat_code:'',
-          batch_code: '',
-          store_client_id:'',
-          weight: item.action_weight,
-        }]
+      // second_store_id: number
+      // name: string
+      // color: string
+      // attribute: string
+      // store_info: Array<{
+      //   color_code: string
+      //   vat_code: string
+      //   batch_code: string
+      //   weight: number
+      // }>
+      let arr = this.cancel_order_info.store_data![0].child_data.map((item: any) => {
+        item.store_info = [
+          {
+            color_code: '',
+            vat_code: '',
+            batch_code: '',
+            store_client_id: '',
+            weight: item.action_weight
+          }
+        ]
         return item
       })
       this.initData = arr
@@ -2556,7 +2740,7 @@ export default Vue.extend({
         childData = this.cancel_order_info.store_data![0].child_data.filter(
           (item: any) => Number(item.action_weight) > 0
         )
-        
+
         if (childData.length > 0) {
           storeData = [
             {

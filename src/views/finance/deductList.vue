@@ -139,7 +139,7 @@
               <div class="bodyCtn">
                 <div class="row" v-for="item in list" :key="item.id">
                   <div class="column min120">
-                    <div class="opr blue">打印</div>
+                    <div class="opr blue" @click="$openUrl('/print/deductPrint?id='+item.id)">打印</div>
                     <div class="opr red"
                       @click="deleteLog(item.id)">删除</div>
                   </div>

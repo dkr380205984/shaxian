@@ -86,7 +86,7 @@
               {{ itemSon.purchase_info ? itemSon.purchase_info.price : '0.00' }}元
             </div>
             <div class="row_item center flex08" v-if="orderInfo.action_type === 3">
-              {{ ((itemSon.purchase_info.price || 0) * (itemSon.action_weight || 0)).toFixed(2) }}元
+              {{ ((itemSon.purchase_info ? itemSon.purchase_info.price :  0) * (itemSon.action_weight || 0)).toFixed(2) }}元
             </div>
             <div class="row_item center flex08">{{ itemSon.item || 0 }}</div>
           </div>

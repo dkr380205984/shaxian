@@ -264,7 +264,7 @@
               <div class="bodyCtn">
                 <div class="row" v-for="item in order_in_log" :key="item.id">
                   <div class="column min120" :style="{ height: 50 * item.child_data.length + 'px' }">
-                    <span class="blue opr" @click="$openUrl(`/print/store/1/${item.id}`)">打印</span>
+                    <span class="blue opr" @click="$openUrl(`/print/inStore?id=${item.id}`)">打印</span>
                     <span class="red opr" @click="deleteLog(item.id)">删除</span>
                   </div>
                 </div>
@@ -325,8 +325,8 @@
               <div class="column red">{{ item.total_price }}元</div>
               <div class="column">{{ item.desc }}</div>
               <div class="column">
-                <div class="opr blue">打印</div>
-                <div class="opr red">删除</div>
+                <div class="opr blue" @click="$openUrl('/print/deductPrint?id='+item.id)">打印</div>
+                <div class="opr red" @click="deleteDeductLog('扣款', item.id)">删除</div>
               </div>
             </div>
           </div>
@@ -579,7 +579,7 @@
 import Vue from 'vue'
 import { CancelOrder } from '@/types/order'
 import { OrderYarn } from '@/types/orderProcessYarn'
-import { yarnOrder, stock, deduct, check } from '@/assets/js/api'
+import { yarnOrder, stock, deduct, check, bill, collection } from '@/assets/js/api'
 export default Vue.extend({
   data(): {
     cancel_info: CancelOrder
@@ -671,6 +671,57 @@ export default Vue.extend({
     }
   },
   methods: {
+    deleteDeductLog(type: string, id: number) {
+      this.$confirm('是否删除该扣款单据?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      })
+        .then(() => {
+          if (type === '开票') {
+            bill
+              .delete({
+                id
+              })
+              .then((res) => {
+                if (res.data.status) {
+                  this.$message.success('删除成功')
+                }
+                this.loading = false
+              })
+          } else if (type === '收款') {
+            collection
+              .delete({
+                id
+              })
+              .then((res) => {
+                if (res.data.status) {
+                  this.$message.success('删除成功')
+                }
+                this.loading = false
+              })
+          } else {
+            deduct
+              .delete({
+                id
+              })
+              .then((res) => {
+                if (res.data.status) {
+                  this.$message.success('删除成功')
+                }
+                this.loading = false
+              })
+          }
+
+          this.init()
+        })
+        .catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          })
+        })
+    },
     selectList(bol: boolean, item: any) {
       if (bol) {
         this.childList.push(item)

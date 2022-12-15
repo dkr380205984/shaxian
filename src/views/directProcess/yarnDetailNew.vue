@@ -162,16 +162,12 @@
                     <div class="tcolumn blue">{{ $toFixed(item.total_weight || 0, 1, true) }} kg</div>
                     <div class="tcolumn green">{{ $toFixed(item.total_real_number || 0, 1, true) }} kg</div>
                     <div class="tcolumn">
-                      {{ $toFixed(((+item.total_price + +item.total_deduct_price) || 0), 2, true) }}
+                      {{ $toFixed(+item.total_price + +item.total_deduct_price || 0, 2, true) }}
                       元
                     </div>
                     <div class="tcolumn green">
                       {{
-                        $toFixed(
-                          +item.total_real_price + +item.addFeePrice + +item.total_deduct_price || 0,
-                          2,
-                          true
-                        )
+                        $toFixed(+item.total_real_price + +item.addFeePrice + +item.total_deduct_price || 0, 2, true)
                       }}
                       元
                     </div>
@@ -228,6 +224,46 @@
                   <div class="tcolumn">{{ itemPro.price }}元</div>
                   <div class="tcolumn">{{ itemPro.weight }}kg</div>
                   <div class="tcolumn">{{ (itemPro.price * itemPro.weight).toFixed(2) }}元</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="titleCtn" v-if="item.deduct.length > 0">
+            <span class="title">扣款信息</span>
+          </div>
+          <div class="listCtn" v-if="item.deduct.length > 0">
+            <div class="list">
+              <div class="headCtn">
+                <div class="row">
+                  <div class="column">扣款单号</div>
+                  <div class="column">扣款总额</div>
+                  <div class="column">图片说明</div>
+                  <div class="column">备注信息</div>
+                  <div class="column">日期</div>
+                  <div class="column">操作</div>
+                </div>
+              </div>
+              <div class="bodyCtn">
+                <div class="row" v-for="itemDeduct in item.deduct" :key="itemDeduct.id + '扣款'">
+                  <div class="column blue">{{ itemDeduct.code }}</div>
+                  <div class="column red">{{ itemDeduct.total_price }}元</div>
+                  <div class="column">
+                    <el-image
+                      style="width: 50px; height: 50px; line-height: 50px; text-align: center; font-size: 22px"
+                      :src="itemDeduct.deduct_file"
+                      :preview-src-list="[itemDeduct.deduct_file]"
+                    >
+                      <div slot="error" class="image-slot">
+                        <i class="el-icon-picture-outline"></i>
+                      </div>
+                    </el-image>
+                  </div>
+                  <div class="column">{{ itemDeduct.desc }}</div>
+                  <div class="column">{{ itemDeduct.date }}</div>
+                  <div class="column">
+                    <div class="opr blue" @click="$openUrl('/print/deductPrint?id=' + itemDeduct.id)">打印</div>
+                    <div class="opr red" @click="deleteLog('扣款', item.id)">删除</div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -473,7 +509,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import { CancelOrder } from '@/types/order'
-import { yarnProcess, check, stock } from '@/assets/js/api'
+import { yarnProcess, check, stock, bill, collection, deduct } from '@/assets/js/api'
 export default Vue.extend({
   data(): {
     cancel_info: CancelOrder
@@ -560,6 +596,57 @@ export default Vue.extend({
     }
   },
   methods: {
+    deleteLog(type: string, id: number) {
+      this.$confirm('是否删除该扣款单据?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      })
+        .then(() => {
+          if (type === '开票') {
+            bill
+              .delete({
+                id
+              })
+              .then((res) => {
+                if (res.data.status) {
+                  this.$message.success('删除成功')
+                }
+                this.loading = false
+              })
+          } else if (type === '收款') {
+            collection
+              .delete({
+                id
+              })
+              .then((res) => {
+                if (res.data.status) {
+                  this.$message.success('删除成功')
+                }
+                this.loading = false
+              })
+          } else {
+            deduct
+              .delete({
+                id
+              })
+              .then((res) => {
+                if (res.data.status) {
+                  this.$message.success('删除成功')
+                }
+                this.loading = false
+              })
+          }
+
+          this.init()
+        })
+        .catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          })
+        })
+    },
     init() {
       this.loading = true
       Promise.all([
@@ -584,11 +671,14 @@ export default Vue.extend({
             }, 0)
             .toFixed(1)
 
-          item.push_weight = item.child_data.reduce((a:any,b:any) => {
-            return a + b.transfer_log_info.transfer_push.reduce((a1:any,b1:any) => {
-              return a1 + (Number(b1.action_weight) || 0)
-            },0)
-          },0)
+          item.push_weight = item.child_data.reduce((a: any, b: any) => {
+            return (
+              a +
+              b.transfer_log_info.transfer_push.reduce((a1: any, b1: any) => {
+                return a1 + (Number(b1.action_weight) || 0)
+              }, 0)
+            )
+          }, 0)
 
           item.additional_fee = item.additional_fee ? JSON.parse(item.additional_fee as string) : []
           item.addFeePrice = item.additional_fee.reduce((a: any, b: any) => {
@@ -661,13 +751,13 @@ export default Vue.extend({
       this.check_flag = true
     },
     // 删除加工单
-    deleteAdd(){
-      if(this.process_info.process_info.length === 1){
+    deleteAdd() {
+      if (this.process_info.process_info.length === 1) {
         this.$message.error('当前调取单只有一张加工单，不可删除，如需删除调取单，请返回上一级列表进行删除')
         return
       }
-      yarnProcess.delete({id:this.materialOrderIndex}).then(res => {
-        if(res.data.status) {
+      yarnProcess.delete({ id: this.materialOrderIndex }).then((res) => {
+        if (res.data.status) {
           this.$message.success('删除成功')
           this.init()
         }
@@ -717,27 +807,6 @@ export default Vue.extend({
           this.$message({
             type: 'info',
             message: '已取消'
-          })
-        })
-    },
-    deleteLog(id: number) {
-      this.$confirm('是否删除该日志，这可能会导致相关库存变动?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      })
-        .then(() => {
-          stock.delete({ id }).then((res) => {
-            if (res.data.status) {
-              this.$message.success('删除成功')
-              this.init()
-            }
-          })
-        })
-        .catch(() => {
-          this.$message({
-            type: 'info',
-            message: '已取消删除'
           })
         })
     },

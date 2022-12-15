@@ -170,6 +170,7 @@ const material = {
   typeDelete: (params: DeleteParam) => http.post(`${baseUrl}/material/type/delete`, params, 'application/json'),
   create: (params: { data: MaterialInfo[] }) => http.post(`${baseUrl}/material/save`, params, 'application/json'),
   list: (params: ListParam) => http.get(`${baseUrl}/material/lists`, params),
+  detail: (params: {id:string | number}) => http.get(`${baseUrl}/material/detail`, params),
   delete: (params: DeleteParam) => http.post(`${baseUrl}/material/delete`, params, 'application/json'),
   orderCreate: (params: { data: OrderMaterialInfo[] }) => http.post(`${baseUrl}/material/purchase/save`, params, 'application/json'),
   orderList: (params: ListParam) => http.get(`${baseUrl}/material/purchase/lists`, params),

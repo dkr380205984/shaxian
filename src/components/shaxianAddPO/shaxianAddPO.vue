@@ -15,18 +15,21 @@
                 <span class="text">供货商</span>
                 <span class="explanation">
                   (必选)
-                  <el-tooltip class="item"
-                    effect="dark"
-                    content="设置成功后请点击此按钮刷新数据"
-                    placement="top">
-                    <i class="el-icon-refresh hoverGreen"
-                      style="line-height:46px;font-size:18px;margin-left:8px;cursor:pointer"
-                      @click="$checkCommonInfo([{
-                        checkWhich: 'api/client',
-                        getInfoMethed: 'dispatch',
-                        getInfoApi: 'getPartyBAsync',
-                        forceUpdate:true
-                      }])"></i>
+                  <el-tooltip class="item" effect="dark" content="设置成功后请点击此按钮刷新数据" placement="top">
+                    <i
+                      class="el-icon-refresh hoverGreen"
+                      style="line-height: 46px; font-size: 18px; margin-left: 8px; cursor: pointer"
+                      @click="
+                        $checkCommonInfo([
+                          {
+                            checkWhich: 'api/client',
+                            getInfoMethed: 'dispatch',
+                            getInfoApi: 'getPartyBAsync',
+                            forceUpdate: true
+                          }
+                        ])
+                      "
+                    ></i>
                   </el-tooltip>
                   <el-tooltip class="item" effect="dark" content="添加客户" placement="top">
                     <i
@@ -88,9 +91,9 @@
                   <el-select
                     v-if="info.orderId"
                     v-model="item.item"
-                    value-key='id'
+                    value-key="id"
                     filterable
-                    @change="changeProName(item,index)"
+                    @change="changeProName(item, index)"
                     placeholder="请选择纱线"
                     :options="yarn_list"
                   >
@@ -323,9 +326,7 @@
             @click="saveOrder(1)"
             >{{ update ? '确认修改' : '确认采购' }}</span
           >
-          <span v-if="!update" class="btn backHoverGreen" style="margin:0 20px" @click="saveOrder(2)"
-            >确认并入库</span
-          >
+          <span v-if="!update" class="btn backHoverGreen" style="margin: 0 20px" @click="saveOrder(2)">确认并入库</span>
         </div>
       </template>
       <template v-if="step === 2">
@@ -528,7 +529,7 @@ export default Vue.extend({
     },
     child_data: {
       type: Array,
-      default: function () {
+      default() {
         return [
           {
             name: '',
@@ -622,7 +623,7 @@ export default Vue.extend({
     store_list() {
       return this.$store.state.api.storeHouse.arr.filter((item: any) => item.store_type === 1)
     },
-    clientArr(){
+    clientArr() {
       return this.$store.state.api.client.arr.filter((item: any) => (item.status as number) === 1)
     },
     client_arr() {
@@ -642,27 +643,6 @@ export default Vue.extend({
           item[type] = info
         }
       })
-    },
-    // 节流函数
-    fnThrottle (method:any, delay:any, duration:any) {
-      var that = this;
-      var timer = this.timer;
-      var begin = new Date().getTime();
-      return function(){
-        var context = that;
-        var args = arguments;
-        var current = new Date().getTime();
-        clearTimeout(timer);
-        if(current-begin>=duration){
-          method.apply(context,args);
-          begin=current;
-        }else{
-          console.log(delay)
-          that.timer=setTimeout(function(){
-            method.apply(context,args);
-          },delay);
-        }
-      }
     },
     // 打开复制粘贴图片功能
     changeCVOpration(flag: boolean) {
@@ -747,13 +727,13 @@ export default Vue.extend({
         let clipboardData = event.clipboardData || event.originalEvent.clipboardData
         if (clipboardData.items) {
           let blob
-          for (let i = 0; i < clipboardData.items.length; i++) {
-            if (clipboardData.items[i].type.indexOf('image') !== -1) {
-              blob = clipboardData.items[i].getAsFile()
+          for (let item of clipboardData.items) {
+            if (item.type.indexOf('image') !== -1) {
+              blob = item.getAsFile()
             }
           }
           let render = new FileReader()
-          render.onload = function (evt: any) {
+          render.onload = (evt: any) => {
             //输出base64编码
             const base64 = evt.target.result
             // @ts-ignore
@@ -769,7 +749,7 @@ export default Vue.extend({
             formData.append('file', _this.dataURLtoFile(base64, filename))
             xhr.open('POST', url, true)
             xhr.send(formData)
-            xhr.onreadystatechange = function () {
+            xhr.onreadystatechange = () => {
               _this.loading = false
               if (xhr.readyState === 4) {
                 _this.$message.success('上传成功')
@@ -872,7 +852,7 @@ export default Vue.extend({
     successFile(response: any) {
       this.order_yarn_info.file_url = 'https://file.zwyknit.com/' + response.key
     },
-    changeProName(item:any,index:number){
+    changeProName(item: any, index: number) {
       this.order_yarn_info.child_data[index].name = item.name
       this.order_yarn_info.child_data[index].order_info_id = item.id
     },
@@ -936,10 +916,10 @@ export default Vue.extend({
 
       let params = this.$clone(this.order_yarn_info)
       params.additional_fee = JSON.stringify(params.additional_fee)
-      this.saveEditOrCreate(params,step)
+      this.saveEditOrCreate(params, step)
     },
-    saveEditOrCreate(params:any,step:number){
-      if(this.update){
+    saveEditOrCreate(params: any, step: number) {
+      if (this.update) {
         yarnOrder.update(params).then((res) => {
           if (res.data.status) {
             if (step === 1) {
@@ -950,11 +930,11 @@ export default Vue.extend({
             if (step === 2) {
               this.store_info.client_id = this.order_yarn_info.client_id
               this.store_info.related_id = res.data.data
-  
+
               this.selfYarnArr = this.$mergeData(this.order_yarn_info.child_data, {
                 mainRule: 'name'
               })
-  
+
               this.store_info.child_data = this.order_yarn_info.child_data.map((item: any) => {
                 return {
                   action_weight: item.weight,
@@ -976,48 +956,48 @@ export default Vue.extend({
         })
       } else {
         yarnOrder
-        .create({
-          data: [params]
-        })
-        .then((res) => {
-          if (res.data.status) {
-            if (step === 1) {
-              this.$message.success((this.update ? '修改' : '添加') + '成功')
-              this.$emit('afterCreate')
-              this.close()
-            }
-            if (step === 2) {
-              this.store_info.client_id = this.order_yarn_info.client_id
-              this.store_info.related_id = res.data.data[0]
-              yarnOrder
-                .detail({
-                  id: res.data.data[0]
-                })
-                .then((ress) => {
-                  this.selfYarnArr = this.$mergeData(ress.data.data.child_data, {
-                    mainRule: 'name'
+          .create({
+            data: [params]
+          })
+          .then((res) => {
+            if (res.data.status) {
+              if (step === 1) {
+                this.$message.success((this.update ? '修改' : '添加') + '成功')
+                this.$emit('afterCreate')
+                this.close()
+              }
+              if (step === 2) {
+                this.store_info.client_id = this.order_yarn_info.client_id
+                this.store_info.related_id = res.data.data[0]
+                yarnOrder
+                  .detail({
+                    id: res.data.data[0]
                   })
+                  .then((ress) => {
+                    this.selfYarnArr = this.$mergeData(ress.data.data.child_data, {
+                      mainRule: 'name'
+                    })
 
-                  this.store_info.child_data = ress.data.data.child_data.map((item: any) => {
-                    return {
-                      action_weight: item.weight,
-                      attribute: item.attribute,
-                      color: item.color,
-                      name: item.name,
-                      price: item.price,
-                      batch_code: '',
-                      color_code: '',
-                      vat_code: '',
-                      item: '',
-                      related_info_id: item.id
-                    }
+                    this.store_info.child_data = ress.data.data.child_data.map((item: any) => {
+                      return {
+                        action_weight: item.weight,
+                        attribute: item.attribute,
+                        color: item.color,
+                        name: item.name,
+                        price: item.price,
+                        batch_code: '',
+                        color_code: '',
+                        vat_code: '',
+                        item: '',
+                        related_info_id: item.id
+                      }
+                    })
+                    this.step = 2
                   })
-                  this.step = 2
-                })
+              }
             }
-          }
-          this.loading = false
-        })
+            this.loading = false
+          })
       }
     },
     // 根据选中的纱线初始化颜色属性下拉框
@@ -1049,18 +1029,20 @@ export default Vue.extend({
         return
       }
 
-      if(this.store_info.child_data.some((item: any) => {
-        return this.$formCheck(item, [
-          {
-            key: 'name',
-            errMsg: '请选择纱线名称'
-          },
-          {
-            key: 'store_client_id',
-            errMsg: '请选择所属客户'
-          }
-        ])
-      })){
+      if (
+        this.store_info.child_data.some((item: any) => {
+          return this.$formCheck(item, [
+            {
+              key: 'name',
+              errMsg: '请选择纱线名称'
+            },
+            {
+              key: 'store_client_id',
+              errMsg: '请选择所属客户'
+            }
+          ])
+        })
+      ) {
         return
       }
 
@@ -1094,10 +1076,10 @@ export default Vue.extend({
         item.color_code = item.color_code || ''
         item.vat_code = item.vat_code || ''
       })
-      
+
       this.stockCreate()
     },
-    stockCreate(){
+    stockCreate() {
       stock.create({ data: [this.store_info] }).then((res) => {
         if (res.data.status) {
           this.$message.success('入库成功')
@@ -1145,10 +1127,10 @@ export default Vue.extend({
     }
   },
   watch: {
-    show: function (val) {
+    show(val) {
       this.getOrderYarnInfo()
     },
-    update: function (val) {
+    update(val) {
       this.getOrderYarnInfo()
     }
   },

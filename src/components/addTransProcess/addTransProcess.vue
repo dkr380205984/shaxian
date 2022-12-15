@@ -6,7 +6,7 @@
         <i class="close_icon el-icon-close" @click="close"></i>
       </div>
       <div class="contentCtn" style="padding: 0; max-height: 800px">
-        <div class="createCtn" style="max-height: 700px;overflow:scroll">
+        <div class="createCtn" style="max-height: 700px; overflow: scroll">
           <el-steps v-if="!update_flag" :active="step" process-status="finish" finish-status="success">
             <el-step title="选择仓库"></el-step>
             <el-step title="填写调取数量"></el-step>
@@ -21,7 +21,7 @@
                   }}，第二步填写调取数量，第三步填写加工单</span
                 >
               </div>
-              <div class="filterCtn" style="padding-bottom: 30px;max-height:unset">
+              <div class="filterCtn" style="padding-bottom: 30px; max-height: unset">
                 <div class="leftCtn" style="padding-right: unset; max-width: unset">
                   <div class="elCtn">
                     <el-cascader
@@ -71,7 +71,13 @@
                     ></el-input>
                   </div>
                   <div class="elCtn">
-                    <el-select placeholder="所属客户" v-model="getYarnStoreObj.store_client_id" @change="getYarnStoreList" filterable clearable>
+                    <el-select
+                      placeholder="所属客户"
+                      v-model="getYarnStoreObj.store_client_id"
+                      @change="getYarnStoreList"
+                      filterable
+                      clearable
+                    >
                       <el-option
                         v-for="item in clientArr"
                         :key="item.id"
@@ -82,7 +88,9 @@
                   </div>
                   <div class="elCtn">
                     <!-- <el-tooltip class="item" effect="dark" content="" placement="top-start"> -->
-                      <el-checkbox v-model="getYarnStoreObj.isFilterZero" @change="getYarnStoreList">过滤库存数量&lt;=0的库存</el-checkbox>
+                    <el-checkbox v-model="getYarnStoreObj.isFilterZero" @change="getYarnStoreList"
+                      >过滤库存数量&lt;=0的库存</el-checkbox
+                    >
                     <!-- </el-tooltip> -->
                   </div>
                   <div class="elCtn">
@@ -121,7 +129,7 @@
                 <el-table-column prop="color" label="颜色"> </el-table-column>
                 <el-table-column prop="store_client_name" label="所属客户">
                   <template slot-scope="scope">
-                    {{scope.row.store_client_name || '无'}}
+                    {{ scope.row.store_client_name || '无' }}
                   </template>
                 </el-table-column>
                 <el-table-column prop="batch_code" label="批号"> </el-table-column>
@@ -138,7 +146,9 @@
                   </template>
                 </el-table-column>
               </el-table>
-              <div v-if="yarnInfoList.length > 0 && getYarnStoreObj.name">【{{getYarnStoreObj.name}}】预计调取加工数量：{{totalProcessWeight}}kg</div>
+              <div v-if="yarnInfoList.length > 0 && getYarnStoreObj.name">
+                【{{ getYarnStoreObj.name }}】预计调取加工数量：{{ totalProcessWeight }}kg
+              </div>
               <div class="pageCtn" style="margin-top: 20px">
                 <el-pagination
                   background
@@ -161,18 +171,21 @@
                     <span class="text">加工单位</span>
                     <span class="explanation">
                       (必选)
-                      <el-tooltip class="item"
-                        effect="dark"
-                        content="设置成功后请点击此按钮刷新数据"
-                        placement="top">
-                        <i class="el-icon-refresh hoverGreen"
-                          style="line-height:46px;font-size:18px;margin-left:8px;cursor:pointer"
-                          @click="$checkCommonInfo([{
-                            checkWhich: 'api/client',
-                            getInfoMethed: 'dispatch',
-                            getInfoApi: 'getPartyBAsync',
-                            forceUpdate:true
-                          }])"></i>
+                      <el-tooltip class="item" effect="dark" content="设置成功后请点击此按钮刷新数据" placement="top">
+                        <i
+                          class="el-icon-refresh hoverGreen"
+                          style="line-height: 46px; font-size: 18px; margin-left: 8px; cursor: pointer"
+                          @click="
+                            $checkCommonInfo([
+                              {
+                                checkWhich: 'api/client',
+                                getInfoMethed: 'dispatch',
+                                getInfoApi: 'getPartyBAsync',
+                                forceUpdate: true
+                              }
+                            ])
+                          "
+                        ></i>
                       </el-tooltip>
                       <el-tooltip class="item" effect="dark" content="添加客户" placement="top">
                         <i
@@ -282,12 +295,12 @@
                   </div>
                 </div>
                 <div class="colCtn">
-                  <div style="display:flex;align-items:center">
+                  <div style="display: flex; align-items: center">
                     <div class="label" v-if="indexChild === 0">
                       <span class="text">{{
-                      item.type ? (item.type === '膨纱' ? '颜色/属性' : '加工前/加工后') : '请选择加工类型'
-                    }}</span>
-                    <span class="explanation">(必填)</span>
+                        item.type ? (item.type === '膨纱' ? '颜色/属性' : '加工前/加工后') : '请选择加工类型'
+                      }}</span>
+                      <span class="explanation">(必填)</span>
                     </div>
                   </div>
                   <div class="content flexRow">
@@ -351,7 +364,10 @@
                       </el-input>
                     </div>
                   </div>
-                  <div v-if="itemChild.before_color && itemChild.before_color.indexOf('白') === -1 && item.type === '染色'" style="color:red;margin-top:5px">
+                  <div
+                    v-if="itemChild.before_color && itemChild.before_color.indexOf('白') === -1 && item.type === '染色'"
+                    style="color: red; margin-top: 5px"
+                  >
                     该纱线不是白绞纱，可能无法进行染色
                   </div>
                 </div>
@@ -363,7 +379,7 @@
                       <svg
                         class="iconFont copyIcon hoverBlue"
                         aria-hidden="true"
-                        style="cursor:pointer"
+                        style="cursor: pointer"
                         @click="copyInfo('price')"
                       >
                         <use xlink:href="#icon-tongbushuju1"></use>
@@ -376,7 +392,12 @@
                       </el-input>
                     </div>
                     <div class="elCtn">
-                      <el-input placeholder="数量" type="number" @input="$forceUpdate()" v-model="itemChild.weight"></el-input>
+                      <el-input
+                        placeholder="数量"
+                        type="number"
+                        @input="$forceUpdate()"
+                        v-model="itemChild.weight"
+                      ></el-input>
                       <!-- <el-input placeholder="数量" type="number" :disabled='item.type !== "染色"' @input="$forceUpdate()" v-model="itemChild.weight"></el-input> -->
                     </div>
                   </div>
@@ -530,13 +551,7 @@
             </div>
           </template>
           <div class="btnCtn">
-            <div
-              class="btn backHoverBlue"
-              v-if="!update_flag && step === 2"
-              @click="addChildData"
-            >
-              添加加工单
-            </div>
+            <div class="btn backHoverBlue" v-if="!update_flag && step === 2" @click="addChildData">添加加工单</div>
           </div>
         </div>
       </div>
@@ -560,7 +575,7 @@ export default Vue.extend({
     },
     yarnList: {
       type: Array,
-      default:function(){
+      default() {
         return []
       }
     },
@@ -576,9 +591,9 @@ export default Vue.extend({
       type: Object,
       default: {}
     },
-    yarnInfoList:{
+    yarnInfoList: {
       type: Array,
-      default:function(){
+      default() {
         return []
       }
     }
@@ -593,7 +608,7 @@ export default Vue.extend({
       totalProcessWeight: 0,
       total_number: 0,
       diaoquNumber: 0,
-      processData:{},
+      processData: {},
       storeList: [],
       getYarnStoreObj: {
         store_id: '',
@@ -605,7 +620,7 @@ export default Vue.extend({
         batch_code: '',
         vat_code: '',
         color_code: '',
-        isFilterZero:true,
+        isFilterZero: true,
         storePage: 1,
         storeTotal: 1
       },
@@ -707,12 +722,13 @@ export default Vue.extend({
   },
   methods: {
     close() {
-      if(this.trans_id){
+      if (this.trans_id) {
         stock
           .delete({
-            id:this.trans_id
-          }).then(res => {
-            if(res.data.status){
+            id: this.trans_id
+          })
+          .then((res) => {
+            if (res.data.status) {
               this.$message.success('已成功删除关联调取单')
             }
           })
@@ -743,7 +759,7 @@ export default Vue.extend({
       // console.log(ev,item)
       item.child_data.forEach((itemChild: any) => {
         if (ev === '倒筒') {
-          itemChild.afterColor = itemChild.after_color?itemChild.after_color:itemChild.afterColor
+          itemChild.afterColor = itemChild.after_color ? itemChild.after_color : itemChild.afterColor
           itemChild.before_attribute = itemChild.attributeName
           itemChild.after_attribute =
             itemChild.attributeName === '绞纱' ? '筒纱' : itemChild.attributeName === '筒纱' ? '绞纱' : ''
@@ -752,20 +768,20 @@ export default Vue.extend({
           itemChild.after_color = ''
           itemChild.before_color = ''
         } else if (ev === '膨纱') {
-          itemChild.afterColor = itemChild.after_color?itemChild.after_color:itemChild.afterColor
+          itemChild.afterColor = itemChild.after_color ? itemChild.after_color : itemChild.afterColor
           itemChild.color = '膨纱'
           itemChild.attribute = '膨纱'
           itemChild.after_attribute = ''
           itemChild.before_attribute = ''
           itemChild.after_color = ''
           itemChild.before_color = ''
-        } else if(ev === '染色') {
+        } else if (ev === '染色') {
           itemChild.color = ''
           itemChild.attribute = ''
           itemChild.after_attribute = ''
           itemChild.before_attribute = ''
           itemChild.before_color = itemChild.colorName || '白胚'
-          itemChild.after_color = itemChild.after_color?itemChild.after_color:itemChild.afterColor
+          itemChild.after_color = itemChild.after_color ? itemChild.after_color : itemChild.afterColor
         }
       })
       this.$forceUpdate()
@@ -827,17 +843,18 @@ export default Vue.extend({
             }
           })
         }
-        if(this.yarnInfoList.length > 0){
-          let a = this.yarnInfoList.find((item:any) => {
+        if (this.yarnInfoList.length > 0) {
+          let a = this.yarnInfoList.find((item: any) => {
             return item.name === data.child_data[0].name
           })
           this.process_info[0].child_data = []
-          a.child_data.forEach((item:any) => {
+          a.child_data.forEach((item: any) => {
             this.process_info[0].child_data.push({
               name: a.name,
-              transfer_info_id: data.child_data.find((item:any) => {
-                return item.name === a.name
-              })?.id || '',
+              transfer_info_id:
+                data.child_data.find((items: any) => {
+                  return items.name === a.name
+                })?.id || '',
               id: data.child_data[0].id || '',
               before_attribute: '',
               after_attribute: '',
@@ -849,12 +866,12 @@ export default Vue.extend({
               attributeName: data.child_data[0].attribute || '',
               weight: item.weight
             })
-          });
+          })
         }
         this.child_data_info = data.child_data
       })
     },
-    addChildData(){
+    addChildData() {
       let data = this.processData
       this.process_info.push({
         transfer_id: data.id,
@@ -891,12 +908,12 @@ export default Vue.extend({
           }
         })
       })
-      if(this.yarnInfoList.length > 0){
-        let a = this.yarnInfoList.find((item:any) => {
+      if (this.yarnInfoList.length > 0) {
+        let a = this.yarnInfoList.find((item: any) => {
           return item.name === data.child_data[0].name
         })
         this.process_info[this.process_info.length - 1].child_data = []
-        a.child_data.forEach((item:any) => {
+        a.child_data.forEach((item: any) => {
           this.process_info[this.process_info.length - 1].child_data.push({
             name: a.name,
             transfer_info_id: item.id || '',
@@ -911,16 +928,18 @@ export default Vue.extend({
             attributeName: data.child_data[0].attribute || '',
             weight: item.weight
           })
-        });
+        })
       }
     },
     getYarnStoreList() {
-      if(this.yarnInfoList.length > 0 && this.getYarnStoreObj.name) {
-        this.totalProcessWeight = this.yarnInfoList.find((item:any) => {
-          return item.name === this.getYarnStoreObj.name  
-        }).child_data.reduce((a:any,b:any) => {
-          return a + (Number(b.weight) || 0)
-        },0)
+      if (this.yarnInfoList.length > 0 && this.getYarnStoreObj.name) {
+        this.totalProcessWeight = this.yarnInfoList
+          .find((item: any) => {
+            return item.name === this.getYarnStoreObj.name
+          })
+          .child_data.reduce((a: any, b: any) => {
+            return a + (Number(b.weight) || 0)
+          }, 0)
       }
       if (!this.getYarnStoreObj.LV2_name) {
         return
@@ -984,15 +1003,19 @@ export default Vue.extend({
           err = true
           throw new Error('未选择必填项')
         }
-        item.total_weight = item.child_data.reduce((a:any,b:any) => {
+        item.total_weight = item.child_data.reduce((a: any, b: any) => {
           return a + (Number(b.weight) || 0)
-        },0)
+        }, 0)
 
-        if(Number(this.diaoquNumber) !== Number(item.total_weight) && this.orderId){
-          this.$message.error('【'+ item.type +'】工序加工单，加工总数不等于库存调取总数'+Number(this.diaoquNumber)+'，无法提交。')
+        if (Number(this.diaoquNumber) !== Number(item.total_weight) && this.orderId) {
+          this.$message.error(
+            '【' + item.type + '】工序加工单，加工总数不等于库存调取总数' + Number(this.diaoquNumber) + '，无法提交。'
+          )
           this.loading = false
           err = true
-          throw new Error('【'+ item.type +'】工序加工单，加工总数不等于库存调取总数'+Number(this.diaoquNumber)+'，无法提交。')
+          throw new Error(
+            '【' + item.type + '】工序加工单，加工总数不等于库存调取总数' + Number(this.diaoquNumber) + '，无法提交。'
+          )
         }
         item.child_data.forEach((itemChild: any) => {
           if (!itemChild.name) {
@@ -1015,20 +1038,25 @@ export default Vue.extend({
         })
       })
 
-      if (err) return
+      if (err) {
+        return
+      }
       this.loading = true
 
-      this.total_weight = this.process_info.reduce((a:any,b:any) => {
-        return a + b.child_data.reduce((a1:any,b1:any) => {
-          return a1 + (Number(b1.weight) || 0)
-        },0)
-      },0)
+      this.total_weight = this.process_info.reduce((a: any, b: any) => {
+        return (
+          a +
+          b.child_data.reduce((a1: any, b1: any) => {
+            return a1 + (Number(b1.weight) || 0)
+          }, 0)
+        )
+      }, 0)
 
       this.process_info.forEach((item: any) => {
         item.child_data.forEach((itemChild: any) => {
           itemChild.name = itemChild.name.constructor === Array ? itemChild.name[1] : itemChild.name
         })
-        
+
         item.total_price =
           item.child_data.reduce((total: any, current: any) => {
             return total + current.weight * current.price
@@ -1145,12 +1173,12 @@ export default Vue.extend({
         return
       }
 
-      if(this.yarnInfoList.length > 0){
-        let a = this.selectList.find((item:any) => {
+      if (this.yarnInfoList.length > 0) {
+        let a = this.selectList.find((item: any) => {
           return item.color === '白胚'
         })
 
-        if(this.selectList.length > 1 && a){
+        if (this.selectList.length > 1 && a) {
           this.$message.error('白胚纱只能填写一个调取数量')
           return
         }
@@ -1210,9 +1238,11 @@ export default Vue.extend({
       obj.onmousewheel = obj.onmousewheel = this.mouseScroll(obj)
     },
     mouseScroll(obj: any) {
-      return function () {
+      return () => {
         let e = window.event || document.all ? window.event : arguments[0] ? arguments[0] : event
-        let detail, moveForwardStep, moveBackStep
+        let detail
+        let moveForwardStep
+        let moveBackStep
         let step = 0
         if (e.wheelDelta) {
           // google 下滑负数： -120

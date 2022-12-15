@@ -27,10 +27,10 @@ export interface Order {
   additional_fee: string | AditionalFee[]
   total_additional_fee: number
   desc: HTMLElement | string
-  process_log?: Array<any>// 统计加工信息用的加工日志
-  purchase_log?: Array<any>// 统计采购信息用的
-  transfer_log?: Array<any>// 调取单日志
-  total_purchase_weight?:any
+  process_log?: any[]// 统计加工信息用的加工日志
+  purchase_log?: any[]// 统计采购信息用的
+  transfer_log?: any[]// 调取单日志
+  total_purchase_weight?: any
   product_info: OrderPro[]
   file_url?: string,
   reduce_store_data?: Array<{

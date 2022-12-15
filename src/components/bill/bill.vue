@@ -1,37 +1,31 @@
 <template>
-  <div class="billCtn popup"
-    v-if="show">
+  <div class="billCtn popup" v-if="show">
     <div class="main">
       <div class="titleCtn">
         <span class="text">账单信息</span>
-        <i class="close_icon el-icon-close"
-          @click="reset"></i>
+        <i class="close_icon el-icon-close" @click="reset"></i>
       </div>
       <div class="contentCtn">
         <!-- 父级给关联单号 -->
-        <div class="row"
-          v-if="data.pcode">
-          <div class="label">{{typeFilter(data.type)}}单号：</div>
-          <div class="info text"
-            style="color:#1a95ff">{{data.pcode}}</div>
+        <div class="row" v-if="data.pcode">
+          <div class="label">{{ typeFilter(data.type) }}单号：</div>
+          <div class="info text" style="color: #1a95ff">{{ data.pcode }}</div>
         </div>
         <!-- 自选关联单号 -->
-        <div class="row"
-          v-if="!data.pcode">
-          <div class="label">{{typeFilter(data.type)}}单号：</div>
+        <div class="row" v-if="!data.pcode">
+          <div class="label">{{ typeFilter(data.type) }}单号：</div>
           <div class="info">
-            <el-select v-model="code"
+            <el-select
+              v-model="code"
               multiple
               filterable
               remote
               reserve-keyword
-              :placeholder="'请输入'+typeFilter(data.type)+'单号搜索'"
+              :placeholder="'请输入' + typeFilter(data.type) + '单号搜索'"
               :remote-method="searchCode"
-              :loading="searchLoading">
-              <el-option v-for="item in searchList"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value">
+              :loading="searchLoading"
+            >
+              <el-option v-for="item in searchList" :key="item.value" :label="item.label" :value="item.value">
               </el-option>
             </el-select>
           </div>
@@ -39,35 +33,42 @@
         <div class="row">
           <div class="label isMust">发票号码：</div>
           <div class="info">
-            <el-input placeholder="请输入发票号码"
-              v-model="number"></el-input>
+            <el-input placeholder="请输入发票号码" v-model="number"></el-input>
           </div>
         </div>
         <div class="row">
           <div class="label isMust">开票金额：</div>
           <div class="info">
-            <el-input placeholder="请输入开票金额"
-              v-model="price"></el-input>
+            <el-input placeholder="请输入开票金额" v-model="price"></el-input>
           </div>
         </div>
         <div class="row">
           <div class="label">开票日期：</div>
           <div class="info">
-            <el-date-picker style="width:100%"
+            <el-date-picker
+              style="width: 100%"
               v-model="date"
               type="date"
               value-format="yyyy-MM-dd"
-              placeholder="选择下单日期">
+              placeholder="选择下单日期"
+            >
             </el-date-picker>
           </div>
         </div>
         <div class="row">
           <div class="label">发票图片：</div>
           <div class="info">
-            <el-checkbox v-model="cvFlag"
-              @change="(ev)=>{return changeCVOpration(ev)}">{{cvFlag?'关闭复制粘贴图片上传功能':'开启复制粘贴图片上传功能'}}
+            <el-checkbox
+              v-model="cvFlag"
+              @change="
+                (ev) => {
+                  return changeCVOpration(ev)
+                }
+              "
+              >{{ cvFlag ? '关闭复制粘贴图片上传功能' : '开启复制粘贴图片上传功能' }}
             </el-checkbox>
-            <el-upload class="upload"
+            <el-upload
+              class="upload"
               action="https://upload.qiniup.com/"
               accept="image/jpeg,image/gif,image/png,image/bmp"
               :before-upload="beforeAvatarUpload"
@@ -78,32 +79,31 @@
               :on-success="successFile"
               :on-preview="handlePictureCardPreview"
               ref="uploada"
-              list-type="picture-card">
+              list-type="picture-card"
+            >
               <div class="uploadBtn">
                 <i class="el-icon-upload"></i>
                 <span>上传图片</span>
               </div>
-              <div slot="tip"
-                class="el-upload__tip">只能上传一张jpg/png图片文件，且不超过10M(请勿上传带特殊字符的图片)</div>
+              <div slot="tip" class="el-upload__tip">
+                只能上传一张jpg/png图片文件，且不超过10M(请勿上传带特殊字符的图片)
+              </div>
             </el-upload>
             <el-dialog :visible.sync="dialogVisible" append-to-body>
-              <img width="100%" :src="dialogImageUrl" alt="">
+              <img width="100%" :src="dialogImageUrl" alt="" />
             </el-dialog>
           </div>
         </div>
         <div class="row">
           <div class="label">开票备注：</div>
           <div class="info">
-            <el-input placeholder="请输入备注信息"
-              v-model="desc"></el-input>
+            <el-input placeholder="请输入备注信息" v-model="desc"></el-input>
           </div>
         </div>
       </div>
       <div class="oprCtn">
-        <div class="opr"
-          @click="reset">取消</div>
-        <div class="opr blue"
-          @click="saveBill">确认开票</div>
+        <div class="opr" @click="reset">取消</div>
+        <div class="opr blue" @click="saveBill">确认开票</div>
       </div>
     </div>
   </div>
@@ -135,20 +135,20 @@ export default class Deduct extends Vue {
   dialogVisible: boolean = false
   loading: boolean = false
   cvFlag: boolean = false
-  file_list: Array<any> = []
-  image_data: Array<any> = []
+  file_list: any[] = []
+  image_data: any[] = []
   searchLoading: boolean = false
   searchList: any[] = []
   get token() {
     return this.$store.state.status.token
   }
-  handlePictureCardPreview(file:any) {
-    this.dialogImageUrl = file.url;
-    this.dialogVisible = true;
+  handlePictureCardPreview(file: any) {
+    this.dialogImageUrl = file.url
+    this.dialogVisible = true
   }
-  beforeRemove(file:any, fileList:any){
+  beforeRemove(file: any, fileList: any) {
     // 上传超过10M自动删除
-    if(file.size && !(file.size / 1024 / 1024 < 10)){
+    if (file.size && !(file.size / 1024 / 1024 < 10)) {
       return
     }
 
@@ -156,7 +156,8 @@ export default class Deduct extends Vue {
       confirmButtonText: '确定',
       cancelButtonText: '取消',
       type: 'warning'
-      }).then(() => {
+    })
+      .then(() => {
         //执行删除操作,找到相同的删除
         let fileIndex = fileList.findIndex((item: any) => {
           if (item.id) {
@@ -176,29 +177,21 @@ export default class Deduct extends Vue {
         })
 
         this.removeFile(file)
-      }).catch(() => {
+      })
+      .catch(() => {
         this.$message({
-            type: 'info',
-            message: '已取消删除'
-        });          
-      });
-      return false;
+          type: 'info',
+          message: '已取消删除'
+        })
+      })
+    return false
   }
   removeFile(file: { response: { hash: string; key: string }; url: string }) {
     if (this.file_list!.find((item) => item.url === file.url)) {
-      this.$deleteItem(
-        this.file_list!,
-        this.file_list!.map((item) => item.url).indexOf(file.url)
-      )
-      this.$deleteItem(
-        this.image_data,
-        this.image_data.indexOf(file.url)
-      )
+      this.$deleteItem(this.file_list!, this.file_list!.map((item) => item.url).indexOf(file.url))
+      this.$deleteItem(this.image_data, this.image_data.indexOf(file.url))
     } else {
-      this.$deleteItem(
-        this.image_data,
-        this.image_data.indexOf('https://file.zwyknit.com/' + file.response.key)
-      )
+      this.$deleteItem(this.image_data, this.image_data.indexOf('https://file.zwyknit.com/' + file.response.key))
     }
   }
   // 打开复制粘贴图片功能
@@ -228,13 +221,13 @@ export default class Deduct extends Vue {
       let clipboardData = event.clipboardData || event.originalEvent.clipboardData
       if (clipboardData.items) {
         let blob
-        for (let i = 0; i < clipboardData.items.length; i++) {
-          if (clipboardData.items[i].type.indexOf('image') !== -1) {
-            blob = clipboardData.items[i].getAsFile()
+        for (var item of clipboardData.items) {
+          if (item.type.indexOf('image') !== -1) {
+            blob = item.getAsFile()
           }
         }
         let render = new FileReader()
-        render.onload = function (evt: any) {
+        render.onload = (evt: any) => {
           //输出base64编码
           const base64 = evt.target.result
           // @ts-ignore
@@ -250,11 +243,16 @@ export default class Deduct extends Vue {
           formData.append('file', _this.dataURLtoFile(base64, filename))
           xhr.open('POST', url, true)
           xhr.send(formData)
-          xhr.onreadystatechange = function () {
+          xhr.onreadystatechange = () => {
             _this.loading = false
             if (xhr.readyState === 4) {
               _this.$message.success('上传成功')
-              _this.file_list = [{name: JSON.parse(xhr.responseText).key, url: 'https://file.zwyknit.com/' + JSON.parse(xhr.responseText).key}]
+              _this.file_list = [
+                {
+                  name: JSON.parse(xhr.responseText).key,
+                  url: 'https://file.zwyknit.com/' + JSON.parse(xhr.responseText).key
+                }
+              ]
               _this.image_data = ['https://file.zwyknit.com/' + JSON.parse(xhr.responseText).key]
             }
           }
@@ -334,7 +332,7 @@ export default class Deduct extends Vue {
       desc: this.desc,
       type: this.data.myType
     }
-    bill.create({data: [formData]}).then((res) => {
+    bill.create({ data: [formData] }).then((res) => {
       if (res.data.status) {
         this.$message.success('添加发票成功')
         this.$emit('afterBill')

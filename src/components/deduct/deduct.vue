@@ -1,19 +1,15 @@
 <template>
-  <div class="deductCtn popup"
-    v-if="show">
-    <div class="main" v-loading='loading'>
+  <div class="deductCtn popup" v-if="show">
+    <div class="main" v-loading="loading">
       <div class="titleCtn">
         <span class="text">扣款信息</span>
-        <i class="close_icon el-icon-close"
-          @click="reset"></i>
+        <i class="close_icon el-icon-close" @click="reset"></i>
       </div>
       <div class="contentCtn">
         <!-- 父级给关联单号 -->
-        <div class="row"
-          v-if="data.pcode">
-          <div class="label">{{typeFilter(data.type)}}单号：</div>
-          <div class="info text"
-            style="color:#1a95ff">{{data.pcode}}</div>
+        <div class="row" v-if="data.pcode">
+          <div class="label">{{ typeFilter(data.type) }}单号：</div>
+          <div class="info text" style="color: #1a95ff">{{ data.pcode }}</div>
         </div>
         <!-- 自选关联单号 -->
         <!-- <div class="row"
@@ -43,8 +39,7 @@
         <div class="row">
           <div class="label isMust">扣款金额：</div>
           <div class="info text">
-            <el-input v-model="price"
-              placeholder="总金额">
+            <el-input v-model="price" placeholder="总金额">
               <template slot="append">元</template>
             </el-input>
           </div>
@@ -52,28 +47,36 @@
         <div class="row">
           <div class="label">扣款信息：</div>
           <div class="info">
-            <el-input v-model="desc"
-              placeholder="请输入扣款信息"></el-input>
+            <el-input v-model="desc" placeholder="请输入扣款信息"></el-input>
           </div>
         </div>
         <div class="row">
           <div class="label">扣款日期：</div>
           <div class="info">
-            <el-date-picker style="width:100%"
+            <el-date-picker
+              style="width: 100%"
               v-model="date"
               type="date"
               value-format="yyyy-MM-dd"
-              placeholder="选择下单日期">
+              placeholder="选择下单日期"
+            >
             </el-date-picker>
           </div>
         </div>
         <div class="row">
           <div class="label">文件信息：</div>
           <div class="info">
-            <el-checkbox v-model="cvFlag"
-              @change="(ev)=>{return changeCVOpration(ev)}">{{cvFlag?'关闭复制粘贴图片上传功能':'开启复制粘贴图片上传功能'}}
+            <el-checkbox
+              v-model="cvFlag"
+              @change="
+                (ev) => {
+                  return changeCVOpration(ev)
+                }
+              "
+              >{{ cvFlag ? '关闭复制粘贴图片上传功能' : '开启复制粘贴图片上传功能' }}
             </el-checkbox>
-            <el-upload class="upload"
+            <el-upload
+              class="upload"
               action="https://upload.qiniup.com/"
               accept="image/jpeg,image/gif,image/png,image/bmp"
               :before-upload="beforeAvatarUpload"
@@ -84,26 +87,26 @@
               :on-success="successFile"
               :on-preview="handlePictureCardPreview"
               ref="uploada"
-              list-type="picture-card">
+              list-type="picture-card"
+            >
               <div class="uploadBtn">
                 <i class="el-icon-upload"></i>
                 <span>上传图片</span>
               </div>
-              <div slot="tip"
-                class="el-upload__tip">只能上传一张jpg/png图片文件，且不超过10M(请勿上传带特殊字符的图片)</div>
+              <div slot="tip" class="el-upload__tip">
+                只能上传一张jpg/png图片文件，且不超过10M(请勿上传带特殊字符的图片)
+              </div>
             </el-upload>
             <el-dialog :visible.sync="dialogVisible" append-to-body>
-              <img width="100%" :src="dialogImageUrl" alt="">
+              <img width="100%" :src="dialogImageUrl" alt="" />
             </el-dialog>
           </div>
         </div>
       </div>
       <div class="oprCtn">
-        <div class="opr"
-          @click="reset">取消</div>
-        <div class="opr blue"
-          @click="saveDeduct">确认扣款</div>
-      </div>      
+        <div class="opr" @click="reset">取消</div>
+        <div class="opr blue" @click="saveDeduct">确认扣款</div>
+      </div>
     </div>
   </div>
 </template>
@@ -132,8 +135,8 @@ export default class Deduct extends Vue {
   dialogVisible: boolean = false
   loading: boolean = false
   cvFlag: boolean = false
-  file_list: Array<any> = []
-  image_data: Array<any> = []
+  file_list: any[] = []
+  image_data: any[] = []
   price: number | string = 0
   date: string = this.$getDate(new Date())
   deductList: Array<{ value: number; label: string }> = []
@@ -148,13 +151,13 @@ export default class Deduct extends Vue {
   get token() {
     return this.$store.state.status.token
   }
-  handlePictureCardPreview(file:any) {
-    this.dialogImageUrl = file.url;
-    this.dialogVisible = true;
+  handlePictureCardPreview(file: any) {
+    this.dialogImageUrl = file.url
+    this.dialogVisible = true
   }
-  beforeRemove(file:any, fileList:any){
+  beforeRemove(file: any, fileList: any) {
     // 上传超过10M自动删除
-    if(file.size && !(file.size / 1024 / 1024 < 10)){
+    if (file.size && !(file.size / 1024 / 1024 < 10)) {
       return
     }
 
@@ -162,7 +165,8 @@ export default class Deduct extends Vue {
       confirmButtonText: '确定',
       cancelButtonText: '取消',
       type: 'warning'
-      }).then(() => {
+    })
+      .then(() => {
         //执行删除操作,找到相同的删除
         let fileIndex = fileList.findIndex((item: any) => {
           if (item.id) {
@@ -182,29 +186,21 @@ export default class Deduct extends Vue {
         })
 
         this.removeFile(file)
-      }).catch(() => {
+      })
+      .catch(() => {
         this.$message({
-            type: 'info',
-            message: '已取消删除'
-        });          
-      });
-      return false;
+          type: 'info',
+          message: '已取消删除'
+        })
+      })
+    return false
   }
   removeFile(file: { response: { hash: string; key: string }; url: string }) {
     if (this.file_list!.find((item) => item.url === file.url)) {
-      this.$deleteItem(
-        this.file_list!,
-        this.file_list!.map((item) => item.url).indexOf(file.url)
-      )
-      this.$deleteItem(
-        this.image_data,
-        this.image_data.indexOf(file.url)
-      )
+      this.$deleteItem(this.file_list!, this.file_list!.map((item) => item.url).indexOf(file.url))
+      this.$deleteItem(this.image_data, this.image_data.indexOf(file.url))
     } else {
-      this.$deleteItem(
-        this.image_data,
-        this.image_data.indexOf('https://file.zwyknit.com/' + file.response.key)
-      )
+      this.$deleteItem(this.image_data, this.image_data.indexOf('https://file.zwyknit.com/' + file.response.key))
     }
   }
   // 打开复制粘贴图片功能
@@ -234,13 +230,14 @@ export default class Deduct extends Vue {
       let clipboardData = event.clipboardData || event.originalEvent.clipboardData
       if (clipboardData.items) {
         let blob
-        for (let i = 0; i < clipboardData.items.length; i++) {
-          if (clipboardData.items[i].type.indexOf('image') !== -1) {
-            blob = clipboardData.items[i].getAsFile()
+
+        for (var item of clipboardData.items) {
+          if (item.type.indexOf('image') !== -1) {
+            blob = item.getAsFile()
           }
         }
         let render = new FileReader()
-        render.onload = function (evt: any) {
+        render.onload = (evt: any) => {
           //输出base64编码
           const base64 = evt.target.result
           // @ts-ignore
@@ -256,11 +253,16 @@ export default class Deduct extends Vue {
           formData.append('file', _this.dataURLtoFile(base64, filename))
           xhr.open('POST', url, true)
           xhr.send(formData)
-          xhr.onreadystatechange = function () {
+          xhr.onreadystatechange = () => {
             _this.loading = false
             if (xhr.readyState === 4) {
               _this.$message.success('上传成功')
-              _this.file_list = [{name: JSON.parse(xhr.responseText).key, url: 'https://file.zwyknit.com/' + JSON.parse(xhr.responseText).key}]
+              _this.file_list = [
+                {
+                  name: JSON.parse(xhr.responseText).key,
+                  url: 'https://file.zwyknit.com/' + JSON.parse(xhr.responseText).key
+                }
+              ]
               _this.image_data = ['https://file.zwyknit.com/' + JSON.parse(xhr.responseText).key]
             }
           }
@@ -354,12 +356,12 @@ export default class Deduct extends Vue {
       rel_doc_type: this.data.type || null,
       rel_doc_id: this.data.pid || null,
       id: null,
-      reason:'',
+      reason: '',
       deduct_file: this.image_data[0] || this.file || null,
       client_id: this.data.client_id || null,
       desc: this.desc
     }
-    deduct.create({data:[formData]}).then((res) => {
+    deduct.create({ data: [formData] }).then((res) => {
       if (res.data.status) {
         this.$message.success('添加扣款信息成功')
         this.$emit('afterDeduct')

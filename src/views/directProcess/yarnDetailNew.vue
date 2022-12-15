@@ -712,7 +712,7 @@ export default Vue.extend({
           }, 0)
           .toFixed(2)
         // 对额外金额进行处理
-        this.process_info.process_info.forEach((itemPro: any) => {})
+        // this.process_info.process_info.forEach((itemPro: any) => {})
         // 算含额外金额的总价
         this.process_info.all_total_price = (
           Number(this.process_info.total_price) +
@@ -765,17 +765,17 @@ export default Vue.extend({
     },
     // 打开扣款窗口
     openDeduct() {
-      let index = this.process_info.process_info.findIndex((item: any) => {
-        return item.id == this.materialOrderIndex
+      let index = this.process_info.process_info.findIndex((items: any) => {
+        return items.id === this.materialOrderIndex
       })
-      let item = this.process_info.process_info.find((item: any) => {
-        return item.id == this.materialOrderIndex
+      let item = this.process_info.process_info.find((items: any) => {
+        return items.id === this.materialOrderIndex
       })
       this.deduct_info = {
-        yarn: this.process_info.process_info[index].child_data.map((item: any) => {
+        yarn: this.process_info.process_info[index].child_data.map((items: any) => {
           return {
-            value: item.name,
-            label: item.name + '/' + item.color + '/' + item.attribute
+            value: items.name,
+            label: items.name + '/' + items.color + '/' + items.attribute
           }
         }),
         client_id: item.client_id,

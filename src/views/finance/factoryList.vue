@@ -390,7 +390,7 @@ export default Vue.extend({
       const XLSX = require('xlsx')
       const files = file.target.files
       const fileReader = new FileReader()
-      fileReader.onload = function (e: any) {
+      fileReader.onload = (e: any) => {
         try {
           const data = e.target.result
           const bytes = new Uint8Array(data) // 无符号整型数组
@@ -408,7 +408,9 @@ export default Vue.extend({
             // 遍历每张纸数据
             r[name] = XLSX.utils.sheet_to_json(workbook.Sheets[name])
           })
-          callBack && callBack(r, type)
+          if (callBack) {
+            callBack(r, type)
+          }
         } catch (e) {
           console.log(e)
           _this.$message.error('文件类型不正确')
@@ -458,20 +460,26 @@ export default Vue.extend({
       }
       let submitData = []
       for (const prop in data) {
-        for (const key in data[prop]) {
-          let obj: any = {}
-          for (const indexType in typeObj) {
-            if (typeObj[indexType][0]) {
-              obj[indexType] = data[prop][key][typeObj[indexType][0]] || typeObj[indexType][1]
-              if (obj[indexType] === undefined) {
-                this.$message.error('解析失败，请使用标准模板或检测必填数据是否存在空的情况！！！')
-                return
+        if (data.hasOwnProperty(prop)) {
+          for (const key in data[prop]) {
+            if (data[prop].hasOwnProperty(key)) {
+              let obj: any = {}
+              for (const indexType in typeObj) {
+                if (typeObj.hasOwnProperty(indexType)) {
+                  if (typeObj[indexType][0]) {
+                    obj[indexType] = data[prop][key][typeObj[indexType][0]] || typeObj[indexType][1]
+                    if (obj[indexType] === undefined) {
+                      this.$message.error('解析失败，请使用标准模板或检测必填数据是否存在空的情况！！！')
+                      return
+                    }
+                  } else {
+                    obj[indexType] = typeObj[indexType][1]
+                  }
+                }
               }
-            } else {
-              obj[indexType] = typeObj[indexType][1]
+              submitData.push(obj)
             }
           }
-          submitData.push(obj)
         }
       }
       if (submitData.length === 0) {
@@ -484,7 +492,7 @@ export default Vue.extend({
         submitData.forEach((item) => {
           let obj = this.client_list.find((itemClient: any) => {
             console.log(itemClient.name, item.client_name)
-            return itemClient.name == item.client_name
+            return itemClient.name === item.client_name
           })
           if (!obj) {
             this.$message.error('解析失败，有所填单位非加工厂单位全称，或者该单位不存在，请仔细检查')
@@ -502,7 +510,9 @@ export default Vue.extend({
             item.invoice_date = year + '-' + (month < 10 ? '0' + month : month) + '-' + (date < 10 ? '0' + date : date)
           }
         })
-        if (err) return
+        if (err) {
+          return
+        }
         bill.create({ data: submitData }).then((res) => {
           if (res.data.status) {
             this.$message.success('导入成功')
@@ -514,7 +524,7 @@ export default Vue.extend({
         // excel日期格式转前端日期格式
         submitData.forEach((item) => {
           let obj = this.client_list.find((itemClient: any) => {
-            return itemClient.name == item.client_name
+            return itemClient.name === item.client_name
           })
           if (!obj) {
             this.$message.error('解析失败，有所填单位非加工厂单位全称，或者该单位不存在，请仔细检查')
@@ -532,7 +542,9 @@ export default Vue.extend({
             item.collect_date = year + '-' + (month < 10 ? '0' + month : month) + '-' + (date < 10 ? '0' + date : date)
           }
         })
-        if (err) return
+        if (err) {
+          return
+        }
         collection.create({ data: submitData }).then((res) => {
           if (res.data.status) {
             this.$message.success('导入成功')
@@ -544,7 +556,7 @@ export default Vue.extend({
         // excel日期格式转前端日期格式
         submitData.forEach((item) => {
           let obj = this.client_list.find((itemClient: any) => {
-            return itemClient.name == item.client_name
+            return itemClient.name === item.client_name
           })
           if (!obj) {
             this.$message.error('解析失败，有所填单位非加工厂单位全称，或者该单位不存在，请仔细检查')
@@ -561,7 +573,9 @@ export default Vue.extend({
             item.date = year + '-' + (month < 10 ? '0' + month : month) + '-' + (date < 10 ? '0' + date : date)
           }
         })
-        if (err) return
+        if (err) {
+          return
+        }
         deduct.create({ data: submitData }).then((res) => {
           if (res.data.status) {
             this.$message.success('导入成功')

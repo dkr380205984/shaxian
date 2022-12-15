@@ -109,7 +109,13 @@
         </div>
       </div>
     </div>
-    <shaxianAddPO :show="showAddPO" :update="update_flag" @close="resetInfo" :info="order_yarn_info" @afterCreate="afterCreate"></shaxianAddPO>
+    <shaxianAddPO
+      :show="showAddPO"
+      :update="update_flag"
+      @close="resetInfo"
+      :info="order_yarn_info"
+      @afterCreate="afterCreate"
+    ></shaxianAddPO>
     <!-- 列表设置 -->
     <zh-list-setting
       @close="showSetting = false"
@@ -170,7 +176,7 @@ export default Vue.extend({
           key: 'status',
           name: '采购单状态',
           filterArr: ['未知', '已创建', '进行中', '已完成', '已取消'],
-          classArr: ['', 'orange', 'blue','green','gray'],
+          classArr: ['', 'orange', 'blue', 'green', 'gray'],
           ifShow: true,
           ifLock: false,
           index: 2,
@@ -201,7 +207,7 @@ export default Vue.extend({
           ifShow: true,
           ifLock: false,
           index: 5,
-          from: 'child_data',
+          from: 'child_data'
         },
         {
           key: 'weight',
@@ -318,7 +324,7 @@ export default Vue.extend({
         desc: ''
       },
       list: [],
-      product_arr: [],
+      product_arr: []
     }
   },
   computed: {
@@ -327,7 +333,7 @@ export default Vue.extend({
     },
     user_list() {
       return this.$store.state.api.user.arr
-    },
+    }
   },
   watch: {
     page(newVal) {
@@ -382,75 +388,6 @@ export default Vue.extend({
       )
     },
     // 下面两个函数是让el-table滚动的
-    scrollFunction(obj: any, id: any) {
-      obj = document.getElementById(id)
-      if (obj.attachEvent) {
-        obj.attachEvent('onmousewheel', this.mouseScroll(obj))
-      } else if (obj.addEventListener) {
-        obj.addEventListener('DOMMouseScroll', this.mouseScroll(obj), false)
-      }
-      obj.onmousewheel = obj.onmousewheel = this.mouseScroll(obj)
-    },
-    mouseScroll(obj: any) {
-      return function () {
-        let e = window.event || document.all ? window.event : arguments[0] ? arguments[0] : event
-        let detail, moveForwardStep, moveBackStep
-        let step = 0
-        if (e.wheelDelta) {
-          // google 下滑负数： -120
-          detail = e.wheelDelta
-          moveForwardStep = -1
-          moveBackStep = 1
-        } else if (e.detail) {
-          // firefox 下滑正数：3
-          // @ts-ignore
-          detail = event.detail
-          moveForwardStep = 1
-          moveBackStep = -1
-        }
-        // @ts-ignore
-        step = detail > 0 ? moveForwardStep * 100 : moveBackStep * 100
-        // e.preventDefault()
-        let left = obj.querySelector('table').clientWidth - obj.clientWidth
-        //这里是为了向右滚动后再向下滚动，向左滚动后再向上滚动，如果不需要，只需要写e.preventDefault()
-        //-------------------
-        if (moveForwardStep === -1) {
-          //google
-          if (detail > 0) {
-            //向上
-            if (obj.scrollLeft > 0) {
-              e.preventDefault()
-            } else {
-              return true
-            }
-          } else {
-            if (obj.scrollLeft < left) {
-              e.preventDefault()
-            } else {
-              return true
-            }
-          }
-        } else {
-          //firefox
-          if (detail > 0) {
-            //向下
-            if (obj.scrollLeft < left) {
-              e.preventDefault()
-            } else {
-              return true
-            }
-          } else {
-            if (obj.scrollLeft > 0) {
-              e.preventDefault()
-            } else {
-              return true
-            }
-          }
-        }
-        //--------------------
-        obj.scrollLeft = obj.scrollLeft + step
-      }
-    },
     reset() {
       this.$router.push('/directOrder/yarnList?page=1&code=&name=&client_id=&user_id=&page_size=10&date=')
     },
@@ -566,15 +503,17 @@ export default Vue.extend({
           limit: this.page_size
         })
         .then((res) => {
-          res.data.data.items.forEach((item:any) => {
-            item.image_data = item.file_url?[item.file_url]:[]
-          });
+          res.data.data.items.forEach((item: any) => {
+            item.image_data = item.file_url ? [item.file_url] : []
+          })
           this.list = res.data.data.items
           this.total = res.data.data.total
           this.list.forEach((item: any) => {
-            item.total_weight = item.child_data.reduce((total: number, current: any) => {
-              return total + +current.weight
-            }, 0).toFixed(1)
+            item.total_weight = item.child_data
+              .reduce((total: number, current: any) => {
+                return total + +current.weight
+              }, 0)
+              .toFixed(1)
           })
           this.loading = false
         })
@@ -621,7 +560,7 @@ export default Vue.extend({
         checkWhich: 'api/yarnType',
         getInfoMethed: 'dispatch',
         getInfoApi: 'getYarnTypeAsync'
-      },
+      }
     ])
     this.getListSetting()
     this.getFilters()

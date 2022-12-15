@@ -87,7 +87,7 @@ export interface MaterialType {
 // 扣款信息
 export interface DeductInfo {
   id?: any
-  index?:any
+  index?: any
   code?: string
   reason?: string
   deduct_type?: 1 | 2 | 3 | 4 | 5 // 1纱线定够 2沙县加工 3毛条定够 4毛条加工 5订单
@@ -133,8 +133,8 @@ export interface ListSetting {
 // 开票信息
 export interface BillInfo {
   id?: any
-  code?:any
-  user_name?:any
+  code?: any
+  user_name?: any
   invoice_code?: string
   client_id: string | number | undefined
   invoice_type: 1 | 2 | 3 | 4 | 5
@@ -148,7 +148,7 @@ export interface BillInfo {
 // 收款信息
 export interface CollectionInfo {
   id?: any
-  invoice_date?:any
+  invoice_date?: any
   user_name?: any
   code?: any
   client_id: string | number | undefined

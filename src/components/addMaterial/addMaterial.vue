@@ -134,7 +134,6 @@ export default Vue.extend({
     },
     render() {
       this.submit_form = []
-      this.input_form.colorArr.forEach((itemColor: { name: string }) => {})
       if (this.name_flag === 'normal') {
         this.submit_form = []
       } else {

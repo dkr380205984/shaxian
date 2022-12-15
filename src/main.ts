@@ -34,7 +34,7 @@ Vue.filter('orderCheckFilter', (val: 0 | 1 | 2 | null) => {
 })
 // 出入库操作类型
 Vue.filter('stockTypeFilter', (val: 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 16 | 17 | 18) => {
-  const statusArr = ['未知', '仓库入库', '仓库出库', '订购入库', '调取出库', '加工回库', '加工出库', '订购出库', '工艺单入库', '订单发货', '移库出库', '移库入库', '销售出库', '订购入库', '加工回库', '结余入库', '加工调取', '加工回库','加工单位直接发货']
+  const statusArr = ['未知', '仓库入库', '仓库出库', '订购入库', '调取出库', '加工回库', '加工出库', '订购出库', '工艺单入库', '订单发货', '移库出库', '移库入库', '销售出库', '订购入库', '加工回库', '结余入库', '加工调取', '加工回库', '加工单位直接发货']
   return statusArr[val]
 })
 // 票据类型
@@ -93,17 +93,17 @@ declare module 'vue/types/vue' {
 // <div class="btn btnBlue" v-debounce="saveOrder">提交</div>
 Vue.directive('debounce', {
   // 指令的定义
-  bind: function (el, binding) {
-    let timer:any = null;
+  bind: (el, binding) => {
+    let timer: any = null;
     let debounce = binding.value;
 
-    el.addEventListener('click', function () {
+    el.addEventListener('click', () => {
       clearTimeout(timer);
       timer = setTimeout(() => {
         debounce();
       }, 1000);
     });
-  },
+  }
 });
 
 new Vue({

@@ -1,21 +1,21 @@
 <template>
-  <div class="popup inAndOut"
-    v-show="show">
-    <div class="main"
-      v-loading="loading">
+  <div class="popup inAndOut" v-show="show">
+    <div class="main" v-loading="loading">
       <div class="titleCtn">
-        <div class="text">{{inOrOut || '填写'}}信息</div>
-        <i class="el-icon-close"
-          @click="reset"></i>
+        <div class="text">{{ inOrOut || '填写' }}信息</div>
+        <i class="el-icon-close" @click="reset"></i>
       </div>
       <div class="contentCtn">
         <div class="createCtn">
-          <div class="desc"
-            v-if="selfType[0]==='无单据'&&selfType[1]===11">注意！销售出库会自动生成相关订单信息，以便更好地进行财务统计，如果不需要结算本次出库信息，请选择普通出库。</div>
-          <div class="desc"
-            v-if="selfType[0]==='无单据'&&selfType[1]===12">注意！订购入库会自动生成相关采购单信息，以便更好地进行财务统计，如果不需要结算本次入库信息，请选择普通入库。</div>
-          <div class="desc"
-            v-if="selfType[0]==='无单据'&&selfType[1]===13">注意！加工回库会自动生成相关加工单信息，以便更好地进行财务统计，如果不需要结算本次入库信息，请选择普通入库。</div>
+          <div class="desc" v-if="selfType[0] === '无单据' && selfType[1] === 11">
+            注意！销售出库会自动生成相关订单信息，以便更好地进行财务统计，如果不需要结算本次出库信息，请选择普通出库。
+          </div>
+          <div class="desc" v-if="selfType[0] === '无单据' && selfType[1] === 12">
+            注意！订购入库会自动生成相关采购单信息，以便更好地进行财务统计，如果不需要结算本次入库信息，请选择普通入库。
+          </div>
+          <div class="desc" v-if="selfType[0] === '无单据' && selfType[1] === 13">
+            注意！加工回库会自动生成相关加工单信息，以便更好地进行财务统计，如果不需要结算本次入库信息，请选择普通入库。
+          </div>
           <div class="rowCtn">
             <div class="colCtn flex3">
               <div class="label">
@@ -24,28 +24,27 @@
               </div>
               <div class="content">
                 <div class="elCtn">
-                  <el-cascader :disabled="noChange"
+                  <el-cascader
+                    :disabled="noChange"
                     v-model="selfType"
                     :props="{ expandTrigger: 'hover' }"
                     :options="typeArr"
                     @change="clearData"
-                    placeholder="请选择操作类型"></el-cascader>
+                    placeholder="请选择操作类型"
+                  ></el-cascader>
                 </div>
               </div>
             </div>
-            <div class="colCtn flex3"
-              v-if="selfType.length&&selfType[0]!=='无单据'">
+            <div class="colCtn flex3" v-if="selfType.length && selfType[0] !== '无单据'">
               <div class="label">
                 <span class="text">单号信息</span>
                 <span class="explanation">(必填)</span>
               </div>
               <div class="content">
                 <div class="elCtn">
-                  <el-input disabled
-                    v-show="noChange"
-                    v-model="relatedCode"
-                    placeholder="单号信息"></el-input>
-                  <el-select v-show="!noChange"
+                  <el-input disabled v-show="noChange" v-model="relatedCode" placeholder="单号信息"></el-input>
+                  <el-select
+                    v-show="!noChange"
                     v-model="storeInfo.related_id"
                     filterable
                     remote
@@ -53,18 +52,20 @@
                     placeholder="请输入单号搜索"
                     :remote-method="searchRlatedId"
                     :loading="relatedLoading"
-                    @change="initDetail">
-                    <el-option v-for="item in relatedArr"
-                      :key="item.id"
-                      :label="item.code"
-                      :value="item.id">
+                    @change="initDetail"
+                  >
+                    <el-option v-for="item in relatedArr" :key="item.id" :label="item.code" :value="item.id">
                     </el-option>
                   </el-select>
                 </div>
               </div>
             </div>
           </div>
-          <template v-if="!bindFlag&&selfType&&(selfType[0]==='无单据'||(selfType[0]!=='无单据'&&storeInfo.related_id))">
+          <template
+            v-if="
+              !bindFlag && selfType && (selfType[0] === '无单据' || (selfType[0] !== '无单据' && storeInfo.related_id))
+            "
+          >
             <div class="rowCtn">
               <div class="colCtn flex3">
                 <div class="label">
@@ -73,36 +74,40 @@
                 </div>
                 <div class="content">
                   <div class="elCtn">
-                    <el-cascader :disabled="!!storeId"
+                    <el-cascader
+                      :disabled="!!storeId"
                       v-model="storeInfo.select_id"
                       :options="selfStoreArr"
-                      :props="{value:'id',label:'name',children:'second_data'}"
-                      placeholder="请选择仓库">
+                      :props="{ value: 'id', label: 'name', children: 'second_data' }"
+                      placeholder="请选择仓库"
+                    >
                     </el-cascader>
                   </div>
                 </div>
               </div>
-              <template v-if="selfType[0]==='无单据'&&selfType[1]!==10&&selfType[1]!==13">
+              <template v-if="selfType[0] === '无单据' && selfType[1] !== 10 && selfType[1] !== 13">
                 <div class="colCtn flex3">
                   <div class="label">
                     <span class="text">单位名称</span>
-                    <span class="explanation" v-if="selfType[1]!==1&&selfType[1]!==2">(必选)</span>
+                    <span class="explanation" v-if="selfType[1] !== 1 && selfType[1] !== 2">(必选)</span>
                   </div>
                   <div class="content">
                     <div class="elCtn">
-                      <el-cascader :disabled="!!clientId"
+                      <el-cascader
+                        :disabled="!!clientId"
                         filterable
                         v-model="storeInfo.client_id"
                         :options="selfClientArr"
-                        :props="{ expandTrigger: 'hover',value:'id',label:'name'}"
-                        no-data-text="暂无加工信息">
+                        :props="{ expandTrigger: 'hover', value: 'id', label: 'name' }"
+                        no-data-text="暂无加工信息"
+                      >
                       </el-cascader>
                     </div>
                   </div>
                 </div>
               </template>
-              <template v-else-if="selfType[1]===17 || selfType[1]===15"></template>
-              <template v-else-if="selfType[1]===10">
+              <template v-else-if="selfType[1] === 17 || selfType[1] === 15"></template>
+              <template v-else-if="selfType[1] === 10">
                 <div class="colCtn flex3">
                   <div class="label">
                     <span class="text">移库仓库</span>
@@ -110,10 +115,12 @@
                   </div>
                   <div class="content">
                     <div class="elCtn">
-                      <el-cascader v-model="storeInfo.move_select_id"
+                      <el-cascader
+                        v-model="storeInfo.move_select_id"
                         :options="allStoreArr"
-                        :props="{value:'id',label:'name',children:'second_data'}"
-                        placeholder="请选择需要移库的仓库">
+                        :props="{ value: 'id', label: 'name', children: 'second_data' }"
+                        placeholder="请选择需要移库的仓库"
+                      >
                       </el-cascader>
                     </div>
                   </div>
@@ -127,21 +134,25 @@
                   </div>
                   <div class="content">
                     <div class="elCtn">
-                      <el-select :disabled="!!clientId"
+                      <el-select
+                        :disabled="!!clientId"
                         filterable
                         v-model="storeInfo.client_id"
-                        no-data-text="暂无加工信息">
-                        <el-option v-for="item in selfClientArr"
+                        no-data-text="暂无加工信息"
+                      >
+                        <el-option
+                          v-for="item in selfClientArr"
                           :key="item.id"
                           :value="item.id"
-                          :label="item.name"></el-option>
+                          :label="item.name"
+                        ></el-option>
                       </el-select>
                     </div>
                   </div>
                 </div>
               </template>
               <!-- 销售出库补全客户单号 -->
-              <template v-if="selfType[0]==='无单据'&&selfType[1]===11">
+              <template v-if="selfType[0] === '无单据' && selfType[1] === 11">
                 <div class="colCtn flex3">
                   <div class="label">
                     <span class="text">客户单号</span>
@@ -149,13 +160,12 @@
                   </div>
                   <div class="content">
                     <div class="elCtn">
-                      <el-input placeholder="请输入客户单号"
-                        v-model="storeInfo.order_code"></el-input>
+                      <el-input placeholder="请输入客户单号" v-model="storeInfo.order_code"></el-input>
                     </div>
                   </div>
                 </div>
               </template>
-              <template v-if="selfType[0]==='无单据'&&selfType[1]===13">
+              <template v-if="selfType[0] === '无单据' && selfType[1] === 13">
                 <div class="colCtn flex3">
                   <div class="label">
                     <span class="text">加工类型</span>
@@ -163,14 +173,10 @@
                   </div>
                   <div class="content">
                     <div class="elCtn">
-                      <el-select placeholder="请选择加工类型"
-                        v-model="storeInfo.type">
-                        <el-option label="倒筒"
-                          value="倒筒"></el-option>
-                        <el-option label="膨纱"
-                          value="膨纱"></el-option>
-                        <el-option label="染色"
-                          value="染色"></el-option>
+                      <el-select placeholder="请选择加工类型" v-model="storeInfo.type">
+                        <el-option label="倒筒" value="倒筒"></el-option>
+                        <el-option label="膨纱" value="膨纱"></el-option>
+                        <el-option label="染色" value="染色"></el-option>
                       </el-select>
                     </div>
                   </div>
@@ -178,77 +184,77 @@
               </template>
             </div>
             <!-- 销售出库补全订单信息 -->
-            <template v-if="selfType[0]==='无单据'&& (selfType[1]===11||selfType[1]===12)">
-              <div class="rowCtn"
-                v-for="(item,index) in storeInfo.additional_fee"
-                :key="index">
+            <template v-if="selfType[0] === '无单据' && (selfType[1] === 11 || selfType[1] === 12)">
+              <div class="rowCtn" v-for="(item, index) in storeInfo.additional_fee" :key="index">
                 <div class="colCtn flex3">
-                  <div class="label"
-                    v-if="index===0">
+                  <div class="label" v-if="index === 0">
                     <span class="text">额外费用名称</span>
                     <span class="explanation">(选填)</span>
                   </div>
                   <div class="content">
                     <div class="elCtn">
-                      <el-input v-model="item.name"
-                        placeholder="请输入额外费用名称">
-                      </el-input>
+                      <el-input v-model="item.name" placeholder="请输入额外费用名称"> </el-input>
                     </div>
                   </div>
                 </div>
                 <div class="colCtn flex3">
-                  <div class="label"
-                    v-if="index===0">
+                  <div class="label" v-if="index === 0">
                     <span class="text">额外费用金额</span>
                     <span class="explanation">(选填)</span>
                   </div>
                   <div class="content">
                     <div class="elCtn">
-                      <el-input v-model="item.price"
-                        placeholder="请输入额外费用金额">
+                      <el-input v-model="item.price" placeholder="请输入额外费用金额">
                         <template slot="append">元</template>
                       </el-input>
                     </div>
                   </div>
                 </div>
                 <div class="colCtn flex3">
-                  <div class="label"
-                    v-if="index===0">
+                  <div class="label" v-if="index === 0">
                     <span class="text">额外费用备注</span>
                     <span class="explanation">(选填)</span>
                   </div>
                   <div class="elCtn">
-                    <el-input v-model="item.desc"
-                      placeholder="请输入额外费用备注"></el-input>
+                    <el-input v-model="item.desc" placeholder="请输入额外费用备注"></el-input>
                   </div>
-                  <div v-if="index===0"
+                  <div
+                    v-if="index === 0"
                     class="editBtn blue"
-                    @click="$addItem(storeInfo.additional_fee,{
-                      name: '',
-                      price: '',
-                      desc:''
-                    })">添加</div>
-                  <div v-if="index>0"
-                    class="editBtn red"
-                    @click="$deleteItem(storeInfo.additional_fee,index)">删除</div>
+                    @click="
+                      $addItem(storeInfo.additional_fee, {
+                        name: '',
+                        price: '',
+                        desc: ''
+                      })
+                    "
+                  >
+                    添加
+                  </div>
+                  <div v-if="index > 0" class="editBtn red" @click="$deleteItem(storeInfo.additional_fee, index)">
+                    删除
+                  </div>
                 </div>
               </div>
             </template>
             <div class="tableCtn">
               <div class="thead">
                 <div class="trow">
-                  <div class="tcolumn"
-                    style="flex:1.5">纱线名称</div>
-                  <div class="tcolumn"
-                    v-if="storeInfo.type!=='染色'">纱线颜色</div>
-                  <div class="tcolumn"
-                    v-if="storeInfo.type!=='倒筒'">
-                    <div style="display:flex;align-items:center">
+                  <div class="tcolumn" style="flex: 1.5">纱线名称</div>
+                  <div class="tcolumn" v-if="storeInfo.type !== '染色'">纱线颜色</div>
+                  <div class="tcolumn" v-if="storeInfo.type !== '倒筒'">
+                    <div style="display: flex; align-items: center">
                       纱线属性
-                      <el-tooltip v-if="selfType[1]===17" class="item" effect="dark" content="统一属性" placement="top">
+                      <el-tooltip
+                        v-if="selfType[1] === 17"
+                        class="item"
+                        effect="dark"
+                        content="统一属性"
+                        placement="top"
+                      >
                         <svg
                           class="iconFont copyIcon hoverBlue"
-                          style="cursor:pointer;margin-left:5px"
+                          style="cursor: pointer; margin-left: 5px"
                           aria-hidden="true"
                           @click="copyInfo('attribute')"
                         >
@@ -257,20 +263,28 @@
                       </el-tooltip>
                     </div>
                   </div>
-                  <div class="tcolumn"
-                    style="flex:1.5"
-                    v-if="selfType&&selfType[0]==='无单据'&&(selfType[1]===13)&&storeInfo.type!=='膨纱'">加工前/加工后</div>
-                  <div class="tcolumn"
-                    v-if="selfType&&selfType[0]==='无单据'&&(selfType[1]===11)">数量属性</div>
-                  <div class="tcolumn"
-                    style="flex:2">批号/色号/缸号</div>
+                  <div
+                    class="tcolumn"
+                    style="flex: 1.5"
+                    v-if="selfType && selfType[0] === '无单据' && selfType[1] === 13 && storeInfo.type !== '膨纱'"
+                  >
+                    加工前/加工后
+                  </div>
+                  <div class="tcolumn" v-if="selfType && selfType[0] === '无单据' && selfType[1] === 11">数量属性</div>
+                  <div class="tcolumn" style="flex: 2">批号/色号/缸号</div>
                   <div class="tcolumn">
-                    <div style="display:flex;align-items:center">
+                    <div style="display: flex; align-items: center">
                       所属客户
-                      <el-tooltip v-if="selfType[1]===17" class="item" effect="dark" content="统一属性" placement="top">
+                      <el-tooltip
+                        v-if="selfType[1] === 17"
+                        class="item"
+                        effect="dark"
+                        content="统一属性"
+                        placement="top"
+                      >
                         <svg
                           class="iconFont copyIcon hoverBlue"
-                          style="cursor:pointer;margin-left:5px"
+                          style="cursor: pointer; margin-left: 5px"
                           aria-hidden="true"
                           @click="copyInfo('store_client_id')"
                         >
@@ -280,60 +294,71 @@
                     </div>
                   </div>
                   <div class="tcolumn">数量(kg)</div>
-                  <div class="tcolumn"
-                    v-if="selfType&&selfType[0]==='无单据'&&(selfType[1]===11||selfType[1]===12||selfType[1]===13)">单价(元)</div>
+                  <div
+                    class="tcolumn"
+                    v-if="
+                      selfType &&
+                      selfType[0] === '无单据' &&
+                      (selfType[1] === 11 || selfType[1] === 12 || selfType[1] === 13)
+                    "
+                  >
+                    单价(元)
+                  </div>
                   <div class="tcolumn">件数(件)</div>
                 </div>
               </div>
               <div class="tbody">
-                <div class="trow"
-                  v-for="(item,index) in storeInfo.child_data"
-                  :key="index">
-                  <div class="tcolumn"
-                    style="flex:1.5">
-                    <template v-if="selfType[0]==='采购单' ||selfType[0]==='调取单' || selfType[0]==='工艺单' || selfType[0]==='订单'">
-                      <el-select class="el"
-                        placeholder="纱线名称"
-                        v-model="item.name"
-                        @change="getColor($event,item)">
-                        <el-option v-for="item,index in selfYarnArr"
+                <div class="trow" v-for="(item, index) in storeInfo.child_data" :key="index">
+                  <div class="tcolumn" style="flex: 1.5">
+                    <template
+                      v-if="
+                        selfType[0] === '采购单' ||
+                        selfType[0] === '调取单' ||
+                        selfType[0] === '工艺单' ||
+                        selfType[0] === '订单'
+                      "
+                    >
+                      <el-select class="el" placeholder="纱线名称" v-model="item.name" @change="getColor($event, item)">
+                        <el-option
+                          v-for="(item, index) in selfYarnArr"
                           :key="item.name + index"
                           :label="item.name"
-                          :value="item.name"></el-option>
+                          :value="item.name"
+                        ></el-option>
                       </el-select>
                     </template>
                     <template v-else>
-                      <el-cascader class="el"
+                      <el-cascader
+                        class="el"
                         v-model="item.name"
                         filterable
                         placeholder="纱线名称"
                         :show-all-levels="false"
-                        :options="selfYarnArr"></el-cascader>
+                        :options="selfYarnArr"
+                      ></el-cascader>
                     </template>
                   </div>
-                  <div class="tcolumn"
-                    v-if="storeInfo.type!=='染色'">
-                    <template v-if="selfType[0]==='调取单' || selfType[0]==='工艺单' || selfType[0]==='订单'">
-                      <el-select class="el"
-                        no-data-text="请先选择纱线"
-                        placeholder="颜色"
-                        v-model="item.color"
-                      >
-                        <el-option v-for="itemChild in item.colorArr"
+                  <div class="tcolumn" v-if="storeInfo.type !== '染色'">
+                    <template v-if="selfType[0] === '调取单' || selfType[0] === '工艺单' || selfType[0] === '订单'">
+                      <el-select class="el" no-data-text="请先选择纱线" placeholder="颜色" v-model="item.color">
+                        <el-option
+                          v-for="itemChild in item.colorArr"
                           :key="itemChild.value + itemChild.id"
                           :label="itemChild.label"
                           :value="itemChild.value"
                         ></el-option>
                       </el-select>
                     </template>
-                    <template v-else-if="selfType[0]==='采购单'">
-                      <el-select class="el"
+                    <template v-else-if="selfType[0] === '采购单'">
+                      <el-select
+                        class="el"
                         no-data-text="请先选择纱线"
                         placeholder="颜色"
                         v-model="item.colorName"
-                        value-key='id'
+                        value-key="id"
                       >
-                        <el-option v-for="itemChild in item.colorArr"
+                        <el-option
+                          v-for="itemChild in item.colorArr"
                           :key="itemChild.id"
                           :label="itemChild.label"
                           :value="itemChild"
@@ -341,100 +366,70 @@
                       </el-select>
                     </template>
                     <template v-else>
-                      <el-input class="el"
-                        placeholder="颜色"
-                        v-model="item.color"></el-input>
+                      <el-input class="el" placeholder="颜色" v-model="item.color"></el-input>
                     </template>
                   </div>
-                  <div class="tcolumn"
-                    v-if="storeInfo.type!=='倒筒'">
-                    <el-select class="el"
-                      v-model="item.attribute"
-                      placeholder="属性">
-                      <el-option label="绞纱"
-                        value="绞纱"></el-option>
-                      <el-option label="筒纱"
-                        value="筒纱"></el-option>
+                  <div class="tcolumn" v-if="storeInfo.type !== '倒筒'">
+                    <el-select class="el" v-model="item.attribute" placeholder="属性">
+                      <el-option label="绞纱" value="绞纱"></el-option>
+                      <el-option label="筒纱" value="筒纱"></el-option>
                     </el-select>
                   </div>
-                  <div class="tcolumn"
-                    style="flex:1.5;flex-direction: row;align-items: center;"
-                    v-if="selfType&&selfType[0]==='无单据'&&(selfType[1]===13)&&storeInfo.type!=='膨纱'">
-                    <div class="el"
-                      style="width:100%"
-                      v-if="!storeInfo.type">
-                      <el-input placeholder="请选择加工类型"
-                        v-model="item.color"
-                        disabled></el-input>
+                  <div
+                    class="tcolumn"
+                    style="flex: 1.5; flex-direction: row; align-items: center"
+                    v-if="selfType && selfType[0] === '无单据' && selfType[1] === 13 && storeInfo.type !== '膨纱'"
+                  >
+                    <div class="el" style="width: 100%" v-if="!storeInfo.type">
+                      <el-input placeholder="请选择加工类型" v-model="item.color" disabled></el-input>
                     </div>
-                    <div class="el"
-                      v-if="storeInfo.type==='倒筒'"
-                      style="margin-right:4px">
-                      <el-select v-model="item.before_attribute"
-                        placeholder="加工前">
-                        <el-option label="绞纱"
-                        value="绞纱"></el-option>
-                        <el-option label="筒纱"
-                          value="筒纱"></el-option>
+                    <div class="el" v-if="storeInfo.type === '倒筒'" style="margin-right: 4px">
+                      <el-select v-model="item.before_attribute" placeholder="加工前">
+                        <el-option label="绞纱" value="绞纱"></el-option>
+                        <el-option label="筒纱" value="筒纱"></el-option>
                       </el-select>
                     </div>
-                    <div class="el"
-                      v-if="storeInfo.type==='倒筒'">
-                      <el-select v-model="item.after_attribute"
-                        placeholder="加工后">
-                        <el-option label="绞纱"
-                          value="绞纱"></el-option>
-                        <el-option label="筒纱"
-                          value="筒纱"></el-option>
+                    <div class="el" v-if="storeInfo.type === '倒筒'">
+                      <el-select v-model="item.after_attribute" placeholder="加工后">
+                        <el-option label="绞纱" value="绞纱"></el-option>
+                        <el-option label="筒纱" value="筒纱"></el-option>
                       </el-select>
                     </div>
-                    <div class="el"
-                      style="margin-right:4px"
-                      v-if="storeInfo.type==='染色'">
-                      <el-input v-model="item.before_color"
-                        :placeholder="item.color"
-                        disabled>
-                      </el-input>
+                    <div class="el" style="margin-right: 4px" v-if="storeInfo.type === '染色'">
+                      <el-input v-model="item.before_color" :placeholder="item.color" disabled> </el-input>
                     </div>
-                    <div class="el"
-                      v-if="storeInfo.type==='染色'">
-                      <el-input v-model="item.after_color"
-                        placeholder="加工后颜色">
-                      </el-input>
+                    <div class="el" v-if="storeInfo.type === '染色'">
+                      <el-input v-model="item.after_color" placeholder="加工后颜色"> </el-input>
                     </div>
                   </div>
-                  <div class="tcolumn"
-                    v-if="selfType&&selfType[0]==='无单据'&&(selfType[1]===11)">
-                    <el-select class="el"
-                      v-model="item.number_attribute"
-                      placeholder="数量属性"
-                      filterable>
-                      <el-option label="足斤纱"
-                        value="足斤纱"></el-option>
-                      <el-option label="98纱"
-                        value="98纱"></el-option>
-                      <el-option label="97纱"
-                        value="97纱"></el-option>
-                      <el-option label="96纱"
-                        value="96纱"></el-option>
-                      <el-option label="95纱"
-                        value="95纱"></el-option>
+                  <div class="tcolumn" v-if="selfType && selfType[0] === '无单据' && selfType[1] === 11">
+                    <el-select class="el" v-model="item.number_attribute" placeholder="数量属性" filterable>
+                      <el-option label="足斤纱" value="足斤纱"></el-option>
+                      <el-option label="98纱" value="98纱"></el-option>
+                      <el-option label="97纱" value="97纱"></el-option>
+                      <el-option label="96纱" value="96纱"></el-option>
+                      <el-option label="95纱" value="95纱"></el-option>
                     </el-select>
                   </div>
-                  <div class="tcolumn"
-                    style="flex:2;flex-direction: row;align-items: center;">
-                    <el-input class="el"
+                  <div class="tcolumn" style="flex: 2; flex-direction: row; align-items: center">
+                    <el-input
+                      class="el"
                       v-model="item.batch_code"
                       placeholder="批号"
-                      style="margin-right:4px"></el-input>
-                    <el-input class="el"
+                      style="margin-right: 4px"
+                    ></el-input>
+                    <el-input
+                      class="el"
                       v-model="item.color_code"
                       placeholder="色号"
-                      style="margin-right:4px"></el-input>
-                    <el-input class="el"
+                      style="margin-right: 4px"
+                    ></el-input>
+                    <el-input
+                      class="el"
                       v-model="item.vat_code"
                       placeholder="缸号"
-                      style="margin-right:4px"></el-input>
+                      style="margin-right: 4px"
+                    ></el-input>
                   </div>
                   <div class="tcolumn">
                     <el-select class="el" placeholder="所属客户" v-model="item.store_client_id" filterable>
@@ -447,27 +442,35 @@
                     </el-select>
                   </div>
                   <div class="tcolumn">
-                    <el-input class="el"
-                      @input="onlyInputNumber($event,item)"
+                    <el-input
+                      class="el"
+                      @input="onlyInputNumber($event, item)"
                       v-model="item.action_weight"
-                      placeholder="数量"></el-input>
+                      placeholder="数量"
+                    ></el-input>
                   </div>
-                  <div class="tcolumn"
-                    v-if="selfType&&selfType[0]==='无单据'&&(selfType[1]===11||selfType[1]===12||selfType[1]===13)">
-                    <el-input class="el"
-                      v-model="item.price"
-                      placeholder="单价"></el-input>
+                  <div
+                    class="tcolumn"
+                    v-if="
+                      selfType &&
+                      selfType[0] === '无单据' &&
+                      (selfType[1] === 11 || selfType[1] === 12 || selfType[1] === 13)
+                    "
+                  >
+                    <el-input class="el" v-model="item.price" placeholder="单价"></el-input>
                   </div>
-                  <div class="tcolumn"
-                    style="flex-direction:row;align-items: center;">
-                    <el-input class="el"
-                      v-model="item.items"
-                      placeholder="件数"></el-input>
-                    <div class="opr red"
-                      style="margin-left:8px"
-                      @click="storeInfo.child_data.length>1?$deleteItem(storeInfo.child_data,index):$message.warning('至少有一项')">
-                      <i class="el-icon-circle-close"
-                        style="font-size:18px"></i>
+                  <div class="tcolumn" style="flex-direction: row; align-items: center">
+                    <el-input class="el" v-model="item.items" placeholder="件数"></el-input>
+                    <div
+                      class="opr red"
+                      style="margin-left: 8px"
+                      @click="
+                        storeInfo.child_data.length > 1
+                          ? $deleteItem(storeInfo.child_data, index)
+                          : $message.warning('至少有一项')
+                      "
+                    >
+                      <i class="el-icon-circle-close" style="font-size: 18px"></i>
                     </div>
                   </div>
                 </div>
@@ -475,25 +478,31 @@
             </div>
             <div class="rowCtn">
               <div class="colCtn flex3">
-                <div class="btn btnMain"
-                  @click="$addItem(storeInfo.child_data,{
-                  name: '',
-                  action_weight: '',
-                  color: '',
-                  attribute: '',
-                  colorAttr: '',
-                  batch_code: '',
-                  color_code: '',
-                  vat_code: '',
-                  item: '',
-                  id:'',
-                  number_attribute:'98纱',
-                  price:'',
-                  before_attribute: '',
-                  after_attribute: '',
-                  before_color: '白胚',
-                  after_color: ''
-                })">添加纱线</div>
+                <div
+                  class="btn btnMain"
+                  @click="
+                    $addItem(storeInfo.child_data, {
+                      name: '',
+                      action_weight: '',
+                      color: '',
+                      attribute: '',
+                      colorAttr: '',
+                      batch_code: '',
+                      color_code: '',
+                      vat_code: '',
+                      item: '',
+                      id: '',
+                      number_attribute: '98纱',
+                      price: '',
+                      before_attribute: '',
+                      after_attribute: '',
+                      before_color: '白胚',
+                      after_color: ''
+                    })
+                  "
+                >
+                  添加纱线
+                </div>
               </div>
             </div>
             <div class="rowCtn">
@@ -504,12 +513,14 @@
                 </div>
                 <div class="content">
                   <div class="elCtn">
-                    <el-date-picker class="el"
-                      style="width:100%"
+                    <el-date-picker
+                      class="el"
+                      style="width: 100%"
                       v-model="storeInfo.complete_time"
                       type="date"
                       value-format="yyyy-MM-dd"
-                      placeholder="选择日期">
+                      placeholder="选择日期"
+                    >
                     </el-date-picker>
                   </div>
                 </div>
@@ -521,28 +532,21 @@
                 </div>
                 <div class="content">
                   <div class="elCtn">
-                    <el-input placeholder="请输入备注信息"
-                      v-model="storeInfo.desc"></el-input>
+                    <el-input placeholder="请输入备注信息" v-model="storeInfo.desc"></el-input>
                   </div>
                 </div>
               </div>
             </div>
           </template>
           <template v-else>
-            <div class="tips"
-              v-if="!bindFlag">请绑定需要关联的单号信息！</div>
+            <div class="tips" v-if="!bindFlag">请绑定需要关联的单号信息！</div>
           </template>
         </div>
       </div>
       <div class="oprCtn">
-        <div class="opr"
-          @click="reset">取消</div>
-        <div class="opr blue"
-          @click="saveAll"
-          v-if="!bindFlag">确定</div>
-        <div class="opr orange"
-          @click="bindCode"
-          v-if="bindFlag">确认绑定</div>
+        <div class="opr" @click="reset">取消</div>
+        <div class="opr blue" @click="saveAll" v-if="!bindFlag">确定</div>
+        <div class="opr orange" @click="bindCode" v-if="bindFlag">确认绑定</div>
       </div>
     </div>
   </div>
@@ -726,7 +730,7 @@ export default class InAndOut extends Vue {
       ]
     }
   ]
-  clientArr:any[] = []
+  clientArr: any[] = []
   // 单位
   get selfClientArr() {
     if (
@@ -919,11 +923,11 @@ export default class InAndOut extends Vue {
       this.relatedArr = []
     }
   }
-  onlyInputNumber(ev:any,item:any){
+  onlyInputNumber(ev: any, item: any) {
     item.action_weight = ev.replace(/^\D*(\d*(?:\.\d{0,9})?).*$/g, '$1')
   }
-  copyInfo(type:string){
-    this.storeInfo.child_data.forEach((item:any) => {
+  copyInfo(type: string) {
+    this.storeInfo.child_data.forEach((item: any) => {
       // @ts-ignore
       item[type] = this.storeInfo.child_data[0][type]
     })
@@ -949,8 +953,8 @@ export default class InAndOut extends Vue {
           this.initYarnArr = this.$mergeData(data.child_data, {
             mainRule: 'name'
           })
-          if(this.yarnArr && this.yarnArr.length > 0) {
-            this.yarnArr.forEach((item:any) => {
+          if (this.yarnArr && this.yarnArr.length > 0) {
+            this.yarnArr.forEach((item: any) => {
               item.colorName = item.color
               item.action_weight = item.weight
             })
@@ -1009,100 +1013,49 @@ export default class InAndOut extends Vue {
           ]
           this.loading = false
         })
-    } else if (this.selfType[0] === '调取单' && this.selfType[1] === 17){
-      stock.detail({
-        id
-      }).then(res => {
-        const data = res.data.data
-        
-        this.storeInfo.select_id = [data.store_id, data.second_store_id]
-        this.initYarnArr = data.child_data.map((itemChild:any) => {
-          return {
-            name: itemChild.name,
-            childrenMergeInfo: [
-              {
-                color: itemChild.color,
-                attribute: itemChild.attribute
-              }
-            ]
-          }
-        })   
-        
-        this.storeInfo.child_data = []
-        data.process_info.forEach((itemPro:any) => {
-          if(itemPro.type === '染色'){
-            let a = itemPro.child_data.map((itemChild:any) =>{
-              return {
-                name: itemChild.name,
-                action_weight: itemChild.weight,
-                color: itemChild.after_color || itemChild.color || '白胚',
-                attribute: '筒纱',
-                batch_code: itemChild.batch_code,
-                color_code: itemChild.color_code,
-                vat_code: itemChild.vat_code,
-                item: itemChild.item,
-                id:data.child_data.find((itemFind:any) => {
-                  return itemFind.name === itemChild.name
-                })?.id || null,
-                colorArr: [
-                  {
-                    label: itemChild.after_color || itemChild.color || '白胚',
-                    value: itemChild.after_color || itemChild.color || '白胚',
-                    id:itemChild.id
-                  }
-                ]
-              }
-            })
-            this.storeInfo.child_data.push(...a)
-          }
-        });
+    } else if (this.selfType[0] === '调取单' && this.selfType[1] === 17) {
+      stock
+        .detail({
+          id
+        })
+        .then((res) => {
+          const data = res.data.data
 
-        // 如果有染色就不用管其它的，没有染色的话，就把其它的放进来
-        if(this.storeInfo.child_data.length === 0) {
-          data.process_info.forEach((itemPro:any) => {
-            if (itemPro.type === '倒筒'){
-              let a = itemPro.child_data.map((itemChild:any) =>{
-                return {
-                  name: itemChild.name,
-                  action_weight: itemChild.weight,
-                  color: itemChild.after_color || itemChild.before_color || itemChild.color || '白胚',
-                  attribute: itemChild.after_attribute,
-                  batch_code: itemChild.batch_code,
-                  color_code: itemChild.color_code,
-                  vat_code: itemChild.vat_code,
-                  item: itemChild.item,
-                  id:data.child_data.find((itemFind:any) => {
-                    return itemFind.name === itemChild.name
-                  })?.id || null,
-                  colorArr: [
-                    {
-                      label: itemChild.after_color || itemChild.before_color || itemChild.color || '白胚',
-                      value: itemChild.after_color || itemChild.before_color || itemChild.color || '白胚',
-                      id:itemChild.id
-                    }
-                  ]
+          this.storeInfo.select_id = [data.store_id, data.second_store_id]
+          this.initYarnArr = data.child_data.map((itemChild: any) => {
+            return {
+              name: itemChild.name,
+              childrenMergeInfo: [
+                {
+                  color: itemChild.color,
+                  attribute: itemChild.attribute
                 }
-              })
-              this.storeInfo.child_data.push(...a)
-            } else {
-              let a = itemPro.child_data.map((itemChild:any) =>{
+              ]
+            }
+          })
+
+          this.storeInfo.child_data = []
+          data.process_info.forEach((itemPro: any) => {
+            if (itemPro.type === '染色') {
+              let a = itemPro.child_data.map((itemChild: any) => {
                 return {
                   name: itemChild.name,
                   action_weight: itemChild.weight,
-                  color: itemChild.after_color || itemChild.before_color || itemChild.color || '白胚',
-                  attribute: itemChild.after_attribute || itemChild.before_attribute || itemChild.attribute,
+                  color: itemChild.after_color || itemChild.color || '白胚',
+                  attribute: '筒纱',
                   batch_code: itemChild.batch_code,
                   color_code: itemChild.color_code,
                   vat_code: itemChild.vat_code,
                   item: itemChild.item,
-                  id:data.child_data.find((itemFind:any) => {
-                    return itemFind.name === itemChild.name
-                  })?.id || null,
+                  id:
+                    data.child_data.find((itemFind: any) => {
+                      return itemFind.name === itemChild.name
+                    })?.id || null,
                   colorArr: [
                     {
-                      label: itemChild.after_color || itemChild.before_color || itemChild.color || '白胚',
-                      value: itemChild.after_color || itemChild.before_color || itemChild.color || '白胚',
-                      id:itemChild.id
+                      label: itemChild.after_color || itemChild.color || '白胚',
+                      value: itemChild.after_color || itemChild.color || '白胚',
+                      id: itemChild.id
                     }
                   ]
                 }
@@ -1110,10 +1063,66 @@ export default class InAndOut extends Vue {
               this.storeInfo.child_data.push(...a)
             }
           })
-        }
 
-        this.loading = false
-      })
+          // 如果有染色就不用管其它的，没有染色的话，就把其它的放进来
+          if (this.storeInfo.child_data.length === 0) {
+            data.process_info.forEach((itemPro: any) => {
+              if (itemPro.type === '倒筒') {
+                let a = itemPro.child_data.map((itemChild: any) => {
+                  return {
+                    name: itemChild.name,
+                    action_weight: itemChild.weight,
+                    color: itemChild.after_color || itemChild.before_color || itemChild.color || '白胚',
+                    attribute: itemChild.after_attribute,
+                    batch_code: itemChild.batch_code,
+                    color_code: itemChild.color_code,
+                    vat_code: itemChild.vat_code,
+                    item: itemChild.item,
+                    id:
+                      data.child_data.find((itemFind: any) => {
+                        return itemFind.name === itemChild.name
+                      })?.id || null,
+                    colorArr: [
+                      {
+                        label: itemChild.after_color || itemChild.before_color || itemChild.color || '白胚',
+                        value: itemChild.after_color || itemChild.before_color || itemChild.color || '白胚',
+                        id: itemChild.id
+                      }
+                    ]
+                  }
+                })
+                this.storeInfo.child_data.push(...a)
+              } else {
+                let a = itemPro.child_data.map((itemChild: any) => {
+                  return {
+                    name: itemChild.name,
+                    action_weight: itemChild.weight,
+                    color: itemChild.after_color || itemChild.before_color || itemChild.color || '白胚',
+                    attribute: itemChild.after_attribute || itemChild.before_attribute || itemChild.attribute,
+                    batch_code: itemChild.batch_code,
+                    color_code: itemChild.color_code,
+                    vat_code: itemChild.vat_code,
+                    item: itemChild.item,
+                    id:
+                      data.child_data.find((itemFind: any) => {
+                        return itemFind.name === itemChild.name
+                      })?.id || null,
+                    colorArr: [
+                      {
+                        label: itemChild.after_color || itemChild.before_color || itemChild.color || '白胚',
+                        value: itemChild.after_color || itemChild.before_color || itemChild.color || '白胚',
+                        id: itemChild.id
+                      }
+                    ]
+                  }
+                })
+                this.storeInfo.child_data.push(...a)
+              }
+            })
+          }
+
+          this.loading = false
+        })
     }
     // 加工单
     if (this.selfType[0] === '加工单') {
@@ -1266,10 +1275,14 @@ export default class InAndOut extends Vue {
       this.selfType = ['无单据', 2]
     } else if (this.type === 3) {
       this.selfType = ['采购单', 3]
-      this.relatedId?this.initDetail(this.relatedId as number):''
+      if (this.relatedId) {
+        this.initDetail(this.relatedId as number)
+      }
     } else if (this.type === 4) {
       this.selfType = ['调取单', 4]
-      this.relatedId?this.initDetail(this.relatedId as number):''
+      if (this.relatedId) {
+        this.initDetail(this.relatedId as number)
+      }
     } else if (this.type === 5) {
       this.selfType = ['加工单', 5]
       this.initDetail(this.relatedId as number)
@@ -1288,7 +1301,9 @@ export default class InAndOut extends Vue {
       this.selfType = ['订单', 15]
     } else if (this.type === 17) {
       this.selfType = ['调取单', 17]
-      this.relatedId?this.initDetail(this.relatedId as number):''
+      if (this.relatedId) {
+        this.initDetail(this.relatedId as number)
+      }
     }
   }
   // 根据选中的纱线初始化颜色属性下拉框
@@ -1325,13 +1340,11 @@ export default class InAndOut extends Vue {
         this.$message.error('请选择移库仓库')
         return
       }
-    } else if(this.selfType[1] !== 17) {
+    } else if (this.selfType[1] !== 17) {
       if (!this.storeInfo.client_id) {
         this.$message.error('请选择单位')
         return
       }
-    } else {
-
     }
 
     if (
@@ -1340,7 +1353,8 @@ export default class InAndOut extends Vue {
           {
             key: 'name',
             errMsg: '请选择纱线名称'
-          },{
+          },
+          {
             key: 'store_client_id',
             errMsg: '请选择所属客户'
           }
@@ -1656,14 +1670,14 @@ export default class InAndOut extends Vue {
           }
         })
     } else {
-      if(this.type === 3){
-        this.storeInfo.child_data.forEach((itemChild:any) => {
+      if (this.type === 3) {
+        this.storeInfo.child_data.forEach((itemChild: any) => {
           itemChild.color = itemChild.colorName.label
-          itemChild.related_info_id = itemChild.colorName.id  
+          itemChild.related_info_id = itemChild.colorName.id
         })
       }
       let err = false
-      this.storeInfo.child_data.forEach((itemChild:any) => {
+      this.storeInfo.child_data.forEach((itemChild: any) => {
         if (itemChild.color === '') {
           this.$message.error('请填写颜色')
           err = true
@@ -1672,18 +1686,23 @@ export default class InAndOut extends Vue {
           this.$message.error('请填写属性')
           err = true
           throw new Error('请填写属性')
-        } else if(itemChild.action_weight === ''){
+        } else if (itemChild.action_weight === '') {
           this.$message.error('请填写数量')
           err = true
           throw new Error('请填写数量')
         }
       })
 
-      if(err) return
+      if (err) {
+        return
+      }
 
       // console.log(this.storeInfo)
       const formData: StoreCreate = {
-        order_id: (this.selfType[1] === 9 || this.selfType[1] === 15) ? this.storeInfo.related_id : this.orderId || this.storeInfo.order_id,
+        order_id:
+          this.selfType[1] === 9 || this.selfType[1] === 15
+            ? this.storeInfo.related_id
+            : this.orderId || this.storeInfo.order_id,
         related_id: this.storeInfo.related_id,
         action_type: this.selfType[1],
         complete_time: this.storeInfo.complete_time,
@@ -1781,28 +1800,28 @@ export default class InAndOut extends Vue {
   }
   mounted() {
     this.$checkCommonInfo([
-        {
-          checkWhich: 'api/storeHouse',
-          getInfoMethed: 'dispatch',
-          getInfoApi: 'getStoreAsync',
-        },
-        {
-          checkWhich: 'api/factory',
-          getInfoMethed: 'dispatch',
-          getInfoApi: 'getPartyBAsync',
-        },
-        {
-          checkWhich: 'api/client',
-          getInfoMethed: 'dispatch',
-          getInfoApi: 'getPartyBAsync',
-          forceUpdate: true
-        },
-        {
-          checkWhich: 'api/yarnType',
-          getInfoMethed: 'dispatch',
-          getInfoApi: 'getYarnTypeAsync'
-        }
-      ])
+      {
+        checkWhich: 'api/storeHouse',
+        getInfoMethed: 'dispatch',
+        getInfoApi: 'getStoreAsync'
+      },
+      {
+        checkWhich: 'api/factory',
+        getInfoMethed: 'dispatch',
+        getInfoApi: 'getPartyBAsync'
+      },
+      {
+        checkWhich: 'api/client',
+        getInfoMethed: 'dispatch',
+        getInfoApi: 'getPartyBAsync',
+        forceUpdate: true
+      },
+      {
+        checkWhich: 'api/yarnType',
+        getInfoMethed: 'dispatch',
+        getInfoApi: 'getYarnTypeAsync'
+      }
+    ])
   }
 }
 </script>

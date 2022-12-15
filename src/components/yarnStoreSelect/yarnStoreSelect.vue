@@ -1,6 +1,6 @@
 <template>
   <div class="yarnStoreSelect popup" v-show="show">
-    <div class="main" style="min-width:1360px">
+    <div class="main" style="min-width: 1360px">
       <div class="titleCtn">
         <div class="text">库存纱线</div>
         <div class="closeCtn" @click="close">
@@ -13,10 +13,12 @@
           <el-step title="从库存发货"></el-step>
         </el-steps>
         <div class="explainCtn" style="margin: 12px 0" v-if="yarnList.length > 0">
-          <span style="font-weight: bold; font-size: 18px; color: red"> 请选择发货仓库、纱线名称，并勾选需要发货的纱线。勾选完毕后，点击下一步，填写发货数量。 </span>
+          <span style="font-weight: bold; font-size: 18px; color: red">
+            请选择发货仓库、纱线名称，并勾选需要发货的纱线。勾选完毕后，点击下一步，填写发货数量。
+          </span>
         </div>
         <div class="filterCtn">
-          <div class="leftCtn" style="padding: unset;max-width:unset">
+          <div class="leftCtn" style="padding: unset; max-width: unset">
             <div class="elCtn">
               <el-cascader
                 v-model="filterObj.LV2_name"
@@ -59,7 +61,13 @@
               <el-input v-model="filterObj.color" @change="getList" placeholder="纱线颜色"></el-input>
             </div>
             <div class="elCtn">
-              <el-select placeholder="所属客户" v-model="filterObj.store_client_id" @change="getList" filterable clearable>
+              <el-select
+                placeholder="所属客户"
+                v-model="filterObj.store_client_id"
+                @change="getList"
+                filterable
+                clearable
+              >
                 <el-option
                   v-for="item in clientArr"
                   :key="item.id"
@@ -91,10 +99,7 @@
                   {{ item.name }}/{{ item.color }}/{{ item.attribute }}/{{ item.batch_code }}/{{ item.vat_code }}/{{
                     item.color_code
                   }}
-                  <span
-                    class="el-icon-circle-close closeIcon hoverRed"
-                    @click="selectList.splice(index, 1)"
-                  ></span>
+                  <span class="el-icon-circle-close closeIcon hoverRed" @click="selectList.splice(index, 1)"></span>
                 </div>
               </div>
             </div>
@@ -209,7 +214,7 @@ export default Vue.extend({
     },
     yarnList: {
       type: Array,
-      default: function(){
+      default() {
         return []
       }
     }
@@ -292,7 +297,7 @@ export default Vue.extend({
               otherRule: [{ name: 'second_store_name' }, { name: 'store_name' }],
               childrenName: 'store_info',
               childrenRule: {
-                mainRule: ['color_code', 'vat_code', 'batch_code','store_client_id'],
+                mainRule: ['color_code', 'vat_code', 'batch_code', 'store_client_id'],
                 otherRule: [
                   { name: 'id' },
                   { name: 'total_weight/reality_weight', type: 'add' },
@@ -313,7 +318,7 @@ export default Vue.extend({
         this.storeListCom.data.forEach((item: any) => {
           item.store_info.forEach((itemStore: any) => {
             itemStore.isCheck = true
-            const index = this.selectList.map((item: any) => item.id).indexOf(itemStore.id)
+            const index = this.selectList.map((items: any) => items.id).indexOf(itemStore.id)
             if (index === -1) {
               let obj = this.$clone(itemStore)
               obj.attribute = item.attribute
@@ -332,7 +337,7 @@ export default Vue.extend({
         this.storeListCom.data.forEach((item: any) => {
           item.store_info.forEach((itemStore: any) => {
             itemStore.isCheck = false
-            const index = this.selectList.map((item: any) => item.id).indexOf(itemStore.id)
+            const index = this.selectList.map((items: any) => items.id).indexOf(itemStore.id)
             if (index !== -1) {
               this.selectList.splice(index, 1)
             }
@@ -393,7 +398,7 @@ export default Vue.extend({
         LV2_name: '',
         name: '',
         color: '',
-        store_client_id:'',
+        store_client_id: '',
         batch_code: '',
         color_code: '',
         vat_code: '',
@@ -403,12 +408,10 @@ export default Vue.extend({
       // this.allCheck = false
       // this.isIndeterminate = false
       // this.storeListCom = {}
-    },
-    // 凑数的函数，不这样写的话会类型报错
-    a(a: number) {}
+    }
   },
   watch: {
-    show: function (val) {
+    show(val) {
       if (val) {
         this.reset()
         this.getList()

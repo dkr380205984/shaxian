@@ -20,7 +20,7 @@ export default Vue.extend({
   watch: {
     option: {
       handler(option) {
-        this.chart.setOption(this.option,true)
+        this.chart.setOption(this.option, true)
         this.chart.off('click')
         this.clickEcharts()
       },
@@ -38,7 +38,7 @@ export default Vue.extend({
       this.setOptions()
     },
     setOptions() {
-      this.chart.setOption(this.option,true)
+      this.chart.setOption(this.option, true)
     },
     clickEcharts() {
       this.chart.on('click', (params: any) => {
@@ -48,7 +48,7 @@ export default Vue.extend({
   },
   mounted() {
     this.option.color
-      ? this.option.color
+      ? this.option.color = this.option.color
       : (this.option.color = ['#229CFB', '#1FB48C', '#8E44AD', '#696969', '#28AE60', '#F39C25', '#D3541A', '#21BC9C'])
     this.initCharts()
     this.clickEcharts()

@@ -7,7 +7,7 @@
           <i class="el-icon-close"></i>
         </div>
       </div>
-      <div class="createCtn" style="max-height:60vh;overflow-y:scroll">
+      <div class="createCtn" style="max-height: 60vh; overflow-y: scroll">
         <div class="rowCtn">
           <div class="colCtn flex3">
             <div class="label">
@@ -541,10 +541,10 @@ export default Vue.extend({
         }
       })
 
-      let arr = this.$mergeData(this.submit_form[0].child_data,{
-        mainRule:['attribute','price','desc','color']
+      let arr = this.$mergeData(this.submit_form[0].child_data, {
+        mainRule: ['attribute', 'price', 'desc', 'color']
       })
-      if(this.submit_form[0].child_data.length !== arr.length) {
+      if (this.submit_form[0].child_data.length !== arr.length) {
         this.$message.error('请勿提交所有信息全部相同的纱线')
         return
       }

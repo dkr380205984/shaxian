@@ -200,7 +200,7 @@ export default Vue.extend({
       this.material_info = info
       this.create_flag = true
     },
-    
+
     deleteMat(id: string) {
       this.$confirm('是否要删除该毛条?', '提示', {
         confirmButtonText: '确定',

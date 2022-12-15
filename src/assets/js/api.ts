@@ -23,7 +23,10 @@ const index = {
 
 // 列表设置信息 type 1:报价单列表 , 2:样单列表
 const listSetting = {
-  create: (params: { id: number | null, type: number, content: string }) => http.post(`${baseUrl}/list/setting/save`, params, 'application/json'),
+  create: (params: {
+    id: number | null,
+    type: number, content: string
+  }) => http.post(`${baseUrl}/list/setting/save`, params, 'application/json'),
   detail: (params: { type: number }) => http.get(`${baseUrl}/list/setting/detail`, params)
 }
 
@@ -170,7 +173,7 @@ const material = {
   typeDelete: (params: DeleteParam) => http.post(`${baseUrl}/material/type/delete`, params, 'application/json'),
   create: (params: { data: MaterialInfo[] }) => http.post(`${baseUrl}/material/save`, params, 'application/json'),
   list: (params: ListParam) => http.get(`${baseUrl}/material/lists`, params),
-  detail: (params: {id:string | number}) => http.get(`${baseUrl}/material/detail`, params),
+  detail: (params: { id: string | number }) => http.get(`${baseUrl}/material/detail`, params),
   delete: (params: DeleteParam) => http.post(`${baseUrl}/material/delete`, params, 'application/json'),
   orderCreate: (params: { data: OrderMaterialInfo[] }) => http.post(`${baseUrl}/material/purchase/save`, params, 'application/json'),
   orderList: (params: ListParam) => http.get(`${baseUrl}/material/purchase/lists`, params),
@@ -190,16 +193,16 @@ const craft = {
 // 扣款
 import { DeductInfo } from '@/types/common'
 const deduct = {
-  create: (params:{data: Array<DeductInfo>}) => http.post(`${baseUrl}/financial/deduct/save`, params, 'application/json'),
+  create: (params: { data: DeductInfo[] }) => http.post(`${baseUrl}/financial/deduct/save`, params, 'application/json'),
   list: (params: ListParam) => http.get(`${baseUrl}/financial/deduct/lists`, params),
   delete: (params: DeleteParam) => http.post(`${baseUrl}/financial/deduct/delete`, params, 'application/json'),
-  detail: (params: {id:string | number}) => http.get(`${baseUrl}/financial/deduct/detail`,params)
+  detail: (params: { id: string | number }) => http.get(`${baseUrl}/financial/deduct/detail`, params)
 }
 
 // 开票
 import { BillInfo } from '@/types/common'
 const bill = {
-  create: (params: {data: Array<BillInfo>}) => http.post(`${baseUrl}/financial/invoice/save`, params, 'application/json'),
+  create: (params: { data: BillInfo[] }) => http.post(`${baseUrl}/financial/invoice/save`, params, 'application/json'),
   list: (params: ListParam) => http.get(`${baseUrl}/financial/invoice/lists`, params),
   delete: (params: DeleteParam) => http.post(`${baseUrl}/financial/invoice/delete`, params, 'application/json')
 }
@@ -207,7 +210,7 @@ const bill = {
 // 收款
 import { CollectionInfo } from '@/types/common'
 const collection = {
-  create: (params: {data: Array<CollectionInfo>}) => http.post(`${baseUrl}/financial/collection/save`, params, 'application/json'),
+  create: (params: { data: CollectionInfo[] }) => http.post(`${baseUrl}/financial/collection/save`, params, 'application/json'),
   list: (params: ListParam) => http.get(`${baseUrl}/financial/collection/lists`, params),
   delete: (params: DeleteParam) => http.post(`${baseUrl}/financial/collection/delete`, params, 'application/json')
 }

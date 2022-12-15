@@ -2052,11 +2052,11 @@ export default Vue.extend({
               })
             : false
 
-          item.total_purchase_weight = item.child_data.reduce((a: any, b: any) => {
-            return a + (b.purchase_weight || 0)
+          item.total_purchase_weight = item.child_data.reduce((as: any, b: any) => {
+            return as + (b.purchase_weight || 0)
           }, 0)
-          item.total_transfer_weight = item.child_data.reduce((a: any, b: any) => {
-            return a + (b.transfer_weight || 0)
+          item.total_transfer_weight = item.child_data.reduce((as: any, b: any) => {
+            return as + (b.transfer_weight || 0)
           }, 0)
 
           item.child_data.forEach((itemChild: any) => {
@@ -2077,9 +2077,9 @@ export default Vue.extend({
           })
 
           this.order_info.total_purchase_weight = this.order_info.product_info
-            .reduce((a: any, b: any) => {
+            .reduce((as: any, b: any) => {
               return (
-                a +
+                as +
                 b.child_data.reduce((a1: any, b1: any) => {
                   return (
                     a1 +
@@ -2093,8 +2093,8 @@ export default Vue.extend({
             .toFixed(1)
 
           // @ts-ignore
-          this.order_info.total_deduct_price = this.order_info.deduct.reduce((a: any, b: any) => {
-            return a + (Number(b.total_price) || 0)
+          this.order_info.total_deduct_price = this.order_info.deduct.reduce((a1: any, b: any) => {
+            return a1 + (Number(b.total_price) || 0)
           }, 0)
 
           // @ts-ignore
@@ -2108,12 +2108,16 @@ export default Vue.extend({
             })
           })
 
-          this.jiagongdanList.forEach((item: any) => {
+          this.jiagongdanList.forEach((items: any) => {
             this.orderInfoProChild.forEach((itemOPC: any) => {
-              if (itemOPC.attribute === item.attribute && itemOPC.color === item.color && itemOPC.name === item.name) {
-                item.xiadanNumber = itemOPC.weight
-                item.action_weight = itemOPC.weight
-                item.related_info_id = itemOPC.id
+              if (
+                itemOPC.attribute === items.attribute &&
+                itemOPC.color === items.color &&
+                itemOPC.name === items.name
+              ) {
+                items.xiadanNumber = itemOPC.weight
+                items.action_weight = itemOPC.weight
+                items.related_info_id = itemOPC.id
               }
             })
           })
@@ -2361,8 +2365,8 @@ export default Vue.extend({
         })
         jiaGongDanWeiArr = [...new Set(jiaGongDanWeiArr)]
         jiaGongDanWeiArr.forEach((item: any) => {
-          let itemClient = client_arr.find((itemClient: any) => {
-            return itemClient.id === item
+          let itemClient = client_arr.find((itemClients: any) => {
+            return itemClients.id === item
           })
           if (itemClient) {
             this.client_arr.push(itemClient)
@@ -2429,7 +2433,7 @@ export default Vue.extend({
         .then(() => {
           stock
             .delete({
-              id: id
+              id
             })
             .then((res) => {
               if (res.data.status) {
@@ -2496,7 +2500,9 @@ export default Vue.extend({
         return
       }
       this.fahuoList.forEach((item: any) => {
-        !item.action_weight ? (item.action_weight = '0') : ''
+        if (!item.action_weight) {
+          item.action_weight = '0'
+        }
       })
       this.fahuoList = this.fahuoList.filter((item: any) => {
         return item.action_weight !== '0' || !item.action_weight
@@ -2537,7 +2543,9 @@ export default Vue.extend({
         return
       }
       this.jiagongdanList.find((item: any) => {
-        !item.action_weight ? (item.action_weight = '0') : ''
+        if (!item.action_weight) {
+          item.action_weight = '0'
+        }
       })
       this.jiagongdanList = this.jiagongdanList.filter((item: any) => {
         return item.action_weight !== '0' || !item.action_weight
@@ -2554,7 +2562,7 @@ export default Vue.extend({
             this.jiagongdanObj.desc
 
       let params = {
-        desc: desc,
+        desc,
         complete_time: this.jiagongdanObj.date,
         // @ts-ignore
         order_id: this.order_info.id,

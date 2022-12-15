@@ -1,22 +1,22 @@
 <template>
-  <div class="zhListSetting popup"
-    v-show="show">
+  <div class="zhListSetting popup" v-show="show">
     <div class="main">
       <div class="titleCtn">
         <div class="text">列表设置</div>
-        <div class="closeCtn"
-          @click="close">
+        <div class="closeCtn" @click="close">
           <i class="el-icon-close"></i>
         </div>
       </div>
       <div class="contentCtn">
-        <div class="explainCtn">注：特殊元素以及图片信息只能排序，不可移除，也不能锁定在左侧！重置以及恢复系统设置均需要<span class="blue">保存显示方案</span>才能生效！</div>
+        <div class="explainCtn">
+          注：特殊元素以及图片信息只能排序，不可移除，也不能锁定在左侧！重置以及恢复系统设置均需要<span class="blue"
+            >保存显示方案</span
+          >才能生效！
+        </div>
         <div class="listCtn">
-          <div class="clearfix" style="margin-bottom:20px">
-            <div class="btn backHoverOrange fr" style="margin-left: 16px;"
-              @click="resetAll">恢复系统设置</div>
-            <div class="btn backHoverGreen fr" style="margin-left: 16px;"
-              @click="resetNow">重置本次操作</div>
+          <div class="clearfix" style="margin-bottom: 20px">
+            <div class="btn backHoverOrange fr" style="margin-left: 16px" @click="resetAll">恢复系统设置</div>
+            <div class="btn backHoverGreen fr" style="margin-left: 16px" @click="resetNow">重置本次操作</div>
           </div>
           <div class="list">
             <div class="row title">
@@ -25,37 +25,44 @@
               <div class="column">是否锁定在左侧</div>
               <div class="column">排序操作</div>
             </div>
-            <div class="row"
-              v-for="item in selfData"
-              :key="item.index"
-              :class="{'lock':item.ifLock}">
-              <div class="column">{{item.name}}</div>
+            <div class="row" v-for="item in selfData" :key="item.index" :class="{ lock: item.ifLock }">
+              <div class="column">{{ item.name }}</div>
               <div class="column">
-                <el-checkbox v-model="item.ifShow"
-                  :disabled="item.ifImage||(!!item.from)">{{item.ifShow?'显示':'不显示'}}</el-checkbox>
+                <el-checkbox v-model="item.ifShow" :disabled="item.ifImage || !!item.from">{{
+                  item.ifShow ? '显示' : '不显示'
+                }}</el-checkbox>
               </div>
               <div class="column">
-                <el-checkbox v-model="item.ifLock"
-                  @change="changeIndex(item.index,3)"
-                  :disabled="item.ifImage||(!!item.from)">{{item.ifLock?'锁定':'不锁定'}}</el-checkbox>
+                <el-checkbox
+                  v-model="item.ifLock"
+                  @change="changeIndex(item.index, 3)"
+                  :disabled="item.ifImage || !!item.from"
+                  >{{ item.ifLock ? '锁定' : '不锁定' }}</el-checkbox
+                >
               </div>
               <div class="column">
-                <div class="opr"
-                  :class="item.index===0?'disable':'hoverBlue'"
-                  @click="changeIndex(item.index,1)">上移</div>
-                <div class="opr"
-                  :class="item.index===selfData.length-1?'disable':'hoverBlue'"
-                  @click="changeIndex(item.index,2)">下移</div>
+                <div
+                  class="opr"
+                  :class="item.index === 0 ? 'disable' : 'hoverBlue'"
+                  @click="changeIndex(item.index, 1)"
+                >
+                  上移
+                </div>
+                <div
+                  class="opr"
+                  :class="item.index === selfData.length - 1 ? 'disable' : 'hoverBlue'"
+                  @click="changeIndex(item.index, 2)"
+                >
+                  下移
+                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
       <div class="oprCtn">
-        <div class="btn borderBtn"
-          @click="close">取消</div>
-        <div class="btn backHoverBlue"
-          @click="saveSetting">保存显示方案</div>
+        <div class="btn borderBtn" @click="close">取消</div>
+        <div class="btn backHoverBlue" @click="saveSetting">保存显示方案</div>
       </div>
     </div>
   </div>
@@ -74,7 +81,7 @@ export default Vue.extend({
       type: Boolean,
       required: true
     },
-    // 1:订单 2.纱线采购 
+    // 1:订单 2.纱线采购
     type: {
       type: Number,
       required: true

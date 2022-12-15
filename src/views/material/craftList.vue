@@ -1,188 +1,149 @@
 <template>
   <div class="indexMain">
-    <div class="module"
-      v-loading="loading">
+    <div class="module" v-loading="loading">
       <div class="titleCtn">
         <span class="title hasBorder">工艺单列表</span>
-        <span class="addBtn btn btnMain"
-          @click="$router.push('/material/craftCreate')">添加工艺单</span>
+        <span class="addBtn btn btnMain" @click="$router.push('/material/craftCreate')">添加工艺单</span>
       </div>
       <div class="listCtn">
-        <div class="filterCtn"
-          :class="{'showMore':showMore}">
+        <div class="filterCtn" :class="{ showMore: showMore }">
           <div class="leftCtn">
             <div class="label">筛选条件：</div>
-            <div class="showMore"
-              @click="showMore=!showMore">{{!showMore?'展示更多':'收起筛选'}}</div>
+            <div class="showMore" @click="showMore = !showMore">{{ !showMore ? '展示更多' : '收起筛选' }}</div>
             <div class="elCtn">
-              <el-input v-model="name"
-                placeholder="搜索纺纱名称"
-                @change="changeRouter(1)"></el-input>
+              <el-input v-model="name" placeholder="搜索纺纱名称" @change="changeRouter(1)"></el-input>
             </div>
             <div class="elCtn">
-              <el-input v-model="code"
-                placeholder="搜索工艺单编号"
-                @change="changeRouter(1)"></el-input>
+              <el-input v-model="code" placeholder="搜索工艺单编号" @change="changeRouter(1)"></el-input>
             </div>
             <div class="elCtn">
-              <el-select v-model="client_id"
-                clearable
-                placeholder="筛选混纺单位"
-                @change="changeRouter(1)">
-                <el-option v-for="item in supplier_list"
-                  :key="item.id"
-                  :value="item.id"
-                  :label="item.name"></el-option>
+              <el-select v-model="client_id" clearable placeholder="筛选混纺单位" @change="changeRouter(1)">
+                <el-option v-for="item in supplier_list" :key="item.id" :value="item.id" :label="item.name"></el-option>
               </el-select>
             </div>
             <div class="elCtn">
-              <el-select v-model="user_id"
-                clearable
-                placeholder="筛选创建人"
-                @change="changeRouter(1)">
-                <el-option v-for="item in user_list"
-                  :key="item.id"
-                  :value="item.id"
-                  :label="item.name"></el-option>
+              <el-select v-model="user_id" clearable placeholder="筛选创建人" @change="changeRouter(1)">
+                <el-option v-for="item in user_list" :key="item.id" :value="item.id" :label="item.name"></el-option>
               </el-select>
             </div>
             <div class="elCtn middle">
-              <el-select v-model="status"
-                clearable
-                placeholder="筛选状态">
-              </el-select>
+              <el-select v-model="status" clearable placeholder="筛选状态"> </el-select>
             </div>
-            <div class="elCtn middle"
-              style="width:350px;">
-              <el-date-picker v-model="date"
+            <div class="elCtn middle" style="width: 350px">
+              <el-date-picker
+                v-model="date"
                 value-format="yyyy-MM-dd"
                 type="daterange"
                 range-separator="至"
                 start-placeholder="开始日期"
                 end-placeholder="结束日期"
-                @change="changeRouter(1)">
+                @change="changeRouter(1)"
+              >
               </el-date-picker>
             </div>
             <div class="elCtn middle">
-              <el-select v-model="page_size"
-                placeholder="选择每页展示的条数"
-                @change="changeRouter(1)">
-                <el-option label="每页10条"
-                  :value="10"></el-option>
-                <el-option label="每页20条"
-                  :value="20"></el-option>
-                <el-option label="每页30条"
-                  :value="30"></el-option>
+              <el-select v-model="page_size" placeholder="选择每页展示的条数" @change="changeRouter(1)">
+                <el-option label="每页10条" :value="10"></el-option>
+                <el-option label="每页20条" :value="20"></el-option>
+                <el-option label="每页30条" :value="30"></el-option>
               </el-select>
             </div>
           </div>
           <div class="rightCtn">
-            <div class="btn btnGray fr"
-              @click="reset">重置</div>
+            <div class="btn btnGray fr" @click="reset">重置</div>
           </div>
         </div>
         <div class="list">
           <div class="list">
-            <el-table :data="list"
-              style="width: 100%"
-              ref="table">
-              <el-table-column fixed
-                prop="code"
-                label="工艺单号"
-                width="120">
-              </el-table-column>
-              <el-table-column fixed
-                prop="client_name"
-                label="加工单位"
-                width="140">
-              </el-table-column>
-              <el-table-column prop="status"
-                label="工艺单状态"
-                width="120">
+            <el-table :data="list" style="width: 100%" ref="table">
+              <el-table-column fixed prop="code" label="工艺单号" width="120"> </el-table-column>
+              <el-table-column fixed prop="client_name" label="加工单位" width="140"> </el-table-column>
+              <el-table-column prop="status" label="工艺单状态" width="120">
                 <template slot-scope="scope">
-                  <span :class="{'orange':scope.row.status===1,'blue':scope.row.status===2,'green':scope.row.status===3}">{{scope.row.status | orderStatusFilter}}</span>
+                  <span
+                    :class="{
+                      orange: scope.row.status === 1,
+                      blue: scope.row.status === 2,
+                      green: scope.row.status === 3
+                    }"
+                    >{{ scope.row.status | orderStatusFilter }}</span
+                  >
                 </template>
               </el-table-column>
-              <el-table-column prop="is_check"
-                label="审核信息"
-                width="120">
+              <el-table-column prop="is_check" label="审核信息" width="120">
                 <template slot-scope="scope">
-                  <span :class="{'orange':!scope.row.is_check,'green':scope.row.is_check===1,'red':scope.row.is_check===2}">{{scope.row.is_check | orderCheckFilter}}</span>
+                  <span
+                    :class="{
+                      orange: !scope.row.is_check,
+                      green: scope.row.is_check === 1,
+                      red: scope.row.is_check === 2
+                    }"
+                    >{{ scope.row.is_check | orderCheckFilter }}</span
+                  >
                 </template>
               </el-table-column>
-              <el-table-column prop="yarn_name"
-                label="纺纱名称"
-                width="140">
-              </el-table-column>
-              <el-table-column prop="weight"
-                label="纺纱重量(吨)"
-                width="140">
-              </el-table-column>
-              <el-table-column prop="total_fee"
-                label="总费用(元)"
-                width="140">
-              </el-table-column>
-              <el-table-column prop="date"
-                label="交货日期"
-                width="120">
+              <el-table-column prop="yarn_name" label="纺纱名称" width="140"> </el-table-column>
+              <el-table-column prop="weight" label="纺纱重量(吨)" width="140"> </el-table-column>
+              <el-table-column prop="total_fee" label="总费用(元)" width="140"> </el-table-column>
+              <el-table-column prop="date" label="交货日期" width="120">
                 <template slot-scope="scope">
-                  <div v-if="scope.row.status!==3"
-                    style="display:flex;flex-direction:column">
-                    <span>{{scope.row.date}}</span>
-                    <span :class="{'red':$diffByDate(scope.row.date)<=0,'green':$diffByDate(scope.row.date)>7,'orange':$diffByDate(scope.row.date)<=7 &&$diffByDate(scope.row.date)>0 }">
-                      {{$diffByDate(scope.row.date)>0?'交货还剩'+$diffByDate(scope.row.date)+'天':'延期发货'+Math.abs($diffByDate(scope.row.date))+'天'}}
+                  <div v-if="scope.row.status !== 3" style="display: flex; flex-direction: column">
+                    <span>{{ scope.row.date }}</span>
+                    <span
+                      :class="{
+                        red: $diffByDate(scope.row.date) <= 0,
+                        green: $diffByDate(scope.row.date) > 7,
+                        orange: $diffByDate(scope.row.date) <= 7 && $diffByDate(scope.row.date) > 0
+                      }"
+                    >
+                      {{
+                        $diffByDate(scope.row.date) > 0
+                          ? '交货还剩' + $diffByDate(scope.row.date) + '天'
+                          : '延期发货' + Math.abs($diffByDate(scope.row.date)) + '天'
+                      }}
                     </span>
                   </div>
-                  <div v-if="scope.row.status===3"
-                    style="display:flex;flex-direction:column">
-                    <span>{{scope.row.date}}</span>
+                  <div v-if="scope.row.status === 3" style="display: flex; flex-direction: column">
+                    <span>{{ scope.row.date }}</span>
                     <span class="green">已完成</span>
                   </div>
                 </template>
               </el-table-column>
-              <el-table-column prop="order_time"
-                label="下单日期"
-                width="120">
-              </el-table-column>
+              <el-table-column prop="order_time" label="下单日期" width="120"> </el-table-column>
               <el-table-column label="补充说明">
                 <template slot-scope="scope">
                   <div class="column">
-                    <el-image style="width: 50px; height: 50px;line-height:50px;text-align:center;font-size:22px"
+                    <el-image
+                      style="width: 50px; height: 50px; line-height: 50px; text-align: center; font-size: 22px"
                       :src="scope.row.file_url"
-                      :preview-src-list="[scope.row.file_url]">
-                      <div slot="error"
-                        class="image-slot">
+                      :preview-src-list="[scope.row.file_url]"
+                    >
+                      <div slot="error" class="image-slot">
                         <i class="el-icon-picture-outline"></i>
                       </div>
                     </el-image>
                   </div>
                 </template>
               </el-table-column>
-              <el-table-column prop="user_name"
-                label="操作人"
-                width="120">
-              </el-table-column>
-              <el-table-column fixed="right"
-                label="操作"
-                width="150">
+              <el-table-column prop="user_name" label="操作人" width="120"> </el-table-column>
+              <el-table-column fixed="right" label="操作" width="150">
                 <template slot-scope="scope">
-                  <span class="opr blue"
-                    @click="$router.push('/material/craftDetail/' + scope.row.id)">详情</span>
-                  <span class="opr orange"
-                    @click="$router.push('/material/craftUpdate/' + scope.row.id)">修改</span>
-                  <span class="opr red"
-                    @click="deleteCraft(scope.row.id)">删除</span>
+                  <span class="opr blue" @click="$router.push('/material/craftDetail/' + scope.row.id)">详情</span>
+                  <span class="opr orange" @click="$router.push('/material/craftUpdate/' + scope.row.id)">修改</span>
+                  <span class="opr red" @click="deleteCraft(scope.row.id)">删除</span>
                 </template>
               </el-table-column>
             </el-table>
           </div>
         </div>
         <div class="pageCtn">
-          <el-pagination background
+          <el-pagination
+            background
             :current-page.sync="page"
             :page-size="page_size"
             layout="prev, pager, next"
-            :total="total">
+            :total="total"
+          >
           </el-pagination>
         </div>
       </div>
@@ -292,7 +253,7 @@ export default Vue.extend({
         })
     },
     // 下面两个函数是让el-table滚动的
-    scrollFunction(obj:any, id:any) {
+    scrollFunction(obj: any, id: any) {
       obj = document.getElementById(id)
       if (obj.attachEvent) {
         obj.attachEvent('onmousewheel', this.mouseScroll(obj))
@@ -301,16 +262,20 @@ export default Vue.extend({
       }
       obj.onmousewheel = obj.onmousewheel = this.mouseScroll(obj)
     },
-    mouseScroll(obj:any) {
-      return function () {
+    mouseScroll(obj: any) {
+      return () => {
         let e = window.event || document.all ? window.event : arguments[0] ? arguments[0] : event
-        let detail, moveForwardStep, moveBackStep
+        let detail
+        let moveForwardStep
+        let moveBackStep
         let step = 0
-        if (e.wheelDelta) { // google 下滑负数： -120
+        if (e.wheelDelta) {
+          // google 下滑负数： -120
           detail = e.wheelDelta
           moveForwardStep = -1
           moveBackStep = 1
-        } else if (e.detail) { // firefox 下滑正数：3
+        } else if (e.detail) {
+          // firefox 下滑正数：3
           // @ts-ignore
           detail = event.detail
           moveForwardStep = 1
@@ -322,8 +287,10 @@ export default Vue.extend({
         let left = obj.querySelector('table').clientWidth - obj.clientWidth
         //这里是为了向右滚动后再向下滚动，向左滚动后再向上滚动，如果不需要，只需要写e.preventDefault()
         //-------------------
-        if (moveForwardStep === -1) {//google
-          if (detail > 0) {//向上
+        if (moveForwardStep === -1) {
+          //google
+          if (detail > 0) {
+            //向上
             if (obj.scrollLeft > 0) {
               e.preventDefault()
             } else {
@@ -336,8 +303,10 @@ export default Vue.extend({
               return true
             }
           }
-        } else {//firefox
-          if (detail > 0) {//向下
+        } else {
+          //firefox
+          if (detail > 0) {
+            //向下
             if (obj.scrollLeft < left) {
               e.preventDefault()
             } else {
@@ -409,7 +378,8 @@ export default Vue.extend({
 
 <style>
 /* el-table 自定义滚动条的时候没有白线 */
-.el-table__fixed-right::before, .el-table__fixed::before {
-  content:unset
+.el-table__fixed-right::before,
+.el-table__fixed::before {
+  content: unset;
 }
 </style>

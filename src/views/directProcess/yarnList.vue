@@ -14,7 +14,7 @@
       </div>
       <div class="listCtn">
         <div class="filterCtn showMore">
-          <div class="leftCtn" style="padding:unset;max-width:unset">
+          <div class="leftCtn" style="padding: unset; max-width: unset">
             <div class="label">筛选条件：</div>
             <!-- <div class="showMore" @click="showMore = !showMore">{{ !showMore ? '展示更多' : '收起筛选' }}</div> -->
             <div class="elCtn">
@@ -22,7 +22,12 @@
             </div>
             <div class="elCtn">
               <el-select v-model="client_id" placeholder="选择加工单位" clearable @change="changeRouter(1)">
-                <el-option v-for="item in client_arr" :key="item.id + '加工单位'" :value="item.id" :label="item.name"></el-option>
+                <el-option
+                  v-for="item in client_arr"
+                  :key="item.id + '加工单位'"
+                  :value="item.id"
+                  :label="item.name"
+                ></el-option>
               </el-select>
             </div>
             <div class="elCtn">
@@ -30,7 +35,12 @@
             </div>
             <div class="elCtn">
               <el-select v-model="user_id" clearable placeholder="选择创建人">
-                <el-option v-for="item in user_list" :key="item.id + '创建人'" :value="item.id" :label="item.name"></el-option>
+                <el-option
+                  v-for="item in user_list"
+                  :key="item.id + '创建人'"
+                  :value="item.id"
+                  :label="item.name"
+                ></el-option>
               </el-select>
             </div>
             <div class="elCtn">
@@ -52,7 +62,7 @@
               </el-date-picker>
             </div>
           </div>
-          <div class="rightCtn" style="min-width:94px">
+          <div class="rightCtn" style="min-width: 94px">
             <div class="btn btnGray fr" @click="reset">重置</div>
           </div>
         </div>
@@ -71,7 +81,7 @@
                           <div class="column min120">加工单状态</div>
                           <div class="column min120">审核信息</div>
                           <div class="column min120">纱线名称</div>
-                          <div class="column" style="max-width:150px;min-width:150px">加工详情</div>
+                          <div class="column" style="max-width: 150px; min-width: 150px">加工详情</div>
                           <div class="column min120">加工数量(kg)</div>
                           <div class="column min120">加工总数(kg)</div>
                           <div class="column min120">下单总价(kg)</div>
@@ -81,11 +91,16 @@
                           <div class="column min120">操作人</div>
                         </div>
                       </div>
-                      <div class="column" style="min-width:162px;box-sizing: border-box;">操作</div>
+                      <div class="column" style="min-width: 162px; box-sizing: border-box">操作</div>
                     </div>
                   </div>
                   <div class="bodyCtn">
-                    <div class="row" v-for="item in list" :key="item.id + item.code + '调取单层级'" :style="{ height: 51 * item.process_info.length - 1 + 'px' }">
+                    <div
+                      class="row"
+                      v-for="item in list"
+                      :key="item.id + item.code + '调取单层级'"
+                      :style="{ height: 51 * item.process_info.length - 1 + 'px' }"
+                    >
                       <div class="column min120">{{ item.code }}</div>
                       <div class="column noPad" style="flex: 10; flex-direction: column">
                         <div
@@ -127,7 +142,7 @@
                               <span>{{ itemPro.child_data[itemPro.index || 0].name }}</span>
                             </div>
                           </div>
-                          <div class="column" style="max-width:150px;min-width:150px">
+                          <div class="column" style="max-width: 150px; min-width: 150px">
                             <span class="green" style="margin-right: 12px">{{ itemPro.type }}</span>
                             <span v-if="itemPro.type === '倒筒'">
                               {{ itemPro.child_data[itemPro.index || 0].before_attribute }}
@@ -159,7 +174,8 @@
                                 :class="{
                                   red: $diffByDate(itemPro.delivery_time) <= 0,
                                   green: $diffByDate(itemPro.delivery_time) > 7,
-                                  orange: $diffByDate(itemPro.delivery_time) <= 7 && $diffByDate(itemPro.delivery_time) > 0
+                                  orange:
+                                    $diffByDate(itemPro.delivery_time) <= 7 && $diffByDate(itemPro.delivery_time) > 0
                                 }"
                               >
                                 {{
@@ -189,7 +205,7 @@
                           <div class="column min120">{{ item.user_name }}</div>
                         </div>
                       </div>
-                      <div class="column" style="min-width:162px;box-sizing: border-box;"></div>
+                      <div class="column" style="min-width: 162px; box-sizing: border-box"></div>
                     </div>
                   </div>
                 </div>
@@ -209,7 +225,12 @@
                   </div>
                 </div>
                 <div class="bodyCtn">
-                  <div class="row" v-for="item in list" :key="item.id + 'listInfo'" :style="{ height: 51 * item.process_info.length - 1 + 'px' }">
+                  <div
+                    class="row"
+                    v-for="item in list"
+                    :key="item.id + 'listInfo'"
+                    :style="{ height: 51 * item.process_info.length - 1 + 'px' }"
+                  >
                     <div class="column min120 blue">
                       {{ item.code }}
                     </div>
@@ -233,9 +254,16 @@
                   </div>
                 </div>
                 <div class="bodyCtn">
-                  <div class="row" v-for="item in list" :key="item.id + 'sss'" :style="{ height: 51 * item.process_info.length - 1 + 'px' }">
+                  <div
+                    class="row"
+                    v-for="item in list"
+                    :key="item.id + 'sss'"
+                    :style="{ height: 51 * item.process_info.length - 1 + 'px' }"
+                  >
                     <div class="column">
-                      <span class="opr blue" @click="$router.push('/directProcess/yarnDetailNew/' + item.id)">详情</span>
+                      <span class="opr blue" @click="$router.push('/directProcess/yarnDetailNew/' + item.id)"
+                        >详情</span
+                      >
                       <span class="opr orange" @click="openUpdate(item)">修改</span>
                       <span class="opr red" @click="openDelete(item.id)">删除</span>
                     </div>
@@ -251,7 +279,13 @@
         </div>
       </div>
     </div>
-    <add-trans-process :update_flag='update_flag' :create_flag='create_flag' :info='info' @close='resetProcess()' @afterCreate='getList()'></add-trans-process>
+    <add-trans-process
+      :update_flag="update_flag"
+      :create_flag="create_flag"
+      :info="info"
+      @close="resetProcess()"
+      @afterCreate="getList()"
+    ></add-trans-process>
   </div>
 </template>
 
@@ -272,7 +306,7 @@ export default Vue.extend({
       second_select_store_id: '',
       page: 1,
       total: 1,
-      info:{},
+      info: {},
       uploadIndex: '',
       page_size: 10,
       showMore: false,
@@ -400,7 +434,8 @@ export default Vue.extend({
     },
     getList() {
       this.loading = true
-      stock.list({
+      stock
+        .list({
           process_code: this.code,
           process_client_id: this.client_id,
           process_user_id: this.user_id,
@@ -415,18 +450,19 @@ export default Vue.extend({
           this.list = res.data.data.items
           this.total = res.data.data.total
           this.list.forEach((item: any) => {
-            item.process_info.forEach((itemPro:any) => {
-              itemPro.total_weight = itemPro.child_data.reduce((total: number, current: any) => {
-                return total + +current.weight
-              }, 0).toFixed(1)
-            });
+            item.process_info.forEach((itemPro: any) => {
+              itemPro.total_weight = itemPro.child_data
+                .reduce((total: number, current: any) => {
+                  return total + +current.weight
+                }, 0)
+                .toFixed(1)
+            })
           })
           this.loading = false
           this.$forceUpdate()
         })
     },
-    
-    
+
     beforeAvatarUpload(file: any) {
       const fileName = file.name.lastIndexOf('.') // 取到文件名开始到最后一个点的长度
       const fileNameLength = file.name.length // 取到文件名长度
@@ -540,7 +576,7 @@ export default Vue.extend({
 .el-table__fixed::before {
   content: unset;
 }
-.el-date-editor.el-input{
-  width:100%;
+.el-date-editor.el-input {
+  width: 100%;
 }
 </style>

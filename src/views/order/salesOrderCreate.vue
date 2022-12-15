@@ -879,9 +879,9 @@ export default Vue.extend({
         const clipboardData = event.clipboardData || event.originalEvent.clipboardData
         if (clipboardData.items) {
           let blob
-          for (let i = 0; i < clipboardData.items.length; i++) {
-            if (clipboardData.items[i].type.indexOf('image') !== -1) {
-              blob = clipboardData.items[i].getAsFile()
+          for (let item of clipboardData.items) {
+            if (item.type.indexOf('image') !== -1) {
+              blob = item.getAsFile()
             }
           }
           const render = new FileReader()

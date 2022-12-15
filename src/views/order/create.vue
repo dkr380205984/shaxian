@@ -21,18 +21,21 @@
               <span class="text">下单客户</span>
               <span class="explanation">
                 (必选)
-                <el-tooltip class="item"
-                  effect="dark"
-                  content="设置成功后请点击此按钮刷新数据"
-                  placement="top">
-                  <i class="el-icon-refresh hoverGreen"
-                    style="line-height:46px;font-size:18px;margin-left:8px;cursor:pointer"
-                    @click="$checkCommonInfo([{
-                      checkWhich: 'api/client',
-                      getInfoMethed: 'dispatch',
-                      getInfoApi: 'getPartyBAsync',
-                      forceUpdate:true
-                    }])"></i>
+                <el-tooltip class="item" effect="dark" content="设置成功后请点击此按钮刷新数据" placement="top">
+                  <i
+                    class="el-icon-refresh hoverGreen"
+                    style="line-height: 46px; font-size: 18px; margin-left: 8px; cursor: pointer"
+                    @click="
+                      $checkCommonInfo([
+                        {
+                          checkWhich: 'api/client',
+                          getInfoMethed: 'dispatch',
+                          getInfoApi: 'getPartyBAsync',
+                          forceUpdate: true
+                        }
+                      ])
+                    "
+                  ></i>
                 </el-tooltip>
                 <el-tooltip class="item" effect="dark" content="添加客户" placement="top">
                   <i
@@ -122,11 +125,7 @@
                         <div class="tcolumn" style="position: relative">
                           纱线属性
                           <el-tooltip class="item" effect="dark" content="统一属性" placement="top">
-                            <svg
-                              class="iconFont copyIcon hoverBlue"
-                              aria-hidden="true"
-                              @click="copyInfo('attribute')"
-                            >
+                            <svg class="iconFont copyIcon hoverBlue" aria-hidden="true" @click="copyInfo('attribute')">
                               <use xlink:href="#icon-tongbushuju1"></use>
                             </svg>
                           </el-tooltip>
@@ -222,25 +221,18 @@
                         <div class="tcolumn flexRow" style="flex: 0.5">
                           <span
                             class="opr red"
-                            style="margin:0 3px"
+                            style="margin: 0 3px"
                             @click="deleteOnce(itemPro.child_data, indexChild, indexPro)"
                             >删除</span
                           >
-                          <span
-                            style="margin:0 3px"
-                            class="opr blue"
-                            @click="parseThis(indexPro,indexChild)"
-                          >
+                          <span style="margin: 0 3px" class="opr blue" @click="parseThis(indexPro, indexChild)">
                             复制
                           </span>
                         </div>
                       </div>
                     </div>
                     <div class="tcolumn" style="flex: 0.3">
-                      <span
-                        class="opr hoverRed"
-                        @click="deletePro(order_info.product_info, indexPro)"
-                        >删除纱线</span>
+                      <span class="opr hoverRed" @click="deletePro(order_info.product_info, indexPro)">删除纱线</span>
                     </div>
                   </div>
                 </div>
@@ -614,7 +606,7 @@ export default Vue.extend({
             errMsg: '请选择下单客户'
           },
           {
-            key:'order_time',
+            key: 'order_time',
             errMsg: '请选择下单日期'
           },
           {
@@ -722,16 +714,14 @@ export default Vue.extend({
           //       '/order/list?page=1&&order_code=&&product_name=&&client_id=&&user_id=&&page_size=10&&date='
           //     )
           //   })
-          this.$router.push(
-            '/order/detail/' + res.data.data
-          )
+          this.$router.push('/order/detail/' + res.data.data)
         } else {
           this.loading = false
         }
       })
     },
     // 粘贴该行
-    parseThis(index: number,indexChild:number) {
+    parseThis(index: number, indexChild: number) {
       let strCopyOption = this.copyOption.toString()
 
       // $addItem(itemPro.child_data, {
@@ -752,27 +742,27 @@ export default Vue.extend({
       }
 
       // 复制属性
-      if (strCopyOption.indexOf('attribute') != -1) {
+      if (strCopyOption.indexOf('attribute') !== -1) {
         obj.attribute = itemChild.attribute
       }
 
       // 复制数量属性
-      if (strCopyOption.indexOf('number_attribute') != -1) {
+      if (strCopyOption.indexOf('number_attribute') !== -1) {
         obj.number_attribute = itemChild.number_attribute
       }
 
       // 复制单价
-      if (strCopyOption.indexOf('price') != -1) {
+      if (strCopyOption.indexOf('price') !== -1) {
         obj.price = itemChild.price
       }
 
       // 复制纱线颜色
-      if (strCopyOption.indexOf('color') != -1) {
+      if (strCopyOption.indexOf('color') !== -1) {
         obj.color = itemChild.color
       }
 
       // 复制下单数量
-      if (strCopyOption.indexOf('weight') != -1) {
+      if (strCopyOption.indexOf('weight') !== -1) {
         obj.weight = itemChild.weight
       }
 
@@ -826,13 +816,13 @@ export default Vue.extend({
         let clipboardData = event.clipboardData || event.originalEvent.clipboardData
         if (clipboardData.items) {
           let blob
-          for (let i = 0; i < clipboardData.items.length; i++) {
-            if (clipboardData.items[i].type.indexOf('image') !== -1) {
-              blob = clipboardData.items[i].getAsFile()
+          for (let item of clipboardData.items) {
+            if (item.type.indexOf('image') !== -1) {
+              blob = item.getAsFile()
             }
           }
           let render = new FileReader()
-          render.onload = function (evt: any) {
+          render.onload = (evt: any) => {
             //输出base64编码
             const base64 = evt.target.result
             // @ts-ignore
@@ -848,7 +838,7 @@ export default Vue.extend({
             formData.append('file', _this.dataURLtoFile(base64, filename))
             xhr.open('POST', url, true)
             xhr.send(formData)
-            xhr.onreadystatechange = function () {
+            xhr.onreadystatechange = () => {
               _this.loading = false
               if (xhr.readyState === 4) {
                 _this.$message.success('上传成功')

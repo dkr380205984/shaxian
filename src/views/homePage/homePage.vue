@@ -325,31 +325,31 @@
           <div style="display: flex; padding-bottom: 20px">
             <div style="width: 33%">
               <div style="color: rgba(0, 0, 0, 0.45); font-weight: bold">总销售额</div>
-              <div style="font-size: 30px; margin-top: 10px">{{saleInfo.total_price}}万元</div>
+              <div style="font-size: 30px; margin-top: 10px">{{ saleInfo.total_price }}万元</div>
             </div>
             <div style="width: 33%">
               <div style="color: rgba(0, 0, 0, 0.45); font-weight: bold">总销售数量</div>
-              <div style="font-size: 30px; margin-top: 10px">{{saleInfo.total_weight}}吨</div>
+              <div style="font-size: 30px; margin-top: 10px">{{ saleInfo.total_weight }}吨</div>
             </div>
             <div style="width: 33%"></div>
           </div>
-          <div style="height:340px">
+          <div style="height: 340px">
             <zh-charts :option="option1"></zh-charts>
           </div>
         </div>
         <div style="padding: 20px 32px; flex: 1.3; border-left: 1px solid #d9d9d9">
-          <div class="title" style="font-weight: bold;padding-bottom:10px">客户销售金额排名</div>
+          <div class="title" style="font-weight: bold; padding-bottom: 10px">客户销售金额排名</div>
           <div style="max-height: 410px; overflow: scroll; padding: 0 10px">
             <div
-              style="margin-top: 10px; display: flex; align-items: center;"
+              style="margin-top: 10px; display: flex; align-items: center"
               v-for="(item, index) in saleInfo.client_data"
               :key="index + '客户销售金额排名'"
             >
               <div style="width: 10%; color: white">
                 <div class="bgBlue">{{ index + 1 }}</div>
               </div>
-              <div style="width: 65%">{{item.client_name}}</div>
-              <div style="width: 25%">{{item.price}} 万元</div>
+              <div style="width: 65%">{{ item.client_name }}</div>
+              <div style="width: 25%">{{ item.price }} 万元</div>
             </div>
           </div>
         </div>
@@ -395,31 +395,31 @@
           <div style="display: flex; padding-bottom: 20px">
             <div style="width: 33%">
               <div style="color: rgba(0, 0, 0, 0.45); font-weight: bold">总销售额</div>
-              <div style="font-size: 30px; margin-top: 10px">{{yarnTypeInfo.total_price}}万元</div>
+              <div style="font-size: 30px; margin-top: 10px">{{ yarnTypeInfo.total_price }}万元</div>
             </div>
             <div style="width: 33%">
               <div style="color: rgba(0, 0, 0, 0.45); font-weight: bold">总销售数量</div>
-              <div style="font-size: 30px; margin-top: 10px">{{yarnTypeInfo.total_number}}吨</div>
+              <div style="font-size: 30px; margin-top: 10px">{{ yarnTypeInfo.total_number }}吨</div>
             </div>
             <div style="width: 33%"></div>
           </div>
-          <div style="height:340px">
+          <div style="height: 340px">
             <zh-charts :option="option2"></zh-charts>
           </div>
         </div>
         <div style="padding: 20px 32px; flex: 1.3; border-left: 1px solid #d9d9d9">
-          <div class="title" style="font-weight: bold;padding-bottom:10px">客户销售金额排名</div>
+          <div class="title" style="font-weight: bold; padding-bottom: 10px">客户销售金额排名</div>
           <div style="max-height: 410px; overflow: scroll; padding: 0 10px">
             <div
-              style="margin-top: 10px; display: flex; align-items: center;"
+              style="margin-top: 10px; display: flex; align-items: center"
               v-for="(item, index) in yarnTypeInfo.material_data"
               :key="index + '客户销售金额排名'"
             >
               <div style="width: 10%; color: white">
                 <div class="bgBlue">{{ index + 1 }}</div>
               </div>
-              <div style="width: 65%">{{item.name}}</div>
-              <div style="width: 25%">{{item.price}} 万元</div>
+              <div style="width: 65%">{{ item.name }}</div>
+              <div style="width: 25%">{{ item.price }} 万元</div>
             </div>
           </div>
         </div>
@@ -546,12 +546,12 @@ export default Vue.extend({
       searchList: [[], [], [], [], [], [], [], [], [], [], [], []],
       saleObj: {
         id: '',
-        date: [new Date().getFullYear() + '-01-01',this.$getDate(new Date())]
+        date: [new Date().getFullYear() + '-01-01', this.$getDate(new Date())]
       },
-      saleInfo:{
-        client_data:[],
-        total_price:0,
-        total_weight:0
+      saleInfo: {
+        client_data: [],
+        total_price: 0,
+        total_weight: 0
       },
       option1: {
         tooltip: {
@@ -562,10 +562,10 @@ export default Vue.extend({
               color: '#999'
             }
           },
-          formatter : (params: any) => {
+          formatter: (params: any) => {
             var htmlStr = '<div>'
             htmlStr += params[0].name + '<br/>' //x轴的名称
-            params.forEach((param: any, index: number) => {
+            params.forEach((param: any, indexes: number) => {
               var color = param.color //图例颜色
 
               //为了保证和原来的效果一样，这里自己实现了一个点的效果
@@ -583,7 +583,7 @@ export default Vue.extend({
                 ';margin-right:10px">' +
                 param.value +
                 '</span>' +
-                (index === 1 ? '万元' : '吨')
+                (indexes === 1 ? '万元' : '吨')
 
               htmlStr += '</div>'
             })
@@ -592,7 +592,7 @@ export default Vue.extend({
           }
         },
         legend: {
-          data: ['销售数量','销售金额']
+          data: ['销售数量', '销售金额']
         },
         xAxis: [
           {
@@ -639,12 +639,12 @@ export default Vue.extend({
           }
         ]
       },
-      yarnTypeObj:{
-        date: [new Date().getFullYear() + '-01-01',this.$getDate(new Date())],
-        name: ['',''],
+      yarnTypeObj: {
+        date: [new Date().getFullYear() + '-01-01', this.$getDate(new Date())],
+        name: ['', ''],
         sortWay: 1
       },
-      yarnTypeInfo:{
+      yarnTypeInfo: {
         total_price: '',
         total_number: '',
         material_data: []
@@ -658,10 +658,10 @@ export default Vue.extend({
               color: '#999'
             }
           },
-          formatter : (params: any) => {
+          formatter: (params: any) => {
             var htmlStr = '<div>'
             htmlStr += params[0].name + '<br/>' //x轴的名称
-            params.forEach((param: any, index: number) => {
+            params.forEach((param: any, indexes: number) => {
               var color = param.color //图例颜色
 
               //为了保证和原来的效果一样，这里自己实现了一个点的效果
@@ -679,7 +679,7 @@ export default Vue.extend({
                 ';margin-right:10px">' +
                 param.value +
                 '</span>' +
-                (index === 1 ? '万元' : '吨')
+                (indexes === 1 ? '万元' : '吨')
 
               htmlStr += '</div>'
             })
@@ -711,7 +711,7 @@ export default Vue.extend({
           }
         ],
         legend: {
-          data: ['销售数量','销售金额']
+          data: ['销售数量', '销售金额']
         },
         xAxis: [
           {
@@ -722,22 +722,25 @@ export default Vue.extend({
             },
             axisLabel: {
               interval: 0,
-              formatter: function (params:any) {
-                let newParamsName = '';
-                const paramsNameNumber = params.length; // 文字总长度
-                const provideNumber = 6; //一行显示几个字
-                const rowNumber = Math.ceil(paramsNameNumber / provideNumber);
+              formatter: (params: any) => {
+                let newParamsName = ''
+                const paramsNameNumber = params.length // 文字总长度
+                const provideNumber = 6 //一行显示几个字
+                const rowNumber = Math.ceil(paramsNameNumber / provideNumber)
                 if (paramsNameNumber > provideNumber) {
                   for (let p = 0; p < rowNumber; p++) {
-                    const start = p * provideNumber;
-                    const end = start + provideNumber;
-                    const tempStr = p === rowNumber - 1 ? params.substring(start, paramsNameNumber) : params.substring(start, end) + '\n';
-                    newParamsName += tempStr;
+                    const start = p * provideNumber
+                    const end = start + provideNumber
+                    const tempStr =
+                      p === rowNumber - 1
+                        ? params.substring(start, paramsNameNumber)
+                        : params.substring(start, end) + '\n'
+                    newParamsName += tempStr
                   }
                 } else {
-                  newParamsName = params;
+                  newParamsName = params
                 }
-                return newParamsName;
+                return newParamsName
               }
             }
           }
@@ -750,7 +753,7 @@ export default Vue.extend({
             max: 25,
             interval: 5,
             axisLabel: {
-              formatter: '{value} 吨',
+              formatter: '{value} 吨'
             }
           },
           {
@@ -760,7 +763,7 @@ export default Vue.extend({
             max: 500,
             interval: 100,
             axisLabel: {
-              formatter: '{value} 万元',
+              formatter: '{value} 万元'
             }
           }
         ],
@@ -984,8 +987,8 @@ export default Vue.extend({
       this.getYarnTypeInfo()
     },
     getSaleClient() {
-      if(!this.saleObj.date) {
-        this.saleObj.date = [new Date().getFullYear() + '-01-01',this.$getDate(new Date())]
+      if (!this.saleObj.date) {
+        this.saleObj.date = [new Date().getFullYear() + '-01-01', this.$getDate(new Date())]
       }
       dateStatic
         .clientSellCharts({
@@ -996,24 +999,30 @@ export default Vue.extend({
         .then((res) => {
           let charts_data = res.data.data.charts_data
           let client_data = res.data.data.client_data
-          this.saleInfo.client_data = client_data.sort((a:any,b:any) => {
-            return b.price - a.price
-          }).map((item:any) => {
-            item.price = (item.price / 10000).toFixed(2)
-            return item
-          })
-          this.saleInfo.total_price = client_data.reduce((a:any,b:any) => {
-            return a + Number(b.price)
-          },0).toFixed(2)
-          this.saleInfo.total_weight = charts_data.reduce((a:any,b:any) => {
-            return a + Number((b.weight / 1000).toFixed(2))
-          },0).toFixed(2)
+          this.saleInfo.client_data = client_data
+            .sort((a: any, b: any) => {
+              return b.price - a.price
+            })
+            .map((item: any) => {
+              item.price = (item.price / 10000).toFixed(2)
+              return item
+            })
+          this.saleInfo.total_price = client_data
+            .reduce((a: any, b: any) => {
+              return a + Number(b.price)
+            }, 0)
+            .toFixed(2)
+          this.saleInfo.total_weight = charts_data
+            .reduce((a: any, b: any) => {
+              return a + Number((b.weight / 1000).toFixed(2))
+            }, 0)
+            .toFixed(2)
           this.option1.series[0].data = []
           this.option1.series[1].data = []
-          let maxPrice: any,
-            minPrice: any,
-            maxWeight: any,
-            minWeight: any = 0
+          let maxPrice: any = 0
+          let minPrice: any = 0
+          let maxWeight: any = 0
+          let minWeight: any = 0
 
           if (charts_data.length !== 0) {
             //  销售金额
@@ -1060,8 +1069,8 @@ export default Vue.extend({
         })
     },
     getYarnTypeInfo() {
-      if(!this.yarnTypeObj.date) {
-        this.yarnTypeObj.date = [new Date().getFullYear() + '-01-01',this.$getDate(new Date())]
+      if (!this.yarnTypeObj.date) {
+        this.yarnTypeObj.date = [new Date().getFullYear() + '-01-01', this.$getDate(new Date())]
       }
 
       dateStatic
@@ -1071,7 +1080,7 @@ export default Vue.extend({
           end_time: this.yarnTypeObj.date[1]
         })
         .then((res) => {
-          let charts_data = res.data.data.charts_data.sort((a:any,b:any) => {
+          let charts_data = res.data.data.charts_data.sort((a: any, b: any) => {
             if (this.yarnTypeObj.sortWay === 1) {
               return b.number - a.number
             } else if (this.yarnTypeObj.sortWay === 2) {
@@ -1079,24 +1088,30 @@ export default Vue.extend({
             }
           })
           let material_data = res.data.data.material_data
-          this.yarnTypeInfo.material_data = material_data.sort((a:any,b:any) => {
-            return b.price - a.price
-          }).map((item:any) => {
-            item.price = (item.price / 10000).toFixed(2)
-            return item
-          })
-          this.yarnTypeInfo.total_price = material_data.reduce((a:any,b:any) => {
-            return a + Number(b.price)
-          },0).toFixed(2)
-          this.yarnTypeInfo.total_number = charts_data.reduce((a:any,b:any) => {
-            return a + Number((b.number / 1000).toFixed(2))
-          },0).toFixed(2)
+          this.yarnTypeInfo.material_data = material_data
+            .sort((a: any, b: any) => {
+              return b.price - a.price
+            })
+            .map((item: any) => {
+              item.price = (item.price / 10000).toFixed(2)
+              return item
+            })
+          this.yarnTypeInfo.total_price = material_data
+            .reduce((a: any, b: any) => {
+              return a + Number(b.price)
+            }, 0)
+            .toFixed(2)
+          this.yarnTypeInfo.total_number = charts_data
+            .reduce((a: any, b: any) => {
+              return a + Number((b.number / 1000).toFixed(2))
+            }, 0)
+            .toFixed(2)
           this.option2.series[0].data = []
           this.option2.series[1].data = []
-          let maxPrice: any,
-            minPrice: any,
-            maxWeight: any,
-            minWeight: any = 0
+          let maxPrice: any = 0
+          let minPrice: any = 0
+          let maxWeight: any = 0
+          let minWeight: any = 0
 
           if (charts_data.length !== 0) {
             //  销售金额

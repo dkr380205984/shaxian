@@ -93,7 +93,7 @@
               <span class="text">{{ item.user }}</span>
               <span class="text">{{ item.total_number }}</span>
             </div>
-            <div v-if="searchList[1].length === 0" class="noMsg">暂无生产订单</div>
+            <div v-if="searchList[1] && searchList[1].length === 0" class="noMsg">暂无生产订单</div>
           </div>
           <!-- 销售订单 -->
           <div class="block" v-show="searchType === '2' || searchType === '0'">
@@ -112,7 +112,7 @@
               <span class="text">{{ item.user }}</span>
               <span class="text">{{ item.total_number }}</span>
             </div>
-            <div v-if="searchList[2].length === 0" class="noMsg">暂无相关销售订单</div>
+            <div v-if="searchList[2] && searchList[2].length === 0" class="noMsg">暂无相关销售订单</div>
           </div>
           <!-- 采购单 -->
           <div class="block" v-show="searchType === '3' || searchType === '0'">
@@ -131,7 +131,7 @@
               <span class="text">{{ item.user }}</span>
               <span class="text">{{ item.total_number }}</span>
             </div>
-            <div v-if="searchList[3].length === 0" class="noMsg">暂无相关采购单</div>
+            <div v-if="searchList[3] && searchList[3].length === 0" class="noMsg">暂无相关采购单</div>
           </div>
           <!-- 调取单 -->
           <div class="block" v-show="searchType === '4' || searchType === '0'">
@@ -148,7 +148,7 @@
               <span class="text">{{ item.user }}</span>
               <span class="text">{{ item.total_number }}</span>
             </div>
-            <div v-if="searchList[4].length === 0" class="noMsg">暂无相关调取单</div>
+            <div v-if="searchList[4] && searchList[4].length === 0" class="noMsg">暂无相关调取单</div>
           </div>
           <!-- 加工单 -->
           <div class="block" v-show="searchType === '5' || searchType === '0'">
@@ -169,7 +169,7 @@
               <span class="text">{{ item.user }}</span>
               <span class="text">{{ item.total_number }}</span>
             </div>
-            <div v-if="searchList[5].length === 0" class="noMsg">暂无相关加工单</div>
+            <div v-if="searchList[5] && searchList[5].length === 0" class="noMsg">暂无相关加工单</div>
           </div>
           <!-- 采购入库 -->
           <div class="block" v-show="searchType === '6' || searchType === '0'">
@@ -183,10 +183,10 @@
             <div class="info" v-for="item in searchList[6]" :key="item.id">
               <span class="text" @click="$openUrl('/directOrder/yarnDetail/' + item.related_id)">{{ item.code }}</span>
               <span class="text">{{ $getDate(item.created_at) }}</span>
-              <span class="text">{{ item.user_name }}</span>
+              <span class="text">{{ item.user }}</span>
               <span class="text">{{ item.total_number }}</span>
             </div>
-            <div v-if="searchList[6].length === 0" class="noMsg">暂无采购入库单</div>
+            <div v-if="searchList[6] && searchList[6].length === 0" class="noMsg">暂无采购入库单</div>
           </div>
           <!-- 调取回库 -->
           <div class="block" v-show="searchType === '7' || searchType === '0'">
@@ -207,7 +207,7 @@
               </span>
               <span class="text">{{ item.total_number }}</span>
             </div>
-            <div v-if="searchList[7].length === 0" class="noMsg">暂无相关调取回库单</div>
+            <div v-if="searchList[7] && searchList[7].length === 0" class="noMsg">暂无相关调取回库单</div>
           </div>
           <!-- 入库单 -->
           <div class="block" v-show="searchType === '8' || searchType === '0'">
@@ -228,7 +228,7 @@
               </span>
               <span class="text">{{ item.total_number }}</span>
             </div>
-            <div v-if="searchList[8].length === 0" class="noMsg">暂无相关入库单</div>
+            <div v-if="searchList[8] && searchList[8].length === 0" class="noMsg">暂无相关入库单</div>
           </div>
           <!-- 出库单 -->
           <div class="block" v-show="searchType === '9' || searchType === '0'">
@@ -249,7 +249,7 @@
               </span>
               <span class="text">{{ item.total_number }}</span>
             </div>
-            <div v-if="searchList[9].length === 0" class="noMsg">暂无相关出库单</div>
+            <div v-if="searchList[9] && searchList[9].length === 0" class="noMsg">暂无相关出库单</div>
           </div>
           <!-- 报价单 -->
           <div class="block" v-show="searchType === '10' || searchType === '0'">
@@ -268,7 +268,7 @@
               <span class="text">{{ $getDate(item.created_at) }}</span>
               <span class="text">{{ item.user }}</span>
             </div>
-            <div v-if="searchList[10].length === 0" class="noMsg">暂无相关报价单</div>
+            <div v-if="searchList[10] && searchList[10].length === 0" class="noMsg">暂无相关报价单</div>
           </div>
           <!-- 工艺单 -->
           <div class="block" v-show="searchType === '11' || searchType === '0'">
@@ -287,7 +287,7 @@
               <span class="text">{{ $getDate(item.created_at) }}</span>
               <span class="text">{{ item.user }}</span>
             </div>
-            <div v-if="searchList[11].length === 0" class="noMsg">暂无相关工艺单</div>
+            <div v-if="searchList[11] && searchList[11].length === 0" class="noMsg">暂无相关工艺单</div>
           </div>
         </div>
       </div>
@@ -408,7 +408,7 @@
           </div>
         </div>
         <div style="padding: 20px 32px; flex: 1.3; border-left: 1px solid #d9d9d9">
-          <div class="title" style="font-weight: bold; padding-bottom: 10px">客户销售金额排名</div>
+          <div class="title" style="font-weight: bold; padding-bottom: 10px">纱线种类排序</div>
           <div style="max-height: 410px; overflow: scroll; padding: 0 10px">
             <div
               style="margin-top: 10px; display: flex; align-items: center"
@@ -420,6 +420,67 @@
               </div>
               <div style="width: 65%">{{ item.name }}</div>
               <div style="width: 25%">{{ item.price }} 万元</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="module" style="margin-top: 32px">
+      <div class="titleCtn">
+        <span class="title">纱线库存数据</span>
+        <!-- <div class="fr elCtn">
+          <el-date-picker
+            v-model="storeObj.date"
+            type="daterange"
+            align="right"
+            unlink-panels
+            range-separator="至"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+            :picker-options="pickerOptions"
+            @change="getStoreInfo"
+          >
+          </el-date-picker>
+        </div>
+        <div class="fr elCtn" style="margin-right: 20px">
+          <el-cascader
+            v-model="storeObj.name"
+            filterable
+            clearable
+            :show-all-levels="false"
+            placeholder="请选择纱线"
+            :options="yarn_list"
+            @change="getStoreInfo"
+          ></el-cascader>
+        </div> -->
+      </div>
+      <div style="display: flex">
+        <div style="padding: 20px 32px; flex: 2.7">
+          <div style="display: flex; padding-bottom: 20px">
+            <div style="width: 33%">
+              <div style="color: rgba(0, 0, 0, 0.45); font-weight: bold">总库存数量</div>
+              <div style="font-size: 30px; margin-top: 10px">{{ storeInfo.total_number }}吨</div>
+            </div>
+            <div style="width: 33%"></div>
+            <div style="width: 33%"></div>
+          </div>
+          <div style="height: 340px">
+            <zh-charts :option="option3"></zh-charts>
+          </div>
+        </div>
+        <div style="padding: 20px 32px; flex: 1.3; border-left: 1px solid #d9d9d9">
+          <div class="title" style="font-weight: bold; padding-bottom: 10px">纱线库存数量排序</div>
+          <div style="max-height: 410px; overflow: scroll; padding: 0 10px">
+            <div
+              style="margin-top: 10px; display: flex; align-items: center"
+              v-for="(item, index) in storeInfo.material_data"
+              :key="index + '客户销售金额排名'"
+            >
+              <div style="width: 10%; color: white">
+                <div class="bgBlue">{{ index + 1 }}</div>
+              </div>
+              <div style="width: 65%">{{ item.name }}</div>
+              <div style="width: 25%">{{ item.number }} 吨</div>
             </div>
           </div>
         </div>
@@ -781,6 +842,120 @@ export default Vue.extend({
           }
         ]
       },
+      storeObj: {
+        date: [new Date().getFullYear() + '-01-01', this.$getDate(new Date())],
+        name: ['', '']
+      },
+      storeInfo: {
+        total_price: '',
+        total_number: '',
+        material_data: []
+      },
+      option3: {
+        tooltip: {
+          trigger: 'axis',
+          axisPointer: {
+            type: 'shadow',
+            crossStyle: {
+              color: '#999'
+            }
+          },
+          formatter: (params: any) => {
+            var htmlStr = '<div>'
+            htmlStr += params[0].name + '<br/>' //x轴的名称
+            params.forEach((param: any, indexes: number) => {
+              var color = param.color //图例颜色
+
+              //为了保证和原来的效果一样，这里自己实现了一个点的效果
+              htmlStr +=
+                (indexes === 0 || indexes === 1 ? '' : '<br/>') +
+                '<span style="margin-right:5px;display:inline-block;width:10px;height:10px;border-radius:5px;background-color:' +
+                color +
+                ';"></span>'
+
+              //添加一个汉字，这里你可以格式你的数字或者自定义文本内容
+              htmlStr +=
+                param.seriesName +
+                '：' +
+                '<span style="color:' +
+                color +
+                ';margin-right:10px">' +
+                param.value +
+                '</span>吨'
+
+              htmlStr += '</div>'
+            })
+
+            return htmlStr
+          }
+        },
+        dataZoom: [
+          {
+            start: 0, //默认为0
+            end: 100 - 1500 / 31, //默认为100
+            type: 'slider',
+            maxValueSpan: 10, //窗口的大小，显示数据的条数的
+            show: true,
+            handleSize: 0, //滑动条的 左右2个滑动条的大小
+            height: '7%', //组件高度
+            left: 65,
+            right: 85,
+            bottom: '-10',
+            borderColor: 'rgba(43,48,67,.8)',
+            fillerColor: '#33384b',
+            zoomLock: true,
+            brushSelect: false,
+            backgroundColor: 'rgba(43,48,67,.8)', //两边未选中的滑动条区域的颜色
+            showDataShadow: false, //是否显示数据阴影 默认auto
+            showDetail: false, //即拖拽时候是否显示详细数值信息 默认true
+            realtime: true, //是否实时更新
+            xAxisIndex: [0] //控制的 x轴
+          }
+        ],
+
+        legend: {
+          data: ['']
+        },
+        xAxis: [
+          {
+            type: 'category',
+            data: [],
+            axisLabel: {
+              interval: 0,
+              formatter: (params: any) => {
+                let newParamsName = ''
+                const paramsNameNumber = params.length // 文字总长度
+                const provideNumber = 6 //一行显示几个字
+                const rowNumber = Math.ceil(paramsNameNumber / provideNumber)
+                if (paramsNameNumber > provideNumber) {
+                  for (let p = 0; p < rowNumber; p++) {
+                    const start = p * provideNumber
+                    const end = start + provideNumber
+                    const tempStr =
+                      p === rowNumber - 1
+                        ? params.substring(start, paramsNameNumber)
+                        : params.substring(start, end) + '\n'
+                    newParamsName += tempStr
+                  }
+                } else {
+                  newParamsName = params
+                }
+                return newParamsName
+              }
+            }
+          }
+        ],
+        yAxis: [
+          {
+            type: 'value',
+            name: '',
+            axisLabel: {
+              formatter: '{value} 吨'
+            }
+          }
+        ],
+        series: []
+      },
       pickerOptions: {
         shortcuts: [
           {
@@ -985,6 +1160,7 @@ export default Vue.extend({
         })
       this.getSaleClient()
       this.getYarnTypeInfo()
+      this.getStoreInfo()
     },
     getSaleClient() {
       if (!this.saleObj.date) {
@@ -1075,7 +1251,7 @@ export default Vue.extend({
 
       dateStatic
         .materialSellCharts({
-          product_name: this.yarnTypeObj.name[1],
+          name: this.yarnTypeObj.name[1],
           start_time: this.yarnTypeObj.date[0],
           end_time: this.yarnTypeObj.date[1]
         })
@@ -1160,8 +1336,71 @@ export default Vue.extend({
           })
         })
     },
+    getStoreInfo() {
+      if (!this.storeObj.date) {
+        this.storeObj.date = [new Date().getFullYear() + '-01-01', this.$getDate(new Date())]
+      }
+
+      dateStatic.materialStoreCharts().then((res) => {
+        let charts_data = res.data.data.charts_data
+        let material_data = res.data.data.material_data
+        this.storeInfo.material_data = material_data
+          .sort((a: any, b: any) => {
+            return b.number - a.number
+          })
+          .map((item: any) => {
+            item.number = (item.number / 1000).toFixed(2)
+            return item
+          })
+        this.storeInfo.total_number = charts_data
+          .reduce((a: any, b: any) => {
+            return a + Number((b.number / 1000).toFixed(2))
+          }, 0)
+          .toFixed(2)
+
+        let store_arr: any = []
+        charts_data.forEach((item: any) => {
+          item.store_number.forEach((itemStore: any) => {
+            store_arr.push(itemStore.store_name)
+          })
+        })
+
+        store_arr = [...new Set(store_arr)]
+
+        this.option3.xAxis[0].data = charts_data.map((item: any) => {
+          return item.name
+        })
+
+        this.option3.legend.data = store_arr
+        let series: any = []
+
+        store_arr.forEach((itemStore: any) => {
+          let param: any = {
+            name: itemStore,
+            type: 'bar',
+            stack: '纱线',
+            data: []
+          }
+
+          charts_data.forEach((item: any) => {
+            let obj: any = item.store_number.find((itemChild: any) => {
+              return itemChild.store_name === itemStore
+            })
+            if (obj) {
+              param.data.push(+(obj.number / 1000).toFixed(2))
+            } else {
+              param.data.push(0)
+            }
+          })
+
+          series.push(param)
+        })
+
+        this.option3.series = series
+      })
+    },
     resetAll() {
-      this.searchList = []
+      this.searchList = [[], [], [], [], [], [], [], [], [], [], [], []],
       this.showSearch = false
       this.searchLoading = false
     },
@@ -1184,25 +1423,41 @@ export default Vue.extend({
         })
         .then((res) => {
           if (res.data.status) {
+            // 如果是全部的默认全部赋值
             let data = res.data.data
-            data[0] = [{ info: [] }]
-            // 以后如果有添加新的，记的这里+1
-            data.length = 12
+            if(this.searchType === '0'){
+              data[0] = [{ info: [] }]
+              // 以后如果有添加新的，记的这里+1
+              data.length = 12
 
-            data = Array.from(data)
-            data.forEach((item: any) => {
-              item.forEach((itemChild: any) => {
+              data = Array.from(data)
+              data.forEach((item: any) => {
+                item.forEach((itemChild: any) => {
+                  // 处理没有info的数据
+                  if (!itemChild.info) {
+                    itemChild.info = []
+                  }
+
+                  itemChild.total_number = itemChild.info.reduce((a: any, b: any) => {
+                    return a + Number(b?.action_weight || b?.weight || 0)
+                  }, 0)
+                })
+              })
+              this.searchList = data
+            } else {
+              // 不是全部的给他赋值对应的值
+              data.forEach((item: any) => {
                 // 处理没有info的数据
-                if (!itemChild.info) {
-                  itemChild.info = []
+                if (!item.info) {
+                  item.info = []
                 }
 
-                itemChild.total_number = itemChild.info.reduce((a: any, b: any) => {
+                item.total_number = item.info.reduce((a: any, b: any) => {
                   return a + Number(b?.action_weight || b?.weight || 0)
                 }, 0)
               })
-            })
-            this.searchList = data
+              this.searchList[+this.searchType] = data
+            }
             this.searchLoading = true
             if (!this.history.find((item: string) => item === this.searchValue)) {
               if (this.history.length < 10) {

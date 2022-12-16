@@ -245,7 +245,7 @@ const finance = {
 const dateStatic = {
   clientSellCharts: (params: any) => http.get(`${baseUrl}/client/sell/charts`, params),
   materialSellCharts: (params: any) => http.get(`${baseUrl}/material/sell/charts`, params),
-  materialStoreCharts: (params: any) => http.get(`${baseUrl}/material/store/charts`, params)
+  materialStoreCharts: () => http.get(`${baseUrl}/material/store/charts`)
 }
 
 // 导出excel

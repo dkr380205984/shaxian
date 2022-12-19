@@ -216,10 +216,10 @@
                 </div>
                 <div class="colCtn">
                   <div class="label">
-                    <span class="text">加工类型</span>
+                    <span class="text">加工类型/结算方式</span>
                     <span class="explanation">(必选)</span>
                   </div>
-                  <div class="content">
+                  <div class="content flexRow">
                     <div class="elCtn">
                       <el-select
                         :disabled="update_flag"
@@ -230,6 +230,18 @@
                         <el-option label="倒筒" value="倒筒"></el-option>
                         <el-option label="膨纱" value="膨纱"></el-option>
                         <el-option label="染色" value="染色"></el-option>
+                      </el-select>
+                    </div>
+                    <div class="elCtn">
+                      <el-select v-model="item.settle_type" placeholder="请选择结算方式">
+                        <el-option
+                          label="KP"
+                          value="KP">
+                        </el-option>
+                        <el-option
+                          label="BKP"
+                          value="BKP">
+                        </el-option>
                       </el-select>
                     </div>
                   </div>
@@ -653,6 +665,7 @@ export default Vue.extend({
         {
           transfer_id: '',
           client_id: '',
+          settle_type: 'KP',
           type: '',
           price: '',
           desc: '',
@@ -810,6 +823,7 @@ export default Vue.extend({
         this.diaoquNumber = data.child_data[0].action_weight
         this.process_info[0] = {
           transfer_id: data.id,
+          settle_type: 'KP',
           client_id: '',
           type: '',
           price: '',
@@ -875,6 +889,7 @@ export default Vue.extend({
       let data = this.processData
       this.process_info.push({
         transfer_id: data.id,
+        settle_type: 'KP',
         client_id: '',
         type: '',
         price: '',
@@ -1093,6 +1108,7 @@ export default Vue.extend({
       this.process_info = [
         {
           transfer_id: '',
+          settle_type: 'KP',
           client_id: '',
           type: '',
           price: '',

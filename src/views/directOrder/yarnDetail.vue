@@ -63,6 +63,12 @@
           </div>
         </div>
         <div class="rowCtn">
+          <div class="colCtn flex3">
+            <span class="label">结算方式：</span>
+            <span class="text">{{ order_yarn_info.settle_type }}</span>
+          </div>
+        </div>
+        <div class="rowCtn">
           <div class="colCtn">
             <span class="label">备注信息：</span>
             <span class="text">{{ order_yarn_info.desc || '无' }}</span>
@@ -629,6 +635,7 @@ export default Vue.extend({
         code: '',
         is_check: '',
         client_id: '',
+        settle_type: '',
         total_price: '',
         total_additional_fee: 0,
         child_data: [

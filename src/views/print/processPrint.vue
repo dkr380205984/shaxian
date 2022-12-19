@@ -43,7 +43,7 @@
         <div class="left">
           <span style="font-size: 17px">
             <span class="label">结算方式：</span>
-            {{ settle_type }}
+            {{ orderInfo.settle_type }}
           </span>
         </div>
         <div class="right">
@@ -85,14 +85,6 @@
             <div class="row_item center">{{ itemSon.weight }}kg</div>
             <div class="row_item center">{{ itemSon.price }}元</div>
           </div>
-          <div class="print_row fz14" style="min-height: 39px; max-height: 39px" v-if="itemSon.isAddFee">
-            <div class="row_item center bgGray flex05">额外费用名称</div>
-            <div class="row_item center">{{ itemSon.name }}</div>
-            <div class="row_item center bgGray flex05">额外费用金额</div>
-            <div class="row_item center">{{ itemSon.price ? itemSon.price + '元' : '' }}</div>
-            <div class="row_item center bgGray flex05">额外费用备注</div>
-            <div class="row_item center">{{ itemSon.desc }}</div>
-          </div>
           <div
             class="print_row fz14"
             v-if="itemSon.isTotal"
@@ -103,6 +95,14 @@
             <div class="row_item center bgGray"></div>
             <div class="row_item center bgGray">{{ orderInfo.total_weight || 0 }}kg</div>
             <div class="row_item center bgGray">{{ orderInfo.total_price || 0 }}元</div>
+          </div>
+          <div class="print_row fz14" style="min-height: 39px; max-height: 39px;border-bottom: 1px solid rgba(0, 0, 0, 0.25);border-top:unset" v-if="itemSon.isAddFee">
+            <div class="row_item center bgGray flex05">额外费用名称</div>
+            <div class="row_item center">{{ itemSon.name }}</div>
+            <div class="row_item center bgGray flex05">额外费用金额</div>
+            <div class="row_item center">{{ itemSon.price ? itemSon.price + '元' : '' }}</div>
+            <div class="row_item center bgGray flex05">额外费用备注</div>
+            <div class="row_item center">{{ itemSon.desc }}</div>
           </div>
           <div class="print_row fz14" v-if="itemSon.orderInfoDesc" style="min-height: 39px; max-height: 39px;border-bottom: 1px solid rgba(0, 0, 0, 0.25)">
             <div class="row_item center bgGray flex05">备注信息</div>
@@ -206,11 +206,10 @@ export default Vue.extend({
           return a + Number(b.weight)
         }, 0)
         let arr: any = ['proName'].concat(this.$clone(this.orderInfo.child_data))
-        arr = arr.concat(this.orderInfo.additional_fee)
-
         arr.push(
           { total_price: this.orderInfo.total_price, total_weight: this.orderInfo.total_weight, isTotal: true }
         )
+        arr = arr.concat(this.orderInfo.additional_fee)
 
         if (this.orderInfo.desc) {
           arr.push(

@@ -55,12 +55,24 @@
             </div>
             <div class="colCtn">
               <div class="label">
-                <span class="text">合计采购价格</span>
-                <span class="explanation">(自动计算)</span>
+                <span class="text">合计采购价格/结算方式</span>
+                <span class="explanation">(自动计算/必填)</span>
               </div>
-              <div class="content">
+              <div class="content flexRow">
                 <div class="elCtn">
-                  <el-input v-model="order_yarn_info.total_price" disabled placeholder="自动计算合计价格"></el-input>
+                  <el-input v-model="order_yarn_info.total_price" disabled placeholder="自动算合计价格"></el-input>
+                </div>
+                <div class="elCtn">
+                  <el-select v-model="order_yarn_info.settle_type" placeholder="请选择结算方式">
+                    <el-option
+                      label="KP"
+                      value="KP">
+                    </el-option>
+                    <el-option
+                      label="BKP"
+                      value="BKP">
+                    </el-option>
+                  </el-select>
                 </div>
               </div>
             </div>
@@ -552,6 +564,7 @@ export default Vue.extend({
       postData: { key: '', token: '' },
       order_yarn_info: {
         order_id: '',
+        settle_type: 'KP',
         client_id: '',
         total_price: '',
         child_data: this.child_data,
@@ -795,6 +808,7 @@ export default Vue.extend({
       this.cvFlag = false
       this.order_yarn_info = {
         order_id: '',
+        settle_type: 'KP',
         client_id: '',
         total_price: '',
         child_data: [
@@ -1096,6 +1110,7 @@ export default Vue.extend({
         this.order_yarn_info = {
           order_id: this.orderId || '',
           client_id: '',
+          settle_type: 'KP',
           total_price: '',
           child_data:
             this.child_data.length > 0

@@ -36,6 +36,26 @@
               </div>
             </div>
           </div>
+          <div class="colCtn flex3">
+            <div class="label">
+              <span class="text">结算方式</span>
+              <span class="explanation">(必选)</span>
+            </div>
+            <div class="content">
+              <div class="elCtn">
+                <el-select v-model="order_info.settle_type" placeholder="请选择结算方式">
+                  <el-option
+                    label="KP"
+                    value="KP">
+                  </el-option>
+                  <el-option
+                    label="BKP"
+                    value="BKP">
+                  </el-option>
+                </el-select>
+              </div>
+            </div>
+          </div>
         </div>
         <div class="rowCtn">
           <div class="colCtn flex3">
@@ -377,6 +397,7 @@ export default Vue.extend({
         order_code: '',
         order_time: this.$getDate(new Date()),
         delivery_time: '',
+        settle_type: 'KP',
         client_id: '',
         total_price: 0,
         total_weight: 0,

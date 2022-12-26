@@ -764,7 +764,7 @@ export default Vue.extend({
             fillerColor: '#33384b',
             zoomLock: true,
             brushSelect: false,
-            backgroundColor: 'rgba(43,48,67,.8)', //两边未选中的滑动条区域的颜色
+            backgroundColor: 'rgba(43,48,67,.3)', //两边未选中的滑动条区域的颜色
             showDataShadow: false, //是否显示数据阴影 默认auto
             showDetail: false, //即拖拽时候是否显示详细数值信息 默认true
             realtime: true, //是否实时更新
@@ -905,7 +905,7 @@ export default Vue.extend({
             fillerColor: '#33384b',
             zoomLock: true,
             brushSelect: false,
-            backgroundColor: 'rgba(43,48,67,.8)', //两边未选中的滑动条区域的颜色
+            backgroundColor: 'rgba(43,48,67,.3)', //两边未选中的滑动条区域的颜色
             showDataShadow: false, //是否显示数据阴影 默认auto
             showDetail: false, //即拖拽时候是否显示详细数值信息 默认true
             realtime: true, //是否实时更新

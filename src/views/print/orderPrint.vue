@@ -36,7 +36,7 @@
         <div class="left">
           <span class="item" style="font-size: 17px">
             <span class="label">结算方式：</span>
-            {{ settle_type }}
+            {{ orderInfo.settle_type }}
           </span>
         </div>
       </div>
@@ -182,7 +182,7 @@
           <div class="left">
             <span style="font-size: 17px">
               <span class="label">结算方式：</span>
-              {{ settle_type }}
+              {{ orderInfo.settle_type }}
             </span>
           </div>
           <div class="right">
@@ -362,7 +362,6 @@ export default Vue.extend({
       X_position: 0,
       Y_position: 0,
       showMenu: false,
-      settle_type: '',
       desc: '',
       printA4Type: true,
       orderArr: [],
@@ -408,7 +407,6 @@ export default Vue.extend({
   created() {
     printList(undefined, 10).then((res: any) => {
       this.desc = res.desc
-      this.settle_type = res.settle_type
     })
     order
       .detail({

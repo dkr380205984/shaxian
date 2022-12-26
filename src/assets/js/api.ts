@@ -259,6 +259,46 @@ const exportExcel = {
   store: (params: { client_id: string | number, start_time: string, end_time: string }) => http.get(`${baseUrl}/store/log/export`, params)
 }
 
+// 批量修改
+const lostEdit = {
+  orderList: (params: { client_id: string | number, start_time: string, end_time: string }) => http.get(`${baseUrl}/order/info/lists`, params),
+  purchaseList: (params: { client_id: string | number, start_time: string, end_time: string }) => http.get(`${baseUrl}/purchase/info/lists`, params),
+  processList: (params: { client_id: string | number, start_time: string, end_time: string }) => http.get(`${baseUrl}/process/info/lists`, params),
+  orderEdit: (params: {
+    data: {
+      client_id: string | number,
+      start_time: string,
+      end_time: string,
+      name: string,
+      color: string,
+      attribute: string,
+      price: string | number
+    }[]
+  }) => http.post(`${baseUrl}/update/order/price`, params),
+  purchaseEdit: (params: {
+    data: {
+      client_id: string | number,
+      start_time: string,
+      end_time: string,
+      name: string,
+      color: string,
+      attribute: string,
+      price: string | number
+    }[]
+  }) => http.post(`${baseUrl}/update/purchase/price`, params),
+  processEdit: (params: {
+    data: {
+      client_id: string | number,
+      start_time: string,
+      end_time: string,
+      name: string,
+      color: string,
+      attribute: string,
+      price: string | number
+    }[]
+  }) => http.post(`${baseUrl}/update/process/price`, params),
+}
+
 // 操作记录
 const oprHistory = {
   system: (params: ListParam) => http.get(`${baseUrl}/activity/log/list`, params)
@@ -295,5 +335,6 @@ export {
   allList,
   finance,
   listSetting,
+  lostEdit,
   dateStatic
 }

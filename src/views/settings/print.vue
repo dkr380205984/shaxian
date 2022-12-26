@@ -27,7 +27,6 @@
             <div class="row">
               <div class="column">打印页面</div>
               <div class="column">页面标题</div>
-              <div class="column">结算方式</div>
               <div class="column">操作</div>
             </div>
           </div>
@@ -37,7 +36,6 @@
               :key="item.id">
               <div class="column">{{item.name}}</div>
               <div class="column">{{item.title || '/'}}</div>
-              <div class="column">{{item.settle_type || '无'}}</div>
               <div class="column">
                 <span class="col_btn orange"
                   @click="changePrint(item)">修改</span>
@@ -70,13 +68,6 @@
             <div class="info">
               <el-input placeholder="请输入标题名称"
                 v-model="printInfo.title"></el-input>
-            </div>
-          </div>
-          <div class="row">
-            <div class="label">结算方式：</div>
-            <div class="info">
-              <el-input placeholder="请输入结算方式"
-                v-model="printInfo.settle_type"></el-input>
             </div>
           </div>
           <div class="row">
@@ -117,7 +108,6 @@ export default Vue.extend({
         id: null,
         type: '',
         name: '',
-        settle_type: '',
         title: '',
         desc: ''
       },
@@ -160,7 +150,6 @@ export default Vue.extend({
         .create({
           id: this.printInfo.id || null,
           type: this.printInfo.type,
-          settle_type: this.printInfo.settle_type,
           title: this.printInfo.title,
           desc: this.printInfo.desc || ''
         })

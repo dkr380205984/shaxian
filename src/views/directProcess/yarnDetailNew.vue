@@ -112,9 +112,9 @@
                 <span class="label">交货日期：</span>
                 <span class="text">{{ item.delivery_time }}</span>
               </div>
-              <div class="colCtn">
-                <span class="label"></span>
-                <span class="text"></span>
+              <div class="colCtn flex3">
+                <span class="label">结算方式：</span>
+                <span class="text">{{ item.settle_type }}</span>
               </div>
             </div>
             <div class="rowCtn">

@@ -101,6 +101,7 @@
         <el-tab-pane label="加工单信息">
           <div class="titleCtn" style="padding: 0 17px">
             <span class="title">加工单信息</span>
+            <span class="addBtn btn btnMain" @click="getProcessList(updatePriceInfo.date)">修改加工单价</span>
           </div>
           <div class="listCtn" style="padding: 20px 17px">
             <div class="filterCtn">
@@ -324,178 +325,6 @@
         </el-tab-pane>
       </el-tabs>
     </div>
-    <!-- <div class="module">
-      <div class="titleCtn">
-        <span class="title">出入库信息</span>
-      </div>
-      <div class="listCtn">
-        <div class="filterCtn">
-          <div class="leftCtn">
-            <div class="label">筛选条件：</div>
-            <div class="elCtn">
-              <el-input v-model="stock_code"
-                placeholder="输入出库单号按回车键搜索"
-                @change="getStockList"></el-input>
-            </div>
-          </div>
-        </div>
-        <div class="list">
-          <div class="overflow" @mousewheel.prevent="listenWheel" ref="list">
-            <div class="tableCtn">
-              <div class="table">
-                <div class="headCtn">
-                  <div class="row">
-                    <div class="column min120">单号</div>
-                    <div class="column"
-                      style="min-width:80px;max-width:80px">操作类型</div>
-                    <div class="column"
-                      style="min-width:200px;max-width:200px">出入库信息</div>
-                    <div class="column"
-                      style="flex:10;flex-direction:column">
-                      <div class="row">
-                        <div class="column min120">纱线名称</div>
-                        <div class="column min120">颜色</div>
-                        <div class="column min120">属性</div>
-                        <div class="column min120">所属客户</div>
-                        <div class="column min120">数量</div>
-                        <div class="column min120">批号</div>
-                        <div class="column min120">色号</div>
-                        <div class="column min120">缸号</div>
-                      </div>
-                    </div>
-                    <div class="column min120">备注信息</div>
-                    <div class="column min120">日期</div>
-                    <div class="column min120">操作人</div>
-                    <div class="column min120">操作</div>
-                  </div>
-                </div>
-                <div class="bodyCtn">
-                  <div class="row"
-                    v-for="item in stock_list"
-                    :key="item.id">
-                    <div class="column min120">{{item.code}}</div>
-                    <div class="column"
-                      style="min-width:80px;max-width:80px">{{item.action_type|stockTypeFilter}}</div>
-                    <div class="column"
-                      style="min-width:200px;max-width:200px">
-                      <span v-if="item.action_type===1||item.action_type===3||item.action_type===5||item.action_type===8">
-                        <span class="green">{{item.client_name ||'无来源'}}</span>
-                        <i class="el-icon-s-unfold orange"
-                          style="margin:0 5px;font-size:16px"></i>
-                        <span class="blue">{{item.store_name}}/{{item.second_store_name}}</span>
-                      </span>
-                      <span v-if="item.action_type===2||item.action_type===4||item.action_type===6||item.action_type===7||item.action_type===9">
-                        <span class="blue">{{item.store_name}}/{{item.second_store_name}}</span>
-                        <i class="el-icon-s-unfold orange"
-                          style="margin:0 5px;font-size:16px"></i>
-                        <span class="green">{{item.client_name}}</span>
-                      </span>
-                    </div>
-                    <div class="column"
-                      style="flex:10;flex-direction:column">
-                      <div class="row"
-                        v-for="(itemChild,indexChild) in item.child_data"
-                        :key="indexChild">
-                        <div class="column min120">{{itemChild.name}}</div>
-                        <div class="column min120">{{itemChild.color}}</div>
-                        <div class="column min120">{{itemChild.attribute}}</div>
-                        <div class="column min120">{{itemChild.store_client_name||'无'}}</div>
-                        <div class="column min120 blue">{{itemChild.action_weight}}</div>
-                        <div class="column min120">{{itemChild.batch_code}}</div>
-                        <div class="column min120">{{itemChild.color_code}}</div>
-                        <div class="column min120">{{itemChild.vat_code}}</div>
-                      </div>
-                    </div>
-                    <div class="column min120">{{item.desc||'无'}}</div>
-                    <div class="column min120">{{item.complete_time}}</div>
-                    <div class="column min120">{{item.user_name}}</div>
-                    <div class="column min120">操作</div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="coverTable">
-            <div class="floatL">
-              <div class="headCtn">
-                <div class="row">
-                  <div class="column min120">单号</div>
-                  <div class="column"
-                    style="min-width:80px;max-width:80px">操作类型</div>
-                  <div class="column"
-                    style="min-width:200px;max-width:200px">出入库信息</div>
-                </div>
-              </div>
-              <div class="bodyCtn">
-                <div class="row"
-                  v-for="item in stock_list"
-                  :key="item.id">
-                  <div class="column min120 blue"
-                    :style="{'height':50*item.child_data.length + 'px'}">{{item.code}}</div>
-                  <div class="column"
-                    style="min-width:80px;max-width:80px"
-                    :style="{'height':50*item.child_data.length + 'px'}"
-                    :class="{'blue':item.action_type===1||item.action_type===3||item.action_type===5||item.action_type===8||item.action_type===11||item.action_type===13||item.action_type===14||item.action_type===15,'green':item.action_type===2||item.action_type===4||item.action_type===6||item.action_type===7||item.action_type===9||item.action_type===10||item.action_type===12}">{{item.action_type|stockTypeFilter}}</div>
-                  <div class="column"
-                    style="min-width:200px;max-width:200px"
-                    :style="{'height':50*item.child_data.length + 'px'}">
-                    <span v-if="item.action_type===1||item.action_type===3||item.action_type===5||item.action_type===8||item.action_type===13||item.action_type===14||item.action_type===15">
-                      <span class="green">{{item.client_name ||'无来源'}}</span>
-                      <i class="el-icon-s-unfold orange"
-                        style="margin:0 5px;font-size:16px"></i>
-                      <span class="blue">{{item.store_name}}/{{item.second_store_name}}</span>
-                    </span>
-                    <span v-if="item.action_type===2||item.action_type===4||item.action_type===6||item.action_type===7||item.action_type===9 || item.action_type===12">
-                      <span class="blue">{{item.store_name}}/{{item.second_store_name}}</span>
-                      <i class="el-icon-s-unfold orange"
-                        style="margin:0 5px;font-size:16px"></i>
-                      <span class="green">{{item.client_name}}</span>
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="floatR">
-              <div class="headCtn">
-                <div class="row">
-                  <div class="column min120">操作</div>
-                </div>
-              </div>
-              <div class="bodyCtn">
-                <div class="row"
-                  v-for="item in stock_list"
-                  :key="item.id">
-                  <div class="column min120"
-                    :style="{'height':50*item.child_data.length + 'px'}">
-                    <span class="blue opr"
-                      @click="$openUrl(`/print/store/2/${item.id}?orderId=${$route.params.id}`)">打印</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="otherInfo">
-          <div class="box">
-            <span class="label">总入库数：</span>
-            <span class="info blue">{{stock_statistics.total_push}}kg</span>
-          </div>
-          <div class="box">
-            <span class="label">总出库数：</span>
-            <span class="info green">{{stock_statistics.total_pop}}kg</span>
-          </div>
-        </div>
-        <div class="pageCtn">
-          <el-pagination background
-            :current-page.sync="stock_page"
-            :page-size="5"
-            layout="prev, pager, next"
-            :total="stock_total"
-            @current-change="getStockList">
-          </el-pagination>
-        </div>
-      </div>
-    </div> -->
     <div class="module">
       <div class="titleCtn">
         <span class="title">开票单据</span>
@@ -707,14 +536,14 @@
               <div class="otherInfo">
                 <div class="button btnBlue" @click="exportExcel('process')">
                   <i class="iconfont">&#xe636;</i>
-                  <span class="text">下单报表</span>
+                  <span class="text">加工报表</span>
                 </div>
                 <!-- <div class="button btnBlue"
                   @click="exportExcel('store')">
                   <i class="iconfont">&#xe636;</i>
                   <span class="text">仓库报表</span>
                 </div> -->
-                <div class="button btnBlue" @click="exportExcel('bill')">
+                <div class="button btnBlue" @click="exportExcel('invoice')">
                   <i class="iconfont">&#xe636;</i>
                   <span class="text">开票报表</span>
                 </div>
@@ -772,12 +601,112 @@
       :collectType="2"
       @afterCollection="init"
     ></collection>
+    <!-- 批量修改调取单价功能 -->
+    <div class="popup" id="updatePrice" v-show="updatePriceFlag">
+      <div class="main" style="width: 1200px">
+        <div class="titleCtn">
+          <span class="text">批量修改加工单价</span>
+          <div class="closeCtn" @click="updatePriceFlag = false">
+            <span class="el-icon-close"></span>
+          </div>
+        </div>
+        <div class="contentCtn">
+          <div class="explainCtn" style="margin-left: unset; margin-right: unset">
+            <p>1.必须筛选日期跨度尽量不要超过一年</p>
+            <p>2.点击提交后只会更新重新填写的加工单价</p>
+          </div>
+          <div class="listCtn" style="padding: 20px 0">
+            <div class="filterCtn" style="margin-bottom: 20px; display: block">
+              <div class="elCtn" style="width: 200px; display: inline-block; margin-right: 16px">
+                <el-autocomplete
+                  v-model="updatePriceInfo.name"
+                  :fetch-suggestions="searchMaterialNew"
+                  placeholder="物料名称搜索"
+                  @keydown.native.enter="getMatShowList"
+                  @select="getMatShowList"
+                  @clear="getMatShowList"
+                  clearable
+                ></el-autocomplete>
+              </div>
+              <div class="elCtn" style="width: 200px; display: inline-block; margin-right: 16px">
+                <el-autocomplete
+                  :fetch-suggestions="searchMaterialNew"
+                  v-model="updatePriceInfo.type"
+                  placeholder="工序"
+                  @keydown.native.enter="getMatShowList"
+                  @change="getMatShowList"
+                  clearable
+                ></el-autocomplete>
+              </div>
+              <div class="elCtn" style="width: 250px; display: inline-block; margin-right: 16px">
+                <el-date-picker
+                  v-model="updatePriceInfo.date"
+                  type="daterange"
+                  align="right"
+                  unlink-panels
+                  range-separator="至"
+                  start-placeholder="开始日期"
+                  end-placeholder="结束日期"
+                  :picker-options="pickerOptions"
+                  value-format="yyyy-MM-dd"
+                  @click="getProcessList(updatePriceInfo.date)"
+                >
+                </el-date-picker>
+              </div>
+            </div>
+            <div class="tableCtn">
+              <div class="thead">
+                <div class="trow">
+                  <div class="tcolumn">日期</div>
+                  <div class="tcolumn noPad" style="flex: 9">
+                    <div class="trow">
+                      <div class="tcolumn">原料名称</div>
+                      <div class="tcolumn">工序</div>
+                      <div class="tcolumn">加工单价</div>
+                      <div class="tcolumn">加工总数</div>
+                      <div class="tcolumn">修改单价</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="tbody">
+                <div class="trow" v-if="this.updatePriceOriginList.length === 0">
+                  <div class="tcolumn red" style="text-align: center">请筛选日期后搜索纱线数据</div>
+                </div>
+                <div class="trow" v-for="(item, index) in updatePriceShowList" :key="index">
+                  <div class="tcolumn">{{ item.created_at }}</div>
+                  <div class="tcolumn noPad" style="flex: 9">
+                    <div class="trow" v-for="(itemChild, indexChild) in item.realChildren" :key="indexChild">
+                      <div class="tcolumn">{{ itemChild.name || '无' }}</div>
+                      <div class="tcolumn">{{ itemChild.type }}</div>
+                      <div class="tcolumn blue">{{ itemChild.old_price }}元/kg</div>
+                      <div class="tcolumn">{{ itemChild.number }}kg</div>
+                      <div class="tcolumn blue">
+                        <div class="elCtn">
+                          <el-input placeholder="单价" v-model="itemChild.price">
+                            <template slot="append">元/kg</template>
+                          </el-input>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="oprCtn">
+          <span class="btn borderBtn" @click="updatePriceFlag = false">取消</span>
+          <span class="btn backHoverBlue" @click="saveUpdatePrice">提交更新</span>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
-import { deduct, bill, collection, yarnProcess, stock, exportExcel, finance } from '@/assets/js/api'
+import { deduct, bill, collection, yarnProcess, exportExcel, finance, lostEdit } from '@/assets/js/api'
 import { DeductInfo, BillInfo, CollectionInfo } from '@/types/common'
 export default Vue.extend({
   data(): {
@@ -839,6 +768,18 @@ export default Vue.extend({
         deduct_total_price: 0,
         invoice_total_price: 0
       },
+      updatePriceFlag: false,
+      updatePriceInfo: {
+        name: '',
+        type: '',
+        start_time: '',
+        end_time: '',
+        date: [],
+        client_id: this.$route.params.id
+      },
+      updatePriceYarnList: [],
+      updatePriceShowList: [],
+      updatePriceOriginList: [],
       show_bill: false,
       show_deduct: false,
       show_collection: false,
@@ -884,6 +825,7 @@ export default Vue.extend({
   },
   methods: {
     init() {
+      this.updatePriceInfo.date = [new Date().getFullYear() + '-01-01', this.$formatDate(new Date())]
       this.loading = true
       Promise.all([
         deduct.list({
@@ -1069,6 +1011,125 @@ export default Vue.extend({
           this.loading = false
         })
     },
+    getProcessList(date: any) {
+      this.updatePriceFlag = true
+      lostEdit
+        .processList({
+          client_id: this.updatePriceInfo.client_id,
+          start_time: date[0],
+          end_time: date[1]
+        })
+        .then((res) => {
+          if (res.data.status) {
+            res.data.data.forEach((item: any) => {
+              item.number = Number(item.number)
+              item.old_price = Number(item.price)
+              item.price = ''
+              this.updatePriceYarnList.push(item)
+            })
+            this.updatePriceYarnList = Array.from(new Set(this.updatePriceYarnList.map((item: any) => item.name))).map(
+              (item) => {
+                return {
+                  value: item
+                }
+              }
+            )
+            const mergeList = this.$mergeData(res.data.data, {
+              mainRule: 'created_at',
+              childrenRule: {
+                mainRule: ['name', 'type', 'old_price']
+              }
+            })
+
+            mergeList.forEach((item: any) => {
+              item.realChildren = []
+              item.childrenMergeInfo.forEach((itemChild: any) => {
+                itemChild.number = itemChild.childrenMergeInfo
+                  .reduce((total: number, cur: any) => {
+                    return total + Number(cur.weight)
+                  }, 0)
+              })
+              item.childrenMergeInfo.forEach((itemChild: any) => {
+                item.realChildren.push({
+                  name: itemChild.name,
+                  old_price: itemChild.old_price,
+                  price: '',
+                  type: itemChild.type,
+                  number: itemChild.number,
+                })
+              })
+            })
+
+            this.updatePriceOriginList = mergeList
+            this.updatePriceFlag = true
+            this.getMatShowList()
+          }
+        })
+    },
+    // 前端做筛选
+    getMatShowList() {
+      this.updatePriceShowList = this.$clone(this.updatePriceOriginList).filter((item: any) => {
+        item.realChildren = item.realChildren.filter((itemChild: any) => {
+          let nameFlag =
+            this.updatePriceInfo.name && itemChild.name
+              ? itemChild.name.toLowerCase().indexOf(this.updatePriceInfo.name.toLowerCase()) === 0
+              : true
+          let typeFlag = this.updatePriceInfo.type
+            ? itemChild.type.toLowerCase().indexOf(this.updatePriceInfo.type.toLowerCase()) === 0
+            : true
+          return nameFlag && typeFlag
+        })
+        return item.realChildren.length > 0
+      })
+    },
+    searchMaterialNew(str: string, cb: any) {
+      let results = str ? this.updatePriceYarnList.filter(this.createFilter(str)) : this.updatePriceYarnList
+      cb(results)
+    },
+    createFilter(queryString: string) {
+      return (restaurant: any) => {
+        return restaurant.value && restaurant.value.toLowerCase().indexOf(queryString.toLowerCase()) === 0
+      }
+    },
+    saveUpdatePrice() {
+      const formData: any[] = []
+      this.updatePriceShowList.forEach((item: any) => {
+        item.realChildren.forEach((itemChild: any) => {
+          if (itemChild.price) {
+            formData.push({
+              name: itemChild.name,
+              type: itemChild.type,
+              old_price: itemChild.old_price,
+              price: itemChild.price,
+              start_time: this.updatePriceInfo.date[0],
+              end_time: this.updatePriceInfo.date[1],
+              client_id: this.$route.params.id
+            })
+          }
+        })
+      })
+      if (formData.length > 0) {
+        lostEdit.processEdit({ data: formData }).then((res) => {
+          if (res.data.status) {
+            this.$message.success('修改成功')
+            this.init()
+          }
+          this.updatePriceInfo = {
+            name: '',
+            type: '',
+            start_time: '',
+            end_time: '',
+            date: [new Date().getFullYear() + '-01-01', this.$formatDate(new Date())],
+            client_id: this.$route.params.id
+          }
+          this.updatePriceOriginList = []
+          this.updatePriceShowList = []
+          this.updatePriceFlag = false
+        })
+      } else {
+        this.$message.error('请填写单价')
+      }
+    },
     exportExcel(type: 'process' | 'deduct' | 'invoice' | 'collection') {
       this.excel_flag = true
       this.excel_type = type
@@ -1079,11 +1140,24 @@ export default Vue.extend({
         return
       }
       this.$message.success('正在导出Excel')
-      exportExcel[this.excel_type]({
+
+      let param: any = {
         client_id: this.$route.params.id,
         start_time: this.excel_date[0],
         end_time: this.excel_date[1]
-      }).then((res) => {
+      }
+
+      if (this.excel_type === 'process') {
+        param.export_excel = 1
+
+        yarnProcess.list(param).then((res) => {
+          this.excel_flag = false
+          this.$downLoadFile(res.data.data)
+        })
+        return
+      }
+
+      exportExcel[this.excel_type](param).then((res) => {
         if (res.data.status) {
           this.excel_flag = false
           this.$downLoadFile(res.data.data)

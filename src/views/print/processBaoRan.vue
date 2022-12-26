@@ -36,7 +36,7 @@
         <div class="left">
           <span class="item" style="font-size: 17px">
             <span class="label">结算方式：</span>
-            {{ settle_type }}
+            {{ detail.settle_type }}
           </span>
         </div>
       </div>

@@ -25,7 +25,7 @@
         <div class="left">
           <span class="item">
             <span class="label">结算方式：</span>
-            {{settle_type}}
+            {{documentInfo.settle_type}}
           </span>
         </div>
       </div>

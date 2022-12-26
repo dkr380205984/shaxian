@@ -25,6 +25,7 @@ export interface OrderYarn {
   code?: string // 系统生成
   order_id?: string
   client_name?: string
+  settle_type?: string
   client_id: number | string
   child_data: YarnInfo[]
   status?: number

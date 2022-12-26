@@ -87,6 +87,12 @@
             >
           </div>
         </div>
+        <div class="rowCtn">
+          <div class="colCtn flex3">
+            <span class="label">结算方式：</span>
+            <span class="text">{{ order_info.settle_type }}</span>
+          </div>
+        </div>
         <div class="rowCtn" v-if="order_info.additional_fee">
           <div class="colCtn">
             <span class="label">额外费用：</span>
@@ -372,7 +378,7 @@
         </div>
       </div>
     </div>
-    <div class="module" v-if="order_info.status === 4">
+    <div class="module" >
       <div class="titleCtn">
         <span class="title">结余入库</span>
         <span class="addBtn btn btnMain" @click="openInStore">结余入库</span>
@@ -655,91 +661,6 @@
             </div>
           </div>
         </div>
-        <!-- <div class="tableCtn">
-          <div class="thead">
-            <div class="trow">
-              <div class="tcolumn">费用名称</div>
-              <div class="tcolumn">费用数量</div>
-              <div class="tcolumn">总价(元)</div>
-              <div class="tcolumn">均价</div>
-              <div class="tcolumn">操作</div>
-            </div>
-          </div>
-          <div class="tbody">
-            <div class="trow">
-              <div class="tcolumn">下单纱线</div>
-              <div class="tcolumn">{{ order_info.total_weight }}</div>
-              <div class="tcolumn green">{{ order_info.total_price }}元</div>
-              <div class="tcolumn">{{ (order_info.total_price / order_info.total_weight).toFixed(1) }}元/kg</div>
-              <div class="tcolumn gray">暂无操作</div>
-            </div>
-            <div class="trow">
-              <div class="tcolumn">额外费用</div>
-              <div class="tcolumn gray">暂无</div>
-              <div class="tcolumn green">
-                {{
-                  order_info.additional_fee
-                    ? JSON.parse(order_info.additional_fee).reduce((total, current) => total + Number(current.price), 0)
-                    : 0
-                }}元
-              </div>
-              <div class="tcolumn gray">暂无</div>
-              <div class="tcolumn gray">暂无操作</div>
-            </div>
-            <div class="trow">
-              <div class="tcolumn">纱线成本</div>
-              <div class="tcolumn">费用数量</div>
-              <div class="tcolumn orange">{{total.chengben_price.toFixed(1)}}</div>
-              <div class="tcolumn">均价</div>
-              <div class="tcolumn">操作</div>
-            </div>
-            <div class="trow">
-              <div class="tcolumn">倒筒加工</div>
-              <div class="tcolumn">{{ total.daotong_weight.toFixed(1) }}kg</div>
-              <div class="tcolumn orange">{{ total.daotong_price.toFixed(1) }}元</div>
-              <div class="tcolumn">
-                {{ total.daotong_weight ? (total.daotong_price / total.daotong_weight).toFixed(1) : 0 }}元/kg
-              </div>
-              <div class="tcolumn">
-                <div class="oprCtn">
-                  <div class="opr blue" @click="window.open('/orderProcessYarn/detail/' + $route.params.id)">
-                    倒筒详情
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="trow">
-              <div class="tcolumn">染色加工</div>
-              <div class="tcolumn">{{ total.ranse_weight.toFixed(1) }}kg</div>
-              <div class="tcolumn orange">{{ total.ranse_price.toFixed(1) }}元</div>
-              <div class="tcolumn">
-                {{ total.ranse_weight ? (total.ranse_price / total.ranse_weight).toFixed(1) : 0 }}元/kg
-              </div>
-              <div class="tcolumn">
-                <div class="oprCtn">
-                  <div class="opr blue" @click="window.open('/orderProcessYarn/detail/' + $route.params.id)">
-                    染色详情
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="trow">
-              <div class="tcolumn">膨纱加工</div>
-              <div class="tcolumn">{{ total.pengsha_weight.toFixed(1) }}kg</div>
-              <div class="tcolumn orange">{{ total.pengsha_price.toFixed(1) }}元</div>
-              <div class="tcolumn">
-                {{ total.pengsha_weight ? (total.pengsha_price / total.pengsha_weight).toFixed(1) : 0 }}元/kg
-              </div>
-              <div class="tcolumn">
-                <div class="oprCtn">
-                  <div class="opr blue" @click="window.open('/orderProcessYarn/detail/' + $route.params.id)">
-                    膨纱详情
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div> -->
       </div>
     </div>
     <div class="module" v-if="order_info.deduct.length > 0">
@@ -1808,6 +1729,7 @@ export default Vue.extend({
       order_info: {
         order_code: '',
         order_time: '',
+        settle_type: '',
         delivery_time: '',
         client_id: '',
         total_price: '',
@@ -1816,6 +1738,7 @@ export default Vue.extend({
         create_time: '',
         additional_fee: '',
         is_check: 0,
+        deduct: [],
         product_info: [],
         total_additional_fee: 0,
         purchase_log: [],

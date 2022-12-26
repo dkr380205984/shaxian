@@ -78,24 +78,26 @@
               </div>
             </div>
           </div>
-          <!-- <div class="colCtn flex3">
+          <div class="colCtn flex3">
             <div class="label">
-              <span class="text">交货日期</span>
+              <span class="text">结算方式</span>
               <span class="explanation">(必选)</span>
             </div>
             <div class="content">
               <div class="elCtn">
-                <el-date-picker
-                  style="width: 100%"
-                  value-format="yyyy-MM-dd"
-                  v-model="order_info.delivery_time"
-                  type="date"
-                  placeholder="选择交货日期"
-                >
-                </el-date-picker>
+                <el-select v-model="order_info.settle_type" placeholder="请选择结算方式">
+                  <el-option
+                    label="KP"
+                    value="KP">
+                  </el-option>
+                  <el-option
+                    label="BKP"
+                    value="BKP">
+                  </el-option>
+                </el-select>
               </div>
             </div>
-          </div> -->
+          </div>
         </div>
         <div class="rowCtn">
           <div class="colCtn" style="margin-right: unset">
@@ -480,6 +482,7 @@ export default Vue.extend({
         order_time: this.$getDate(new Date()),
         delivery_time: '',
         client_id: '',
+        settle_type: 'KP',
         total_price: 0,
         total_weight: 0,
         desc: '',

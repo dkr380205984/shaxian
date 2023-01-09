@@ -321,7 +321,7 @@
         </div>
       </div>
       <div style="display: flex">
-        <div style="padding: 20px 32px; flex: 2.7">
+        <div style="padding: 20px 32px; flex: 3.5">
           <div style="display: flex; padding-bottom: 20px">
             <div style="width: 33%">
               <div style="color: rgba(0, 0, 0, 0.45); font-weight: bold">总销售额</div>
@@ -337,7 +337,7 @@
             <zh-charts :option="option1"></zh-charts>
           </div>
         </div>
-        <div style="padding: 20px 32px; flex: 1.3; border-left: 1px solid #d9d9d9">
+        <div style="padding: 20px 15px; flex: 1; border-left: 1px solid #d9d9d9">
           <div class="title" style="font-weight: bold; padding-bottom: 10px">客户销售金额排名</div>
           <div style="max-height: 410px; overflow: scroll; padding: 0 10px">
             <div
@@ -345,11 +345,11 @@
               v-for="(item, index) in saleInfo.client_data"
               :key="index + '客户销售金额排名'"
             >
-              <div style="width: 10%; color: white">
+              <div style="width: 15%; color: white">
                 <div class="bgBlue">{{ index + 1 }}</div>
               </div>
-              <div style="width: 65%">{{ item.client_name }}</div>
-              <div style="width: 25%">{{ item.price }} 万元</div>
+              <div style="width: 55%">{{ item.client_name }}</div>
+              <div style="width: 30%">{{ item.price }} 万元</div>
             </div>
           </div>
         </div>
@@ -391,7 +391,7 @@
         </div>
       </div>
       <div style="display: flex">
-        <div style="padding: 20px 32px; flex: 2.7">
+        <div style="padding: 20px 32px; flex: 3.5">
           <div style="display: flex; padding-bottom: 20px">
             <div style="width: 33%">
               <div style="color: rgba(0, 0, 0, 0.45); font-weight: bold">总销售额</div>
@@ -407,7 +407,7 @@
             <zh-charts :option="option2"></zh-charts>
           </div>
         </div>
-        <div style="padding: 20px 32px; flex: 1.3; border-left: 1px solid #d9d9d9">
+        <div style="padding: 20px 15px; flex: 1; border-left: 1px solid #d9d9d9">
           <div class="title" style="font-weight: bold; padding-bottom: 10px">纱线种类排序</div>
           <div style="max-height: 410px; overflow: scroll; padding: 0 10px">
             <div
@@ -415,11 +415,11 @@
               v-for="(item, index) in yarnTypeInfo.material_data"
               :key="index + '客户销售金额排名'"
             >
-              <div style="width: 10%; color: white">
+              <div style="width: 15%; color: white">
                 <div class="bgBlue">{{ index + 1 }}</div>
               </div>
-              <div style="width: 65%">{{ item.name }}</div>
-              <div style="width: 25%">{{ item.price }} 万元</div>
+              <div style="width: 55%">{{ item.name }}</div>
+              <div style="width: 30%">{{ item.price }} 万元</div>
             </div>
           </div>
         </div>
@@ -455,7 +455,7 @@
         </div> -->
       </div>
       <div style="display: flex">
-        <div style="padding: 20px 32px; flex: 2.7">
+        <div style="padding: 20px 32px; flex: 3.5">
           <div style="display: flex; padding-bottom: 20px">
             <div style="width: 33%">
               <div style="color: rgba(0, 0, 0, 0.45); font-weight: bold">总库存数量</div>
@@ -468,7 +468,7 @@
             <zh-charts :option="option3"></zh-charts>
           </div>
         </div>
-        <div style="padding: 20px 32px; flex: 1.3; border-left: 1px solid #d9d9d9">
+        <div style="padding: 20px 15px; flex: 1; border-left: 1px solid #d9d9d9">
           <div class="title" style="font-weight: bold; padding-bottom: 10px">纱线库存数量排序</div>
           <div style="max-height: 410px; overflow: scroll; padding: 0 10px">
             <div
@@ -476,11 +476,11 @@
               v-for="(item, index) in storeInfo.material_data"
               :key="index + '客户销售金额排名'"
             >
-              <div style="width: 10%; color: white">
+              <div style="width: 15%; color: white">
                 <div class="bgBlue">{{ index + 1 }}</div>
               </div>
-              <div style="width: 65%">{{ item.name }}</div>
-              <div style="width: 25%">{{ item.number }} 吨</div>
+              <div style="width: 55%">{{ item.name }}</div>
+              <div style="width: 30%">{{ item.number }} 吨</div>
             </div>
           </div>
         </div>

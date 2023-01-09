@@ -377,9 +377,39 @@
               <div class="trow">
                 <div class="tcolumn" style="flex: 1.5">纱线名称</div>
                 <div class="tcolumn">纱线颜色</div>
-                <div class="tcolumn">纱线属性</div>
+                <div class="tcolumn">
+                  <div style="display:flex;align-items:center">
+                    纱线属性
+                    <el-tooltip
+                      style="cursor: pointer; margin-left: 10px"
+                      class="item"
+                      effect="dark"
+                      content="统一属性"
+                      placement="top"
+                    >
+                      <svg class="iconFont copyIcon hoverBlue" aria-hidden="true" @click="copyInputInfo('attribute')">
+                        <use xlink:href="#icon-tongbushuju1"></use>
+                      </svg>
+                    </el-tooltip>
+                  </div>
+                </div>
                 <div class="tcolumn" style="flex: 2">批号/色号/缸号</div>
-                <div class="tcolumn">所属客户</div>
+                <div class="tcolumn">
+                  <div style="display:flex;align-items:center">
+                    所属客户
+                    <el-tooltip
+                      style="cursor: pointer; margin-left: 10px"
+                      class="item"
+                      effect="dark"
+                      content="统一属性"
+                      placement="top"
+                    >
+                      <svg class="iconFont copyIcon hoverBlue" aria-hidden="true" @click="copyInputInfo('store_client_id')">
+                        <use xlink:href="#icon-tongbushuju1"></use>
+                      </svg>
+                    </el-tooltip>
+                  </div>
+                </div>
                 <div class="tcolumn">数量(kg)</div>
                 <div class="tcolumn">件数(件)</div>
               </div>
@@ -657,6 +687,17 @@ export default Vue.extend({
         }
       })
     },
+    copyInputInfo(type: string) {
+      let info = ''
+      this.store_info.child_data.forEach((item: any, index: number) => {
+        if (index === 0) {
+          info = item[type]
+        } else {
+          item[type] = info
+        }
+      })
+      this.$forceUpdate()
+    },    
     // 打开复制粘贴图片功能
     changeCVOpration(flag: boolean) {
       if (this.notify) {
@@ -1050,10 +1091,6 @@ export default Vue.extend({
               key: 'name',
               errMsg: '请选择纱线名称'
             },
-            {
-              key: 'store_client_id',
-              errMsg: '请选择所属客户'
-            }
           ])
         })
       ) {
@@ -1086,6 +1123,7 @@ export default Vue.extend({
       this.store_info.second_store_id = this.store_info.select_id[1]
       this.store_info.order_id = this.orderId
       this.store_info.child_data.forEach((item: any) => {
+        item.store_client_id = item.store_client_id || -1
         item.batch_code = item.batch_code || ''
         item.color_code = item.color_code || ''
         item.vat_code = item.vat_code || ''

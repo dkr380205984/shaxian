@@ -2,6 +2,7 @@ export interface MaterialInfo {
   id?: number | string
   type_id?: string
   name: string | string[]
+  rel_type?: any[]
   price: string | number
   store?: string | number
   user_name?: string

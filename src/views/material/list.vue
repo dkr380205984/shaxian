@@ -4,6 +4,8 @@
       <div class="titleCtn">
         <span class="title">毛条列表</span>
         <span class="addBtn btn btnMain" @click="create_flag = true">添加毛条</span>
+        <span class="addBtn btn backHoverGreen" @click="downloadExcel('毛条添加模板')">下载导入模板</span>
+        <span class="addBtn btn backHoverOrange" @click="importExcelData('添加毛条')">批量导入单据</span>
       </div>
       <div class="listCtn">
         <div class="filterCtn">
@@ -42,11 +44,11 @@
           </div>
           <div class="bodyCtn">
             <div class="row" v-for="item in list" :key="item.id">
-              <div class="column">{{ item.type_name }}</div>
+              <div class="column">{{ item.rel_type|maotiaoTypeFilter }}</div>
               <div class="column">{{ item.name }}</div>
               <div class="column">{{ item.price }}元</div>
               <div class="column">{{ item.store || 0 }}kg</div>
-              <div class="column">{{ item.user_name || '无' }}</div>
+              <div class="column">{{ item.user.name || '无' }}</div>
               <div class="column">
                 <div class="opr blue" @click="$router.push('/material/detail/' + item.id)">详情</div>
                 <div class="opr orange" @click="updateMat(item)">修改</div>
@@ -67,7 +69,7 @@
         </div>
       </div>
     </div>
-    <add-material :show="create_flag || update_flag" @close="update_flag = false;create_flag = false" @afterCreate="getList" :update="update_flag"></add-material>
+    <add-material :show="create_flag || update_flag" @close="update_flag = false;create_flag = false" :id="material_info.id" @afterCreate="getList" :update="update_flag"></add-material>
     <!-- <div class="popup" v-show="create_flag">
       <div class="main">
         <div class="titleCtn">
@@ -122,7 +124,7 @@ export default Vue.extend({
     [propName: string]: any
   } {
     return {
-      loading: true,
+      loading: false,
       page: 1,
       page_size: 10,
       total: 1,
@@ -158,6 +160,14 @@ export default Vue.extend({
   methods: {
     getList() {
       this.loading = true
+      this.$checkCommonInfo([
+      {
+        checkWhich: 'api/materialType',
+        getInfoMethed: 'dispatch',
+        getInfoApi: 'getMaterialTypeAsync',
+        forceUpdate: true
+      }
+    ])
       material
         .list({
           type_id: this.type,
@@ -167,6 +177,7 @@ export default Vue.extend({
         })
         .then((res) => {
           this.list = res.data.data.items
+          this.total = res.data.data.total
           this.loading = false
         })
     },
@@ -198,9 +209,8 @@ export default Vue.extend({
     },
     updateMat(info: MaterialInfo) {
       this.material_info = info
-      this.create_flag = true
+      this.update_flag = true
     },
-
     deleteMat(id: string) {
       this.$confirm('是否要删除该毛条?', '提示', {
         confirmButtonText: '确定',
@@ -221,16 +231,131 @@ export default Vue.extend({
             message: '已取消删除'
           })
         })
-    }
+    },
+    downloadExcel(type: string) {
+      if (type === '毛条添加模板') {
+        this.$downloadExcel(
+          [],
+          [
+            { title: '毛条类型（必填，多个类型用逗号隔开）', key: 'type_name' },
+            { title: '毛条名称（必填）', key: 'name' },
+            { title: '毛条价格（选填，元/kg）', key: 'price' },
+            { title: '单价备注（选填）', key: 'desc' }
+          ],
+          type
+        )
+      }
+    },
+    importExcelData(type: string) {
+      const inputFile = document.createElement('input')
+      inputFile.type = 'file'
+      inputFile.accept = '.xlsx,.xls'
+      inputFile.addEventListener('change', (e) => {
+        this.getExcelData(e, this.saveImportData, type)
+      })
+      let click = document.createEvent('MouseEvents')
+      click.initEvent('click', true, true)
+      inputFile.dispatchEvent(click)
+    },
+    getExcelData(file: any, callBack: any, type: string) {
+      const _this = this
+      const XLSX = require('xlsx')
+      const files = file.target.files
+      const fileReader = new FileReader()
+      fileReader.onload = (e: any) => {
+        try {
+          const data = e.target.result
+          const bytes = new Uint8Array(data) // 无符号整型数组
+          const len = bytes.byteLength
+          const binarys = new Array(len) // 创建定长数组，存储文本
+          for (let i = 0; i < len; i++) {
+            binarys[i] = String.fromCharCode(bytes[i])
+          }
+          const workbook = XLSX.read(binarys.join(''), { type: 'binary' })
+          if (!workbook) {
+            return null
+          }
+          const r: any = {}
+          workbook.SheetNames.forEach((name: string) => {
+            // 遍历每张纸数据
+            r[name] = XLSX.utils.sheet_to_json(workbook.Sheets[name])
+          })
+          if (callBack) {
+            callBack(r, type)
+          }
+        } catch (e) {
+          _this.$message.error('文件类型不正确')
+        }
+      }
+      fileReader.readAsArrayBuffer(files[0])
+    },
+    saveImportData(data: any, type: string) {
+      let typeObj: any = {}
+      if (type === '添加毛条') {
+        typeObj = {
+          type_name: ['毛条类型（必填，多个类型用逗号隔开）'],
+          name: ['毛条名称（必填）'],
+          price: ['毛条价格（选填，元/kg）', '0'],
+          desc: ['单价备注（选填）', '']
+        }
+      }
+      let submitData = []
+      for (const prop in data) {
+         if (data.hasOwnProperty(prop)) {
+          for (const key in data[prop]) {
+            if (data[prop].hasOwnProperty(key)) {
+              let obj: any = {}
+              for (const indexType in typeObj) {
+                if (typeObj.hasOwnProperty(indexType)) {
+                  if (typeObj[indexType][0]) {
+                    obj[indexType] = data[prop][key][typeObj[indexType][0]] || typeObj[indexType][1]
+                    if (obj[indexType] === undefined) {
+                      this.$message.error('解析失败，请使用标准模板或检测必填数据是否存在空的情况！！！')
+                      return
+                    }
+                  } else {
+                    obj[indexType] = typeObj[indexType][1]
+                  }
+                }
+              }
+              submitData.push(obj)
+            }
+          }
+        }
+      }
+      if (submitData.length === 0) {
+        this.$message.warning('未读取到可用参数')
+        return
+      }
+      if (type === '添加毛条') {
+        submitData.forEach((item: any) => {
+          item.id = null
+          item.type_id = []
+          
+          let type_arr = item.type_name.replaceAll('，', ',').split(',')
+          type_arr.forEach((itemType: any) => {
+            let id: any = this.type_list.find((itemTypeDetail: any) => {
+              return itemType === itemTypeDetail.name
+            })
+            if (id) {
+              item.type_id.push(id.id)
+            }
+          })
+          delete item.type_name
+          
+          item.type_id = [...new Set(item.type_id)]
+        })
+        
+        material.create({ data: submitData }).then((res) => {
+          if (res.data.status) {
+            this.$message.success('导入成功')
+            this.getList()
+          }
+        })
+      }
+    },
   },
   created() {
-    this.$checkCommonInfo([
-      {
-        checkWhich: 'api/materialType',
-        getInfoMethed: 'dispatch',
-        getInfoApi: 'getMaterialTypeAsync'
-      }
-    ])
     this.getFilters()
     this.getList()
   }

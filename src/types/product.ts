@@ -8,12 +8,18 @@ export interface ProductDetail {
   number_attribute?: string // 订单里的98纱足金纱属性
   weight?: string | number // 订单里的数量
   desc?: string
-}
+} 
 export interface Product {
   id?: number | string
   name: string
-  yarn_type: string | any[]
+  yarn_type?: string | any[]
   yarn_type_name?: string
+  rel_type?: any
+  type_name?: string
+  updated_at?: any
+  price?: string
+  desc?: string
+  user?: any
   user_name?: string
   child_data: ProductDetail[]
 }

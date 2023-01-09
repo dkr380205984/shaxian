@@ -14,19 +14,6 @@
               <span class="text">纱线类型</span>
               <span class="explanation">(必选)</span>
             </div>
-            <!-- <div class="content">
-              <div class="elCtn">
-                <el-select v-model="input_form.type"
-                  placeholder="请选择纱线类型"
-                  @change="render"
-                  multiple>
-                  <el-option v-for="item in typeArr"
-                    :key="item.id"
-                    :label="item.name"
-                    :value="item.id"></el-option>
-                </el-select>
-              </div>
-            </div> -->
           </div>
         </div>
         <div class="rowCtn">
@@ -554,7 +541,7 @@ export default Vue.extend({
           this.$message.success('添加成功')
           this.$emit('afterCreate')
           this.close()
-          location.reload()
+          // location.reload()
           //   this.$confirm('继续添加新产品?', '提示', {
           //     confirmButtonText: '继续添加',
           //     cancelButtonText: '返回列表',

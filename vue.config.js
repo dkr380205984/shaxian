@@ -11,6 +11,7 @@ module.exports = {
     host: '0.0.0.0',
     port: 9966,
     https: false,
+    disableHostCheck: true,
     proxy: {
       '/api': {
         target: TARGET, // 对应自己的接口

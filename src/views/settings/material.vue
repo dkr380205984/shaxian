@@ -175,19 +175,19 @@ export default Vue.extend({
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        material
-          .typeDelete({
-            id: item.id
-          })
-          .then((res) => {
-            if (res.data.status !== false) {
-              this.$message({
-                type: 'success',
-                message: '删除成功!'
-              })
-              this.changeRouter()
-            }
-          })
+        // material
+        //   .typeDelete({
+        //     id: item.id
+        //   })
+        //   .then((res) => {
+        //     if (res.data.status !== false) {
+        //       this.$message({
+        //         type: 'success',
+        //         message: '删除成功!'
+        //       })
+        //       this.changeRouter()
+        //     }
+        //   })
       })
     }
   },

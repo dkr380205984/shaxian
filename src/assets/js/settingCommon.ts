@@ -126,7 +126,8 @@ export const moduleList = [
         id: '3-1',
         label: '毛条库存',
         icon: '&#xe618;',
-        url: '/store/materialList?page=&type=&name=&page_size='
+        // url: '/store/materialList?page=&type=&name=&page_size='
+        url: '/store/allMaterialDetail'
       }
     ]
   },

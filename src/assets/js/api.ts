@@ -128,6 +128,7 @@ import { StoreCreate } from '@/types/store'
 interface UpdateCode { id: string, related_id: string, action_type: number }
 const stock = {
   delete: (params: any) => http.post(`${baseUrl}/store/log/delete`, params, 'application/json'),
+  materialDelete: (params: any) => http.post(`${baseUrl}/material/store/log/delete`, params, 'application/json'),
   list: (params?: any) => http.get(`${baseUrl}/store/log/lists`, params),
   detail: (params: { id: number }) => http.get(`${baseUrl}/store/log/detail`, params),
   materialList: (params?: any) => http.get(`${baseUrl}/material/store/log/lists`, params),

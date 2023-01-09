@@ -1733,24 +1733,21 @@ export default Vue.extend({
           this.mergeLoading = false
         })
     },
-    openStore(type: number, item: number) {
+    openStore(type: number, item: any) {
       if (type === 1) {
         // 入库
         this.initData = [item]
         this.showIn = true
-        // @ts-ignore
         this.firstStoreId = item.store_id
       } else if (type === 2) {
         // 出库
         this.initData = [item]
         this.showOut = true
-        // @ts-ignore
         this.firstStoreId = item.store_id
       } else if (type === 3) {
         // 移库
         this.initData = [item]
         this.showMove = true
-        // @ts-ignore
         this.firstStoreId = item.store_id
       }
     },

@@ -164,7 +164,7 @@
                   </div>
                   <div class="content">
                     <div class="elCtn">
-                      <el-input v-model="item.items"
+                      <el-input v-model="item.item"
                         placeholder="件数"></el-input>
                     </div>
                   </div>
@@ -258,6 +258,20 @@ export default class InAndOutMat extends Vue {
   @Prop() firstStoreId?: string | number // 普通出入库的时候一级仓库id
   @Prop() storeId?: any[] // 一级二级仓库
   @Prop() relatedCode?: string
+  @Prop() initData?: Array<{
+    second_store_id: number
+    store_id: number
+    name: string
+    color: string
+    attribute: string
+    store_info: Array<{
+      color_code: string
+      vat_code: string
+      batch_code: string
+      weight: number
+      store_client_id?: number | string
+    }>
+  }>
   @Prop() yarnName?: string
   @Prop() yarnType?: string // 包含颜色和属性
   @Prop({ default: true }) noChange?: boolean // 用于标记是否可修改操作类型，一般订单里得操作都是固定的操作类型不可修改，仓库里的是可修改的
@@ -312,17 +326,17 @@ export default class InAndOutMat extends Vue {
           value: 10
         }
       ]
+    },
+    {
+      label: '采购单',
+      value: '采购单',
+      children: [
+        {
+          label: '入库',
+          value: 3
+        }
+      ]
     }
-    // {
-    //   label: '采购单',
-    //   value: '采购单',
-    //   children: [
-    //     {
-    //       label: '入库',
-    //       value: 3
-    //     }
-    //   ]
-    // }
   ]
   colorAttrArr = []
   // 单位
@@ -605,8 +619,6 @@ export default class InAndOutMat extends Vue {
         return {
           name: Array.isArray(item.name) ? item.name[1] : item.name,
           action_weight: item.action_weight,
-          color: item.color || item.colorAttr.split('IamConnector')[0],
-          attribute: item.attribute || item.colorAttr.split('IamConnector')[1],
           batch_code: item.batch_code || '',
           color_code: item.color_code || '',
           vat_code: item.vat_code || '',
@@ -654,6 +666,22 @@ export default class InAndOutMat extends Vue {
         if (this.yarnName) {
           this.getColorAttr(this.yarnName)
         }
+      }
+      if (this.initData && this.initData.length > 0) {
+        this.storeInfo.child_data = []
+        this.storeInfo.select_id = [Number(this.firstStoreId), this.initData[0].second_store_id]
+        this.initData.forEach((item) => {
+          item.store_info.forEach((itemChild) => {
+            this.storeInfo.child_data.push({
+              name: item.name,
+              action_weight: itemChild.weight,
+              color: item.color,
+              attribute: item.attribute,
+              batch_code: itemChild.batch_code === '' ? '' : itemChild.batch_code,
+              item: ''
+            })
+          })
+        })
       }
     }
   }

@@ -94,6 +94,7 @@
             <div class="trow">
               <div class="tcolumn">二级仓库名称</div>
               <div class="tcolumn">毛条名称</div>
+              <div class="tcolumn">毛条属性</div>
               <div class="tcolumn noPad flex5">
                 <div class="trow">
                   <div class="tcolumn">批号</div>
@@ -109,6 +110,7 @@
               :key="item.id">
               <div class="tcolumn">{{item.second_store_name || '-'}}</div>
               <div class="tcolumn">{{item.name}}</div>
+              <div class="tcolumn">{{item.attribute || '无'}}</div>
               <div class="tcolumn noPad flex5">
                 <div class="trow"
                   v-for="(itemStore,indexStore) in item.store_info"
@@ -125,11 +127,11 @@
             <div class="trow bgGray noBorder">
               <div class="tcolumn">合计</div>
               <div class="tcolumn"></div>
+              <div class="tcolumn"></div>
               <div class="tcolumn noPad flex5">
                 <div class="trow">
                   <div class="tcolumn"></div>
                   <div class="tcolumn">{{$formatNum($toFixed(storeListCom.reality_weight))}}</div>
-                  <div class="tcolumn blue">{{$formatNum($toFixed(storeListCom.useable_weight))}}</div>
                   <div class="tcolumn"></div>
                 </div>
               </div>
@@ -246,6 +248,7 @@
                   style="flex:3">
                   <div class="trow">
                     <div class="tcolumn">名称</div>
+                    <div class="tcolumn">属性</div>
                     <div class="tcolumn">数量</div>
                     <div class="tcolumn">批号</div>
                   </div>
@@ -288,6 +291,7 @@
                     v-for="(itemChilid,indexChild) in item.child_data"
                     :key="indexChild">
                     <div class="tcolumn">{{itemChilid.name}}</div>
+                    <div class="tcolumn">{{itemChilid.attribute || '无'}}</div>
                     <div class="tcolumn"
                       :class="{'blue':item.action_type===1||item.action_type===3||item.action_type===5,'green':item.action_type===2||item.action_type===4||item.action_type===6||item.action_type===7}">{{itemChilid.action_weight}}</div>
                     <div class="tcolumn">{{itemChilid.batch_code}}</div>
@@ -531,11 +535,11 @@ export default Vue.extend({
         .then((res) => {
           console.log(res)
           this.storeLogInfo = {
-            total_pop: res.data.data.others_data.total_pop || 0,
-            total_push: res.data.data.others_data.total_push || 0,
-            list: res.data.data.data.items
+            total_pop: res.data.data.additional.total_pop || 0,
+            total_push: res.data.data.additional.total_push || 0,
+            list: res.data.data.items
           }
-          this.storeLogListFilter.total = res.data.data.data.total
+          this.storeLogListFilter.total = res.data.data.total
 
           this.loading.log = false
           // 更新页码
@@ -604,7 +608,7 @@ export default Vue.extend({
         reality_weight: this.storeList.map((itemM) => +itemM.total_weight).reduce((a, b) => a + b, 0),
         useable_weight: this.storeList.map((itemM) => +itemM.use_weight).reduce((a, b) => a + b, 0),
         data: this.$mergeData(this.storeList, {
-          mainRule: ['second_store_id', 'name'],
+          mainRule: ['second_store_id', 'name', 'attribute'],
           otherRule: [{ name: 'second_store_name' }],
           childrenName: 'store_info',
           childrenRule: {

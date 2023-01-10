@@ -114,15 +114,34 @@
               </template>
             </div>
             <div class="rowCtnCtn"
-              v-for="(item,index) in storeInfo.child_data"
+              >
+              <div class="rowCtn" v-for="(item,index) in storeInfo.child_data"
               :key="index">
-              <i class="el-icon-circle-close"
-                @click="storeInfo.child_data.length>1?$deleteItem(storeInfo.child_data,index):$message.warning('至少有一项')"></i>
-              <div class="rowCtn">
                 <div class="colCtn">
-                  <div class="label">
+                  <div class="label" v-if="index === 0">
                     <span class="text">毛条名称</span>
-                    <span class="explanation">(必填)</span>
+                    <span class="explanation">
+                      (必填)
+                      <el-tooltip class="item" effect="dark" content="添加成功后请点击此按钮刷新数据" placement="top">
+                      <i
+                        class="el-icon-refresh hoverGreen"
+                        style="line-height: 46px; font-size: 18px; margin-left: 8px; cursor: pointer"
+                        @click="$checkCommonInfo([{
+                          checkWhich: 'api/materialType',
+                          getInfoMethed: 'dispatch',
+                          getInfoApi: 'getMaterialTypeAsync',
+                          forceUpdate: true
+                        }])"
+                      ></i>
+                    </el-tooltip>
+                    <el-tooltip class="item" effect="dark" content="添加毛条" placement="top">
+                      <i
+                        class="el-icon-upload hoverOrange"
+                        style="line-height: 38px; font-size: 18px; cursor: pointer; margin-left: 8px"
+                        @click="create_flag = true"
+                      ></i>
+                    </el-tooltip>
+                    </span>
                   </div>
                   <div class="content">
                     <div class="elCtn">
@@ -146,7 +165,7 @@
                   </div>
                 </div>
                 <div class="colCtn flex3">
-                  <div class="label">
+                  <div class="label" v-if="index === 0">
                     <span class="text">毛条属性</span>
                   </div>
                   <div class="content">
@@ -157,7 +176,7 @@
                   </div>
                 </div>
                 <div class="colCtn flex3" v-if="selfType[1]===1 ||selfType[1]===3 || selfType[1]===5 || selfType[1]===8">
-                  <div class="label">
+                  <div class="label" v-if="index === 0">
                     <span class="text">入库批号</span>
                   </div>
                   <div class="content">
@@ -168,7 +187,7 @@
                   </div>
                 </div>
                 <div class="colCtn">
-                  <div class="label">
+                  <div class="label" v-if="index === 0">
                     <span class="text">数量</span>
                     <span class="explanation">(必填)</span>
                   </div>
@@ -180,7 +199,7 @@
                   </div>
                 </div>
                 <div class="colCtn">
-                  <div class="label">
+                  <div class="label" v-if="index === 0">
                     <span class="text">件数</span>
                   </div>
                   <div class="content">
@@ -188,20 +207,24 @@
                       <el-input v-model="item.item"
                         placeholder="件数"></el-input>
                     </div>
+                    <div
+                    v-if="index === 0"
+                    class="editBtn blue"
+                    @click="$addItem(storeInfo.child_data,{
+                      name: '',
+                      action_weight: '',
+                      colorAttr: '',
+                      batch_code: '',
+                      item: ''
+                    })"
+                  >
+                    添加
+                  </div>
+                  <div v-if="index > 0" class="editBtn red" @click="storeInfo.child_data.length>1?$deleteItem(storeInfo.child_data,index):$message.warning('至少有一项')">
+                    删除
+                  </div>
                   </div>
                 </div>
-              </div>
-            </div>
-            <div class="rowCtn">
-              <div class="colCtn flex3">
-                <div class="btn btnMain"
-                  @click="$addItem(storeInfo.child_data,{
-                  name: '',
-                  action_weight: '',
-                  colorAttr: '',
-                  batch_code: '',
-                  item: ''
-                })">添加毛条</div>
               </div>
             </div>
             <div class="rowCtn">
@@ -248,6 +271,7 @@
           @click="saveAll">确定</div>
       </div>
     </div>
+    <add-material :show="create_flag" @close="create_flag = false" @afterCreate="getList"></add-material>
   </div>
 </template>
 
@@ -286,6 +310,7 @@ export default class InAndOutMat extends Vue {
   @Prop() outClientArr?: any[] // 订单自带的加工单位
   inOrOut = ''
   relatedLoading = false
+  create_flag = false
   relatedArr = []
   storeInfo: StoreCreate = {
     related_id: '',
@@ -408,6 +433,9 @@ export default class InAndOutMat extends Vue {
     this.clearData()
     this.$emit('update:show', false)
     this.$emit('close')
+  }
+  getList(){
+    console.log('添加成功')
   }
   clearData() {
     this.storeInfo = {
@@ -680,7 +708,6 @@ export default class InAndOutMat extends Vue {
         this.storeInfo.select_id = [Number(this.firstStoreId), this.initData[0].second_store_id]
         this.initData.forEach((item) => {
           item.store_info.forEach((itemChild) => {
-            console.log(itemChild)
             this.storeInfo.child_data.push({
               name: item.name,
               action_weight: itemChild.weight,

@@ -13,15 +13,17 @@
       <div class="contentCtn">
         <div class="row">
           <div class="label isMust">毛条类型：</div>
-          <div class="info tagCtn" v-if="type_list.length > 0">
-            <span class="yarnNameTag" :class="{ active: item.check, unactive: !item.check }"
-              v-for="(item, index) in type_list" :key="item.value" @click="
-  item.check = !item.check
-                $forceUpdate()
-              ">
-              <span class="name">{{ item.name }}</span>
-              <span class="el-icon-close icon" @click.stop="deleteType(item, index)"></span>
-            </span>
+          <div class="info tagCtn">
+            <template v-if="type_list.length > 0">
+              <span class="yarnNameTag" :class="{ active: item.check, unactive: !item.check }"
+                v-for="(item, index) in type_list" :key="item.value" @click="
+    item.check = !item.check
+                  $forceUpdate()
+                ">
+                <span class="name">{{ item.name }}</span>
+                <span class="el-icon-close icon" @click.stop="deleteType(item, index)"></span>
+              </span>
+            </template>
             <span class="elCtn" v-show="typeFlag">
               <el-input placeholder="输入新增类型" v-model="materialYarnInfo.name"></el-input>
             </span>
@@ -42,6 +44,13 @@
           <div class="info">
             <el-input v-model="material_info.price" placeholder="请输入毛条单价">
               <template slot="append">元/kg</template>
+            </el-input>
+          </div>
+        </div>
+        <div class="row">
+          <div class="label">毛条属性：</div>
+          <div class="info">
+            <el-input v-model="material_info.attribute" placeholder="请输入毛条属性">
             </el-input>
           </div>
         </div>
@@ -90,6 +99,7 @@ export default Vue.extend({
         id: '',
         type_id: '',
         name: '',
+        attribute: '',
         price: '',
         desc: ''
       },

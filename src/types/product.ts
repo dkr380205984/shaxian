@@ -18,6 +18,7 @@ export interface Product {
   type_name?: string
   updated_at?: any
   price?: string
+  attribute?: string
   desc?: string
   user?: any
   user_name?: string

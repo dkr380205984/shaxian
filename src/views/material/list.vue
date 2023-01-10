@@ -15,6 +15,9 @@
               <el-input v-model="name" placeholder="输入毛条名称" @change="changeRouter(1)"></el-input>
             </div>
             <div class="elCtn">
+              <el-input v-model="attribute" placeholder="输入毛条属性" @change="changeRouter(1)"></el-input>
+            </div>
+            <div class="elCtn">
               <el-select placeholder="请选择毛条类型" v-model="type" clearable @change="changeRouter(1)">
                 <el-option v-for="item in type_list" :key="item.id" :value="item.id" :label="item.name"></el-option>
               </el-select>
@@ -36,6 +39,7 @@
             <div class="row">
               <div class="column">类型</div>
               <div class="column">名称</div>
+              <div class="column">属性</div>
               <div class="column">参考价格(元)</div>
               <div class="column">库存(kg)</div>
               <div class="column">创建人</div>
@@ -46,6 +50,7 @@
             <div class="row" v-for="item in list" :key="item.id">
               <div class="column">{{ item.rel_type|maotiaoTypeFilter }}</div>
               <div class="column">{{ item.name }}</div>
+              <div class="column">{{ item.attribute || '无' }}</div>
               <div class="column">{{ item.price }}元</div>
               <div class="column">{{ item.store || 0 }}kg</div>
               <div class="column">{{ item.user.name || '无' }}</div>
@@ -129,6 +134,7 @@ export default Vue.extend({
       page_size: 10,
       total: 1,
       name: '',
+      attribute: '',
       type: '',
       create_flag: false,
       update_flag: false,
@@ -172,6 +178,7 @@ export default Vue.extend({
         .list({
           type_id: this.type,
           name: this.name,
+          attribute: this.attribute,
           page: this.page,
           limit: this.page_size
         })
@@ -184,7 +191,7 @@ export default Vue.extend({
     changeRouter(page: string) {
       const pages = page || 1
       this.$router.push(
-        '/material/list?page=' + pages + '&type=' + this.type + '&name=' + this.name + '&page_size=' + this.page_size
+        '/material/list?page=' + pages + '&type=' + this.type + '&name=' + this.name + '&attribute=' + this.attribute + '&page_size=' + this.page_size
       )
     },
     getFilters() {
@@ -192,6 +199,7 @@ export default Vue.extend({
       this.page = Number(params.page)
       this.page_size = Number(params.page_size)
       this.name = params.name
+      this.attribute = params.attribute
       this.type = Number(params.type) || ''
     },
     reset() {
@@ -239,6 +247,7 @@ export default Vue.extend({
           [
             { title: '毛条类型（必填，多个类型用逗号隔开）', key: 'type_name' },
             { title: '毛条名称（必填）', key: 'name' },
+            { title: '毛条属性（选填）', key: 'attribute' },
             { title: '毛条价格（选填，元/kg）', key: 'price' },
             { title: '单价备注（选填）', key: 'desc' }
           ],
@@ -295,6 +304,7 @@ export default Vue.extend({
         typeObj = {
           type_name: ['毛条类型（必填，多个类型用逗号隔开）'],
           name: ['毛条名称（必填）'],
+          attribute: ['毛条属性（选填）',''],
           price: ['毛条价格（选填，元/kg）', '0'],
           desc: ['单价备注（选填）', '']
         }

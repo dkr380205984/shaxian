@@ -79,7 +79,6 @@
                 <div class="colCtn flex3">
                   <div class="label">
                     <span class="text">单位名称</span>
-                    <span class="explanation">(必选)</span>
                   </div>
                   <div class="content">
                     <div class="elCtn">
@@ -146,6 +145,28 @@
                     </div>
                   </div>
                 </div>
+                <div class="colCtn flex3">
+                  <div class="label">
+                    <span class="text">毛条属性</span>
+                  </div>
+                  <div class="content">
+                    <div class="elCtn">
+                      <el-input v-model="item.attribute"
+                        placeholder="请输入毛条属性"></el-input>
+                    </div>
+                  </div>
+                </div>
+                <div class="colCtn flex3" v-if="selfType[1]===1 ||selfType[1]===3 || selfType[1]===5 || selfType[1]===8">
+                  <div class="label">
+                    <span class="text">入库批号</span>
+                  </div>
+                  <div class="content">
+                    <div class="elCtn">
+                      <el-input v-model="item.batch_code"
+                        placeholder="请输入入库批号"></el-input>
+                    </div>
+                  </div>
+                </div>
                 <div class="colCtn">
                   <div class="label">
                     <span class="text">数量</span>
@@ -166,20 +187,6 @@
                     <div class="elCtn">
                       <el-input v-model="item.item"
                         placeholder="件数"></el-input>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="rowCtn"
-                v-if="selfType[1]===1 ||selfType[1]===3 || selfType[1]===5 || selfType[1]===8">
-                <div class="colCtn flex3">
-                  <div class="label">
-                    <span class="text">入库批号</span>
-                  </div>
-                  <div class="content">
-                    <div class="elCtn">
-                      <el-input v-model="item.batch_code"
-                        placeholder="请输入入库批号"></el-input>
                     </div>
                   </div>
                 </div>
@@ -622,6 +629,7 @@ export default class InAndOutMat extends Vue {
           batch_code: item.batch_code || '',
           color_code: item.color_code || '',
           vat_code: item.vat_code || '',
+          attribute: item.attribute || '',
           item: item.item,
           related_info_id: '',
           desc: ''
@@ -672,6 +680,7 @@ export default class InAndOutMat extends Vue {
         this.storeInfo.select_id = [Number(this.firstStoreId), this.initData[0].second_store_id]
         this.initData.forEach((item) => {
           item.store_info.forEach((itemChild) => {
+            console.log(itemChild)
             this.storeInfo.child_data.push({
               name: item.name,
               action_weight: itemChild.weight,

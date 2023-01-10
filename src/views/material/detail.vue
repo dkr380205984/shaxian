@@ -25,6 +25,7 @@
               <div class="trow">
                 <div class="tcolumn">毛条名称</div>
                 <div class="tcolumn">参考单价(元)</div>
+                <div class="tcolumn">毛条属性</div>
                 <div class="tcolumn">单价备注</div>
               </div>
             </div>
@@ -32,6 +33,7 @@
               <div class="trow">
                 <div class="tcolumn">{{ product_info.name }}</div>
                 <div class="tcolumn">{{ product_info.price }}元</div>
+                <div class="tcolumn">{{ product_info.attribute }}</div>
                 <div class="tcolumn">{{ product_info.desc || '无' }}</div>
               </div>
             </div>
@@ -49,6 +51,7 @@
             <div class="trow">
               <div class="tcolumn">仓库</div>
               <div class="tcolumn">毛条名称</div>
+              <div class="tcolumn">属性</div>
               <div class="tcolumn noPad" style="flex:5">
                 <div class="trow">
                   <div class="tcolumn">批号</div>
@@ -61,6 +64,7 @@
             <div class="trow" v-for="item in store_info.list" :key="item.id">
               <div class="tcolumn">{{ item.store_name }}/{{ item.second_store_name || '-' }}</div>
               <div class="tcolumn">{{ item.name }}</div>
+              <div class="tcolumn">{{ item.attribute || '无'}}</div>
               <div class="tcolumn noPad" style="flex: 5">
                 <div class="trow" v-for="(itemStore, indexStore) in item.store_info" :key="indexStore">
                   <div class="tcolumn">{{ itemStore.batch_code }}</div>
@@ -71,6 +75,7 @@
             </div>
             <div class="trow bgGray noBorder">
               <div class="tcolumn">合计</div>
+              <div class="tcolumn"></div>
               <div class="tcolumn"></div>
               <div class="tcolumn noPad" style="flex:5">
                 <div class="trow">
@@ -97,6 +102,7 @@
               <div class="tcolumn noPad" style="flex:4">
                 <div class="trow">
                   <div class="tcolumn">毛条名称</div>
+                  <div class="tcolumn">属性</div>
                   <div class="tcolumn">批号</div>
                   <div class="tcolumn">数量</div>
                   <!-- <div class="tcolumn">关联单号</div> -->
@@ -134,6 +140,7 @@
               <div class="tcolumn noPad" style="flex:4">
                 <div class="trow" v-for="(itemChilid, indexChild) in item.child_data" :key="indexChild">
                   <div class="tcolumn">{{ itemChilid.name }}</div>
+                  <div class="tcolumn">{{ itemChilid.attribute || '无' }}</div>
                   <div class="tcolumn">{{ itemChilid.batch_code || '无' }}</div>
                   <div class="tcolumn">{{ itemChilid.action_weight || 0 }}</div>
                   <!-- <div class="tcolumn"

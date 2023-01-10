@@ -5,6 +5,7 @@ export interface MaterialInfo {
   rel_type?: any[]
   price: string | number
   store?: string | number
+  attribute?: string
   user_name?: string
   weight?: string
   desc?: string

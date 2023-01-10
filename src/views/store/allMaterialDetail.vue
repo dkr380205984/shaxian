@@ -76,6 +76,7 @@
             <div class="trow">
               <div class="tcolumn">仓库名称</div>
               <div class="tcolumn">毛条名称</div>
+              <div class="tcolumn">毛条属性</div>
               <div class="tcolumn noPad flex5">
                 <div class="trow">
                   <div class="tcolumn">批号</div>
@@ -105,6 +106,7 @@
                   <span style="width: 85%">{{ item.name }}</span>
                 </div>
               </div>
+              <div class="tcolumn">{{item.attribute || '无'}}</div>
               <div class="tcolumn noPad flex5">
                 <div class="trow"
                   v-for="(itemStore,indexStore) in item.store_info"
@@ -161,14 +163,19 @@
                 placeholder="请输入毛条名称"></el-input>
             </div>
             <div class="elCtn">
-              <el-select v-model="storeLogListFilter.type"
+              <el-select
+                v-model="storeLogListFilter.type"
                 clearable
+                
                 @change="getStoreLogList(1)"
-                placeholder="请选择操作类型">
-                <el-option v-for="item in commonInit.typeArr"
-                  :key="item.id"
+                placeholder="选择操作类型"
+              >
+                <el-option
+                  v-for="item in commonInit.typeArr"
+                  :key="item.id + item.name"
                   :label="item.name"
-                  :value="item.id">
+                  :value="item.id"
+                >
                 </el-option>
               </el-select>
             </div>
@@ -244,6 +251,7 @@
                   style="flex:3">
                   <div class="trow">
                     <div class="tcolumn">毛条名称</div>
+                    <div class="tcolumn">属性</div>
                     <div class="tcolumn">数量</div>
                     <div class="tcolumn">批号</div>
                   </div>
@@ -287,6 +295,7 @@
                     v-for="(itemChilid,indexChild) in item.child_data"
                     :key="indexChild">
                     <div class="tcolumn">{{itemChilid.name}}</div>
+                    <div class="tcolumn">{{itemChilid.attribute || '无'}}</div>
                     <div class="tcolumn"
                       :class="{'blue':item.action_type===1||item.action_type===3||item.action_type===5,'green':item.action_type===2||item.action_type===4||item.action_type===6||item.action_type===7}">{{itemChilid.action_weight}}</div>
                     <div class="tcolumn">{{itemChilid.batch_code}}</div>
@@ -374,6 +383,87 @@
         </div>
       </div>
     </div>
+    <div class="popup" v-show="addFlag">
+      <div class="main">
+        <div class="titleCtn">
+          <div class="text">{{ (createOrEditStoreObj.id && '修改') || '新增' }}仓库</div>
+          <i class="close_icon el-icon-close" @click="addFlag = false"></i>
+        </div>
+        <div class="contentCtn">
+          <div class="row">
+            <div class="label isMust">仓库名称：</div>
+            <div class="info">
+              <el-input placeholder="请输入加仓库名称" v-model="createOrEditStoreObj.name"></el-input>
+            </div>
+          </div>
+          <div class="row">
+            <div class="label isMust">仓库类型：</div>
+            <div class="info">
+              <el-select v-model="createOrEditStoreObj.type" placeholder="请选择仓库类型">
+                <el-option
+                  v-for="item in typeArr"
+                  :key="item.id + 'storeType' + item.name"
+                  :label="item.name"
+                  :value="item.id"
+                >
+                </el-option>
+              </el-select>
+            </div>
+          </div>
+          <div class="row">
+            <div class="label">仓库管理员：</div>
+            <div class="info">
+              <el-select v-model="createOrEditStoreObj.admins" multiple placeholder="请选择仓库管理员">
+                <el-option
+                  v-for="item in user_list"
+                  :key="item.id + 'storeAdmin' + item.name"
+                  :label="item.name"
+                  :value="item.id"
+                >
+                </el-option>
+              </el-select>
+            </div>
+          </div>
+          <div class="row" v-for="(itemLV2, indexLV2) in createOrEditStoreObj.LV2_info" :key="indexLV2 + 'indexLV2'">
+            <div :class="`label ${indexLV2 === 0 ? 'isMust' : ''}`">{{ (indexLV2 === 0 && '二级仓库名：') || '' }}</div>
+            <div class="info">
+              <el-input placeholder="请输入二级仓库名称" v-model="itemLV2.name"></el-input>
+              <span
+                class="info_btn blue"
+                v-if="indexLV2 === 0"
+                @click="$addItem(createOrEditStoreObj.LV2_info, { name: '', id: null })"
+                >添加</span
+              >
+              <span
+                class="info_btn red"
+                v-else
+                @click="
+                  itemLV2.id
+                    ? deleteSecondStore(itemLV2.id, createOrEditStoreObj.LV2_info, indexLV2)
+                    : $deleteItem(createOrEditStoreObj.LV2_info, indexLV2)
+                "
+                >删除</span
+              >
+            </div>
+          </div>
+          <div class="row">
+            <div class="label">仓库备注：</div>
+            <div class="info">
+              <el-input
+                placeholder="请输入仓库备注"
+                type="textarea"
+                :autosize="{ minRows: 2, maxRows: 4 }"
+                v-model="createOrEditStoreObj.desc"
+              ></el-input>
+            </div>
+          </div>
+        </div>
+        <div class="oprCtn">
+          <div class="opr" @click="addFlag = false">取消</div>
+          <div class="opr blue" @click="saveStore">保存</div>
+        </div>
+      </div>
+    </div>
     <div class="bottomFixBar">
       <div class="main">
         <div class="btnCtn" style="float: left">
@@ -446,6 +536,7 @@ export default Vue.extend({
     return {
       show_store: false,
       showMore: false,
+      addFlag: false,
       lookListFlag: false,
       storeLoading: false,
       storeInfoList: [],
@@ -461,6 +552,15 @@ export default Vue.extend({
         page: false,
         info: true,
         log: true
+      },
+      createOrEditStoreObj: {
+        store_type: 2,
+        id: null,
+        name: '',
+        type: 1,
+        admins: [],
+        LV2_info: [{ name: '', id: null }],
+        desc: ''
       },
       // 仓库数据
       storeDetail: {
@@ -503,6 +603,16 @@ export default Vue.extend({
         total: 1,
         time: ''
       },
+      typeArr: [
+        {
+          id: 1,
+          name: '本厂仓库'
+        },
+        {
+          id: 2,
+          name: '染厂仓库'
+        }
+      ],
       // 初始化公共数据
       commonInit: {
         typeArr: [
@@ -540,7 +650,11 @@ export default Vue.extend({
           },
           {
             id: 10,
-            name: '仓库移库'
+            name: '移库出库'
+          },
+          {
+            id: 11,
+            name: '移库入库'
           },
           {
             id: 16,
@@ -550,8 +664,8 @@ export default Vue.extend({
             id: 17,
             name: '加工回库'
           }
-        ]
-      }
+        ],
+      },
     }
   },
 
@@ -727,7 +841,7 @@ export default Vue.extend({
     changeStore(item: Store) {
       this.addFlag = true
       this.createOrEditStoreObj = {
-        store_type: 1,
+        store_type: 2,
         id: (item && item.id) || null,
         name: (item && item.name) || '',
         type: (item && item.type) || 1,
@@ -776,7 +890,7 @@ export default Vue.extend({
       }
       store
         .create({
-          store_type: 1,
+          store_type: 2,
           id: this.createOrEditStoreObj.id || null,
           name: this.createOrEditStoreObj.name,
           type: this.createOrEditStoreObj.type,
@@ -885,6 +999,11 @@ export default Vue.extend({
         getInfoApi: 'getMaterialTypeAsync'
       },
       {
+        checkWhich: 'api/user',
+        getInfoMethed: 'dispatch',
+        getInfoApi: 'getUserAsync'
+      },
+      {
         checkWhich: 'api/storeHouse',
         getInfoMethed: 'dispatch',
         getInfoApi: 'getStoreAsync'
@@ -924,7 +1043,7 @@ export default Vue.extend({
         reality_weight: this.storeList.map((itemM) => +itemM.total_weight).reduce((a, b) => a + b, 0),
         useable_weight: this.storeList.map((itemM) => +itemM.use_weight).reduce((a, b) => a + b, 0),
         data: this.$mergeData(this.storeList, {
-          mainRule: ['store_id', 'second_store_id', 'name'],
+          mainRule: ['store_id', 'second_store_id', 'name', 'attribute'],
           otherRule: [{ name: 'second_store_name' }, { name: 'store_name' }],
           childrenName: 'store_info',
           childrenRule: {
@@ -950,6 +1069,9 @@ export default Vue.extend({
           })
         }
       })
+    },
+    user_list() {
+      return this.$store.state.api.user.arr
     },
     client_list() {
       return this.$store.state.api.client.arr

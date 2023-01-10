@@ -17,20 +17,22 @@
           </div>
         </div>
         <div class="rowCtn">
-          <div class="info tagCtn" v-if="typeArr.length > 0">
-            <span
-              class="yarnNameTag"
-              :class="{ active: item.check, unactive: !item.check }"
-              v-for="(item, index) in typeArr"
-              :key="item.value"
-              @click="
-                item.check = !item.check
-                $forceUpdate()
-              "
-            >
-              <span class="name">{{ item.name }}</span>
-              <span class="el-icon-close icon" @click.stop="deleteYarnType(item, index)"></span>
-            </span>
+          <div class="info tagCtn">
+            <template v-if="typeArr.length > 0">
+              <span
+                class="yarnNameTag"
+                :class="{ active: item.check, unactive: !item.check }"
+                v-for="(item, index) in typeArr"
+                :key="item.value"
+                @click="
+                  item.check = !item.check
+                  $forceUpdate()
+                "
+              >
+                <span class="name">{{ item.name }}</span>
+                <span class="el-icon-close icon" @click.stop="deleteYarnType(item, index)"></span>
+              </span>
+            </template>
             <span class="elCtn" v-show="typeFlag">
               <el-input placeholder="输入新增类型" v-model="yarnTypeInfo.name"></el-input>
             </span>

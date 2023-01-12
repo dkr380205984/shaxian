@@ -30,11 +30,11 @@
                 @change="getStoreInfoList"
                 placeholder="请输入入库批号"></el-input>
             </div>
-            <!-- <div class="elCtn">
+            <div class="elCtn">
               <el-input v-model="storeListFilter.attribute"
                 @change="getStoreInfoList"
                 placeholder="请输入毛条属性"></el-input>
-            </div> -->
+            </div>
             <div class="elCtn">
               <el-checkbox v-model="storeListFilter.isFilterZero"
                 @change="getStoreInfoList">过滤库存为0的毛条</el-checkbox>
@@ -52,7 +52,7 @@
               <div class="btn backHoverBlue" @click="goStore(3)">盘点移库</div>
               <div class="btn backHoverOrange" @click="goStore(2)">盘点出库</div>
               <div class="btn backHoverGreen" @click="goStore(1)">盘点入库</div>
-              <!-- <div class="btn backHoverGreen" @click="showAddPO = true">采购并入库</div> -->
+              <div class="btn backHoverGreen" @click="showAddPO = true">采购并入库</div>
               <!-- <div class="btn backHoverBlue" @click="yarnFlag = true">合并纱线</div> -->
               <!-- <div class="btn backHoverOrange" @click="$router.push('/order/salesOrderCreate')">销售并出库</div> -->
               <!-- <div class="btn backHoverOrange" @click="create_flag = true">出库并加工</div> -->
@@ -145,7 +145,7 @@
       </div>
       <div class="listCtn">
         <div class="filterCtn showMore">
-          <div class="leftCtn" style="padding:unset;">
+          <div class="leftCtn" style="padding:unset;max-width: unset;">
             <div class="label">筛选条件：</div>
             <!-- <div class="showMore"
               @click="showMore=!showMore">{{!showMore?'展示更多':'收起筛选'}}</div> -->
@@ -163,10 +163,19 @@
                 placeholder="请输入毛条名称"></el-input>
             </div>
             <div class="elCtn">
+              <el-input v-model="storeLogListFilter.attribute"
+                @change="getStoreLogList(1)"
+                placeholder="请输入毛条属性"></el-input>
+            </div>
+            <div class="elCtn">
+              <el-input v-model="storeLogListFilter.batch_code"
+                @change="getStoreLogList(1)"
+                placeholder="请输入入库批号"></el-input>
+            </div>
+            <div class="elCtn">
               <el-select
                 v-model="storeLogListFilter.type"
                 clearable
-                
                 @change="getStoreLogList(1)"
                 placeholder="选择操作类型"
               >
@@ -183,16 +192,6 @@
               <el-input v-model="storeLogListFilter.code"
                 @change="getStoreLogList(1)"
                 placeholder="请输入单号"></el-input>
-            </div>
-            <div class="elCtn">
-              <el-date-picker v-model="storeLogListFilter.time"
-                type="daterange"
-                value-format="yyyy-MM-dd"
-                range-separator="至"
-                start-placeholder="开始日期"
-                end-placeholder="结束日期"
-                @change="getStoreLogList(1)">
-              </el-date-picker>
             </div>
             <div class="elCtn">
               <el-select v-model="storeLogListFilter.limit"
@@ -228,9 +227,14 @@
               </el-select>
             </div>
             <div class="elCtn">
-              <el-input v-model="storeLogListFilter.batch_code"
-                @change="getStoreLogList(1)"
-                placeholder="请输入入库批号"></el-input>
+              <el-date-picker v-model="storeLogListFilter.time"
+                type="daterange"
+                value-format="yyyy-MM-dd"
+                range-separator="至"
+                start-placeholder="开始日期"
+                end-placeholder="结束日期"
+                @change="getStoreLogList(1)">
+              </el-date-picker>
             </div>
           </div>
           <div class="rightCtn" style="min-width:94px">
@@ -515,6 +519,12 @@
     <in-and-out-mat :noChange="false"
       :firstStoreId="$route.params.id"
       :show.sync="show_store"></in-and-out-mat>
+    <materialAddPO
+      :show="showAddPO"
+      @close="resetInfo"
+      :info="order_yarn_info"
+      @afterCreate="init"
+    ></materialAddPO>
   </div>
 </template>
 
@@ -539,6 +549,7 @@ export default Vue.extend({
       addFlag: false,
       lookListFlag: false,
       storeLoading: false,
+      showAddPO: false,
       storeInfoList: [],
       selectList: [],
       storeTotal: 1,
@@ -552,6 +563,31 @@ export default Vue.extend({
         page: false,
         info: true,
         log: true
+      },
+      order_yarn_info: {
+        order_id: '',
+        client_id: '',
+        total_price: '',
+        child_data: [
+          {
+            name: '',
+            weight: '',
+            attribute: '',
+            price: ''
+          }
+        ],
+        order_time: this.$getDate(new Date()),
+        delivery_time: '',
+        additional_fee: [
+          {
+            name: '',
+            price: '',
+            desc: ''
+          }
+        ],
+        total_additional_fee: 0,
+        file_url: '',
+        desc: ''
       },
       createOrEditStoreObj: {
         store_type: 2,
@@ -579,6 +615,7 @@ export default Vue.extend({
         LV2_name: '',
         name: '',
         color: '',
+        attribute: '',
         batch_code: '',
         isFilterZero: true,
         page: 1,
@@ -594,6 +631,7 @@ export default Vue.extend({
         LV2_name: '',
         name: '',
         color: '',
+        attribute: '',
         batch_code: '',
         attr: '',
         type: '',
@@ -685,6 +723,7 @@ export default Vue.extend({
           second_store_id: this.storeListFilter.LV2_name ? this.storeListFilter.LV2_name[1] : '',
           name: this.storeListFilter.name || null,
           color: this.storeListFilter.color || null,
+          attribute: this.storeListFilter.attribute || null,
           batch_code: this.storeListFilter.batch_code || null,
           weight: this.storeListFilter.isFilterZero ? 0 : null
         })
@@ -700,6 +739,7 @@ export default Vue.extend({
           LV2_name: '',
           name: '',
           color: '',
+          attribute: '',
           batch_code: '',
           isFilterZero: true,
           page: 1,
@@ -711,6 +751,7 @@ export default Vue.extend({
           LV2_name: '',
           name: '',
           color: '',
+          attribute: '',
           batch_code: '',
           attr: '',
           type: '',
@@ -725,6 +766,34 @@ export default Vue.extend({
         this.$message.warning('未知重置错误')
       }
     },
+    resetInfo(){
+      this.order_yarn_info = {
+        order_id: '',
+        client_id: '',
+        total_price: '',
+        child_data: [
+          {
+            name: '',
+            weight: '',
+            attribute: '',
+            price: ''
+          }
+        ],
+        order_time: this.$getDate(new Date()),
+        delivery_time: '',
+        additional_fee: [
+          {
+            name: '',
+            price: '',
+            desc: ''
+          }
+        ],
+        total_additional_fee: 0,
+        file_url: '',
+        desc: ''
+      }
+      this.showAddPO = false
+    },
     // 获取出入库日志
     getStoreLogList(pages: number = 1) {
       this.loading.log = true
@@ -735,6 +804,7 @@ export default Vue.extend({
           store_id: this.storeLogListFilter.LV2_name ? this.storeLogListFilter.LV2_name[0] : '',
           store_second_id: this.storeLogListFilter.LV2_name ? this.storeLogListFilter.LV2_name[1] : '',
           name: this.storeLogListFilter.name || null,
+          attribute: this.storeLogListFilter.attribute || null,
           action_type: this.storeLogListFilter.type || null,
           code: this.storeLogListFilter.code || null,
           batch_code: this.storeLogListFilter.batch_code || null,
@@ -935,9 +1005,10 @@ export default Vue.extend({
         })
     },
     // 跳转日志
-    goLogEl(item: { second_store_id: number; name: string; color: string; attr: string; [key: string]: any }) {
+    goLogEl(item: { second_store_id: number; name: string; attribute: string; attr: string; [key: string]: any }) {
       this.storeLogListFilter.LV2_name = [item.store_id, item.second_store_id]
       this.storeLogListFilter.name = item.name
+      this.storeLogListFilter.attribute = item.attribute
       this.$goElView('stockLogEl')
       this.getStoreLogList()
     },

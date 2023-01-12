@@ -192,7 +192,7 @@
       </div>
       <div class="listCtn">
         <div class="list">
-          <div class="overflow">
+          <div class="overflow" @mousewheel.prevent="listenWheel" ref="list">
             <div class="tableCtn">
               <div class="table">
                 <div class="headCtn">
@@ -289,8 +289,8 @@
           <div class="headCtn">
             <div class="row">
               <div class="column">扣款单号</div>
-              <div class="column">纱线信息</div>
-              <div class="column">扣款单价</div>
+              <!-- <div class="column">纱线信息</div>
+              <div class="column">扣款单价</div> -->
               <div class="column">图片说明</div>
               <div class="column">扣款总价</div>
               <div class="column">备注信息</div>
@@ -300,7 +300,7 @@
           <div class="bodyCtn">
             <div class="row" v-for="item in deduct_list" :key="item.id">
               <div class="column blue">{{ item.code }}</div>
-              <div class="column">
+              <!-- <div class="column">
                 <div class="sortContainer" v-if="item.deduct_content && item.deduct_content.length > 0">
                   <div class="sort">
                     <i class="el-icon-caret-top hover" @click="changeIndex(item, 'add')"></i>
@@ -316,7 +316,7 @@
                   >{{ item.deduct_content[item.index || 0].price }}元</template
                 >
                 <div class="gray" v-else>暂无单价</div>
-              </div>
+              </div> -->
               <div class="column">
                 <el-image
                   style="width: 50px; height: 50px; line-height: 50px; text-align: center; font-size: 22px"
@@ -805,6 +805,23 @@ export default Vue.extend({
         }
         this.loading = false
       })
+    },
+    // 监听一下鼠标滚轮
+    listenWheel(ev: any) {
+      const detail = ev.wheelDelta || ev.detail
+      // 定义滚动方向，其实也可以在赋值的时候写
+      const moveForwardStep = 1
+      const moveBackStep = -1
+      // 定义滚动距离
+      let step = 0
+      // 判断滚动方向,这里的100可以改，代表滚动幅度，也就是说滚动幅度是自定义的
+      if (detail < 0) {
+        step = moveForwardStep * 50
+      } else {
+        step = moveBackStep * 50
+      }
+      // @ts-ignore 对需要滚动的元素进行滚动操作
+      this.$refs.list.scrollLeft += step
     },
     // 删除单据
     deleteThis() {

@@ -22,7 +22,8 @@ export interface StoreDetailYarnListParams {
   second_store_id: string | null,
   store_client_id?: string | number | null,
   name: string | null,
-  color: string | null,
+  color?: string | null,
+  attribute?: string | null,
   weight: 0 | null
   batch_code?: string
   color_code?: string

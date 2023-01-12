@@ -11,6 +11,7 @@ import collection from './collection/collection.vue'
 import relatedInfo from './relatedInfo/relatedInfo.vue'
 import productCreate from './productCreate/productCreate.vue'
 import shaxianAddPO from './shaxianAddPO/shaxianAddPO.vue'
+import materialAddPO from './materialAddPO/materialAddPO.vue'
 import yarnStoreSelect from './yarnStoreSelect/yarnStoreSelect.vue'
 import addTransProcess from './addTransProcess/addTransProcess.vue'
 import zhList from './zhList/zhList.vue'
@@ -33,6 +34,7 @@ export default {
     vue.component('relatedInfo', relatedInfo)
     vue.component('productCreate', productCreate)
     vue.component('shaxianAddPO', shaxianAddPO)
+    vue.component('materialAddPO', materialAddPO)
     vue.component('yarnStoreSelect', yarnStoreSelect)
     vue.component('addTransProcess', addTransProcess)
     vue.component('zhList', zhList)

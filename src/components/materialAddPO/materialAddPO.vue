@@ -1,8 +1,8 @@
 <template>
-  <div class="shaxianAddPO popup" v-show="show" v-loading="loading">
+  <div class="materialAddPO popup" v-show="show" v-loading="loading">
     <div class="main" style="min-width: 1200px">
       <div class="titleCtn">
-        <div class="text">采购单{{ update ? '修改' : '添加' }}/入库</div>
+        <div class="text">采购单{{ update? '修改': '添加' }}/入库</div>
         <div class="closeCtn" @click="close">
           <i class="el-icon-close"></i>
         </div>
@@ -16,10 +16,8 @@
                 <span class="explanation">
                   (必选)
                   <el-tooltip class="item" effect="dark" content="设置成功后请点击此按钮刷新数据" placement="top">
-                    <i
-                      class="el-icon-refresh hoverGreen"
-                      style="line-height: 46px; font-size: 18px; margin-left: 8px; cursor: pointer"
-                      @click="
+                    <i class="el-icon-refresh hoverGreen"
+                      style="line-height: 46px; font-size: 18px; margin-left: 8px; cursor: pointer" @click="
                         $checkCommonInfo([
                           {
                             checkWhich: 'api/client',
@@ -28,27 +26,20 @@
                             forceUpdate: true
                           }
                         ])
-                      "
-                    ></i>
+                      "></i>
                   </el-tooltip>
                   <el-tooltip class="item" effect="dark" content="添加客户" placement="top">
-                    <i
-                      class="el-icon-upload hoverOrange"
+                    <i class="el-icon-upload hoverOrange"
                       style="line-height: 38px; font-size: 18px; cursor: pointer; margin-left: 8px"
-                      @click="$openUrl('/settings/supplier')"
-                    ></i>
+                      @click="$openUrl('/settings/supplier')"></i>
                   </el-tooltip>
                 </span>
               </div>
               <div class="content">
                 <div class="elCtn">
                   <el-select placeholder="请选择供货商" v-model="order_yarn_info.client_id" filterable>
-                    <el-option
-                      v-for="item in client_arr"
-                      :key="item.id"
-                      :value="item.id"
-                      :label="item.code + '-' + item.name"
-                    ></el-option>
+                    <el-option v-for="item in client_arr" :key="item.id" :value="item.id"
+                      :label="item.code + '-' + item.name"></el-option>
                   </el-select>
                 </div>
               </div>
@@ -64,13 +55,9 @@
                 </div>
                 <div class="elCtn">
                   <el-select v-model="order_yarn_info.settle_type" placeholder="请选择结算方式">
-                    <el-option
-                      label="KP"
-                      value="KP">
+                    <el-option label="KP" value="KP">
                     </el-option>
-                    <el-option
-                      label="BKP"
-                      value="BKP">
+                    <el-option label="BKP" value="BKP">
                     </el-option>
                   </el-select>
                 </div>
@@ -82,12 +69,8 @@
                 <span class="explanation">(必选)</span>
               </div>
               <div class="elCtn">
-                <el-date-picker
-                  v-model="order_yarn_info.order_time"
-                  type="date"
-                  value-format="yyyy-MM-dd"
-                  placeholder="选择下单日期"
-                >
+                <el-date-picker v-model="order_yarn_info.order_time" type="date" value-format="yyyy-MM-dd"
+                  placeholder="选择下单日期">
                 </el-date-picker>
               </div>
             </div>
@@ -95,65 +78,52 @@
           <div class="rowCtn" v-for="(item, index) in order_yarn_info.child_data" :key="'yarn' + index">
             <div class="colCtn">
               <div class="label" v-if="index === 0">
-                <span class="text">纱线名称</span>
-                <span class="explanation">(必选)</span>
+                <span class="text">毛条名称</span>
+                <span class="explanation">
+                  (必选)
+                  <el-tooltip class="item" effect="dark" content="添加成功后请点击此按钮刷新数据" placement="top">
+                    <i class="el-icon-refresh hoverGreen"
+                      style="line-height: 46px; font-size: 18px; margin-left: 8px; cursor: pointer" @click="$checkCommonInfo([{
+                        checkWhich: 'api/materialType',
+                        getInfoMethed: 'dispatch',
+                        getInfoApi: 'getMaterialTypeAsync',
+                        forceUpdate: true
+                      }])"></i>
+                  </el-tooltip>
+                  <el-tooltip class="item" effect="dark" content="添加毛条" placement="top">
+                    <i class="el-icon-upload hoverOrange"
+                      style="line-height: 38px; font-size: 18px; cursor: pointer; margin-left: 8px"
+                      @click="create_flag_material = true"></i>
+                  </el-tooltip>
+                </span>
               </div>
               <div class="content">
                 <div class="elCtn">
-                  <el-select
-                    v-if="info.orderId"
-                    v-model="item.item"
-                    value-key="id"
-                    filterable
-                    @change="changeProName(item, index)"
-                    placeholder="请选择纱线"
-                    :options="yarn_list"
-                  >
-                    <el-option
-                      v-for="(itemYarn, indexYarn) in yarn_list"
-                      :key="indexYarn.id"
-                      :label="itemYarn.label"
-                      :value="itemYarn"
-                    ></el-option>
+                  <el-select v-if="info.orderId" v-model="item.item" value-key="id" filterable
+                    @change="changeProName(item, index)" placeholder="请选择毛条" :options="yarn_list">
+                    <el-option v-for="(itemYarn, indexYarn) in yarn_list" :key="indexYarn.id" :label="itemYarn.label"
+                      :value="itemYarn"></el-option>
                   </el-select>
-                  <el-cascader
-                    v-else
-                    v-model="item.name"
-                    filterable
-                    placeholder="请选择纱线"
-                    :options="yarn_list"
-                  ></el-cascader>
+                  <el-cascader v-else v-model="item.name" filterable placeholder="请选择毛条"
+                    :options="yarn_list"></el-cascader>
                 </div>
               </div>
             </div>
             <div class="colCtn">
               <div style="display: flex; align-items: center">
                 <div class="label" v-if="index === 0">
-                  <span class="text">颜色/属性</span>
-                  <span class="explanation">(必填)</span>
+                  <span class="text">属性</span>
                 </div>
-                <el-tooltip
-                  v-if="index === 0"
-                  style="cursor: pointer; margin-left: 10px"
-                  class="item"
-                  effect="dark"
-                  content="统一属性"
-                  placement="top"
-                >
+                <el-tooltip v-if="index === 0" style="cursor: pointer; margin-left: 10px" class="item" effect="dark"
+                  content="统一属性" placement="top">
                   <svg class="iconFont copyIcon hoverBlue" aria-hidden="true" @click="copyInfo('attribute')">
                     <use xlink:href="#icon-tongbushuju1"></use>
                   </svg>
                 </el-tooltip>
               </div>
-              <div class="content flexRow">
+              <div class="content">
                 <div class="elCtn">
-                  <el-input placeholder="颜色" v-model="item.color"></el-input>
-                </div>
-                <div class="elCtn">
-                  <el-select placeholder="属性" v-model="item.attribute">
-                    <el-option label="绞纱" value="绞纱"></el-option>
-                    <el-option label="筒纱" value="筒纱"></el-option>
-                  </el-select>
+                  <el-input placeholder="属性" v-model="item.attribute"></el-input>
                 </div>
               </div>
             </div>
@@ -163,14 +133,8 @@
                   <span class="text">单价/数量</span>
                   <span class="explanation">(必填)</span>
                 </div>
-                <el-tooltip
-                  v-if="index === 0"
-                  style="cursor: pointer; margin-left: 10px"
-                  class="item"
-                  effect="dark"
-                  content="统一单价"
-                  placement="top"
-                >
+                <el-tooltip v-if="index === 0" style="cursor: pointer; margin-left: 10px" class="item" effect="dark"
+                  content="统一单价" placement="top">
                   <svg class="iconFont copyIcon hoverBlue" aria-hidden="true" @click="copyInfo('price')">
                     <use xlink:href="#icon-tongbushuju1"></use>
                   </svg>
@@ -188,19 +152,14 @@
                   </el-input>
                 </div>
               </div>
-              <div
-                v-if="index === 0"
-                class="editBtn blue"
-                @click="
-                  $addItem(order_yarn_info.child_data, {
-                    name: '',
-                    weight: '',
-                    color: '白胚',
-                    attribute: '',
-                    price: ''
-                  })
-                "
-              >
+              <div v-if="index === 0" class="editBtn blue" @click="
+                $addItem(order_yarn_info.child_data, {
+                  name: '',
+                  weight: '',
+                  attribute: '',
+                  price: ''
+                })
+              ">
                 添加
               </div>
               <div v-if="index > 0" class="editBtn red" @click="$deleteItem(order_yarn_info.child_data, index)">
@@ -241,17 +200,13 @@
               <div class="elCtn">
                 <el-input v-model="item.desc" placeholder="请输入额外费用备注"></el-input>
               </div>
-              <div
-                v-if="index === 0"
-                class="editBtn blue"
-                @click="
-                  $addItem(order_yarn_info.additional_fee, {
-                    name: '',
-                    price: '',
-                    desc: ''
-                  })
-                "
-              >
+              <div v-if="index === 0" class="editBtn blue" @click="
+                $addItem(order_yarn_info.additional_fee, {
+                  name: '',
+                  price: '',
+                  desc: ''
+                })
+              ">
                 添加
               </div>
               <div v-if="index > 0" class="editBtn red" @click="$deleteItem(order_yarn_info.additional_fee, index)">
@@ -267,12 +222,8 @@
               </div>
               <div class="content">
                 <div class="elCtn">
-                  <el-date-picker
-                    v-model="order_yarn_info.delivery_time"
-                    type="date"
-                    value-format="yyyy-MM-dd"
-                    placeholder="选择交货日期"
-                  >
+                  <el-date-picker v-model="order_yarn_info.delivery_time" type="date" value-format="yyyy-MM-dd"
+                    placeholder="选择交货日期">
                   </el-date-picker>
                 </div>
               </div>
@@ -297,26 +248,18 @@
               </div>
               <div class="label">
                 <span class="text">
-                  <el-checkbox v-model="cvFlag" @change="changeCVOpration"
-                    >{{ cvFlag ? '关闭复制粘贴图片上传功能' : '开启复制粘贴图片上传功能' }}
+                  <el-checkbox v-model="cvFlag" @change="changeCVOpration">{{
+                    cvFlag? '关闭复制粘贴图片上传功能': '开启复制粘贴图片上传功能'
+                  }}
                   </el-checkbox>
                 </span>
               </div>
-              <el-upload
-                class="upload"
-                action="https://upload.qiniup.com/"
-                accept="image/jpeg,image/gif,image/png,image/bmp"
-                :before-upload="beforeAvatarUpload"
-                :multiple="false"
+              <el-upload class="upload" action="https://upload.qiniup.com/"
+                accept="image/jpeg,image/gif,image/png,image/bmp" :before-upload="beforeAvatarUpload" :multiple="false"
                 :data="postData"
                 :file-list="order_yarn_info.file_url ? [{ name: '说明文件', url: order_yarn_info.file_url }] : []"
-                list-type="picture-card"
-                :limit="1"
-                :before-remove="beforeRemove"
-                :on-success="successFile"
-                :on-preview="handlePictureCardPreview"
-                ref="uploada"
-              >
+                list-type="picture-card" :limit="1" :before-remove="beforeRemove" :on-success="successFile"
+                :on-preview="handlePictureCardPreview" ref="uploada">
                 <div class="uploadBtn">
                   <i class="el-icon-upload"></i>
                   <span>上传文件</span>
@@ -331,13 +274,8 @@
         </div>
         <div class="oprCtn">
           <span class="btn borderBtn" @click="close">取消</span>
-          <span
-            class="btn"
-            style="margin-left: 20px"
-            :class="{ backHoverBlue: !update, backHoverOrange: update }"
-            @click="saveOrder(1)"
-            >{{ update ? '确认修改' : '确认采购' }}</span
-          >
+          <span class="btn" style="margin-left: 20px" :class="{ backHoverBlue: !update, backHoverOrange: update }"
+            @click="saveOrder(1)">{{ update? '确认修改': '确认采购' }}</span>
           <span v-if="!update" class="btn backHoverGreen" style="margin: 0 20px" @click="saveOrder(2)">确认并入库</span>
         </div>
       </template>
@@ -351,12 +289,8 @@
               </div>
               <div class="content">
                 <div class="elCtn">
-                  <el-cascader
-                    v-model="store_info.select_id"
-                    :options="store_list"
-                    :props="{ value: 'id', label: 'name', children: 'second_data' }"
-                    placeholder="请选择入库仓库"
-                  >
+                  <el-cascader v-model="store_info.select_id" :options="store_list"
+                    :props="{ value: 'id', label: 'name', children: 'second_data' }" placeholder="请选择入库仓库">
                   </el-cascader>
                 </div>
               </div>
@@ -375,41 +309,19 @@
           <div class="tableCtn">
             <div class="thead">
               <div class="trow">
-                <div class="tcolumn" style="flex: 1.5">纱线名称</div>
-                <div class="tcolumn">纱线颜色</div>
+                <div class="tcolumn" style="flex: 1.5">毛条名称</div>
                 <div class="tcolumn">
                   <div style="display:flex;align-items:center">
-                    纱线属性
-                    <el-tooltip
-                      style="cursor: pointer; margin-left: 10px"
-                      class="item"
-                      effect="dark"
-                      content="统一属性"
-                      placement="top"
-                    >
+                    毛条属性
+                    <el-tooltip style="cursor: pointer; margin-left: 10px" class="item" effect="dark" content="统一属性"
+                      placement="top">
                       <svg class="iconFont copyIcon hoverBlue" aria-hidden="true" @click="copyInputInfo('attribute')">
                         <use xlink:href="#icon-tongbushuju1"></use>
                       </svg>
                     </el-tooltip>
                   </div>
                 </div>
-                <div class="tcolumn" style="flex: 2">批号/色号/缸号</div>
-                <div class="tcolumn">
-                  <div style="display:flex;align-items:center">
-                    所属客户
-                    <el-tooltip
-                      style="cursor: pointer; margin-left: 10px"
-                      class="item"
-                      effect="dark"
-                      content="统一所属客户"
-                      placement="top"
-                    >
-                      <svg class="iconFont copyIcon hoverBlue" aria-hidden="true" @click="copyInputInfo('store_client_id')">
-                        <use xlink:href="#icon-tongbushuju1"></use>
-                      </svg>
-                    </el-tooltip>
-                  </div>
-                </div>
+                <div class="tcolumn">批号</div>
                 <div class="tcolumn">数量(kg)</div>
                 <div class="tcolumn">件数(件)</div>
               </div>
@@ -417,70 +329,31 @@
             <div class="tbody">
               <div class="trow" v-for="(item, index) in store_info.child_data" :key="index">
                 <div class="tcolumn" style="flex: 1.5">
-                  <el-select class="el" placeholder="纱线名称" v-model="item.name" @change="getColor($event, item)">
-                    <el-option
-                      v-for="item in selfYarnArr"
-                      :key="item.name"
-                      :label="item.name"
-                      :value="item.name"
-                    ></el-option>
+                  <el-select class="el" placeholder="毛条名称" v-model="item.name" @change="getColor($event, item)">
+                    <el-option v-for="item in selfYarnArr" :key="item.name" :label="item.name"
+                      :value="item.name"></el-option>
                   </el-select>
                 </div>
                 <div class="tcolumn">
-                  <el-select class="el" no-data-text="请先选择纱线" placeholder="颜色" v-model="item.color">
-                    <el-option
-                      v-for="itemChild in item.colorArr"
-                      :key="itemChild.value"
-                      :label="itemChild.label"
-                      :value="itemChild.value"
-                    ></el-option>
-                  </el-select>
-                </div>
-                <div class="tcolumn">
-                  <el-select class="el" v-model="item.attribute" placeholder="属性">
+                  <!-- <el-select class="el" v-model="item.attribute" placeholder="属性">
                     <el-option label="绞纱" value="绞纱"></el-option>
                     <el-option label="筒纱" value="筒纱"></el-option>
-                  </el-select>
+                  </el-select> -->
+                  <el-input class="el" v-model="item.attribute" placeholder="毛条属性" />
                 </div>
-                <div class="tcolumn" style="flex: 2; flex-direction: row; align-items: center">
-                  <el-input
-                    class="el"
-                    v-model="item.batch_code"
-                    placeholder="批号"
-                    style="margin-right: 4px"
-                  ></el-input>
-                  <el-input
-                    class="el"
-                    v-model="item.color_code"
-                    placeholder="色号"
-                    style="margin-right: 4px"
-                  ></el-input>
-                  <el-input class="el" v-model="item.vat_code" placeholder="缸号" style="margin-right: 4px"></el-input>
-                </div>
-                <div class="tcolumn">
-                  <el-select class="el" placeholder="所属客户" v-model="item.store_client_id" filterable>
-                    <el-option
-                      v-for="item in clientArr"
-                      :key="item.id"
-                      :value="item.id"
-                      :label="(item.code || item.id) + ' - ' + item.name"
-                    ></el-option>
-                  </el-select>
+                <div class="tcolumn" style="flex-direction: row; align-items: center">
+                  <el-input class="el" v-model="item.batch_code" placeholder="批号" style="margin-right: 4px"></el-input>
                 </div>
                 <div class="tcolumn">
                   <el-input class="el" v-model="item.action_weight" placeholder="数量"></el-input>
                 </div>
                 <div class="tcolumn" style="flex-direction: row; align-items: center">
                   <el-input class="el" v-model="item.items" placeholder="件数"></el-input>
-                  <div
-                    class="opr red"
-                    style="margin-left: 8px"
-                    @click="
-                      store_info.child_data.length > 1
-                        ? $deleteItem(store_info.child_data, index)
-                        : $message.warning('至少有一项')
-                    "
-                  >
+                  <div class="opr red" style="margin-left: 8px" @click="
+                    store_info.child_data.length > 1
+                      ? $deleteItem(store_info.child_data, index)
+                      : $message.warning('至少有一项')
+                  ">
                     <i class="el-icon-circle-close" style="font-size: 18px"></i>
                   </div>
                 </div>
@@ -489,24 +362,18 @@
           </div>
           <div class="rowCtn">
             <div class="colCtn flex3">
-              <div
-                class="btn btnMain"
-                @click="
-                  $addItem(store_info.child_data, {
-                    action_weight: '',
-                    attribute: '',
-                    batch_code: '',
-                    color: '',
-                    color_code: '',
-                    desc: '',
-                    item: '',
-                    name: '',
-                    related_info_id: '',
-                    vat_code: ''
-                  })
-                "
-              >
-                添加纱线
+              <div class="btn btnMain" @click="
+                $addItem(store_info.child_data, {
+                  action_weight: '',
+                  attribute: '',
+                  batch_code: '',
+                  desc: '',
+                  item: '',
+                  name: '',
+                  related_info_id: '',
+                })
+              ">
+                添加毛条
               </div>
             </div>
           </div>
@@ -518,12 +385,8 @@
               </div>
               <div class="content">
                 <div class="elCtn">
-                  <el-date-picker
-                    v-model="store_info.complete_time"
-                    type="date"
-                    value-format="yyyy-MM-dd"
-                    placeholder="选择操作时间"
-                  >
+                  <el-date-picker v-model="store_info.complete_time" type="date" value-format="yyyy-MM-dd"
+                    placeholder="选择操作时间">
                   </el-date-picker>
                 </div>
               </div>
@@ -547,11 +410,12 @@
         </div>
       </template>
     </div>
+    <add-material :show="create_flag_material" @close="create_flag_material = false"></add-material>
   </div>
 </template>
 <script lang="ts">
 import Vue from 'vue'
-import { yarnOrder, stock } from '@/assets/js/api'
+import { yarnOrder, stock, material } from '@/assets/js/api'
 export default Vue.extend({
   props: {
     orderId: {
@@ -576,7 +440,6 @@ export default Vue.extend({
           {
             name: '',
             weight: '',
-            color: '白胚',
             attribute: '',
             price: ''
           }
@@ -589,6 +452,7 @@ export default Vue.extend({
       loading: false,
       cvFlag: false,
       dialogVisible: false,
+      create_flag_material: false,
       dialogImageUrl: '',
       step: 1,
       postData: { key: '', token: '' },
@@ -625,13 +489,10 @@ export default Vue.extend({
             action_weight: '',
             attribute: '',
             batch_code: '',
-            color: '',
-            color_code: '',
             desc: '',
             item: '',
             name: '',
             related_info_id: '',
-            vat_code: ''
           }
         ]
       }
@@ -649,11 +510,11 @@ export default Vue.extend({
           }
         })
       } else {
-        return this.$store.state.api.yarnType.arr.map((item: any) => {
+        return this.$store.state.api.materialType.arr.map((item: any) => {
           return {
             value: item.name,
             label: item.name,
-            children: item.yarns.map((itemChild: any) => {
+            children: item.child_data.map((itemChild: any) => {
               return {
                 value: itemChild.name,
                 label: itemChild.name
@@ -664,7 +525,7 @@ export default Vue.extend({
       }
     },
     store_list() {
-      return this.$store.state.api.storeHouse.arr.filter((item: any) => item.store_type === 1)
+      return this.$store.state.api.storeHouse.arr.filter((item: any) => item.store_type === 2)
     },
     clientArr() {
       return this.$store.state.api.client.arr.filter((item: any) => (item.status as number) === 1)
@@ -697,7 +558,7 @@ export default Vue.extend({
         }
       })
       this.$forceUpdate()
-    },    
+    },
     // 打开复制粘贴图片功能
     changeCVOpration(flag: boolean) {
       if (this.notify) {
@@ -753,8 +614,7 @@ export default Vue.extend({
 
           this.removeFile()
         })
-        .catch((e:any) => {
-          console.log(e)
+        .catch(() => {
           this.$message({
             type: 'info',
             message: '已取消删除'
@@ -864,7 +724,6 @@ export default Vue.extend({
           {
             name: '',
             weight: '',
-            color: '白胚',
             attribute: '',
             price: ''
           }
@@ -940,15 +799,7 @@ export default Vue.extend({
           return this.$formCheck(item, [
             {
               key: 'name',
-              errMsg: '请选择纱线名称'
-            },
-            {
-              key: 'color',
-              errMsg: '请输入纱线颜色'
-            },
-            {
-              key: 'attribute',
-              errMsg: '请选择纱线属性'
+              errMsg: '请选择毛条名称'
             },
             {
               key: 'price',
@@ -983,7 +834,7 @@ export default Vue.extend({
     },
     saveEditOrCreate(params: any, step: number) {
       if (this.update) {
-        yarnOrder.update(params).then((res) => {
+        material.orderEdit(params).then((res) => {
           if (res.data.status) {
             if (step === 1) {
               this.$message.success((this.update ? '修改' : '添加') + '成功')
@@ -1002,12 +853,9 @@ export default Vue.extend({
                 return {
                   action_weight: item.weight,
                   attribute: item.attribute,
-                  color: item.color,
                   name: item.name,
                   price: item.price,
                   batch_code: '',
-                  color_code: '',
-                  vat_code: '',
                   item: '',
                   related_info_id: ''
                 }
@@ -1018,8 +866,8 @@ export default Vue.extend({
           this.loading = false
         })
       } else {
-        yarnOrder
-          .create({
+        material
+          .orderCreate({
             data: [params]
           })
           .then((res) => {
@@ -1032,8 +880,8 @@ export default Vue.extend({
               if (step === 2) {
                 this.store_info.client_id = this.order_yarn_info.client_id
                 this.store_info.related_id = res.data.data[0]
-                yarnOrder
-                  .detail({
+                material
+                  .orderDetail({
                     id: res.data.data[0]
                   })
                   .then((ress) => {
@@ -1045,12 +893,9 @@ export default Vue.extend({
                       return {
                         action_weight: item.weight,
                         attribute: item.attribute,
-                        color: item.color,
                         name: item.name,
                         price: item.price,
                         batch_code: '',
-                        color_code: '',
-                        vat_code: '',
                         item: '',
                         related_info_id: item.id
                       }
@@ -1063,7 +908,7 @@ export default Vue.extend({
           })
       }
     },
-    // 根据选中的纱线初始化颜色属性下拉框
+    // 根据选中的毛条初始化颜色属性下拉框
     getColor(yarnName: string, info?: any) {
       // 特殊连接符 IamConnector
       info.colorArr = (this.selfYarnArr as any[])
@@ -1097,7 +942,7 @@ export default Vue.extend({
           return this.$formCheck(item, [
             {
               key: 'name',
-              errMsg: '请选择纱线名称'
+              errMsg: '请选择毛条名称'
             },
           ])
         })
@@ -1112,14 +957,6 @@ export default Vue.extend({
               key: 'action_weight',
               errMsg: '请输入数量'
             },
-            {
-              key: 'color',
-              errMsg: '请选择纱线颜色'
-            },
-            {
-              key: 'attribute',
-              errMsg: '请选择纱线属性'
-            }
           ])
         })
       ) {
@@ -1133,14 +970,13 @@ export default Vue.extend({
       this.store_info.child_data.forEach((item: any) => {
         item.store_client_id = item.store_client_id || -1
         item.batch_code = item.batch_code || ''
-        item.color_code = item.color_code || ''
-        item.vat_code = item.vat_code || ''
+        item.desc = item.desc || ''
       })
 
       this.stockCreate()
     },
     stockCreate() {
-      stock.create({ data: [this.store_info] }).then((res) => {
+      stock.materialCreate({ data: [this.store_info] }).then((res) => {
         if (res.data.status) {
           this.$message.success('入库成功')
           this.$emit('afterCreate')
@@ -1162,14 +998,13 @@ export default Vue.extend({
             this.child_data.length > 0
               ? this.child_data
               : [
-                  {
-                    name: '',
-                    weight: '',
-                    color: '白胚',
-                    attribute: '',
-                    price: ''
-                  }
-                ],
+                {
+                  name: '',
+                  weight: '',
+                  attribute: '',
+                  price: ''
+                }
+              ],
           order_time: this.$getDate(new Date()),
           delivery_time: this.$GetDateStr(5),
           additional_fee: [
@@ -1198,9 +1033,9 @@ export default Vue.extend({
   mounted() {
     this.$checkCommonInfo([
       {
-        checkWhich: 'api/yarnType',
+        checkWhich: 'api/materialType',
         getInfoMethed: 'dispatch',
-        getInfoApi: 'getYarnTypeAsync'
+        getInfoApi: 'getMaterialTypeAsync'
       },
       {
         checkWhich: 'api/client',
@@ -1222,7 +1057,7 @@ export default Vue.extend({
 })
 </script>
 <style lang="less" scoped>
-@import './shaxianAddPO.less';
+@import './materialAddPO.less';
 </style>
 <style lang="less">
 .noPadInput {
@@ -1230,6 +1065,7 @@ export default Vue.extend({
     padding-right: 5px;
   }
 }
+
 .el-date-editor.el-input {
   width: 100%;
 }

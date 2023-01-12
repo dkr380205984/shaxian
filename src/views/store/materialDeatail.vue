@@ -73,9 +73,9 @@
                 placeholder="请输入毛条名称"></el-input>
             </div>
             <div class="elCtn">
-              <el-input v-model="storeListFilter.color"
+              <el-input v-model="storeListFilter.attribute"
                 @change="getStoreInfoList"
-                placeholder="请输入毛条颜色"></el-input>
+                placeholder="请输入毛条属性"></el-input>
             </div>
             <div class="elCtn">
               <el-checkbox v-model="storeListFilter.isFilterZero"
@@ -147,7 +147,7 @@
       </div>
       <div class="listCtn">
         <div class="filterCtn showMore">
-          <div class="leftCtn" style="padding-right:unset;">
+          <div class="leftCtn" style="padding-right:unset;max-width:unset">
             <div class="label">筛选条件：</div>
             <!-- <div class="showMore"
               @click="showMore=!showMore">{{!showMore?'展示更多':'收起筛选'}}</div> -->
@@ -169,6 +169,11 @@
                 placeholder="输入毛条名称"></el-input>
             </div>
             <div class="elCtn">
+              <el-input v-model="storeLogListFilter.attribute"
+                @change="getStoreLogList(1)"
+                placeholder="输入毛条属性"></el-input>
+            </div>
+            <div class="elCtn">
               <el-select v-model="storeLogListFilter.type"
                 clearable
                 @change="getStoreLogList(1)"
@@ -184,17 +189,6 @@
               <el-input v-model="storeLogListFilter.code"
                 @change="getStoreLogList(1)"
                 placeholder="输入关联单号"></el-input>
-            </div>
-            <div class="elCtn">
-              <el-date-picker v-model="storeLogListFilter.time"
-                type="daterange"
-                value-format="yyyy-MM-dd"
-                range-separator="至"
-                start-placeholder="开始日期"
-                end-placeholder="结束日期"
-                @change="getStoreLogList(1)">
-              </el-date-picker>
-              
             </div>
             <div class="elCtn">
               <el-select v-model="storeLogListFilter.limit"
@@ -228,6 +222,16 @@
                   :value="item.id">
                 </el-option>
               </el-select>
+            </div>
+            <div class="elCtn">
+              <el-date-picker v-model="storeLogListFilter.time"
+                type="daterange"
+                value-format="yyyy-MM-dd"
+                range-separator="至"
+                start-placeholder="开始日期"
+                end-placeholder="结束日期"
+                @change="getStoreLogList(1)">
+              </el-date-picker>
             </div>
           </div>
           <div class="rightCtn" style="min-width:94px">
@@ -379,7 +383,7 @@ export default Vue.extend({
       storeListFilter: {
         LV2_name: '',
         name: '',
-        color: '',
+        attribute: '',
         isFilterZero: true,
         page: 1,
         total: 1
@@ -394,6 +398,7 @@ export default Vue.extend({
         LV2_name: '',
         name: '',
         color: '',
+        attribute: '',
         attr: '',
         type: '',
         code: '',
@@ -474,7 +479,7 @@ export default Vue.extend({
           store_id: this.$route.params.id,
           second_store_id: this.storeListFilter.LV2_name || null,
           name: this.storeListFilter.name || null,
-          color: this.storeListFilter.color || null,
+          attribute: this.storeListFilter.attribute || null,
           weight: this.storeListFilter.isFilterZero ? 0 : null
         })
         .then((res) => {
@@ -488,7 +493,7 @@ export default Vue.extend({
         this.storeListFilter = {
           LV2_name: '',
           name: '',
-          color: '',
+          attribute: '',
           isFilterZero: true,
           page: 1,
           total: 1
@@ -499,6 +504,7 @@ export default Vue.extend({
           LV2_name: '',
           name: '',
           color: '',
+          attribute: '',
           attr: '',
           type: '',
           code: '',
@@ -522,6 +528,7 @@ export default Vue.extend({
           limit: this.storeLogListFilter.limit || 10,
           store_second_id: this.storeLogListFilter.LV2_name || null,
           name: this.storeLogListFilter.LV2_name || null,
+          attribute: this.storeLogListFilter.attribute || null,
           action_type: this.storeLogListFilter.type || null,
           start_time:
             this.storeLogListFilter.time && this.storeLogListFilter.time.length > 0
@@ -553,7 +560,7 @@ export default Vue.extend({
       this.storeLogListFilter.LV2_name = item.second_store_id
       this.storeLogListFilter.name = item.name
       this.storeLogListFilter.color = item.color
-      this.storeLogListFilter.attr = item.attribute
+      this.storeLogListFilter.attribute = item.attribute
       this.$goElView('stockLogEl')
       this.getStoreLogList()
     },

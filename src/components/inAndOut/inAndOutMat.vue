@@ -123,24 +123,24 @@
                     <span class="explanation">
                       (必填)
                       <el-tooltip class="item" effect="dark" content="添加成功后请点击此按钮刷新数据" placement="top">
-                      <i
-                        class="el-icon-refresh hoverGreen"
-                        style="line-height: 46px; font-size: 18px; margin-left: 8px; cursor: pointer"
-                        @click="$checkCommonInfo([{
-                          checkWhich: 'api/materialType',
-                          getInfoMethed: 'dispatch',
-                          getInfoApi: 'getMaterialTypeAsync',
-                          forceUpdate: true
-                        }])"
-                      ></i>
-                    </el-tooltip>
-                    <el-tooltip class="item" effect="dark" content="添加毛条" placement="top">
-                      <i
-                        class="el-icon-upload hoverOrange"
-                        style="line-height: 38px; font-size: 18px; cursor: pointer; margin-left: 8px"
-                        @click="create_flag = true"
-                      ></i>
-                    </el-tooltip>
+                        <i
+                          class="el-icon-refresh hoverGreen"
+                          style="line-height: 46px; font-size: 18px; margin-left: 8px; cursor: pointer"
+                          @click="$checkCommonInfo([{
+                            checkWhich: 'api/materialType',
+                            getInfoMethed: 'dispatch',
+                            getInfoApi: 'getMaterialTypeAsync',
+                            forceUpdate: true
+                          }])"
+                        ></i>
+                      </el-tooltip>
+                      <el-tooltip class="item" effect="dark" content="添加毛条" placement="top">
+                        <i
+                          class="el-icon-upload hoverOrange"
+                          style="line-height: 38px; font-size: 18px; cursor: pointer; margin-left: 8px"
+                          @click="create_flag = true"
+                        ></i>
+                      </el-tooltip>
                     </span>
                   </div>
                   <div class="content">
@@ -271,7 +271,7 @@
           @click="saveAll">确定</div>
       </div>
     </div>
-    <add-material :show="create_flag" @close="create_flag = false" @afterCreate="getList"></add-material>
+    <add-material :show="create_flag" @close="create_flag = false"></add-material>
   </div>
 </template>
 
@@ -433,9 +433,6 @@ export default class InAndOutMat extends Vue {
     this.clearData()
     this.$emit('update:show', false)
     this.$emit('close')
-  }
-  getList(){
-    console.log('添加成功')
   }
   clearData() {
     this.storeInfo = {

@@ -3,7 +3,7 @@
     <div class="module">
       <div class="titleCtn">
         <span class="title hasBorder">毛条采购单列表</span>
-        <span class="addBtn btn btnMain" @click="openOrder">添加采购单</span>
+        <span class="addBtn btn btnMain" @click="showAddPO = true">添加采购单</span>
       </div>
       <div class="listCtn">
         <div class="filterCtn showMore">
@@ -91,6 +91,11 @@
                 </div>
               </template>
             </el-table-column>
+            <el-table-column prop="attribute" label="毛条属性" width="120">
+              <template slot-scope="scope">
+                <span>{{ scope.row.child_data[scope.row.index || 0].attribute || '无' }}</span>
+              </template>
+            </el-table-column>
             <el-table-column prop="total_price" label="采购数量(kg)" width="120">
               <template slot-scope="scope">
                 <span>{{ scope.row.child_data[scope.row.index || 0].weight }}</span>
@@ -169,236 +174,13 @@
         </div>
       </div>
     </div>
-    <div class="popup" v-show="create_flag || update_flag">
-      <div class="main">
-        <div class="titleCtn">
-          <span class="text">{{ create_flag ? '添加' : '修改' }}采购单</span>
-          <i class="close_icon el-icon-close" @click="resetInfo"></i>
-        </div>
-        <div class="contentCtn" style="padding: 0">
-          <div class="createCtn">
-            <div class="rowCtn">
-              <div class="colCtn">
-                <div class="label">
-                  <span class="text">供货商</span>
-                  <span class="explanation">(必选)</span>
-                </div>
-                <div class="content">
-                  <div class="elCtn">
-                    <el-select placeholder="请选择供货商" v-model="order_yarn_info.client_id">
-                      <el-option
-                        v-for="item in client_arr"
-                        :key="item.id"
-                        :value="item.id"
-                        :label="item.name"
-                      ></el-option>
-                    </el-select>
-                  </div>
-                </div>
-              </div>
-              <div class="colCtn">
-                <div class="label">
-                  <span class="text">合计采购价格</span>
-                  <span class="explanation">(自动计算)</span>
-                </div>
-                <div class="content">
-                  <div class="elCtn">
-                    <el-input v-model="order_yarn_info.total_price" disabled placeholder="自动计算合计价格"></el-input>
-                  </div>
-                </div>
-              </div>
-              <div class="colCtn">
-                <div class="label">
-                  <span class="text">下单日期</span>
-                  <span class="explanation">(必选)</span>
-                </div>
-                <div class="elCtn">
-                  <el-date-picker
-                    v-model="order_yarn_info.order_time"
-                    type="date"
-                    value-format="yyyy-MM-dd"
-                    placeholder="选择下单日期"
-                  >
-                  </el-date-picker>
-                </div>
-              </div>
-            </div>
-            <div class="rowCtn" v-for="(item, index) in order_yarn_info.child_data" :key="'yarn' + index">
-              <div class="colCtn">
-                <div class="label" v-if="index === 0">
-                  <span class="text">毛条名称</span>
-                  <span class="explanation">(必选)</span>
-                </div>
-                <div class="content">
-                  <div class="elCtn">
-                    <el-cascader
-                      v-model="item.name"
-                      filterable
-                      placeholder="请选择毛条"
-                      :options="material_arr"
-                    ></el-cascader>
-                  </div>
-                </div>
-              </div>
-              <div class="colCtn">
-                <div class="label" v-if="index === 0">
-                  <span class="text">单价</span>
-                  <span class="explanation">(必填)</span>
-                </div>
-                <div class="content">
-                  <div class="elCtn">
-                    <el-input placeholder="单价" v-model="item.price" @input="cmpTotalPrice">
-                      <template slot="append">元</template>
-                    </el-input>
-                  </div>
-                </div>
-              </div>
-              <div class="colCtn">
-                <div class="label" v-if="index === 0">
-                  <span class="text">数量</span>
-                  <span class="explanation">(必填)</span>
-                </div>
-                <div class="content">
-                  <div class="elCtn">
-                    <el-input placeholder="数量" v-model="item.weight" @input="cmpTotalPrice"></el-input>
-                  </div>
-                </div>
-                <div
-                  v-if="index === 0"
-                  class="editBtn blue"
-                  @click="
-                    $addItem(order_yarn_info.child_data, {
-                      name: '',
-                      weight: '',
-                      price: ''
-                    })
-                  "
-                >
-                  添加
-                </div>
-                <div v-if="index > 0" class="editBtn red" @click="$deleteItem(order_yarn_info.child_data, index)">
-                  删除
-                </div>
-              </div>
-            </div>
-            <div class="rowCtn" v-for="(item, index) in order_yarn_info.additional_fee" :key="'fee' + index">
-              <div class="colCtn">
-                <div class="label" v-if="index === 0">
-                  <span class="text">额外费用名称</span>
-                  <span class="explanation">(选填)</span>
-                </div>
-                <div class="content">
-                  <div class="elCtn">
-                    <el-input v-model="item.name" placeholder="请输入额外费用名称"> </el-input>
-                  </div>
-                </div>
-              </div>
-              <div class="colCtn">
-                <div class="label" v-if="index === 0">
-                  <span class="text">额外费用金额</span>
-                  <span class="explanation">(选填)</span>
-                </div>
-                <div class="content">
-                  <div class="elCtn">
-                    <el-input v-model="item.price" placeholder="请输入额外费用金额" @input="cmpTotalPrice">
-                      <template slot="append">元</template>
-                    </el-input>
-                  </div>
-                </div>
-              </div>
-              <div class="colCtn">
-                <div class="label" v-if="index === 0">
-                  <span class="text">额外费用备注</span>
-                  <span class="explanation">(必选)</span>
-                </div>
-                <div class="elCtn">
-                  <el-input v-model="item.desc" placeholder="请输入额外费用备注"></el-input>
-                </div>
-                <div
-                  v-if="index === 0"
-                  class="editBtn blue"
-                  @click="
-                    $addItem(order_yarn_info.additional_fee, {
-                      name: '',
-                      price: '',
-                      desc: ''
-                    })
-                  "
-                >
-                  添加
-                </div>
-                <div v-if="index > 0" class="editBtn red" @click="$deleteItem(order_yarn_info.additional_fee, index)">
-                  删除
-                </div>
-              </div>
-            </div>
-            <div class="rowCtn">
-              <div class="colCtn" style="max-width: 224.67px">
-                <div class="label">
-                  <span class="text">交货日期</span>
-                  <span class="explanation">(必选)</span>
-                </div>
-                <div class="content">
-                  <div class="elCtn">
-                    <el-date-picker
-                      v-model="order_yarn_info.delivery_time"
-                      type="date"
-                      value-format="yyyy-MM-dd"
-                      placeholder="选择交货日期"
-                    >
-                    </el-date-picker>
-                  </div>
-                </div>
-              </div>
-              <div class="colCtn">
-                <div class="label">
-                  <span class="text">备注信息</span>
-                  <span class="explanation">(选填)</span>
-                </div>
-                <div class="content">
-                  <div class="elCtn">
-                    <el-input v-model="order_yarn_info.desc" placeholder="请输入备注信息"></el-input>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="rowCtn">
-              <div class="colCtn">
-                <div class="label">
-                  <span class="text">图片补充说明</span>
-                  <span class="explanation">(选填)</span>
-                </div>
-                <el-upload
-                  class="upload"
-                  action="https://upload.qiniup.com/"
-                  accept="image/jpeg,image/gif,image/png,image/bmp"
-                  :before-upload="beforeAvatarUpload"
-                  :multiple="false"
-                  :data="postData"
-                  :file-list="order_yarn_info.file_url ? [{ name: '说明文件', url: order_yarn_info.file_url }] : []"
-                  :limit="1"
-                  :on-success="successFile"
-                  ref="uploada"
-                  list-type="picture"
-                >
-                  <div class="uploadBtn">
-                    <i class="el-icon-upload"></i>
-                    <span>上传文件</span>
-                  </div>
-                  <div slot="tip" class="el-upload__tip">只能上传一张jpg/png图片文件，且不超过10M</div>
-                </el-upload>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="oprCtn">
-          <div class="opr" @click="resetInfo" style="padding-left: 8px">取消</div>
-          <div class="opr" :class="{ blue: create_flag, orange: update_flag }" @click="saveOrder">
-            {{ create_flag ? '确认采购' : '确认修改' }}
-          </div>
-        </div>
-      </div>
-    </div>
+    <materialAddPO
+      :show="showAddPO"
+      :update="update_flag"
+      @close="resetInfo"
+      :info="order_yarn_info"
+      @afterCreate="afterCreate"
+    ></materialAddPO>
   </div>
 </template>
 
@@ -425,6 +207,7 @@ export default Vue.extend({
       user_id: '',
       create_flag: false,
       update_flag: false,
+      showAddPO: false,
       select_loading: false,
       order_yarn_info: {
         client_id: '',
@@ -551,9 +334,6 @@ export default Vue.extend({
         this.product_arr = []
       }
     },
-    openOrder() {
-      this.create_flag = true
-    },
     saveOrder() {
       if (
         this.$formCheck(this.order_yarn_info, [
@@ -609,6 +389,10 @@ export default Vue.extend({
             this.getList()
           }
         })
+    },
+    afterCreate() {
+      this.getList()
+      this.resetInfo()
     },
     // 下面两个函数是让el-table滚动的
     scrollFunction(obj: any, id: any) {
@@ -684,6 +468,7 @@ export default Vue.extend({
     },
     openUpdate(info: OrderMaterialInfo) {
       const selfInfo = JSON.parse(JSON.stringify(info))
+      this.showAddPO = true
       this.update_flag = true
       selfInfo.additional_fee = selfInfo.additional_fee
         ? JSON.parse(info.additional_fee as string)
@@ -699,6 +484,7 @@ export default Vue.extend({
     resetInfo() {
       this.update_flag = false
       this.create_flag = false
+      this.showAddPO = false
       this.order_yarn_info = {
         client_id: '',
         total_price: '',

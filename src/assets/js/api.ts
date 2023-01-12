@@ -177,6 +177,7 @@ const material = {
   detail: (params: { id: string | number }) => http.get(`${baseUrl}/material/detail`, params),
   delete: (params: DeleteParam) => http.post(`${baseUrl}/material/delete`, params, 'application/json'),
   orderCreate: (params: { data: OrderMaterialInfo[] }) => http.post(`${baseUrl}/material/purchase/save`, params, 'application/json'),
+  orderEdit: (params: { data: OrderMaterialInfo[] }) => http.post(`${baseUrl}/material/purchase/edit`, params, 'application/json'),
   orderList: (params: ListParam) => http.get(`${baseUrl}/material/purchase/lists`, params),
   orderDetail: (params: DetailParam) => http.get(`${baseUrl}/material/purchase/detail`, params),
   orderDelete: (params: DeleteParam) => http.post(`${baseUrl}/material/purchase/delete`, params, 'application/json')

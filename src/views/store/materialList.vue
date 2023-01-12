@@ -202,7 +202,7 @@ export default Vue.extend({
         },
         {
           id: 2,
-          name: '染厂仓库'
+          name: '纺厂仓库'
         }
       ],
       limit: 10,

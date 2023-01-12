@@ -648,7 +648,7 @@ export default Vue.extend({
         },
         {
           id: 2,
-          name: '染厂仓库'
+          name: '纺厂仓库'
         }
       ],
       // 初始化公共数据
@@ -818,7 +818,7 @@ export default Vue.extend({
               : ''
         })
         .then((res) => {
-          console.log(res)
+          // console.log(res)
           this.storeLogInfo = {
             total_pop: res.data.data.additional.total_pop || 0,
             total_push: res.data.data.additional.total_push || 0,
@@ -1088,7 +1088,7 @@ export default Vue.extend({
         case 1:
           return '本厂仓库'
         case 2:
-          return '染厂仓库'
+          return '纺厂仓库'
         default:
           return 'unknown type'
       }

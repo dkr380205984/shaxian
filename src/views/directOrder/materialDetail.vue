@@ -829,14 +829,14 @@ export default Vue.extend({
         type: 'warning'
       })
         .then(() => {
-          yarnOrder
-            .delete({
+          material
+            .orderDelete({
               id: this.$route.params.id
             })
             .then((res) => {
               if (res.data.status) {
                 this.$message.success('删除成功')
-                this.$router.push('/directOrder/yarnList?page=1&code=&name=&client_id=&user_id=&page_size=10&date=')
+                this.$router.push('/directOrder/materialList?page=1&code=&name=&client_id=&user_id=&page_size=10&date=')
               }
             })
         })

@@ -589,7 +589,7 @@ export default Vue.extend({
         case 1:
           return '本厂仓库'
         case 2:
-          return '染厂仓库'
+          return '纺厂仓库'
         default:
           return 'unknown type'
       }

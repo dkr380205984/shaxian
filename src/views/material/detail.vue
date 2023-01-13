@@ -117,7 +117,7 @@
                   </div>
                 </div>
                 <div class="bodyCtn">
-                  <div class="row" v-for="item in store_log_info.list" :key="item.id + item.code">
+                  <div class="row" v-for="item in store_log_info.list" :key="item.id + item.code" style="height:unset">
                     <!-- 订购入库 -->
                     <div class="column min120 hoverBlue" style="cursor:pointer" v-if="item.action_type === 3"
                       @click="$router.push('/directOrder/yarnDetail/' + item.related_id)">{{ item.code }}</div>
@@ -212,7 +212,7 @@
                     </div>
                     <div class="column" style="flex: 10; flex-direction: column">
                       <div class="row" v-for="(itemChild, indexChild) in item.child_data"
-                        :key="indexChild + itemChild.name">
+                        :key="indexChild + itemChild.name" style="height:60px">
                         <div class="column min120">{{ itemChild.name }}</div>
                         <div class="column min120">{{ itemChild.attribute || '无' }}</div>
                         <div class="column min120 blue">{{ itemChild.action_weight }}</div>
@@ -235,74 +235,6 @@
           <span class="green" style="font-weight: bold; margin-left: 20px">合计出库：{{ store_log_info.total_push }}kg</span>
         </div>
       </div>
-      <!-- <div style="padding:20px 32px">
-        <div class="tableCtn">
-          <div class="thead">
-            <div class="trow">
-              <div class="tcolumn">单号</div>
-              <div class="tcolumn">类型</div>
-              <div class="tcolumn" style="flex:2">出入库信息</div>
-              <div class="tcolumn noPad" style="flex:4">
-                <div class="trow">
-                  <div class="tcolumn">毛条名称</div>
-                  <div class="tcolumn">属性</div>
-                  <div class="tcolumn">批号</div>
-                  <div class="tcolumn">数量</div>
-                </div>
-              </div>
-              <div class="tcolumn">创建人</div>
-              <div class="tcolumn">创建时间</div>
-            </div>
-          </div>
-          <div class="tbody">
-            <div class="trow" v-for="item in store_log_info.list" :key="item.id">
-              <div class="tcolumn">{{ item.code }}</div>
-              <div class="tcolumn"
-                :class="{ 'blue': item.action_type === 1 || item.action_type === 3 || item.action_type === 5 || item.action_type === 8 || item.action_type === 11 || item.action_type === 13 || item.action_type === 14 || item.action_type === 15, 'green': item.action_type === 2 || item.action_type === 4 || item.action_type === 6 || item.action_type === 7 || item.action_type === 9 || item.action_type === 10 || item.action_type === 12 }">
-                {{ item.action_type | stockTypeFilter }}</div>
-              <div class="tcolumn" style="flex:2" :style="{ 'height': 50 * item.child_data.length + 'px' }">
-                <span
-                  v-if="item.action_type === 1 || item.action_type === 3 || item.action_type === 5 || item.action_type === 8 || item.action_type === 13 || item.action_type === 14 || item.action_type === 15">
-                  <span class="green">{{ item.client_name || '无来源' }}</span>
-                  <i class="el-icon-s-unfold orange" style="margin:0 5px;font-size:16px"></i>
-                  <span class="blue">{{ item.store_name }}/{{ item.second_store_name }}</span>
-                </span>
-                <span
-                  v-if="item.action_type === 2 || item.action_type === 4 || item.action_type === 6 || item.action_type === 7 || item.action_type === 9 || item.action_type === 12">
-                  <span class="blue">{{ item.store_name }}/{{ item.second_store_name }}</span>
-                  <i class="el-icon-s-unfold orange" style="margin:0 5px;font-size:16px"></i>
-                  <span class="green">{{ item.client_name }}</span>
-                </span>
-                <span v-if="item.action_type === 10 || item.action_type === 11">
-                  <span class="green">{{ item.store_name }}/{{ item.second_store_name }}</span>
-                  <i class="el-icon-s-unfold orange" style="margin:0 5px;font-size:16px"></i>
-                  <span class="blue">{{ item.move_store_name }}/{{ item.move_second_store_name }}</span>
-                </span>
-              </div>
-              <div class="tcolumn noPad" style="flex:4">
-                <div class="trow" v-for="(itemChilid, indexChild) in item.child_data" :key="indexChild">
-                  <div class="tcolumn">{{ itemChilid.name }}</div>
-                  <div class="tcolumn">{{ itemChilid.attribute || '无' }}</div>
-                  <div class="tcolumn">{{ itemChilid.batch_code || '无' }}</div>
-                  <div class="tcolumn">{{ itemChilid.action_weight || 0 }}</div>
-                </div>
-              </div>
-              <div class="tcolumn">{{ item.user_name }}</div>
-              <div class="tcolumn">{{ item.complete_time }}</div>
-            </div>
-            <div class="trow bgGray noBorder">
-              <div class="tcolumn" style="display:block;line-height:46px">合计出库：<span class="green">{{
-                $formatNum(store_log_info.total_pop)
-              }}</span>kg</div>
-              <div class="tcolumn"></div>
-              <div class="tcolumn" style="display:block;line-height:46px">合计入库：<span class="blue">{{
-                $formatNum(store_log_info.total_push)
-              }}</span>kg</div>
-              <div class="tcolumn"></div>
-            </div>
-          </div>
-        </div>
-      </div> -->
     </div>
     <div class="bottomFixBar">
       <div class="main">

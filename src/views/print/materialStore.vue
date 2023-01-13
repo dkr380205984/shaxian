@@ -10,6 +10,7 @@
         <div class="print_row bgGray">
           <div class="row_item center">序号</div>
           <div class="row_item center flex30">毛条名称</div>
+          <div class="row_item center flex20">毛条属性</div>
           <div class="row_item col"
             style="flex:6">
             <div class="print_row noBorder">
@@ -24,6 +25,7 @@
           :key="indexYarn">
           <div class="row_item center">{{indexYarn + 1}}</div>
           <div class="row_item center flex30">{{itemYarn.name}}</div>
+          <div class="row_item center flex20">{{itemYarn.attribute}}</div>
           <div class="row_item col"
             style="flex:6">
             <div class="print_row noBorder"
@@ -92,7 +94,7 @@ export default Vue.extend({
       this.companyName = (res[1] as any).title
       this.stockInfo = res[0].data.data
       this.stockYarnArr = this.stockInfo.child_data
-        ? this.$mergeData(this.stockInfo.child_data, { mainRule: 'name', childrenName: 'other_info' })
+        ? this.$mergeData(this.stockInfo.child_data, { mainRule: ['name','attribute'], childrenName: 'other_info' })
         : []
     })
   },

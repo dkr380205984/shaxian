@@ -1,7 +1,5 @@
 <template>
-  <div class="indexMain"
-    id="yarnDetail"
-    v-loading="loading">
+  <div class="indexMain" id="yarnDetail" v-loading="loading">
     <div class="module">
       <div class="titleCtn">
         <span class="title">基本信息</span>
@@ -23,16 +21,12 @@
           </div>
           <div class="colCtn">
             <span class="label">单据状态：</span>
-            <span
-              class="text"
-              :class="{
-                orange: order_material_info.status === 1,
-                blue: order_material_info.status === 2,
-                green: order_material_info.status === 3,
-                gray: order_material_info.status === 4
-              }"
-              >{{ order_material_info.status | orderStatusFilter }}</span
-            >
+            <span class="text" :class="{
+              orange: order_material_info.status === 1,
+              blue: order_material_info.status === 2,
+              green: order_material_info.status === 3,
+              gray: order_material_info.status === 4
+            }">{{ order_material_info.status | orderStatusFilter }}</span>
           </div>
         </div>
         <div class="rowCtn">
@@ -46,21 +40,17 @@
           </div>
           <div class="colCtn">
             <span class="label">交货日期：</span>
-            <span class="text"
-              >{{ order_material_info.delivery_time }} （<span
-                :class="{
-                  red: $diffByDate(order_material_info.delivery_time) <= 0,
-                  green: $diffByDate(order_material_info.delivery_time) > 7,
-                  yellow:
-                    $diffByDate(order_material_info.delivery_time) <= 7 && $diffByDate(order_material_info.delivery_time) > 0
-                }"
-              >
+            <span class="text">{{ order_material_info.delivery_time }} （<span :class="{
+              red: $diffByDate(order_material_info.delivery_time) <= 0,
+              green: $diffByDate(order_material_info.delivery_time) > 7,
+              yellow:
+                $diffByDate(order_material_info.delivery_time) <= 7 && $diffByDate(order_material_info.delivery_time) > 0
+            }">
                 {{
-                  $diffByDate(order_material_info.delivery_time) > 0
-                    ? '交货还剩' + $diffByDate(order_material_info.delivery_time) + '天'
-                    : '延期发货' + Math.abs($diffByDate(order_material_info.delivery_time)) + '天'
-                }} </span
-              >）
+  $diffByDate(order_material_info.delivery_time) > 0
+  ? '交货还剩' + $diffByDate(order_material_info.delivery_time) + '天'
+  : '延期发货' + Math.abs($diffByDate(order_material_info.delivery_time)) + '天'
+                }} </span>）
             </span>
           </div>
         </div>
@@ -92,31 +82,31 @@
             </div>
             <div class="tbody">
               <div class="trow">
-                <div class="tcolumn">{{ $toFixed(order_material_info.total_add_fee_price, 2, true) }} 元</div>
+                <div class="tcolumn">{{ $toFixed(order_material_info.total_additional_fee, 2, true) }} 元</div>
                 <div class="tcolumn red">{{ $toFixed(order_material_info.total_deduct_price, 2, true) }} 元</div>
                 <div class="tcolumn blue">{{ $toFixed(order_material_info.total_weight || 0, 1, true) }} kg</div>
                 <div class="tcolumn green">{{ $toFixed(order_material_info.push_weight || 0, 1, true) }} kg</div>
                 <div class="tcolumn">
                   {{
-                    $toFixed(
-                      +order_material_info.total_price +
-                        +order_material_info.total_add_fee_price +
-                        +order_material_info.total_deduct_price || 0,
-                      2,
-                      true
-                    )
+  $toFixed(
+                  + order_material_info.total_price +
+  +order_material_info.total_additional_fee +
+  +order_material_info.total_deduct_price || 0,
+  2,
+  true
+)
                   }}
                   元
                 </div>
                 <div class="tcolumn green">
                   {{
-                    $toFixed(
-                      +order_material_info.total_push_price +
-                        +order_material_info.total_add_fee_price +
-                        +order_material_info.total_deduct_price || 0,
-                      2,
-                      true
-                    )
+  $toFixed(
+                  + order_material_info.total_push_price +
+  +order_material_info.total_add_fee_price +
+  +order_material_info.total_deduct_price || 0,
+  2,
+  true
+)
                   }}
                   元
                 </div>
@@ -156,7 +146,7 @@
           <div class="tbody">
             <div class="trow" v-for="(item, index) in order_material_info.child_data" :key="index">
               <div class="tcolumn">
-                <el-checkbox v-model="item.check">{{item.name}}</el-checkbox>
+                <el-checkbox v-model="item.check">{{ item.name }}</el-checkbox>
               </div>
               <div class="tcolumn">{{ item.attribute }}</div>
               <div class="tcolumn">{{ item.price }}元</div>
@@ -172,15 +162,14 @@
                 <div class="green">实际:{{ order_material_info.total_push_price }} 元</div>
               </div>
               <div class="tcolumn blue">{{ $toFixed(order_material_info.total_weight || 0, 1, true) }}kg</div>
-              <div class="tcolumn green">{{ order_material_info.push_weight }} kg</div>
-              <div class="tcolumn red">{{ order_material_info.total_weight - order_material_info.push_weight }}kg</div>
+              <div class="tcolumn green">{{ order_material_info.total_push_weight }} kg</div>
+              <div class="tcolumn red">{{ order_material_info.total_weight - order_material_info.total_push_weight }}kg</div>
             </div>
           </div>
         </div>
       </div>
     </div>
-    <div class="module"
-      v-show="order_in_log.length>0">
+    <div class="module" v-show="order_in_log.length > 0">
       <div class="titleCtn">
         <span class="title">毛条入库信息</span>
       </div>
@@ -193,8 +182,7 @@
                   <div class="row">
                     <div class="column min120">入库单号</div>
                     <div class="column min120">入库仓库</div>
-                    <div class="column"
-                      style="flex:2;flex-direction:column">
+                    <div class="column" style="flex:2;flex-direction:column">
                       <div class="row">
                         <div class="column min120">毛条名称</div>
                         <div class="column min120">毛条属性</div>
@@ -210,26 +198,21 @@
                   </div>
                 </div>
                 <div class="bodyCtn">
-                  <div class="row"
-                    v-for="item in order_in_log"
-                    :key="item.id">
-                    <div class="column min120">{{item.code}}</div>
-                    <div class="column min120">{{item.store_name}}/{{item.second_store_name}}</div>
-                    <div class="column"
-                      style="flex:2;flex-direction:column">
-                      <div class="row"
-                        v-for="(itemChild,indexChild) in item.child_data"
-                        :key="indexChild">
-                        <div class="column min120">{{itemChild.name}}</div>
-                        <div class="column min120">{{itemChild.attribute || '无'}}</div>
-                        <div class="column min120 blue">{{itemChild.action_weight}}kg</div>
-                        <div class="column min120">{{itemChild.item}}件</div>
-                        <div class="column min120">{{itemChild.batch_code}}</div>
+                  <div class="row" v-for="item in order_in_log" :key="item.id">
+                    <div class="column min120">{{ item.code }}</div>
+                    <div class="column min120">{{ item.store_name }}/{{ item.second_store_name }}</div>
+                    <div class="column" style="flex:2;flex-direction:column">
+                      <div class="row" v-for="(itemChild, indexChild) in item.child_data" :key="indexChild">
+                        <div class="column min120">{{ itemChild.name }}</div>
+                        <div class="column min120">{{ itemChild.attribute || '无' }}</div>
+                        <div class="column min120 blue">{{ itemChild.action_weight }}kg</div>
+                        <div class="column min120">{{ itemChild.item || 0 }}件</div>
+                        <div class="column min120">{{ itemChild.batch_code }}</div>
                       </div>
                     </div>
-                    <div class="column min120">{{item.desc||'无'}}</div>
-                    <div class="column min120">{{item.complete_time}}</div>
-                    <div class="column min120">{{item.user_name}}</div>
+                    <div class="column min120">{{ item.desc || '无' }}</div>
+                    <div class="column min120">{{ item.complete_time }}</div>
+                    <div class="column min120">{{ item.user_name }}</div>
                     <div class="column min120">操作</div>
                   </div>
                 </div>
@@ -245,13 +228,13 @@
                 </div>
               </div>
               <div class="bodyCtn">
-                <div class="row"
-                  v-for="item in order_in_log"
-                  :key="item.id">
-                  <div class="column min120 blue"
-                    :style="{'height':50*item.child_data.length + 'px'}">{{item.code}}</div>
-                  <div class="column min120"
-                    :style="{'height':50*item.child_data.length + 'px'}">{{item.second_store_name}}</div>
+                <div class="row" v-for="item in order_in_log" :key="item.id">
+                  <div class="column min120 blue" :style="{ 'height': 50 * item.child_data.length + 'px' }">{{
+                    item.code
+                  }}
+                  </div>
+                  <div class="column min120" :style="{ 'height': 50 * item.child_data.length + 'px' }">
+                    {{ item.second_store_name }}</div>
                 </div>
               </div>
             </div>
@@ -262,13 +245,9 @@
                 </div>
               </div>
               <div class="bodyCtn">
-                <div class="row"
-                  v-for="item in order_in_log"
-                  :key="item.id">
-                  <div class="column min120"
-                    :style="{'height':50*item.child_data.length + 'px'}">
-                    <span class="blue opr"
-                      @click="$openUrl(`/print/materialStore/1/${item.id}`)">打印</span>
+                <div class="row" v-for="item in order_in_log" :key="item.id">
+                  <div class="column min120" :style="{ 'height': 50 * item.child_data.length + 'px' }">
+                    <span class="blue opr" @click="$openUrl(`/print/materialInStore?id=${item.id}`)">打印</span>
                     <span class="red opr">删除</span>
                   </div>
                 </div>
@@ -316,11 +295,8 @@
                 <div class="gray" v-else>暂无单价</div>
               </div> -->
               <div class="column">
-                <el-image
-                  style="width: 50px; height: 50px; line-height: 50px; text-align: center; font-size: 22px"
-                  :src="item.deduct_file"
-                  :preview-src-list="[item.deduct_file]"
-                >
+                <el-image style="width: 50px; height: 50px; line-height: 50px; text-align: center; font-size: 22px"
+                  :src="item.deduct_file" :preview-src-list="[item.deduct_file]">
                   <div slot="error" class="image-slot">
                     <i class="el-icon-picture-outline"></i>
                   </div>
@@ -329,7 +305,7 @@
               <div class="column red">{{ item.total_price }}元</div>
               <div class="column">{{ item.desc }}</div>
               <div class="column">
-                <div class="opr blue" @click="$openUrl('/print/deductPrint?id='+item.id)">打印</div>
+                <div class="opr blue" @click="$openUrl('/print/deductPrint?id=' + item.id)">打印</div>
                 <div class="opr red" @click="deleteDeductLog('扣款', item.id)">删除</div>
               </div>
             </div>
@@ -364,10 +340,10 @@
                   <i class="el-icon-circle-close"></i>
                   <span class="text">取消采购</span>
                 </div>
-                <div class="button btnBlue" @click="$openUrl(`/print/orderYarn/2/${$route.params.id}`)">
+                <!-- <div class="button btnBlue" @click="$openUrl(`/print/orderYarn/2/${$route.params.id}`)">
                   <i class="el-icon-printer"></i>
                   <span class="text">打印单据</span>
-                </div>
+                </div> -->
                 <div class="button btnRed" @click="deleteThis">
                   <i class="el-icon-delete"></i>
                   <span class="text">删除单据</span>
@@ -394,21 +370,17 @@
         </div>
       </div>
     </div>
-    <div class="popup"
-      v-show="order_in_flag">
+    <div class="popup" v-show="order_in_flag">
       <div class="main">
         <div class="titleCtn">
           <span class="text">毛条入库</span>
-          <i class="close_icon el-icon-close"
-            @click="resetOrderIn"></i>
+          <i class="close_icon el-icon-close" @click="resetOrderIn"></i>
         </div>
         <div class="contentCtn">
           <div class="createCtn">
             <div style="background:#f0f0f0;padding:12px;margin:12px 0"
-              v-for="(itemChild,indexChild) in order_in_info.child_data"
-              :key="indexChild">
-              <div class="rowCtn"
-                style="background:#f0f0f0">
+              v-for="(itemChild, indexChild) in order_in_info.child_data" :key="indexChild">
+              <div class="rowCtn" style="background:#f0f0f0">
                 <div class="colCtn">
                   <div class="label">
                     <span class="text">毛条信息</span>
@@ -416,9 +388,7 @@
                   </div>
                   <div class="content">
                     <div class="elCtn">
-                      <el-input disabled
-                        placeholder="请输入毛条信息"
-                        v-model="itemChild.name"></el-input>
+                      <el-input disabled placeholder="请输入毛条信息" v-model="itemChild.name"></el-input>
                     </div>
                   </div>
                 </div>
@@ -429,9 +399,7 @@
                   </div>
                   <div class="content">
                     <div class="elCtn">
-                      <el-input disabled
-                        placeholder="请输入采购数量"
-                        v-model="itemChild.order_number">
+                      <el-input disabled placeholder="请输入采购数量" v-model="itemChild.order_number">
                         <template slot="append">kg</template>
                       </el-input>
                     </div>
@@ -443,16 +411,13 @@
                   </div>
                   <div class="content">
                     <div class="elCtn">
-                      <el-input disabled
-                        placeholder="请输入毛条属性"
-                        v-model="itemChild.attribute">
+                      <el-input disabled placeholder="请输入毛条属性" v-model="itemChild.attribute">
                       </el-input>
                     </div>
                   </div>
                 </div>
               </div>
-              <div class="rowCtn"
-                style="background:#f0f0f0">
+              <div class="rowCtn" style="background:#f0f0f0">
                 <div class="colCtn">
                   <div class="label">
                     <span class="text">入库数量</span>
@@ -460,8 +425,7 @@
                   </div>
                   <div class="content">
                     <div class="elCtn">
-                      <el-input placeholder="数量"
-                        v-model="itemChild.action_weight">
+                      <el-input placeholder="数量" v-model="itemChild.action_weight">
                         <template slot="append">kg</template>
                       </el-input>
                     </div>
@@ -473,8 +437,7 @@
                   </div>
                   <div class="content">
                     <div class="elCtn">
-                      <el-input placeholder="件数"
-                        v-model="itemChild.item">
+                      <el-input placeholder="件数" v-model="itemChild.item">
                         <template slot="append">件</template>
                       </el-input>
                     </div>
@@ -486,13 +449,11 @@
                   </div>
                   <div class="content">
                     <div class="elCtn">
-                      <el-input placeholder="批号"
-                        v-model="itemChild.batch_code">
+                      <el-input placeholder="批号" v-model="itemChild.batch_code">
                       </el-input>
                     </div>
                     <div class="oprCtn">
-                      <div class="editBtn deleteBtn"
-                        @click="$deleteItem(order_in_info.child_data,indexChild)">删除</div>
+                      <div class="editBtn deleteBtn" @click="$deleteItem(order_in_info.child_data, indexChild)">删除</div>
                     </div>
                   </div>
                 </div>
@@ -506,10 +467,8 @@
                 </div>
                 <div class="content">
                   <div class="elCtn">
-                    <el-cascader v-model="order_in_info.select_id"
-                      :options="store_list"
-                      :props="{value:'id',label:'name',children:'second_data'}"
-                      placeholder="请选择入库仓库">
+                    <el-cascader v-model="order_in_info.select_id" :options="store_list"
+                      :props="{ value: 'id', label: 'name', children: 'second_data' }" placeholder="请选择入库仓库">
                     </el-cascader>
                   </div>
                 </div>
@@ -521,12 +480,8 @@
                 </div>
                 <div class="content">
                   <div class="elCtn">
-                    <el-date-picker class="el"
-                      style="width:100%"
-                      v-model="order_in_info.date"
-                      type="date"
-                      value-format="yyyy-MM-dd"
-                      placeholder="选择日期">
+                    <el-date-picker class="el" style="width:100%" v-model="order_in_info.date" type="date"
+                      value-format="yyyy-MM-dd" placeholder="选择日期">
                     </el-date-picker>
                   </div>
                 </div>
@@ -537,8 +492,7 @@
                 </div>
                 <div class="content">
                   <div class="elCtn">
-                    <el-input placeholder="请输入备注信息"
-                      v-model="order_in_info.desc"></el-input>
+                    <el-input placeholder="请输入备注信息" v-model="order_in_info.desc"></el-input>
                   </div>
                 </div>
               </div>
@@ -546,61 +500,203 @@
           </div>
         </div>
         <div class="oprCtn">
-          <div class="opr"
-            @click="resetOrderIn">取消</div>
-          <div class="opr blue"
-            @click="saveOrderIn">确认入库</div>
+          <div class="opr" @click="resetOrderIn">取消</div>
+          <div class="opr blue" @click="saveOrderIn">确认入库</div>
         </div>
       </div>
     </div>
-    <check :show.sync="check_flag"
-      :pid="$route.params.id"
-      @afterCheck="init"
-      :checkType="3"
-      :checkList="[{
-        value:'费用问题',
-        label:'费用问题'
-      },{
-        value:'质量问题',
-        label:'质量问题'
-      },{
-        value:'产品问题',
-        label:'产品问题'
-      },{
-        value:'交期问题',
-        label:'交期问题'
-      },{
-        value:'数量问题',
-        label:'数量问题'
-      }]"></check>
-    <deduct :show.sync="deduct_show"
-      :data="deduct_info"></deduct>
-    <check-detail :show.sync="check_detail_flag"
-      :checkType="3"
-      :pid="$route.params.id"></check-detail>
+    <check :show.sync="check_flag" :pid="$route.params.id" @afterCheck="init" :checkType="3" :checkList="[{
+      value: '费用问题',
+      label: '费用问题'
+    }, {
+      value: '质量问题',
+      label: '质量问题'
+    }, {
+      value: '产品问题',
+      label: '产品问题'
+    }, {
+      value: '交期问题',
+      label: '交期问题'
+    }, {
+      value: '数量问题',
+      label: '数量问题'
+    }]"></check>
+    <deduct :show.sync="deduct_show" :data="deduct_info"></deduct>
+    <materialAddPO :show="showAddPO" :update="true" @close="showAddPO = false" :info="order_material_info"
+      @afterCreate="init"></materialAddPO>
+    <check-detail :show.sync="check_detail_flag" :checkType="3" :pid="$route.params.id"></check-detail>
+    <div class="popup" v-show="cancel_flag">
+      <div class="main">
+        <div class="titleCtn">
+          <div class="text">取消采购单</div>
+          <i class="el-icon-close" @click="cancel_flag = false"></i>
+        </div>
+        <div class="contentCtn">
+          <div class="stepCtn">
+            <div class="step" :class="{ now: cancel_step === 2, confirm: cancel_step > 2 }">
+              <div class="circle">1</div>
+              <div class="info">取消原因</div>
+            </div>
+            <div class="line"></div>
+            <div class="step" :class="{ now: cancel_step === 3, confirm: cancel_step > 3 }">
+              <div class="circle">2</div>
+              <div class="info">确认取消</div>
+            </div>
+          </div>
+          <template v-if="cancel_step === 2">
+            <div class="createCtn">
+              <div class="rowCtn">
+                <div class="colCtn" style="margin-right: 0">
+                  <div class="label">
+                    <span class="text">取消原因</span>
+                    <span class="explanation">(必选)</span>
+                  </div>
+                  <div class="content">
+                    <div class="elCtn">
+                      <el-input placeholder="请输入取消原因" v-model="cancel_info.cancel_reason"></el-input>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="rowCtn">
+                <div class="colCtn">
+                  <div class="label">
+                    <span class="text">采购金额</span>
+                    <span class="explanation">(必选)</span>
+                  </div>
+                  <div class="content">
+                    <div class="elCtn">
+                      <el-input placeholder="采购总额" v-model="order_material_info.total_price" disabled>
+                        <template slot="append">元</template>
+                      </el-input>
+                    </div>
+                  </div>
+                </div>
+                <div class="colCtn" style="margin-right: 0">
+                  <div class="label">
+                    <span class="text">客户承担金额</span>
+                    <span class="explanation">(必填)</span>
+                  </div>
+                  <div class="content">
+                    <div class="elCtn">
+                      <el-input placeholder="客户承担金额" v-model="cancel_info.client_fee">
+                        <template slot="append">元</template>
+                      </el-input>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="rowCtn">
+                <div class="colCtn">
+                  <div class="label">
+                    <span class="text">文件说明</span>
+                  </div>
+                  <div class="content">
+                    <div class="elCtn">
+                      <div class="info">
+                        <el-upload class="upload" action="https://upload.qiniup.com/"
+                          accept="image/jpeg,image/gif,image/png,image/bmp" :before-upload="beforeAvatarUpload"
+                          :multiple="false" :data="postData" :limit="1" :on-success="successFile" ref="uploada"
+                          list-type="picture">
+                          <div class="uploadBtn">
+                            <i class="el-icon-upload"></i>
+                            <span>上传文件</span>
+                          </div>
+                          <div slot="tip" class="el-upload__tip">只能上传一张jpg/png图片文件，且不超过10M</div>
+                        </el-upload>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="colCtn" style="margin-right: 0">
+                  <div class="label">
+                    <span class="text">取消日期</span>
+                    <span class="explanation">(必填)</span>
+                  </div>
+                  <div class="content">
+                    <div class="elCtn">
+                      <el-date-picker class="el" v-model="cancel_info.cancel_date" style="width: 100%" type="date"
+                        value-format="yyyy-MM-dd" placeholder="选择日期">
+                      </el-date-picker>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </template>
+          <template v-if="cancel_step === 3">
+            <div class="msgCtn">
+              <p class="msg">注意：</p>
+              <p class="msg">1. 点击完成后，该订单状态将切换为已取消，且状态不能复原。</p>
+              <p class="msg">2. 相关库存将更新已结余入库的纱线数据。</p>
+              <p class="msg">
+                3. 客户财务统计将扣除客户未承担的部分：{{
+                  parseInt(order_material_info.total_price - cancel_info.client_fee)
+                }}元。
+              </p>
+            </div>
+          </template>
+        </div>
+        <div class="oprCtn">
+          <div class="opr" @click="cancel_flag = false">取消</div>
+          <div class="opr orange" @click="cancel_step--" v-if="cancel_step > 2">上一步</div>
+          <div class="opr blue" @click="cancel_step === 3 ? cancelOrder() : cancel_step++">
+            {{ cancel_step === 3 ? '确认取消' : '下一步' }}
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
 import { StoreCreate } from '@/types/store'
+import { CancelOrder } from '@/types/order'
 import { OrderMaterialInfo } from '@/types/material'
-import { stock, deduct, material, check } from '@/assets/js/api'
+import { stock, deduct, material, check, yarnOrder } from '@/assets/js/api'
 export default Vue.extend({
   data(): {
     order_material_info: OrderMaterialInfo
+    cancel_info: CancelOrder
     [propName: string]: any
   } {
     return {
       loading: true,
+      showAddPO: false,
       deduct_show: false,
       check_flag: false,
       check_detail_flag: false,
+      cancel_flag: false,
       deduct_info: {
         yarn: [],
         pid: 1,
         pcode: '',
         type: 1
+      },
+      postData: { key: '', token: '' },
+      cancel_step: 2,
+      cancel_reason: '',
+      cancel_date: '',
+      user_name: '',
+      client_fee: '',
+      cancel_info: {
+        order_id: '',
+        cancel_reason: '',
+        cancel_date: this.$getDate(new Date()),
+        file: '',
+        client_fee: '',
+        document_type: 3,
+        deduct_data: {
+          deduct_content: '',
+          total_price: '',
+          rel_doc_type: 1,
+          rel_doc_id: '',
+          date: '',
+          deduct_file: '',
+          client_id: '',
+          desc: ''
+        }
       },
       order_material_info: {
         code: '',
@@ -662,12 +758,34 @@ export default Vue.extend({
         deduct.list({
           rel_doc_id: this.$route.params.id,
           rel_doc_type: 3
+        }),
+        yarnOrder.cancelDetail({
+          pid: this.$route.params.id,
+          document_type: 3
         })
       ]).then((res) => {
         this.order_material_info = res[0].data.data
         this.order_material_info.additional_fee = this.order_material_info.additional_fee
           ? JSON.parse(this.order_material_info.additional_fee as string)
           : []
+          // @ts-ignore
+          this.order_material_info.total_add_fee_price = this.order_material_info.additional_fee.reduce((total, current) => {
+            return total + (Number(current.price) || 0)
+          }, 0)
+          .toFixed(2)
+        this.order_material_info.total_price = this.order_material_info.child_data
+          .reduce((total, current) => {
+            return total + (Number(current.price) || 0) * (Number(current.weight) || 0)
+          }, 0)
+          .toFixed(2)
+        this.order_material_info.total_weight = this.order_material_info.child_data.reduce((total, current) => {
+          return total + Number(current.weight)
+        }, 0)
+        this.order_material_info.total_push_price = this.order_material_info.child_data
+          .reduce((total, current) => {
+            return total + (Number(current.push_price) || 0)
+          }, 0)
+          .toFixed(2)
         this.order_in_log = res[1].data.data.items
         this.order_material_info.child_data.forEach((item) => {
           item.push_weight = 0
@@ -679,10 +797,19 @@ export default Vue.extend({
             })
           })
         })
+        this.order_material_info.total_push_weight = this.order_material_info.child_data.reduce((total, current) => {
+          return total + (Number(current.push_weight) || 0)
+        }, 0)
         this.deduct_list = res[2].data.data
         this.deduct_list.forEach((item: any) => {
           item.deduct_content = item.deduct_content ? JSON.parse(item.deduct_content) : []
         })
+        if (this.order_material_info.status === 4) {
+          this.cancel_reason = res[3].data.data.cancel_reason
+          this.cancel_date = res[3].data.data.cancel_date
+          this.client_fee = res[3].data.data.client_fee
+          this.user_name = res[3].data.data.user_name
+        }
         this.loading = false
       })
     },
@@ -714,6 +841,24 @@ export default Vue.extend({
         date: this.$getDate(new Date())
       }
       this.order_in_flag = true
+    },
+    beforeAvatarUpload(file: any) {
+      const fileName = file.name.lastIndexOf('.') // 取到文件名开始到最后一个点的长度
+      const fileNameLength = file.name.length // 取到文件名长度
+      const fileFormat = file.name.substring(fileName + 1, fileNameLength) // 截
+      this.postData.token = this.token
+      this.postData.key = Date.parse(new Date() + '') + '.' + fileFormat
+      const isJPG = file.type === 'image/jpeg'
+      const isPNG = file.type === 'image/png'
+      const isLt2M = file.size / 1024 / 1024 < 10
+      if (!isJPG && !isPNG) {
+        this.$message.error('图片只能是 JPG/PNG 格式!')
+        return false
+      }
+      if (!isLt2M) {
+        this.$message.error('图片大小不能超过 10MB!')
+        return false
+      }
     },
     saveOrderIn() {
       // 数据验证
@@ -871,6 +1016,39 @@ export default Vue.extend({
             message: '已取消'
           })
         })
+    },
+    successFile(response: any) {
+      this.cancel_order_info.file = 'https://file.zwyknit.com/' + response.key
+    },
+    // 取消采购
+    cancelOrder() {
+      const fromData: CancelOrder = {
+        pid: this.$route.params.id,
+        document_type: 3,
+        order_id: this.$route.params.id,
+        cancel_reason: this.cancel_info.cancel_reason,
+        cancel_date: this.cancel_info.cancel_date,
+        file: this.cancel_info.file,
+        client_fee: this.cancel_info.client_fee,
+        store_data: [],
+        deduct_data: {
+          deduct_content: '',
+          total_price: (Number(this.order_material_info.total_price) - Number(this.cancel_info.client_fee)).toFixed(1),
+          rel_doc_type: 1,
+          rel_doc_id: this.$route.params.id,
+          date: this.cancel_info.cancel_date,
+          deduct_file: this.cancel_info.file,
+          client_id: this.order_material_info.client_id,
+          desc: this.cancel_info.cancel_reason ? this.cancel_info.cancel_reason : '取消采购单扣款'
+        }
+      }
+      yarnOrder.cancel(fromData).then((res) => {
+        if (res.data.status) {
+          this.$message.success('采购单已取消')
+          this.cancel_flag = false
+          this.init()
+        }
+      })
     }
   },
   mounted() {

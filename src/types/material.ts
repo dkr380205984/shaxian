@@ -4,6 +4,7 @@ export interface MaterialInfo {
   name: string | string[]
   rel_type?: any[]
   price: string | number
+  push_price?: string | number
   store?: string | number
   attribute?: string
   user_name?: string
@@ -74,6 +75,10 @@ export interface OrderMaterialInfo {
   total_additional_fee?: string | number
   additional_fee?: string | AditionalFee[]// 额外费用的JSON字符串
   total_price?: string | number
+  total_add_fee_price?: string | number
+  total_weight?: string | number
+  total_push_price?: string | number
+  total_push_weight?: string | number
   file_url?: string
   is_check?: string | number
   desc: string

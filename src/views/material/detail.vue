@@ -8,7 +8,7 @@
         <div class="rowCtn">
           <div class="colCtn">
             <span class="label">毛条类型：</span>
-            <span class="text">{{ product_info.rel_type|maotiaoTypeFilter }}</span>
+            <span class="text">{{ product_info.rel_type | maotiaoTypeFilter }}</span>
           </div>
           <div class="colCtn">
             <span class="label">创建人：</span>
@@ -64,7 +64,7 @@
             <div class="trow" v-for="item in store_info.list" :key="item.id">
               <div class="tcolumn">{{ item.store_name }}/{{ item.second_store_name || '-' }}</div>
               <div class="tcolumn">{{ item.name }}</div>
-              <div class="tcolumn">{{ item.attribute || '无'}}</div>
+              <div class="tcolumn">{{ item.attribute || '无' }}</div>
               <div class="tcolumn noPad" style="flex: 5">
                 <div class="trow" v-for="(itemStore, indexStore) in item.store_info" :key="indexStore">
                   <div class="tcolumn">{{ itemStore.batch_code }}</div>
@@ -92,7 +92,150 @@
       <div class="titleCtn">
         <span class="title">出入库日志</span>
       </div>
-      <div style="padding:20px 32px">
+      <div class="listCtn">
+        <div class="list fz14">
+          <div class="overflow" style="overflow-y:hidden" @mousewheel.prevent="listenWheel" ref="list">
+            <div class="tableCtn" style="margin: unset">
+              <div class="table">
+                <div class="headCtn">
+                  <div class="row">
+                    <div class="column min120">单号</div>
+                    <div class="column" style="min-width: 80px">操作类型</div>
+                    <div class="column" style="min-width: 200px">出入库信息</div>
+                    <div class="column" style="flex: 10; flex-direction: column">
+                      <div class="row">
+                        <div class="column min120">毛条名称</div>
+                        <div class="column min120">属性</div>
+                        <div class="column min120">数量</div>
+                        <div class="column min120">所属客户</div>
+                        <div class="column min120">批号</div>
+                      </div>
+                    </div>
+                    <div class="column min120">备注信息</div>
+                    <div class="column min120">日期</div>
+                    <div class="column min120">操作人</div>
+                  </div>
+                </div>
+                <div class="bodyCtn">
+                  <div class="row" v-for="item in store_log_info.list" :key="item.id + item.code">
+                    <!-- 订购入库 -->
+                    <div class="column min120 hoverBlue" style="cursor:pointer" v-if="item.action_type === 3"
+                      @click="$router.push('/directOrder/yarnDetail/' + item.related_id)">{{ item.code }}</div>
+                    <!-- 工艺单入库 -->
+                    <div class="column min120 hoverBlue" style="cursor:pointer" v-else-if="item.action_type === 8"
+                      @click="$router.push('/material/craftDetail/' + item.related_id)">{{ item.code }}</div>
+                    <!-- 订单发货 和 加工单位直接发货 -->
+                    <div class="column min120 hoverBlue" style="cursor:pointer"
+                      v-else-if="item.action_type === 9 || item.action_type === 18"
+                      @click="$router.push('/order/detail/' + item.order_id)">{{ item.code }}</div>
+                    <!-- 销售出库 -->
+                    <div class="column min120 hoverBlue" style="cursor:pointer" v-else-if="item.action_type === 12"
+                      @click="$router.push('/order/detail/' + item.id)">{{ item.code }}</div>
+                    <!-- 加工调取 -->
+                    <div class="column min120 hoverBlue" style="cursor:pointer" v-else-if="item.action_type === 16"
+                      @click="$router.push('/directProcess/yarnDetailNew/' + item.id)">{{ item.code }}</div>
+                    <!-- 加工回库，跳转到调取单 -->
+                    <div class="column min120 hoverBlue" style="cursor:pointer" v-else-if="item.action_type === 17"
+                      @click="$router.push('/directProcess/yarnDetailNew/' + item.related_id)">{{ item.code }}</div>
+                    <div class="column min120" v-else>{{ item.code }}</div>
+                    <div class="column" style="min-width: 80px; max-width: 80px" :class="{
+                      blue:
+                        item.action_type === 1 ||
+                        item.action_type === 3 ||
+                        item.action_type === 5 ||
+                        item.action_type === 8 ||
+                        item.action_type === 11 ||
+                        item.action_type === 13 ||
+                        item.action_type === 14 ||
+                        item.action_type === 15 ||
+                        item.action_type === 17,
+                      green:
+                        item.action_type === 2 ||
+                        item.action_type === 4 ||
+                        item.action_type === 6 ||
+                        item.action_type === 7 ||
+                        item.action_type === 9 ||
+                        item.action_type === 10 ||
+                        item.action_type === 12 ||
+                        item.action_type === 16 ||
+                        item.action_type === 18
+                    }">
+                      {{ item.action_type | stockTypeFilter }}
+                    </div>
+                    <div class="column" style="min-width: 200px; max-width: 200px"
+                      :style="{ height: 50.6 * item.child_data.length + 'px' }">
+                      <span v-if="
+                        item.action_type === 1 ||
+                        item.action_type === 3 ||
+                        item.action_type === 5 ||
+                        item.action_type === 8 ||
+                        item.action_type === 13 ||
+                        item.action_type === 14 ||
+                        item.action_type === 15 ||
+                        item.action_type === 17
+                      ">
+                        <span class="green">{{ item.client_name || '无来源' }}</span>
+                        <i class="el-icon-s-unfold orange" style="margin: 0 5px; font-size: 16px"></i>
+                        <span class="blue">{{ item.store_name }}/{{ item.second_store_name }}</span>
+                      </span>
+                      <span v-if="
+                        item.action_type === 2 ||
+                        item.action_type === 4 ||
+                        item.action_type === 6 ||
+                        item.action_type === 7 ||
+                        item.action_type === 9 ||
+                        item.action_type === 12 ||
+                        item.action_type === 16 ||
+                        item.action_type === 18
+                      ">
+                        <span class="blue">{{ item.store_name }}/{{ item.second_store_name }}</span>
+                        <i class="el-icon-s-unfold orange" style="margin: 0 5px; font-size: 16px"></i>
+                        <span class="green">{{ item.client_name }}</span>
+                      </span>
+                      <span v-if="item.action_type === 10 || item.action_type === 11">
+                        <span class="green">{{ item.store_name }}/{{ item.second_store_name }}</span>
+                        <i class="el-icon-s-unfold orange" style="margin: 0 5px; font-size: 16px"></i>
+                        <span class="blue">{{ item.move_store_name }}/{{ item.move_second_store_name }}</span>
+                      </span>
+                    </div>
+                    <div class="column noPad" style="flex-direction: column; width: 0; overflow: hidden">
+                      <div class="row" v-for="(itemChild, indexChild) in item.child_data"
+                        :key="indexChild + itemChild.name">
+                        <div class="column min120">{{ itemChild.name }}</div>
+                        <div class="column min120">{{ itemChild.color }}</div>
+                        <div class="column min120">{{ itemChild.attribute }}</div>
+                        <div class="column min120 blue">{{ itemChild.action_weight }}</div>
+                        <div class="column min120">{{ itemChild.batch_code }}</div>
+                        <div class="column min120">{{ itemChild.color_code }}</div>
+                        <div class="column min120">{{ itemChild.vat_code }}</div>
+                      </div>
+                    </div>
+                    <div class="column" style="flex: 10; flex-direction: column">
+                      <div class="row" v-for="(itemChild, indexChild) in item.child_data"
+                        :key="indexChild + itemChild.name">
+                        <div class="column min120">{{ itemChild.name }}</div>
+                        <div class="column min120">{{ itemChild.attribute || '无' }}</div>
+                        <div class="column min120 blue">{{ itemChild.action_weight }}</div>
+                        <div class="column min120">{{ itemChild.store_client_name || '无' }}</div>
+                        <div class="column min120">{{ itemChild.batch_code }}</div>
+                      </div>
+                    </div>
+                    <div class="column min120">{{ item.desc || '无' }}</div>
+                    <div class="column min120">{{ item.complete_time }}</div>
+                    <div class="column min120">{{ item.user_name }}</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+        <div style="display: flex">
+          <span class="blue" style="font-weight: bold">合计入库：{{ store_log_info.total_pop }}kg</span>
+          <span class="green" style="font-weight: bold; margin-left: 20px">合计出库：{{ store_log_info.total_push }}kg</span>
+        </div>
+      </div>
+      <!-- <div style="padding:20px 32px">
         <div class="tableCtn">
           <div class="thead">
             <div class="trow">
@@ -105,7 +248,6 @@
                   <div class="tcolumn">属性</div>
                   <div class="tcolumn">批号</div>
                   <div class="tcolumn">数量</div>
-                  <!-- <div class="tcolumn">关联单号</div> -->
                 </div>
               </div>
               <div class="tcolumn">创建人</div>
@@ -143,9 +285,6 @@
                   <div class="tcolumn">{{ itemChilid.attribute || '无' }}</div>
                   <div class="tcolumn">{{ itemChilid.batch_code || '无' }}</div>
                   <div class="tcolumn">{{ itemChilid.action_weight || 0 }}</div>
-                  <!-- <div class="tcolumn"
-                    :class="{ 'blue': item.action_type === 1 || item.action_type === 3 || item.action_type === 5 || item.action_type === 8, 'green': item.action_type === 2 || item.action_type === 4 || item.action_type === 6 || item.action_type === 7 || item.action_type === 9 }">
-                    {{ itemChilid.action_weight }}</div> -->
                 </div>
               </div>
               <div class="tcolumn">{{ item.user_name }}</div>
@@ -163,7 +302,7 @@
             </div>
           </div>
         </div>
-      </div>
+      </div> -->
     </div>
     <div class="bottomFixBar">
       <div class="main">
@@ -268,6 +407,25 @@ export default Vue.extend({
           this.loading = false
         })
     })
+  },
+  methods: {
+    // 监听一下鼠标滚轮
+    listenWheel(ev: any) {
+      const detail = ev.wheelDelta || ev.detail
+      // 定义滚动方向，其实也可以在赋值的时候写
+      const moveForwardStep = 1
+      const moveBackStep = -1
+      // 定义滚动距离
+      let step = 0
+      // 判断滚动方向,这里的100可以改，代表滚动幅度，也就是说滚动幅度是自定义的
+      if (detail < 0) {
+        step = moveForwardStep * 50
+      } else {
+        step = moveBackStep * 50
+      }
+      // @ts-ignore 对需要滚动的元素进行滚动操作
+      this.$refs.list.scrollLeft += step
+    },
   }
 })
 </script>

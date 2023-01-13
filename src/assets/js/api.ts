@@ -21,7 +21,7 @@ const index = {
   notifyList: (params?: ListParam) => http.get(`${baseUrl}/notify/lists`, params)
 }
 
-// 列表设置信息 type 1:报价单列表 , 2:样单列表
+// 列表设置信息 type 1:订单列表 , 2:纱线采购列表 , 3:毛条采购列表
 const listSetting = {
   create: (params: {
     id: number | null,

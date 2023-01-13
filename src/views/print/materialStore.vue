@@ -25,7 +25,7 @@
           :key="indexYarn">
           <div class="row_item center">{{indexYarn + 1}}</div>
           <div class="row_item center flex30">{{itemYarn.name}}</div>
-          <div class="row_item center flex20">{{itemYarn.attribute}}</div>
+          <div class="row_item center flex20">{{itemYarn.attribute || '无'}}</div>
           <div class="row_item col"
             style="flex:6">
             <div class="print_row noBorder"

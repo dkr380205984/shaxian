@@ -93,7 +93,7 @@ export default Vue.extend({
       stock.detail({
         id: +this.$route.params.documentId
       }),
-      printList(undefined, this.actionType === 10 || this.actionType === 1 ? 4 : 5)
+      printList(undefined, (this.actionType === 3 || this.actionType === 1 || this.actionType === 11) ? 4 : 5)
     ]).then((res) => {
       this.stockInfo = res[0].data.data
       this.stockYarnArr = this.stockInfo.child_data

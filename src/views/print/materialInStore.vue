@@ -57,8 +57,8 @@
       <div class="print_body" style="position: relative">
         <div v-for="(itemSon, indexSon) in item" class="lastOneBorder" :key="indexSon + 'product_info'">
           <div class="print_row" v-if="itemSon === 'proName'" style="min-height: 39px; max-height: 39px">
-            <div class="row_item center bgGray flex15">纱线名称</div>
-            <div class="row_item center bgGray ">纱线属性</div>
+            <div class="row_item center bgGray flex15">毛条名称</div>
+            <div class="row_item center bgGray ">毛条属性</div>
             <div class="row_item center bgGray flex06">批号</div>
             <div class="row_item center bgGray flex15">入库仓库</div>
             <div class="row_item center bgGray flex08">入库数量</div>
@@ -68,7 +68,7 @@
           </div>
           <div class="print_row" v-if="itemSon.id" style="min-height: 39px; max-height: 39px">
             <div class="row_item center flex15">{{ itemSon.name }}</div>
-            <div class="row_item center ">{{ itemSon.attribute }}</div>
+            <div class="row_item center ">{{ itemSon.attribute || '无'}}</div>
             <div class="row_item center flex06">{{ itemSon.batch_code || '无' }}</div>
             <div class="row_item center flex15">
               {{ orderInfo.store_name || '无' }} / {{ orderInfo.second_store_name || '无' }}

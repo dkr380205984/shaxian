@@ -572,11 +572,3 @@ export default Vue.extend({
 <style lang="less" scoped>
 @import '~@/assets/less/directOrder/yarnList.less';
 </style>
-
-<style>
-/* el-table 自定义滚动条的时候没有白线 */
-.el-table__fixed-right::before,
-.el-table__fixed::before {
-  content: unset;
-}
-</style>

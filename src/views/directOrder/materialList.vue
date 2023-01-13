@@ -50,118 +50,27 @@
             <div class="btn btnGray fr" @click="reset">重置</div>
           </div>
         </div>
-        <div class="list">
-          <el-table :data="list" style="width: 100%" ref="table">
-            <el-table-column fixed prop="code" label="采购单号" width="120"> </el-table-column>
-            <el-table-column fixed prop="client_name" label="采购单位" width="140"> </el-table-column>
-            <el-table-column prop="status" label="采购单状态" width="120">
-              <template slot-scope="scope">
-                <span
-                  :class="{
-                    orange: scope.row.status === 1,
-                    blue: scope.row.status === 2,
-                    green: scope.row.status === 3,
-                    gray: scope.row.status === 4
-                  }"
-                  >{{ scope.row.status | orderStatusFilter }}</span
-                >
-              </template>
-            </el-table-column>
-            <el-table-column prop="is_check" label="审核信息" width="120">
-              <template slot-scope="scope">
-                <span
-                  :class="{
-                    orange: !scope.row.is_check,
-                    green: scope.row.is_check === 1,
-                    red: scope.row.is_check === 2
-                  }"
-                  >{{ scope.row.is_check | orderCheckFilter }}</span
-                >
-              </template>
-            </el-table-column>
-            <el-table-column label="毛条名称" width="200">
-              <template slot-scope="scope">
-                <div class="sortContainer">
-                  <div class="sort">
-                    <i class="el-icon-caret-top hover" @click="changeIndex(scope.row, 'add')"></i>
-                    <div class="number">{{ (scope.row.index || 0) + 1 }}/{{ scope.row.child_data.length }}</div>
-                    <i class="el-icon-caret-bottom hover" @click="changeIndex(scope.row, 'delete')"></i>
-                  </div>
-                  <span>{{ scope.row.child_data[scope.row.index || 0].name }}</span>
-                </div>
-              </template>
-            </el-table-column>
-            <el-table-column prop="attribute" label="毛条属性" width="120">
-              <template slot-scope="scope">
-                <span>{{ scope.row.child_data[scope.row.index || 0].attribute || '无' }}</span>
-              </template>
-            </el-table-column>
-            <el-table-column prop="total_price" label="采购数量(kg)" width="120">
-              <template slot-scope="scope">
-                <span>{{ scope.row.child_data[scope.row.index || 0].weight }}</span>
-              </template>
-            </el-table-column>
-            <el-table-column prop="total_weight" label="采购总数(kg)" width="120">
-              <template slot-scope="scope">
-                <span class="blue">{{ scope.row.total_weight }}</span>
-              </template>
-            </el-table-column>
-            <el-table-column prop="push_weight" label="入库总数(kg)" width="120">
-              <template slot-scope="scope">
-                <span class="green">{{ scope.row.push_weight || 0 }}</span>
-              </template>
-            </el-table-column>
-            <el-table-column prop="total_price" label="下单总价(元)" width="120"> </el-table-column>
-            <el-table-column prop="delivery_time" label="交货日期" width="120">
-              <template slot-scope="scope">
-                <div v-if="scope.row.status !== 3" style="display: flex; flex-direction: column">
-                  <span>{{ scope.row.delivery_time }}</span>
-                  <span
-                    :class="{
-                      red: $diffByDate(scope.row.delivery_time) <= 0,
-                      green: $diffByDate(scope.row.delivery_time) > 7,
-                      orange: $diffByDate(scope.row.delivery_time) <= 7 && $diffByDate(scope.row.delivery_time) > 0
-                    }"
-                  >
-                    {{
-                      $diffByDate(scope.row.delivery_time) > 0
-                        ? '交货还剩' + $diffByDate(scope.row.delivery_time) + '天'
-                        : '延期发货' + Math.abs($diffByDate(scope.row.delivery_time)) + '天'
-                    }}
-                  </span>
-                </div>
-                <div v-if="scope.row.status === 3" style="display: flex; flex-direction: column">
-                  <span>{{ scope.row.delivery_time }}</span>
-                  <span class="green">已完成</span>
-                </div>
-              </template>
-            </el-table-column>
-            <el-table-column prop="order_time" label="下单日期" width="120"> </el-table-column>
-            <el-table-column label="补充说明">
-              <template slot-scope="scope">
-                <div class="column">
-                  <el-image
-                    style="width: 50px; height: 50px; line-height: 50px; text-align: center; font-size: 22px"
-                    :src="scope.row.file_url"
-                    :preview-src-list="[scope.row.file_url]"
-                  >
-                    <div slot="error" class="image-slot">
-                      <i class="el-icon-picture-outline"></i>
-                    </div>
-                  </el-image>
-                </div>
-              </template>
-            </el-table-column>
-            <el-table-column prop="user_name" label="操作人" width="120"> </el-table-column>
-            <el-table-column fixed="right" label="操作" width="150">
-              <template slot-scope="scope">
-                <span class="opr blue" @click="$router.push('/directOrder/materialDetail/' + scope.row.id)">详情</span>
-                <span class="opr orange" @click="openUpdate(scope.row)">修改</span>
-                <span class="opr red" @click="openDelete(scope.row.id)">删除</span>
-              </template>
-            </el-table-column>
-          </el-table>
+        <div class="filterCtn" style="min-height: 33px; justify-content: unset; margin-bottom: 18px">
+          <div class="btn backHoverOrange" @click="showSetting = true" style="margin-left: 0">列表设置</div>
+          <div
+            class="btn backHoverGreen"
+            style="margin-left: 20px"
+            @click="
+              getFilters()
+              getList()
+            "
+          >
+            刷新列表
+          </div>
         </div>
+        <zh-list
+          :list="list"
+          :check="true"
+          :checkedCount="checkedCount"
+          :listKey="listKey"
+          :loading="loading"
+          :oprList="oprList"
+        ></zh-list>
         <div class="pageCtn">
           <el-pagination
             background
@@ -181,12 +90,22 @@
       :info="order_yarn_info"
       @afterCreate="afterCreate"
     ></materialAddPO>
+    <!-- 列表设置 -->
+    <zh-list-setting
+      @close="showSetting = false"
+      @afterSave="getListSetting"
+      :show="showSetting"
+      :id="listSettingId"
+      :type="3"
+      :data.sync="listKey"
+      :originalData="originalSetting"
+    ></zh-list-setting>
   </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
-import { material } from '@/assets/js/api'
+import { material, listSetting } from '@/assets/js/api'
 import { OrderMaterialInfo } from '@/types/material'
 export default Vue.extend({
   data(): {
@@ -199,6 +118,150 @@ export default Vue.extend({
       total: 1,
       page_size: 10,
       showMore: false,
+      showSetting: false,
+      listSettingId: null,
+      listKey: [],
+      checkedCount: [],
+      originalSetting: [
+        {
+          key: 'code',
+          name: '采购单号',
+          ifShow: true,
+          ifLock: true,
+          index: 0
+        },
+        {
+          key: 'client_name',
+          name: '采购单位',
+          ifShow: true,
+          ifLock: true,
+          index: 1
+        },
+        {
+          key: 'status',
+          name: '采购单状态',
+          filterArr: ['未知', '已创建', '进行中', '已完成', '已取消'],
+          classArr: ['', 'orange', 'blue', 'green', 'gray'],
+          ifShow: true,
+          ifLock: false,
+          index: 2,
+          isStatus: true
+        },
+        {
+          key: 'is_check',
+          name: '审核信息',
+          filterArr: ['待审核', '已通过', '已驳回'],
+          classArr: ['orange', 'green', 'red'],
+          ifShow: true,
+          ifLock: false,
+          index: 3,
+          isStatus: true
+        },
+        {
+          key: 'name',
+          name: '毛条名称',
+          ifShow: true,
+          ifLock: false,
+          index: 4,
+          from: 'child_data',
+          mark: true
+        },
+        {
+          key: 'attribute',
+          name: '属性',
+          ifShow: true,
+          ifLock: false,
+          index: 5,
+          from: 'child_data'
+        },
+        {
+          key: 'weight',
+          name: '采购数量(kg)',
+          ifShow: true,
+          ifLock: false,
+          index: 6,
+          from: 'child_data',
+          numberToString: true
+        },
+        {
+          key: 'total_weight',
+          name: '采购总数(kg)',
+          ifShow: true,
+          ifLock: false,
+          index: 7,
+          numberToString: true
+        },
+        {
+          key: 'push_weight',
+          name: '入库总数(kg)',
+          ifShow: true,
+          ifLock: false,
+          index: 8,
+          numberToString: true
+        },
+        {
+          key: 'total_price',
+          name: '下单总价（元）',
+          ifShow: true,
+          ifLock: false,
+          index: 9,
+          numberToString: true
+        },
+        {
+          key: 'delivery_time',
+          name: '交货日期',
+          ifShow: true,
+          ifLock: false,
+          index: 10
+        },
+        {
+          key: 'order_time',
+          name: '下单日期',
+          ifShow: true,
+          ifLock: false,
+          index: 11
+        },
+        {
+          key: 'image_data',
+          name: '补充说明',
+          ifShow: true,
+          ifLock: false,
+          ifImage: true,
+          index: 12
+        },
+        {
+          key: 'user_name',
+          name: '操作人',
+          ifShow: true,
+          ifLock: false,
+          index: 13
+        }
+      ],
+      oprList: [
+        {
+          name: '详情',
+          class: 'hoverBlue',
+          fn: (item: any) => {
+            this.$router.push('/directOrder/materialDetail/' + item.id)
+          }
+        },
+        {
+          name: '修改',
+          class: 'hoverOrange',
+          fn: (item: any) => {
+            // @ts-ignore
+            this.openUpdate(item)
+          }
+        },
+        {
+          name: '删除',
+          class: 'hoverRed',
+          fn: (item: any) => {
+            // @ts-ignore
+            this.openDelete(item.id)
+          }
+        }
+      ],
       client_id: '',
       code: '',
       name: '',
@@ -267,6 +330,13 @@ export default Vue.extend({
     page(newVal) {
       this.changeRouter(newVal)
     },
+    checkedCount(newVal) {
+      if (newVal.length > 0) {
+        this.checked = true
+      } else {
+        this.checked = false
+      }
+    },
     $route() {
       // 点击返回的时候更新下筛选条件
       this.getFilters()
@@ -292,6 +362,21 @@ export default Vue.extend({
           '&date=' +
           this.date
       )
+    },
+    getListSetting() {
+      this.listKey = []
+      listSetting
+        .detail({
+          type: 3
+        })
+        .then((res) => {
+          this.listSettingId = res.data.data ? res.data.data.id : null
+          this.listKey = res.data.data
+            ? JSON.parse(res.data.data.content).length > 0
+              ? JSON.parse(res.data.data.content)
+              : this.$clone(this.originalSetting)
+            : this.$clone(this.originalSetting)
+        })
     },
     reset() {
       this.$router.push('/directOrder/materialList?page=1&code=&name=&client_id=&user_id=&page_size=10&date=')
@@ -394,78 +479,6 @@ export default Vue.extend({
       this.getList()
       this.resetInfo()
     },
-    // 下面两个函数是让el-table滚动的
-    scrollFunction(obj: any, id: any) {
-      obj = document.getElementById(id)
-      if (obj.attachEvent) {
-        obj.attachEvent('onmousewheel', this.mouseScroll(obj))
-      } else if (obj.addEventListener) {
-        obj.addEventListener('DOMMouseScroll', this.mouseScroll(obj), false)
-      }
-      obj.onmousewheel = obj.onmousewheel = this.mouseScroll(obj)
-    },
-    mouseScroll(obj: any) {
-      return () => {
-        let e = window.event || document.all ? window.event : arguments[0] ? arguments[0] : event
-        let detail
-        let moveForwardStep
-        let moveBackStep
-        let step = 0
-        if (e.wheelDelta) {
-          // google 下滑负数： -120
-          detail = e.wheelDelta
-          moveForwardStep = -1
-          moveBackStep = 1
-        } else if (e.detail) {
-          // firefox 下滑正数：3
-          // @ts-ignore
-          detail = event.detail
-          moveForwardStep = 1
-          moveBackStep = -1
-        }
-        // @ts-ignore
-        step = detail > 0 ? moveForwardStep * 100 : moveBackStep * 100
-        // e.preventDefault()
-        let left = obj.querySelector('table').clientWidth - obj.clientWidth
-        //这里是为了向右滚动后再向下滚动，向左滚动后再向上滚动，如果不需要，只需要写e.preventDefault()
-        //-------------------
-        if (moveForwardStep === -1) {
-          //google
-          if (detail > 0) {
-            //向上
-            if (obj.scrollLeft > 0) {
-              e.preventDefault()
-            } else {
-              return true
-            }
-          } else {
-            if (obj.scrollLeft < left) {
-              e.preventDefault()
-            } else {
-              return true
-            }
-          }
-        } else {
-          //firefox
-          if (detail > 0) {
-            //向下
-            if (obj.scrollLeft < left) {
-              e.preventDefault()
-            } else {
-              return true
-            }
-          } else {
-            if (obj.scrollLeft > 0) {
-              e.preventDefault()
-            } else {
-              return true
-            }
-          }
-        }
-        //--------------------
-        obj.scrollLeft = obj.scrollLeft + step
-      }
-    },
     openUpdate(info: OrderMaterialInfo) {
       const selfInfo = JSON.parse(JSON.stringify(info))
       this.showAddPO = true
@@ -541,6 +554,9 @@ export default Vue.extend({
           limit: this.page_size
         })
         .then((res) => {
+          res.data.data.items.forEach((item: any) => {
+            item.image_data = item.file_url ? [item.file_url] : []
+          })
           this.list = res.data.data.items
           this.list.forEach((item: any) => {
             item.total_weight = item.child_data.reduce((total: number, current: any) => {
@@ -600,10 +616,6 @@ export default Vue.extend({
     }
   },
   mounted() {
-    //@ts-ignore id为scoll已经被el-table使用，可以使el-table滚动
-    let domObj = this.$refs.table.bodyWrapper
-    domObj.id = 'scrollBar'
-    this.scrollFunction(domObj, 'scrollBar')
     this.$checkCommonInfo([
       {
         checkWhich: 'api/client',
@@ -626,6 +638,7 @@ export default Vue.extend({
         getInfoApi: 'getMaterialTypeAsync'
       }
     ])
+    this.getListSetting()
     this.getFilters()
     this.getList()
   }
@@ -634,12 +647,4 @@ export default Vue.extend({
 
 <style lang="less" scoped>
 @import '~@/assets/less/directOrder/yarnList.less';
-</style>
-
-<style>
-/* el-table 自定义滚动条的时候没有白线 */
-.el-table__fixed-right::before,
-.el-table__fixed::before {
-  content: unset;
-}
 </style>

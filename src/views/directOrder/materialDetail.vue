@@ -804,6 +804,7 @@ export default Vue.extend({
         this.deduct_list.forEach((item: any) => {
           item.deduct_content = item.deduct_content ? JSON.parse(item.deduct_content) : []
         })
+        // @ts-ignore
         if (this.order_material_info.status === 4) {
           this.cancel_reason = res[3].data.data.cancel_reason
           this.cancel_date = res[3].data.data.cancel_date

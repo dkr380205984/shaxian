@@ -9,12 +9,12 @@
           <span>单号：{{detail.code}}</span>
         </div>
         <div class="left"></div>
-        <div class="right">
+        <!-- <div class="right">
           <span class="qrCode_box">
             <img :src="qrCodeUrl || require('@/assets/image/noPic.jpg')"
               alt="">
           </span>
-        </div>
+        </div> -->
       </div>
       <ul class="print_body"
         style="border:none">

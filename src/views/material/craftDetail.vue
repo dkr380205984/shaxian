@@ -48,6 +48,66 @@
     </div>
     <div class="module">
       <div class="titleCtn">
+        <span class="title">毛条库存调取</span>
+      </div>
+      <div class="tableCtn"
+        style="margin:20px 32px 0 32px">
+        <div class="thead">
+          <div class="trow">
+            <div class="tcolumn">毛条名称</div>
+            <div class="tcolumn">计划数量</div>
+            <div class="tcolumn">已出库数量</div>
+            <div class="tcolumn">操作</div>
+          </div>
+        </div>
+        <div class="tbody">
+          <div class="trow"
+            v-for="(item,index) in craft_info.material_info"
+            :key="index">
+            <div class="tcolumn">{{item.material_name}}</div>
+            <div class="tcolumn blue">{{item.proportion1*craft_info.weight*10}}~{{item.proportion2*craft_info.weight*10}}kg</div>
+            <div class="tcolumn green">{{item.push_weight}}kg</div>
+            <div class="tcolumn">
+              <div class="opr orange"
+                @click="openMaterialOut(item)">调取出库</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="listCtn">
+        <div class="list"
+          v-show="store_material_list.length>0">
+          <div class="headCtn">
+            <div class="row">
+              <div class="column min120">出库单号</div>
+              <div class="column min120">出库日期</div>
+              <div class="column min120">毛条名称</div>
+              <div class="column min120">出库数量</div>
+              <div class="column min120">出库件数</div>
+              <div class="column min120">备注信息</div>
+              <div class="column min120">操作</div>
+            </div>
+          </div>
+          <div class="bodyCtn">
+            <div class="row"
+              v-for="item in store_material_list"
+              :key="item.id">
+              <div class="column min120">{{item.code}}</div>
+              <div class="column min120">{{item.complete_time}}</div>
+              <div class="column min120">{{item.child_data[0].name}}</div>
+              <div class="column min120">{{item.child_data[0].action_weight}}kg</div>
+              <div class="column min120">{{item.child_data[0].item}}件</div>
+              <div class="column min120">{{item.desc}}</div>
+              <div class="column min120">
+                <span class="opr red">删除</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="module">
+      <div class="titleCtn">
         <span class="title">纱线入库信息</span>
       </div>
       <div class="tableCtn"
@@ -69,7 +129,7 @@
             <div class="tcolumn green">{{craft_info.push_weight}}kg</div>
             <div class="tcolumn">
               <div class="opr orange"
-                @click="yarn_in_flag=true">入库</div>
+                @click="yarn_in_flag=true">纺纱入库</div>
             </div>
           </div>
         </div>
@@ -102,66 +162,6 @@
               <div class="column min120">{{item.child_data[0].color_code}}</div>
               <div class="column min120">{{item.child_data[0].vat_code}}</div>
               <div class="column min120">{{item.desc||'无'}}</div>
-              <div class="column min120">
-                <span class="opr red">删除</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="module">
-      <div class="titleCtn">
-        <span class="title">毛条出库信息</span>
-      </div>
-      <div class="tableCtn"
-        style="margin:20px 32px 0 32px">
-        <div class="thead">
-          <div class="trow">
-            <div class="tcolumn">毛条名称</div>
-            <div class="tcolumn">计划数量</div>
-            <div class="tcolumn">已出库数量</div>
-            <div class="tcolumn">操作</div>
-          </div>
-        </div>
-        <div class="tbody">
-          <div class="trow"
-            v-for="(item,index) in craft_info.material_info"
-            :key="index">
-            <div class="tcolumn">{{item.material_name}}</div>
-            <div class="tcolumn blue">{{item.proportion1*craft_info.weight*10}}~{{item.proportion2*craft_info.weight*10}}kg</div>
-            <div class="tcolumn green">{{item.push_weight}}kg</div>
-            <div class="tcolumn">
-              <div class="opr orange"
-                @click="openMaterialOut(item)">出库</div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="listCtn">
-        <div class="list"
-          v-show="store_material_list.length>0">
-          <div class="headCtn">
-            <div class="row">
-              <div class="column min120">出库单号</div>
-              <div class="column min120">出库日期</div>
-              <div class="column min120">毛条名称</div>
-              <div class="column min120">出库数量</div>
-              <div class="column min120">出库件数</div>
-              <div class="column min120">备注信息</div>
-              <div class="column min120">操作</div>
-            </div>
-          </div>
-          <div class="bodyCtn">
-            <div class="row"
-              v-for="item in store_material_list"
-              :key="item.id">
-              <div class="column min120">{{item.code}}</div>
-              <div class="column min120">{{item.complete_time}}</div>
-              <div class="column min120">{{item.child_data[0].name}}</div>
-              <div class="column min120">{{item.child_data[0].action_weight}}kg</div>
-              <div class="column min120">{{item.child_data[0].item}}件</div>
-              <div class="column min120">{{item.desc}}</div>
               <div class="column min120">
                 <span class="opr red">删除</span>
               </div>
@@ -372,17 +372,10 @@
             </div>
           </div>
           <div class="row">
-            <div class="label">加工色号：</div>
+            <div class="label">色号：</div>
             <div class="info">
-              <el-input placeholder="请输入加工色号"
+              <el-input placeholder="请输入色号"
                 v-model="store_yarn_info.child_data[0].color_code"></el-input>
-            </div>
-          </div>
-          <div class="row">
-            <div class="label">缸号：</div>
-            <div class="info">
-              <el-input placeholder="请输入缸号"
-                v-model="store_yarn_info.child_data[0].vat_code"></el-input>
             </div>
           </div>
           <div class="row">

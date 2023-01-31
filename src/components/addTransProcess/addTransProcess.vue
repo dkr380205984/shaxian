@@ -135,7 +135,14 @@
                 <el-table-column prop="batch_code" label="批号"> </el-table-column>
                 <el-table-column prop="vat_code" label="缸号"> </el-table-column>
                 <el-table-column prop="color_code" label="色号"> </el-table-column>
-                <el-table-column prop="total_weight" label="库存数量"> </el-table-column>
+                <el-table-column prop="total_weight" label="库存数量">
+                  <template slot-scope="scope">
+                    {{ scope.row.total_weight || '无' }}
+                    <div class="red" v-if="Number(scope.row.weight) > Number(scope.row.total_weight)">
+                      库存不足
+                    </div>
+                  </template>
+                </el-table-column>
                 <el-table-column label="调取数量(必填)" width="120">
                   <template slot-scope="scope">
                     <el-input
@@ -1208,6 +1215,26 @@ export default Vue.extend({
         this.$message.error('只能选择相同仓库和相同二级仓库的下的纱线进行加工操作')
         return
       }
+
+      let more = this.selectList.find((item:any) => {
+        return Number(item.weight) > Number(item.total_weight)
+      });
+
+      if(more) {
+        this.$confirm('当前调取数量大于库存数量，是否继续？如继续，库存数量将会变为负数。', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this.nextStep(arr)
+        }).catch(() => {
+          this.$message('已取消')
+        })
+      } else {
+        this.nextStep(arr)
+      }
+    },
+    nextStep(arr:any){
       let params = {
         order_id: this.orderId || null,
         related_id: null,

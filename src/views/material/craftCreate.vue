@@ -162,7 +162,8 @@
           <div class="titleLine">二、原料配比及要求：混条比例准确、混条均匀</div>
         </div>
         <div class="rowCtn overflow">
-          <div class="colCtn flex2"
+          <div class="colCtn"
+            style="max-width:640px"
             v-for="(item,index) in craft_info.material_info"
             :key="index">
             <div class="elCtn">
@@ -171,12 +172,28 @@
                 placeholder="输入毛条名称搜索"
                 :options="mat_type_list"
                 filterable></el-cascader>
+              <el-tooltip class="item" effect="dark" content="添加成功后请点击此按钮刷新数据" placement="top">
+                <i class="el-icon-refresh hoverGreen"
+                  style="line-height: 32px; font-size: 18px; cursor: pointer" @click="$checkCommonInfo([{
+                    checkWhich: 'api/materialType',
+                    getInfoMethed: 'dispatch',
+                    getInfoApi: 'getMaterialTypeAsync',
+                    forceUpdate: true
+                  }])"></i>
+              </el-tooltip>
+              <el-tooltip class="item" effect="dark" content="添加毛条" placement="top">
+                <i class="el-icon-upload hoverOrange"
+                  style="line-height: 32px; font-size: 18px; cursor: pointer; margin:0 10px"
+                  @click="create_flag_material = true"></i>
+              </el-tooltip>
               <el-input class="el2"
+                style="width: 130px"
                 placeholder="比例1"
                 v-model="item.proportion1">
                 <template slot="append">%</template>
               </el-input>
               <el-input class="el2"
+                style="width: 130px"
                 placeholder="比例2"
                 v-model="item.proportion2">
                 <template slot="append">%</template>
@@ -483,6 +500,7 @@
         </div>
       </div>
     </div>
+    <add-material :show="create_flag_material" @close="create_flag_material = false"></add-material>
     <product-create
       :show="showAdd"
       @close="showAdd = false"
@@ -511,6 +529,7 @@ export default Vue.extend({
   } {
     return {
       select_loading: false,
+      create_flag_material: false,
       showAdd: false,
       yarn_arr: [],
       color_list: [],

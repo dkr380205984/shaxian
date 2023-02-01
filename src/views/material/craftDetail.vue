@@ -349,7 +349,7 @@
     </div>
     <div class="popup"
       v-show="yarn_in_flag">
-      <div class="main">
+      <div class="main" style="width: 1000px">
         <div class="titleCtn">
           <span class="text">纱线入库</span>
           <i class="close_icon el-icon-close"
@@ -365,31 +365,34 @@
             </div>
           </div>
           <div class="row">
-            <div class="label">批号：</div>
+            <div class="label">纱线颜色：</div>
             <div class="info">
-              <el-input placeholder="请输入批号"
-                v-model="store_yarn_info.child_data[0].batch_code"></el-input>
+              <el-input disabled
+                placeholder="请选择纱线"
+                v-model="store_yarn_info.child_data[0].color"></el-input>
             </div>
           </div>
           <div class="row">
-            <div class="label">色号：</div>
+            <div class="label">批号/色号：</div>
             <div class="info">
+              <el-input placeholder="请输入批号"
+                v-model="store_yarn_info.child_data[0].batch_code"></el-input>
+              
+            </div>
+            <div class="info" style="margin-left: 8px">
               <el-input placeholder="请输入色号"
                 v-model="store_yarn_info.child_data[0].color_code"></el-input>
             </div>
           </div>
           <div class="row">
-            <div class="label isMust">入库数量：</div>
+            <div class="label isMust" style="width: 8em">入库数量/件数：</div>
             <div class="info">
               <el-input placeholder="请输入入库数量"
                 v-model="store_yarn_info.child_data[0].action_weight">
                 <template slot="append">kg</template>
               </el-input>
             </div>
-          </div>
-          <div class="row">
-            <div class="label">入库件数：</div>
-            <div class="info">
+            <div class="info" style="margin-left: 8px">
               <el-input placeholder="请输入入库件数"
                 v-model="store_yarn_info.child_data[0].item">
                 <template slot="append">件</template>

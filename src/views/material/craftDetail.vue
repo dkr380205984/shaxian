@@ -1,47 +1,41 @@
 <template>
-  <div id="craftDetail"
-    class="indexMain"
-    v-loading="loading">
+  <div id="craftDetail" class="indexMain" v-loading="loading">
     <div class="module">
       <div class="titleCtn">
         <span class="title">工艺单详情</span>
       </div>
       <div class="detailCtn">
         <div class="checkCtn">
-          <el-tooltip class="item"
-            effect="dark"
-            content="点击查看审核日志"
-            placement="bottom">
-            <img @click="checkReason"
-              :src="craft_info.is_check|checkFilter" />
+          <el-tooltip class="item" effect="dark" content="点击查看审核日志" placement="bottom">
+            <img @click="checkReason" :src="craft_info.is_check | checkFilter" />
           </el-tooltip>
         </div>
         <div class="rowCtn">
           <div class="colCtn">
             <span class="label">工艺单号：</span>
-            <span class="text">{{craft_info.code}}</span>
+            <span class="text">{{ craft_info.code }}</span>
           </div>
           <div class="colCtn">
             <span class="label">加工单位：</span>
-            <span class="text">{{craft_info.client_name}}</span>
+            <span class="text">{{ craft_info.client_name }}</span>
           </div>
           <div class="colCtn">
             <span class="label">合计费用：</span>
-            <span class="text">{{craft_info.client_name}}</span>
+            <span class="text">{{ craft_info.client_name }}</span>
           </div>
         </div>
         <div class="rowCtn">
           <div class="colCtn">
             <span class="label">下单日期：</span>
-            <span class="text">{{craft_info.order_time}}</span>
+            <span class="text">{{ craft_info.order_time }}</span>
           </div>
           <div class="colCtn">
             <span class="label">交货日期：</span>
-            <span class="text">{{craft_info.delivery_time}}</span>
+            <span class="text">{{ craft_info.delivery_time }}</span>
           </div>
           <div class="colCtn">
             <span class="label">创建人：</span>
-            <span class="text">{{craft_info.user_name}}</span>
+            <span class="text">{{ craft_info.user_name }}</span>
           </div>
         </div>
       </div>
@@ -50,8 +44,7 @@
       <div class="titleCtn">
         <span class="title">毛条库存调取</span>
       </div>
-      <div class="tableCtn"
-        style="margin:20px 32px 0 32px">
+      <div class="tableCtn" style="margin:20px 32px 0 32px">
         <div class="thead">
           <div class="trow">
             <div class="tcolumn">毛条名称</div>
@@ -61,22 +54,19 @@
           </div>
         </div>
         <div class="tbody">
-          <div class="trow"
-            v-for="(item,index) in craft_info.material_info"
-            :key="index">
-            <div class="tcolumn">{{item.material_name}}</div>
-            <div class="tcolumn blue">{{item.proportion1*craft_info.weight*10}}~{{item.proportion2*craft_info.weight*10}}kg</div>
-            <div class="tcolumn green">{{item.push_weight}}kg</div>
+          <div class="trow" v-for="(item, index) in craft_info.material_info" :key="index">
+            <div class="tcolumn">{{ item.material_name }}</div>
+            <div class="tcolumn blue">
+              {{ item.proportion1 * craft_info.weight * 10 }}~{{ item.proportion2 * craft_info.weight * 10 }}kg</div>
+            <div class="tcolumn green">{{ item.push_weight }}kg</div>
             <div class="tcolumn">
-              <div class="opr orange"
-                @click="openMaterialOut(item)">调取出库</div>
+              <div class="opr orange" @click="openMaterialOut(item)">调取出库</div>
             </div>
           </div>
         </div>
       </div>
       <div class="listCtn">
-        <div class="list"
-          v-show="store_material_list.length>0">
+        <div class="list" v-show="store_material_list.length > 0">
           <div class="headCtn">
             <div class="row">
               <div class="column min120">出库单号</div>
@@ -89,15 +79,13 @@
             </div>
           </div>
           <div class="bodyCtn">
-            <div class="row"
-              v-for="item in store_material_list"
-              :key="item.id">
-              <div class="column min120">{{item.code}}</div>
-              <div class="column min120">{{item.complete_time}}</div>
-              <div class="column min120">{{item.child_data[0].name}}</div>
-              <div class="column min120">{{item.child_data[0].action_weight}}kg</div>
-              <div class="column min120">{{item.child_data[0].item}}件</div>
-              <div class="column min120">{{item.desc}}</div>
+            <div class="row" v-for="item in store_material_list" :key="item.id">
+              <div class="column min120">{{ item.code }}</div>
+              <div class="column min120">{{ item.complete_time }}</div>
+              <div class="column min120">{{ item.child_data[0].name }}</div>
+              <div class="column min120">{{ item.child_data[0].action_weight }}kg</div>
+              <div class="column min120">{{ item.child_data[0].item }}件</div>
+              <div class="column min120">{{ item.desc }}</div>
               <div class="column min120">
                 <span class="opr red">删除</span>
               </div>
@@ -110,8 +98,7 @@
       <div class="titleCtn">
         <span class="title">纱线入库信息</span>
       </div>
-      <div class="tableCtn"
-        style="margin:20px 32px 0 32px">
+      <div class="tableCtn" style="margin:20px 32px 0 32px">
         <div class="thead">
           <div class="trow">
             <div class="tcolumn">纺纱名称</div>
@@ -123,20 +110,18 @@
         </div>
         <div class="tbody">
           <div class="trow">
-            <div class="tcolumn">{{craft_info.yarn_name}}</div>
-            <div class="tcolumn">{{craft_info.color}}/{{craft_info.attribute}}</div>
-            <div class="tcolumn blue">{{craft_info.weight*1000}}kg</div>
-            <div class="tcolumn green">{{craft_info.push_weight}}kg</div>
+            <div class="tcolumn">{{ craft_info.yarn_name }}</div>
+            <div class="tcolumn">{{ craft_info.color }}/{{ craft_info.attribute }}</div>
+            <div class="tcolumn blue">{{ craft_info.weight * 1000 }}kg</div>
+            <div class="tcolumn green">{{ craft_info.push_weight }}kg</div>
             <div class="tcolumn">
-              <div class="opr orange"
-                @click="yarn_in_flag=true">纺纱入库</div>
+              <div class="opr orange" @click="yarn_in_flag = true">纺纱入库</div>
             </div>
           </div>
         </div>
       </div>
       <div class="listCtn">
-        <div class="list"
-          v-show="store_yarn_list.length>0">
+        <div class="list" v-show="store_yarn_list.length > 0">
           <div class="headCtn">
             <div class="row">
               <div class="column min120">入库单号</div>
@@ -151,17 +136,15 @@
             </div>
           </div>
           <div class="bodyCtn">
-            <div class="row"
-              v-for="item in store_yarn_list"
-              :key="item.id">
-              <div class="column min120">{{item.code}}</div>
-              <div class="column min120">{{item.complete_time}}</div>
-              <div class="column min120">{{item.child_data[0].action_weight}}kg</div>
-              <div class="column min120">{{item.child_data[0].item}}件</div>
-              <div class="column min120">{{item.child_data[0].batch_code}}</div>
-              <div class="column min120">{{item.child_data[0].color_code}}</div>
-              <div class="column min120">{{item.child_data[0].vat_code}}</div>
-              <div class="column min120">{{item.desc||'无'}}</div>
+            <div class="row" v-for="item in store_yarn_list" :key="item.id">
+              <div class="column min120">{{ item.code }}</div>
+              <div class="column min120">{{ item.complete_time }}</div>
+              <div class="column min120">{{ item.child_data[0].action_weight }}kg</div>
+              <div class="column min120">{{ item.child_data[0].item }}件</div>
+              <div class="column min120">{{ item.child_data[0].batch_code }}</div>
+              <div class="column min120">{{ item.child_data[0].color_code }}</div>
+              <div class="column min120">{{ item.child_data[0].vat_code }}</div>
+              <div class="column min120">{{ item.desc || '无' }}</div>
               <div class="column min120">
                 <span class="opr red">删除</span>
               </div>
@@ -181,28 +164,26 @@
         <div class="rowCtn blockCtn">
           <div class="inputLine">
             <span class="text">按以下原料配比生产</span>
-            <span class="blue">{{craft_info.weight}}吨</span>
+            <span class="blue">{{ craft_info.weight }}吨</span>
             <span class="text">，颜色一定要与</span>
-            <span class="blue">{{craft_info.date}}</span>
+            <span class="blue">{{ craft_info.date }}</span>
             <span class="text">日你公司所发相同，投料后搓一绞对色。</span>
           </div>
         </div>
         <div class="rowCtn">
           <div class="inputLine">
-            <span class="text">{{craft_info.desc}}</span>
+            <span class="text">{{ craft_info.desc }}</span>
           </div>
         </div>
         <div class="rowCtn blockCtn">
           <div class="titleLine">二、原料配比及要求：混条比例准确、混条均匀</div>
         </div>
         <div class="rowCtn overflow">
-          <div class="inputLine"
-            v-for="(item,index) in craft_info.material_info"
-            :key="index">
+          <div class="inputLine" v-for="(item, index) in craft_info.material_info" :key="index">
             <span class="text">毛条名称：</span>
-            <span class="blue">{{item.material_name}}</span>
+            <span class="blue">{{ item.material_name }}</span>
             <span class="text">比例：</span>
-            <span class="text">{{item.proportion1}}%~{{item.proportion2}}%</span>
+            <span class="text">{{ item.proportion1 }}%~{{ item.proportion2 }}%</span>
           </div>
         </div>
         <div class="rowCtn blockCtn">
@@ -210,7 +191,7 @@
         </div>
         <div class="rowCtn">
           <div class="inputLine">
-            <span class="text">{{craft_info.mass_demand||'暂无'}}</span>
+            <span class="text">{{ craft_info.mass_demand || '暂无' }}</span>
           </div>
         </div>
         <div class="rowCtn blockCtn">
@@ -220,14 +201,14 @@
           <div class="colCtn flex2">
             <div class="inputLine">
               <span class="text">实纺支数：</span>
-              <span class="blue">{{craft_info.shifangzhishu||'暂无'}}支</span>
+              <span class="blue">{{ craft_info.shifangzhishu || '暂无' }}支</span>
             </div>
           </div>
           <div class="colCtn flex2">
             <div class="inputLine">
               <span class="text">单纱捻度：</span>
-              <span class="blue">{{craft_info.danshaniandu||'暂无'}}个/m</span>
-              <span class="text">{{craft_info.dansha_deviation_desc}}</span>
+              <span class="blue">{{ craft_info.danshaniandu || '暂无' }}个/m</span>
+              <span class="text">{{ craft_info.dansha_deviation_desc }}</span>
             </div>
           </div>
         </div>
@@ -235,15 +216,15 @@
           <div class="colCtn flex2">
             <div class="inputLine">
               <span class="text">双纱捻度：</span>
-              <span class="blue">{{craft_info.shuangshaniandu||'暂无'}}个/m</span>
-              <span class="text">{{craft_info.shuangsha_deviation_desc}}</span>
+              <span class="blue">{{ craft_info.shuangshaniandu || '暂无' }}个/m</span>
+              <span class="text">{{ craft_info.shuangsha_deviation_desc }}</span>
             </div>
           </div>
           <div class="colCtn flex2">
             <div class="inputLine">
               <span class="text">框 长：</span>
-              <span class="blue">{{craft_info.kuangchang||'暂无'}}个/m</span>
-              <span class="text">{{craft_info.kuangchang_desc}}</span>
+              <span class="blue">{{ craft_info.kuangchang || '暂无' }}个/m</span>
+              <span class="text">{{ craft_info.kuangchang_desc }}</span>
             </div>
           </div>
         </div>
@@ -253,16 +234,16 @@
         <div class="rowCtn blockCtn">
           <div class="inputLine">
             <span class="text">每绞</span>
-            <span class="blue">{{craft_info.meijiao}}克</span>
+            <span class="blue">{{ craft_info.meijiao }}克</span>
             <span class="text">；三道八字结。10绞为一把，10把为一捆，4捆为一件。</span>
           </div>
         </div>
         <div class="rowCtn blockCtn">
           <div class="inputLine">
             <span class="text">每件确保400绞和净重</span>
-            <span class="blue">{{craft_info.yaojiao_net_weight}}克</span>
+            <span class="blue">{{ craft_info.yaojiao_net_weight }}克</span>
             <span class="text">；毛重在</span>
-            <span class="blue">{{craft_info.yaojiao_gross_weight}}克</span>
+            <span class="blue">{{ craft_info.yaojiao_gross_weight }}克</span>
             <span class="text">以上，机包六道标准件。</span>
           </div>
         </div>
@@ -272,9 +253,9 @@
         <div class="rowCtn blockCtn">
           <div class="inputLine">
             <span class="text">用新编织袋包装，每包15个筒子，袋口扎紧扎牢，纱要留尾巴。每包净重</span>
-            <span class="blue">{{craft_info.tongsha_net_weight}}kg</span>
+            <span class="blue">{{ craft_info.tongsha_net_weight }}kg</span>
             <span class="text">；毛重在</span>
-            <span class="blue">{{craft_info.tongsha_gross_weight}}kg</span>
+            <span class="blue">{{ craft_info.tongsha_gross_weight }}kg</span>
             <span class="text">以上。</span>
           </div>
         </div>
@@ -288,7 +269,7 @@
             </div>
             <div class="content">
               <div class="inputLine">
-                <span class="text">{{craft_info.pack_desc}}</span>
+                <span class="text">{{ craft_info.pack_desc }}</span>
               </div>
             </div>
           </div>
@@ -300,15 +281,15 @@
           <div class="colCtn flex2">
             <div class="inputLine">
               <span class="text">制成率：</span>
-              <span class="blue">{{craft_info.complete_rate||'暂无'}}%</span>
-              <span class="text">{{craft_info.complete_rate_desc}}</span>
+              <span class="blue">{{ craft_info.complete_rate || '暂无' }}%</span>
+              <span class="text">{{ craft_info.complete_rate_desc }}</span>
             </div>
           </div>
           <div class="colCtn flex2">
             <div class="inputLine">
               <span class="text">加工费净重含税：</span>
-              <span class="blue">{{craft_info.process_fee||'暂无'}}%</span>
-              <span class="text">{{craft_info.process_fee_desc}}</span>
+              <span class="blue">{{ craft_info.process_fee || '暂无' }}%</span>
+              <span class="text">{{ craft_info.process_fee_desc }}</span>
             </div>
           </div>
         </div>
@@ -317,8 +298,8 @@
         </div>
         <div class="rowCtn">
           <div class="inputLine">
-            <span class="blue">{{craft_info.delivery_time}}</span>
-            <span class="text">{{craft_info.delivery_desc}}</span>
+            <span class="blue">{{ craft_info.delivery_time }}</span>
+            <span class="text">{{ craft_info.delivery_desc }}</span>
           </div>
         </div>
         <div class="rowCtn blockCtn">
@@ -326,7 +307,8 @@
         </div>
         <div class="rowCtn">
           <div class="inputLine">
-            <span class="text">承揽加工方如逾期交货和委托方逾期支付货款，违约方应按月息1%利率向守约方支付滞纳金，并承担合同金额5%违约金。如发生纠纷，双方尽量协商 解决，协商不成，按（合同法）规定，向本合同签订所在地人民法院诉讼处理。</span>
+            <span class="text">承揽加工方如逾期交货和委托方逾期支付货款，违约方应按月息1%利率向守约方支付滞纳金，并承担合同金额5%违约金。如发生纠纷，双方尽量协商
+              解决，协商不成，按（合同法）规定，向本合同签订所在地人民法院诉讼处理。</span>
           </div>
         </div>
         <div class="rowCtn blockCtn">
@@ -342,59 +324,49 @@
         </div>
         <div class="rowCtn">
           <div class="inputLine">
-            <span class="blue">{{craft_info.special_desc}}</span>
+            <span class="blue">{{ craft_info.special_desc }}</span>
           </div>
         </div>
       </div>
     </div>
-    <div class="popup"
-      v-show="yarn_in_flag">
+    <div class="popup" v-show="yarn_in_flag">
       <div class="main" style="width: 1000px">
         <div class="titleCtn">
           <span class="text">纱线入库</span>
-          <i class="close_icon el-icon-close"
-            @click="yarn_in_flag = false"></i>
+          <i class="close_icon el-icon-close" @click="yarn_in_flag = false"></i>
         </div>
         <div class="contentCtn">
           <div class="row">
             <div class="label">纱线名称：</div>
             <div class="info">
-              <el-input disabled
-                placeholder="请选择纱线"
-                v-model="store_yarn_info.child_data[0].name"></el-input>
+              <el-input disabled placeholder="请选择纱线" v-model="store_yarn_info.child_data[0].name"></el-input>
             </div>
           </div>
           <div class="row">
             <div class="label">纱线颜色：</div>
             <div class="info">
-              <el-input disabled
-                placeholder="请选择纱线"
-                v-model="store_yarn_info.child_data[0].color"></el-input>
+              <el-input disabled placeholder="请选择纱线" v-model="store_yarn_info.child_data[0].color"></el-input>
             </div>
           </div>
           <div class="row">
             <div class="label">批号/色号：</div>
             <div class="info">
-              <el-input placeholder="请输入批号"
-                v-model="store_yarn_info.child_data[0].batch_code"></el-input>
-              
+              <el-input placeholder="请输入批号" v-model="store_yarn_info.child_data[0].batch_code"></el-input>
+
             </div>
             <div class="info" style="margin-left: 8px">
-              <el-input placeholder="请输入色号"
-                v-model="store_yarn_info.child_data[0].color_code"></el-input>
+              <el-input placeholder="请输入色号" v-model="store_yarn_info.child_data[0].color_code"></el-input>
             </div>
           </div>
           <div class="row">
             <div class="label isMust" style="width: 8em">入库数量/件数：</div>
             <div class="info">
-              <el-input placeholder="请输入入库数量"
-                v-model="store_yarn_info.child_data[0].action_weight">
+              <el-input placeholder="请输入入库数量" v-model="store_yarn_info.child_data[0].action_weight">
                 <template slot="append">kg</template>
               </el-input>
             </div>
             <div class="info" style="margin-left: 8px">
-              <el-input placeholder="请输入入库件数"
-                v-model="store_yarn_info.child_data[0].item">
+              <el-input placeholder="请输入入库件数" v-model="store_yarn_info.child_data[0].item">
                 <template slot="append">件</template>
               </el-input>
             </div>
@@ -402,20 +374,15 @@
           <div class="row">
             <div class="label isMust">入库仓库：</div>
             <div class="info">
-              <el-cascader v-model="store_yarn_info.select_id"
-                :options="store_list"
-                :props="{value:'id',label:'name',children:'second_data'}"
-                placeholder="请选择入库仓库">
+              <el-cascader v-model="store_yarn_info.select_id" :options="store_list"
+                :props="{ value: 'id', label: 'name', children: 'second_data' }" placeholder="请选择入库仓库">
               </el-cascader>
             </div>
           </div>
           <div class="row">
             <div class="label">入库时间：</div>
             <div class="info">
-              <el-date-picker style="width:100%"
-                type="date"
-                value-format="yyyy-MM-dd"
-                placeholder="选择入库时间"
+              <el-date-picker style="width:100%" type="date" value-format="yyyy-MM-dd" placeholder="选择入库时间"
                 v-model="store_yarn_info.complete_time">
               </el-date-picker>
             </div>
@@ -423,42 +390,46 @@
           <div class="row">
             <div class="label">备注信息：</div>
             <div class="info">
-              <el-input placeholder="请输入备注信息"
-                v-model="store_yarn_info.desc">
+              <el-input placeholder="请输入备注信息" v-model="store_yarn_info.desc">
               </el-input>
             </div>
           </div>
         </div>
         <div class="oprCtn">
-          <div class="opr"
-            @click="yarn_in_flag = false">取消</div>
-          <div class="opr blue"
-            @click="saveYarnIn">确认</div>
+          <div class="opr" @click="yarn_in_flag = false">取消</div>
+          <div class="opr blue" @click="saveYarnIn">确认</div>
         </div>
       </div>
     </div>
-    <div class="popup"
-      v-show="material_out_flag">
-      <div class="main">
+    <div class="popup" v-show="material_out_flag">
+      <div class="main"  style="width: 1000px">
         <div class="titleCtn">
           <span class="text">毛条出库</span>
-          <i class="close_icon el-icon-close"
-            @click="material_out_flag = false"></i>
+          <i class="close_icon el-icon-close" @click="material_out_flag = false"></i>
         </div>
         <div class="contentCtn">
           <div class="row">
             <div class="label">毛条名称：</div>
             <div class="info">
-              <el-input disabled
-                placeholder="请选择纱线"
-                v-model="store_material_info.child_data[0].name"></el-input>
+              <el-input disabled placeholder="请选择毛条" v-model="store_material_info.child_data[0].name"></el-input>
+            </div>
+          </div>
+          <div class="row">
+            <div class="label">毛条属性：</div>
+            <div class="info">
+              <el-input disabled placeholder="请选择毛条属性" v-model="store_material_info.child_data[0].attribute"></el-input>
+            </div>
+          </div>
+          <div class="row">
+            <div class="label">毛条批号：</div>
+            <div class="info">
+              <el-input disabled placeholder="请填写毛条批号" v-model="store_material_info.child_data[0].batch_code"></el-input>
             </div>
           </div>
           <div class="row">
             <div class="label isMust">出库数量：</div>
             <div class="info">
-              <el-input placeholder="请输入出库数量"
-                v-model="store_material_info.child_data[0].action_weight">
+              <el-input placeholder="请输入出库数量" v-model="store_material_info.child_data[0].action_weight">
                 <template slot="append">kg</template>
               </el-input>
             </div>
@@ -466,8 +437,7 @@
           <div class="row">
             <div class="label">出库件数：</div>
             <div class="info">
-              <el-input placeholder="请输入出库件数"
-                v-model="store_material_info.child_data[0].item">
+              <el-input placeholder="请输入出库件数" v-model="store_material_info.child_data[0].item">
                 <template slot="append">件</template>
               </el-input>
             </div>
@@ -475,20 +445,15 @@
           <div class="row">
             <div class="label isMust">来源仓库：</div>
             <div class="info">
-              <el-cascader v-model="store_material_info.select_id"
-                :options="materail_store_list"
-                :props="{value:'id',label:'name',children:'second_data'}"
-                placeholder="请选择来源仓库">
+              <el-cascader v-model="store_material_info.select_id" :options="materail_store_list"
+                :props="{ value: 'id', label: 'name', children: 'second_data' }" placeholder="请选择来源仓库">
               </el-cascader>
             </div>
           </div>
           <div class="row">
             <div class="label">出库时间：</div>
             <div class="info">
-              <el-date-picker style="width:100%"
-                type="date"
-                value-format="yyyy-MM-dd"
-                placeholder="选择出库时间"
+              <el-date-picker style="width:100%" type="date" value-format="yyyy-MM-dd" placeholder="选择出库时间"
                 v-model="store_material_info.complete_time">
               </el-date-picker>
             </div>
@@ -496,58 +461,69 @@
           <div class="row">
             <div class="label">备注信息：</div>
             <div class="info">
-              <el-input placeholder="请输入备注信息"
-                v-model="store_material_info.desc">
+              <el-input placeholder="请输入备注信息" v-model="store_material_info.desc">
               </el-input>
             </div>
           </div>
         </div>
         <div class="oprCtn">
-          <div class="opr blue"
-            @click="saveMaterialOut">确认</div>
-          <div class="opr"
-            @click="material_out_flag = false">取消</div>
+          <div class="opr blue" @click="saveMaterialOut">确认</div>
+          <div class="opr" @click="material_out_flag = false">取消</div>
         </div>
       </div>
     </div>
     <div class="bottomFixBar">
       <div class="main">
         <div class="btnCtn">
-          <div class="btn btnGray"
-            @click="$router.go(-1)">返回</div>
-          <div class="btn btnOrange"
-            @click="$openUrl(`/print/processMaterial/${$route.params.id}`)">打印</div>
-          <div class="btn btnGreen"
-            @click="openCheck">审核</div>
-          <div class="btn btnBlue"
-            @click="confirm"
-            v-if="craft_info.status!==3">确认完成</div>
+          <div class="btn btnGray" @click="$router.go(-1)">返回</div>
+          <div class="btnCtn">
+            <div class="buttonList" style="margin-left: 12px" v-if="order_info.status !== 4">
+              <div class="showButton">
+                <i class="el-icon-s-grid"></i>
+                <span class="text">工艺单操作</span>
+              </div>
+              <div class="otherInfoCtn">
+                <div class="otherInfo">
+                  <div class="button btnOrange" @click="$openUrl(`/print/processMaterial/${$route.params.id}`)">
+                    <i class="el-icon-printer"></i>
+                    <span class="text">单据打印</span>
+                  </div>
+                  <div class="button btnOrange" v-if="craft_info.status === 1" @click="$openUrl(`/print/processMaterial/${$route.params.id}`)">
+                    <i class="el-icon-edit"></i>
+                    <span class="text">单据修改</span>
+                  </div>
+                  <div class="button btnGreen" @click="openCheck">
+                    <i class="iconfont">&#xe638;</i>
+                    <span class="text">单据审核</span>
+                  </div>
+                  <div class="button btnBlue" @click="confirm" v-if="craft_info.status !== 3">
+                    <i class="iconfont">&#xe636;</i>
+                    <span class="text">确认完成</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
-    <check :show.sync="check_flag"
-      :pid="$route.params.id"
-      @afterCheck="init"
-      :checkType="4"
-      :checkList="[{
-        value:'费用问题',
-        label:'费用问题'
-      },{
-        value:'质量问题',
-        label:'质量问题'
-      },{
-        value:'产品问题',
-        label:'产品问题'
-      },{
-        value:'交期问题',
-        label:'交期问题'
-      },{
-        value:'数量问题',
-        label:'数量问题'
-      }]"></check>
-    <check-detail :show.sync="check_detail_flag"
-      :checkType="4"
-      :pid="$route.params.id"></check-detail>
+    <check :show.sync="check_flag" :pid="$route.params.id" @afterCheck="init" :checkType="4" :checkList="[{
+      value: '费用问题',
+      label: '费用问题'
+    }, {
+      value: '质量问题',
+      label: '质量问题'
+    }, {
+      value: '产品问题',
+      label: '产品问题'
+    }, {
+      value: '交期问题',
+      label: '交期问题'
+    }, {
+      value: '数量问题',
+      label: '数量问题'
+    }]"></check>
+    <check-detail :show.sync="check_detail_flag" :checkType="4" :pid="$route.params.id"></check-detail>
   </div>
 </template>
 
@@ -569,6 +545,7 @@ export default Vue.extend({
       material_out_flag: false,
       check_detail_flag: false,
       check_flag: false,
+      order_info: {},
       store_yarn_info: {
         id: '',
         client_id: '',
